@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="../src/img/icon/32.png" type="image/png" rel="shortcut icon" />
+		<title>No support!</title>
+		<meta name="viewport" content="width=device-width" />
+		
+		<link type="text/css" rel="stylesheet" href="../src/css/global.css" />
+		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700,600" />
+		<style>
+		body
+		{
+			margin: 0;
+			padding: 0;
+			background: #eee;
+			
+			/* global font styling */
+			font-family: 'Open Sans', sans-serif;
+			color: #111;
+		}
+		
+		body .center
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			min-width: 300px;/* should be larger than .message */
+			
+			text-align: center;
+			font-size: 0;
+			white-space: nowrap;
+		}
+
+		body .center:before
+		{
+			content: '';
+			display: inline-block;
+			height: 100%;
+			vertical-align: middle;
+		}
+
+		.message
+		{
+			display: inline-block;
+			vertical-align: middle;
+			position: static;
+			min-width: 300px;
+			white-space: normal;
+			font-size: initial;
+		}
+
+		p
+		{
+			font-size: 20pt;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="center">
+			<div class="message">
+				<img src="../src/img/big-logo.png" style="margin: 0 auto; width: 500px;" />
+				<p style="text-shadow: 3px 3px 0 #ccc;">MolView is not supported on Internet Explorer 9 and older versions.<br/>Upgrade Internet Explorer or download <a class='link' href='//google.com/chrome' title='A modern browser'>Google Chrome</a>.</p>
+			<div>
+		<div>
+	</body>
+</html>
+
+

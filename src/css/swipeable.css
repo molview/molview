@@ -1,0 +1,16 @@
+.swipeable
+{
+	overflow: auto;
+}
+
+.swipeable > .inner
+{
+	position: absolute;
+	width: 100%;
+	background: #000;
+}
+
+#menu > .inner
+{
+	min-width: 1100px;
+}

@@ -1,0 +1,128 @@
+#properties-wrapper
+{
+	margin: -20px;
+	margin-bottom: 0;
+}
+
+.properties-block
+{
+	position: relative;
+	display: block;
+	margin: 0;
+	font-size: medium;
+	font-size: initial;
+	width: 100%;
+}
+
+.properties-block table
+{
+	width: 100%;
+}
+
+@media all and (min-width: 1200px)
+{
+	#properties-wrapper
+	{
+		margin: 0;
+	}
+
+	#general-properties
+	{
+		margin: -10px;
+		padding-bottom: 10px;
+		
+		/* in order to fit the image and primary table
+		together ([space] between blocks = 0) */
+		font-size: 0;
+	}
+
+	.properties-block
+	{
+		display: inline-block;
+		margin: 10px;
+		width: 539px;
+		vertical-align: middle;
+	}
+	
+	#molecule-image
+	{
+		height: 100%;
+	}
+}
+
+@media all and (min-width: 1300px)
+{
+	.properties-block
+	{
+		width: 589px;
+	}
+}
+
+#molecule-image
+{
+	width: 100%;
+	min-height: 100px;
+	margin: 0 auto;
+	background-size: 64px;
+}
+
+.chemprop.unavailable:after
+{
+	content: "unavailable";
+	font-style: italic;
+	color: #888;
+}
+
+.chemprop.loading
+{
+	background-image: url(../img/loading-black.svg);
+	background-size: 32px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.loading
+{
+	cursor: progress;
+}
+
+#molecule-info
+{
+	padding: 15px 10px;
+}
+
+#molecule-title
+{
+	margin: 0;
+}
+
+#chem-identifiers
+{
+	width: 100%;
+	margin: 10px 0;
+}
+
+input.chemprop.unavailable
+{
+	border-bottom: 3px solid #f00;
+	background: #fcb3bc !important;
+}
+
+#spectrum
+{
+	margin: -10px;
+	padding-bottom: 10px;
+}
+
+#spectrum-wrapper
+{
+	margin-top: 20px;
+	height: 0;
+	overflow: hidden;
+}
+
+#spectrum-canvas
+{
+	width: 100% !important;
+	height: 100% !important;
+}

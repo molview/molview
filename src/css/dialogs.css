@@ -1,0 +1,107 @@
+.window-layer
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	
+	overflow: auto;
+}
+
+.window-layer .dialog
+{
+	margin: 43px auto;
+	padding: 20px;
+	left: 0px;
+	right: 0px;
+	
+	background: #fff;
+	overflow: hidden;
+}
+
+.dialog h2
+{
+	margin: -20px;
+	margin-bottom: 20px;
+	padding: 20px;
+	
+	text-align: center;
+	color: #111;
+	background: #eee;
+	border-bottom: 1px solid #ccc;
+	
+	border-radius: 10px 10px 0 0;
+}
+
+.dialog p
+{
+	margin: 5px 0;
+}
+
+.dialog .footer
+{
+	margin-top: 10px;
+	text-align: right;
+}
+
+@media all and (min-width: 1060px)
+{
+	#help-dialog, #about-dialog, #share-dialog, #embed-dialog
+	{
+		max-width: 960px;
+		border-radius: 10px;
+	}
+}
+
+/*
+Properties dialog
+*/
+
+#properties-dialog
+{
+	max-width: 600px;
+}
+
+@media all and (min-width: 1200px)
+{
+	#properties-dialog
+	{
+		max-width: 1100px;
+	}
+}
+
+@media all and (min-width: 1300px)
+{
+	#properties-dialog
+	{
+		max-width: 1200px;
+	}
+}
+
+@media all and (min-width: 700px)
+{
+	#properties-dialog
+	{
+		border-radius: 10px;
+	}
+}
+
+/*
+Elements dialog
+*/
+
+#elements-dialog
+{
+	width: 540px;
+}
+
+@media all and (min-width: 1000px)
+{
+	#elements-dialog
+	{
+		width: 900px;
+	
+		border-radius: 10px;
+	}
+}

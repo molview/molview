@@ -1,0 +1,76 @@
+/* form */
+
+select:hover
+{
+	border-bottom-color: #f50;
+}
+
+.btn:not(.btn-primary):hover
+{
+	background: #fff;
+	border-color: #f50;
+}
+
+.btn.btn-primary:hover
+{
+	background: #f30;
+	border-color: #f00;
+}
+
+.close-btn:hover
+{
+	color: #f50;
+}
+
+/* menu */
+
+.menu .dropdown-toggle:hover
+{
+	background-color: #eee !important;
+}
+
+ul.dropdown-menu > li > a:not(.disabled):hover
+{
+	color: #fff;
+	background: #f50;
+}
+
+/* sketcher */
+
+.toolbar .button:not(.disabled):hover
+{
+	opacity: 1.0;
+	background-color: #f30;
+}
+
+/* periodictable */
+
+#periodictable .element:hover
+{
+	background: #ddd;
+}
+
+/* help */
+
+.expandable .title:hover
+{
+	background: #fff;
+}
+
+/* search */
+
+.search-results > .more:hover
+{
+	color: #fff;
+	background-color: #f50;
+}
+
+.result .title:hover
+{
+	background: #f50;
+}
+
+.result:not(.title-select-only):hover .title
+{
+	background: #f50;
+}

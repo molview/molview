@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<base href="http://molview.org/" />
+		<link href="src/img/icon/32.png" type="image/png" rel="shortcut icon" />
+		<title>Authorization Required</title>
+		<meta name="viewport" content="width=600" />
+		
+		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700,600" />
+		<style>
+		body
+		{
+			margin: 0;
+			padding: 0;
+			background: #eee;
+			
+			/* global font styling */
+			font-family: 'Open Sans', sans-serif;
+			color: #111;
+		}
+		
+		body .center
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			min-width: 300px;/* should be larger than .message */
+			
+			text-align: center;
+			font-size: 0;
+			white-space: nowrap;
+		}
+
+		body .center:before
+		{
+			content: '';
+			display: inline-block;
+			height: 100%;
+			vertical-align: middle;
+		}
+
+		.message
+		{
+			display: inline-block;
+			vertical-align: middle;
+			position: static;
+			min-width: 300px;
+			white-space: normal;
+			font-size: medium;
+			font-size: initial;
+		}
+
+		h1
+		{
+			margin: 0;
+			font-size: 200px;
+			line-height: 1;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="center">
+			<div class="message">
+				<h1>401</h1>
+				<p>This server could not verify that you are authorized to access the requested data.</p>
+			<div>
+		<div>
+	</body>
+</html>
+

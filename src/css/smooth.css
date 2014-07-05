@@ -1,0 +1,20 @@
+input[type="text"]
+{
+	transition: border-color .1s ease-in, background .1s ease-in;
+}
+
+.social .share span:after
+{
+	transition: opacity .2s ease-in;
+}
+
+/* search results transitions */
+.result
+{
+	transition: border .1s ease-in;
+}
+
+.search-results .more
+{
+	transition: background .1s ease-in, color .1s ease-in;
+}

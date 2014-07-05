@@ -1,0 +1,119 @@
+html
+{
+	overflow: hidden;
+}
+
+body
+{
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	
+	font-family: 'Open Sans', sans-serif;
+	background: #000;
+	overflow: hidden;
+}
+
+#progress
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+}
+
+#menu
+{
+	position: absolute;
+	top: 3px;
+	left: 0;
+	right: 0;
+}
+
+body.no-menu #menu
+{
+	display: none;
+}
+
+#search-input
+{
+	width: 300px;
+}
+
+body.no-menu #progress
+{
+	top: 0;
+}
+
+#content
+{
+	position: absolute;
+	top: 43px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+body.no-menu #content
+{
+	top: 3px;
+}
+
+#sketcher
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 50%;
+	bottom: 0;
+	
+	background-color: #000;
+}
+
+#content.sketcher #sketcher, #content.hsplit #sketcher
+{ right: 0; }
+
+#content.hsplit #sketcher
+{ bottom: 50%; }
+
+#content.model #sketcher
+{ visibility: hidden; }
+
+#model
+{
+	position: absolute;
+	top: 0;
+	left: 50%;
+	right: 0;
+	bottom: 0;
+	
+	background-color: #000;
+	overflow: hidden;
+}
+
+#content.model #model, #content.hsplit #model
+{ left: 0; }
+
+#content.hsplit #model
+{ top: 50%; }
+
+#content.sketcher #model
+{ visibility: hidden; }
+
+#window-layer
+{
+	z-index: 2;/* on top of menu.open */
+	background: rgba(0, 0, 0, 0.5);
+}
+
+#disclaimer
+{
+	margin: 10px 30px;
+	font-style: italic;
+	font-weight: bold;
+	color: #333;
+}
+

@@ -1,0 +1,116 @@
+.layer
+{
+	display: none;
+	
+	color: #eee;
+	overflow: auto;
+}
+
+body.process
+{
+	cursor: progress;
+}
+
+.message
+{
+	padding: 20px;
+	text-align: center;
+	max-width: 550px;
+}
+
+.message img
+{
+	display: none;
+	margin: 0 auto;
+	margin-bottom: 20px;
+}
+
+.message-process .message img.process
+{
+	display: block;
+}
+
+.message-alert .message img.alert
+{
+	display: block;
+}
+
+.message .text
+{
+	margin: 10px 0;
+	font-size: 18pt;
+}
+
+.message .text ul
+{
+	display: block;
+	margin: 15px 0;
+	text-align: left;
+	font-size: 10pt;
+	line-height: 15pt;
+}
+
+.message .text small
+{
+	display: block;
+	margin-top: 12px;
+	font-size: 12pt;
+	line-height: 14pt;
+}
+
+.message .btn
+{
+	margin: 25px 5px;
+}
+
+/* alert centering trick */
+.layer .center
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	min-width: 300px;/* should be larger than .message */
+	
+	text-align: center;
+	font-size: 0;
+	white-space: nowrap;
+}
+
+.layer .center:before
+{
+	content: '';
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.message
+{
+	display: inline-block;
+	vertical-align: middle;
+	position: static;
+	min-width: 300px;
+	white-space: normal;
+    font-size: medium;
+	font-size: initial;
+}
+
+/*
+Layout types
+(#content classes)
+.start-messages
+.sketcher-messages
+.model-messages
+.content-messages
+*/
+.start-messages #start-messages { display: block; }
+#start-messages-close { display: none; }
+.start-messages #start-messages-close { display: block; }
+.sketcher-messages #sketcher-messages { display: block; }
+.model-messages #model-messages { display: block; }
+.content-messages #content-messages { display: block; }
+
+.message-process .message .btn.ok { display: none; }
+.message-alert.stay .message .btn.ok { display: none; }

@@ -1,0 +1,184 @@
+.menu
+{
+	z-index: 1;
+	
+	display: block;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	
+	/* swipe trick */
+	height: 40px;
+}
+
+.menu > .inner
+{
+	height: 40px;
+}
+
+/* swipe trick: display menu on top */
+.menu.open
+{
+	height: auto;
+	bottom: 0;
+}
+
+.menu .brick
+{
+	float: left;
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+ul.menu-bar
+{
+	margin: 0;
+	padding: 0;
+}
+
+ul.menu-bar > li, ul.dropdown-menu > li
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+ul.menu-bar > li
+{
+	float: left;
+	position: relative;
+}
+
+ul.menu-bar > .dropdown > .dropdown-toggle
+{
+	padding: 10px 15px;
+}
+
+ul.menu-bar > .dropdown > .dropdown-toggle .caret
+{
+	margin: 9px 0 0 7px;
+}
+
+.dropdown
+{
+	margin: 0;
+	padding: 0;
+}
+
+.menu .dropdown-toggle
+{
+	display: block;
+	margin: 0;
+	padding: 0;
+	line-height: 20px;
+}
+
+ul.dropdown-menu
+{
+	display: none;
+	z-index: 1000;
+	position: absolute;
+	margin: 0 0 0 -1px;
+	padding: 0;
+	min-width: 200px;
+	
+	border-style: solid;
+	border-width: 0 1px 1px 1px;
+	
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+ul.dropdown-menu.drop-left
+{
+	right: 0;
+}
+
+ul.dropdown-menu > .header
+{
+	display: block;
+	cursor: default;
+	line-height: 15px;
+	white-space: nowrap;
+}
+
+ul.dropdown-menu > li > a
+{
+	display: block;
+	line-height: 20px;
+	white-space: nowrap;
+}
+
+.dropdown.open > ul.dropdown-menu
+{
+	display: block;
+}
+
+/* custom layout menu */
+#layout-menu
+{
+	width: 336px;
+	height: 50px;
+}
+
+#layout-menu > a
+{
+	float: left;
+	margin: 1px;
+	padding: 0;
+	width: 80px;
+	height: 45px;
+
+	background-repeat: no-repeat;
+	background-position: center;
+	border: 1px solid #333;
+	background-size: 80px;
+}
+
+@media all and (min-width: 720px)
+{
+	#layout-menu
+	{
+		width: 352px;
+		height: 212px;
+	}
+
+	#layout-menu > a
+	{
+		float: left;
+		margin: 5px;
+		padding: 0;
+		width: 160px;
+		height: 90px;
+		
+		background-repeat: no-repeat;
+		background-position: center;
+		border: 3px solid #333;
+		background-size: 160px;
+	}
+}
+
+#window-model { background-image: url(../img/layout/model.svg); }
+#window-sketcher { background-image: url(../img/layout/sketcher.svg); }
+#window-vsplit { background-image: url(../img/layout/vsplit.svg); }
+#window-hsplit { background-image: url(../img/layout/hsplit.svg); }
+
+/* custom search form CSS */
+#menu form
+{
+	float: right;
+}
+
+#menu form input
+{
+	height: 40px;
+}
+
+#menu form button
+{
+	padding: 5px 10px;
+	line-height: 1;
+	min-width: 40px;
+	border-radius: 0;
+}

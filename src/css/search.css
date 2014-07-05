@@ -1,0 +1,216 @@
+.search-results
+{
+	margin: 0;
+	padding: 10px;
+	
+	overflow: auto;
+}
+
+.search-results > .more, .result
+{
+	position: relative;
+	float: left;
+	margin: 10px;
+	
+	background: #fff;
+	/* border: 3px solid #000; */
+	
+	border-radius: 10px;
+}
+
+.search-results > .more, .result.clickable
+{
+	cursor: pointer;
+}
+
+.search-results .more
+{
+	margin-right: 100%;
+	color: #000;
+	text-align: center;
+	background: #fff;
+}
+
+.search-results .more:before
+{
+	content: "Load more"
+}
+
+.search-results .more.loading:before
+{
+	content: "Loading..."
+}
+
+.search-results .more.loading
+{
+	cursor: progress;
+	color: #fff;
+	background: #f50;
+}
+
+/*
+Search output:
+<div class="result">
+	<div class="title"><span>Name</span></h2>
+	<div class="img" style="background-image: url(image.png)"/>
+</div>
+*/
+
+.result .title
+{
+	cursor: pointer;
+	position: absolute;
+	margin: 0;
+	left: 0;
+	right: 0;
+	
+	text-align: center;
+	background: #ccc;
+	border-bottom: 1px solid #333;
+	border-radius: 4px 4px 0 0;
+	transition: background .1s ease-in;
+}
+
+.result .title span
+{
+	border-bottom: 2px solid #111;
+}
+
+.result .description
+{
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: 5px;
+	
+	background: #fff;
+	overflow-x: hidden;
+	overflow-y: auto;
+	word-wrap: break-word;
+}
+
+.result .img-wrap
+{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	
+	background-color: #fff;
+	background-image: url(../img/loading-black.svg);
+	background-size: 64px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.result .img
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	
+}
+
+.result .img-wrap, .result .img
+{
+	border-radius: 0 0 15px 15px;
+}
+
+.result.imgdesc .img-wrap, .result.description .img
+{
+	border-radius: 0 0 0 15px;
+}
+
+/* @media all and (min-width: 650px)
+{ */
+	.search-results > .more, .result
+	{
+		width: 300px;
+		height: 350px;
+	}
+
+	.search-results > .more
+	{
+		line-height: 350px;
+		font-size: 22pt;
+	}
+
+	.result.imgdesc
+	{
+		width: 620px;
+	}
+
+	.result .title
+	{
+		height: 30px;
+		line-height: 30px;
+		padding: 10px 20px;
+	}
+	
+	.result .description
+	{
+		top: 50px;
+		padding: 10px;
+	}
+	
+	.result.imgdesc .description
+	{
+		left: 300px;
+	}
+	
+	.result .img-wrap
+	{
+		top: 50px;
+		width: 300px;
+	}
+/* } */
+
+@media all and (max-width: 649px)
+{
+	.search-results > .more, .result
+	{
+		width: 150px;
+		height: 180px;
+	}
+
+	.search-results > .more
+	{
+		line-height: 180px;
+		font-size: 16pt;
+	}
+
+	.result.imgdesc
+	{
+		width: 320px;
+	}
+
+	.result .title
+	{
+		height: 20px;
+		line-height: 20px;
+		padding: 5px 10px;
+	}
+	
+	.result .description
+	{
+		top: 30px;
+		padding: 5px;
+	}
+	
+	.result.imgdesc .description
+	{
+		left: 150px;
+	}
+	
+	.result .img-wrap
+	{
+		top: 30px;
+		width: 150px;
+	}
+}

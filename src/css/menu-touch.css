@@ -1,0 +1,32 @@
+.menu .dropdown-toggle
+{
+	font-size: 14pt;
+}
+
+ul.dropdown-menu
+{
+	padding: 5px 0;
+	
+	border-radius: 0 0 4px 4px;
+}
+
+ul.dropdown-menu > .header
+{
+	padding: 5px 20px;
+	font-size: 10pt;
+	
+	border-top: 2px solid #333;
+	border-bottom: 2px solid #333;
+}
+
+ul.dropdown-menu > li > a
+{
+	padding: 7px 30px 7px 20px;
+	font-size: 14pt;
+	border-top: 1px solid #ccc;
+}
+
+ul.dropdown-menu > .header + li > a
+{
+	border-top: 0;
+}

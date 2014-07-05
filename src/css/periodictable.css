@@ -1,0 +1,83 @@
+#periodictable
+{
+	position: relative;
+	margin-bottom: 20px;
+}
+
+#periodictable br
+{
+	clear: both;
+}
+
+#periodictable .space, #periodictable .element
+{
+	float: left;
+}
+
+#periodictable .element
+{
+	cursor: pointer;
+	text-align: center;
+	overflow: hidden;
+	
+	border-radius: 4px;
+}
+
+#periodictable .space, #periodictable .element
+{
+	width: 30px;
+	height: 30px;
+}
+
+.element h3
+{
+	display: none;
+	margin: 0;
+	margin-top: 5px;
+	font-size: 6pt;
+}
+
+.element h4
+{
+	display: block;
+	margin: 0;
+	font-size: 9pt;
+	line-height: 30px;
+}
+
+@media all and (min-width: 1000px)
+{
+	#periodictable .space, #periodictable .element
+	{
+		width: 50px;
+		height: 50px;
+	}
+
+	.element h3
+	{
+		display: block;
+		margin: 0;
+		margin-top: 5px;
+		font-size: 6pt;
+	}
+
+	.element h4
+	{
+		display: block;
+		margin: 0;
+		font-size: 14pt;
+		line-height: 20pt;
+	}
+}
+
+#periodictable .element { }
+#periodictable .element.noble { }
+#periodictable .element.alkali { }
+#periodictable .element.alkaline { }
+#periodictable .element.metalloid { }
+#periodictable .element.nonmetal { }
+#periodictable .element.halogen { }
+#periodictable .element.poor { }
+#periodictable .element.transition { }
+#periodictable .element.actinoid { }
+#periodictable .element.lanthanoid { }
