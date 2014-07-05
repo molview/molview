@@ -1,9 +1,14 @@
 Changelog
 =========
 
+2.1.2 (2014-07-04)
+---------
+Revisions
+- Hide molecule-image when unavailable
+
 2.1.1 (2014-07-04)
 ---------
-Bugfixes:
+Bugfixes
 - Removed jMouseWheel from GLmol (firefox bug)
 - Search results long formula overflow
 
@@ -12,8 +17,7 @@ Revisions
 
 2.1.0 (2014-07-04)
 ---------
-
-Bugfixes:
+Bugfixes
 - H > W => hsplit when loaded as MolView.layout = model
 - Jmol CIF no full unitcell after initialisation (scriptWaitOutput fix)
 - Jmol load structure + setRepresentation flashing (scriptWaitOutput fix)
@@ -40,7 +44,6 @@ New features
 
 2.0.0 (2014-07-01)
 ---------
-
 Features
 - MolEdit integration
 - GLmol, JSmol, ChemDoodle Web integration

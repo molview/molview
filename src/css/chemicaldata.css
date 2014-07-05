@@ -4,6 +4,12 @@
 	margin-bottom: 0;
 }
 
+#general-properties
+{
+	text-align: center;
+	font-size: 0;
+}
+
 .properties-block
 {
 	position: relative;
@@ -11,6 +17,7 @@
 	margin: 0;
 	font-size: medium;
 	font-size: initial;
+	text-align: left;
 	width: 100%;
 }
 

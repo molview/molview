@@ -96,7 +96,7 @@ else if(isset($codid))
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/Thing">
 	<!--
-	MolView v2.1.1 (http://molview.org)
+	MolView v2.1.2 (http://molview.org)
 	Copyright (c) 2014, Herman Bergwerf
 	ALL RIGHTS RESERVED
 	
@@ -193,7 +193,7 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="src/css/periodictable.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
 		
-		<!-- JS
+		<!-- JS -->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
@@ -243,9 +243,8 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/Link.js"></script>
 		<script type="text/javascript" src="src/js/ChemicalData.js"></script>
 		<script type="text/javascript" src="src/js/MolView.js"></script>
-		-->
 		
-		<script type="text/javascript" src="build/molview.min.js"></script>
+		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
 		
 		<!-- Custom styling -->
 		<script type="text/javascript">
@@ -545,7 +544,7 @@ else if(isset($codid))
 					</li>
 				</ul>
 				<p style="text-align: center;">
-					MolView v2.1.1
+					MolView v2.1.2
 					&nbsp;|&nbsp;
 					&copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
 					&nbsp;|&nbsp;
@@ -770,7 +769,7 @@ else if(isset($codid))
 				<h2>Chemical Properties</h2>
 				<div id="properties-wrapper">
 					<div id="general-properties">
-						<div class="properties-block">
+						<div id="molecule-image-wrapper" class="properties-block">
 							<img id="molecule-image" class="chemprop" src="src/img/empty.png" alt=""/>
 						</div>
 						<div class="properties-block">

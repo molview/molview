@@ -65,7 +65,8 @@ var ChemicalData = {
 		{
 			$(".chemprop").removeClass("unavailable").addClass("loading");
 			$(".chemprop:not(.chem-spectrum)").html("").val("");
-			$("#molecule-image").attr("src", "src/img/empty.png").addClass("loading");
+			$("#molecule-image").attr("src", "src/img/empty.png");
+			$("#molecule-info").hide();
 			$("#molecule-title").text("");
 			$("#molecule-description").text("");
 			
@@ -137,6 +138,8 @@ var ChemicalData = {
 			Request.PubChem.description(Sketcher.CID, function(data)
 			{
 				data = data.InformationList.Information[0];
+				
+				$("#molecule-info").show();
 				$("#molecule-title").text(ucfirst(data.Title));
 				$("#molecule-description").text(data.Description);
 				
@@ -159,6 +162,7 @@ var ChemicalData = {
 				$("#prop-cid").val(data.CID).removeClass("loading");
 				addCIDlink();
 				
+				$("#molecule-info").show();
 				$("#molecule-title").text(ucfirst(data.Title));
 				$("#molecule-description").text(data.Description);
 				
@@ -314,16 +318,19 @@ var ChemicalData = {
 		if(ChemicalData.smiles == "") return;
 		
 		$("#molecule-image").addClass("loading");
+		$("#molecule-image-wrapper").show();
 		
 		var imgw = $("#molecule-image").width() * (MolView.mobile ? 1.5 : 1);
 		var img = new Image();
 		img.onload = function()
 		{
 			$("#molecule-image").attr("src", img.src).removeClass("loading");
+			$("#molecule-image-wrapper").show();
 		}
 		img.onerror = function()
 		{
-			$("#molecule-image").attr("src", "src/img/ask-black.svg").removeClass("loading");
+			$("#molecule-image-wrapper").hide();
+			$("#molecule-image").attr("src", "src/img/empty.png").removeClass("loading");
 		}
 		
 		if(Sketcher.CID)
