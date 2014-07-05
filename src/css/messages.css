@@ -14,8 +14,14 @@ body.process
 .message
 {
 	padding: 20px;
-	text-align: center;
+	min-width: 300px;
 	max-width: 550px;
+	text-align: center;
+}
+
+.message-process .message, .message-alert .message
+{
+	min-width: 100px;
 }
 
 .message img
@@ -41,13 +47,12 @@ body.process
 	font-size: 18pt;
 }
 
-.message .text ul
+@media all and (min-width: 1200px)
 {
-	display: block;
-	margin: 15px 0;
-	text-align: left;
-	font-size: 10pt;
-	line-height: 15pt;
+	.message .text
+	{
+		font-size: 14pt;
+	}
 }
 
 .message .text small
@@ -91,7 +96,6 @@ body.process
 	display: inline-block;
 	vertical-align: middle;
 	position: static;
-	min-width: 300px;
 	white-space: normal;
     font-size: medium;
 	font-size: initial;

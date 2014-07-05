@@ -5,6 +5,7 @@ Changelog
 ---------
 Revisions
 - Hide molecule-image when unavailable
+- Improved small screen messages layout
 
 2.1.1 (2014-07-04)
 ---------
