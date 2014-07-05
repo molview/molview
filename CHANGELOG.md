@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1.2 (2014-07-04)
+2.1.2 (2014-07-05)
 ---------
 Revisions
 - Hide molecule-image when unavailable
