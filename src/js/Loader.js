@@ -141,15 +141,11 @@ var Loader = {
 		
 		search: function()
 		{
-			
 			var text = $("#search-input").val();
 			
 			if(!isNaN(text))//is number
 			{
-				Messages.process(function()
-				{
-					Loader.Compounds.loadCID(text, document.title);
-				}, "compound");
+				Loader.Compounds.loadCID(text, document.title);
 			}
 			else
 			{
@@ -588,29 +584,36 @@ var Loader = {
 		
 		search: function()
 		{
-			Progress.clear();
-			Progress.setSteps(3);
-			
 			var text = $("#search-input").val();
 			
-			Request.COD.search(text, function()
+			if(!isNaN(text))//is number
 			{
-				Messages.hide();
-				
-				$("#load-more-compounds").css("display", "none");
-				$("#load-more-proteins").css("display", "none");
-				$("#load-more-crystals").css("display", "block");
-				
-				$("#search-results .container").empty();
-				Actions.show_search_results();
-				
-				Loader.Crystals.i = 0;
-				Loader.Crystals.loadNextSet();
-			},
-			function()
+				Loader.Crystals.loadCODID(text, document.title);
+			}
+			else
 			{
-				Messages.alert("search_fail");
-			});
+				Progress.clear();
+				Progress.setSteps(3);
+				
+				Request.COD.search(text, function()
+				{
+					Messages.hide();
+					
+					$("#load-more-compounds").css("display", "none");
+					$("#load-more-proteins").css("display", "none");
+					$("#load-more-crystals").css("display", "block");
+					
+					$("#search-results .container").empty();
+					Actions.show_search_results();
+					
+					Loader.Crystals.i = 0;
+					Loader.Crystals.loadNextSet();
+				},
+				function()
+				{
+					Messages.alert("search_fail");
+				});
+			}
 		},
 		
 		loadCODID: function(codid, name)

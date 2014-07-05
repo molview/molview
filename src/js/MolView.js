@@ -279,24 +279,15 @@ var MolView = {
 			}
 			else if(key == "cid")
 			{
-				Messages.process(function()
-				{
-					Loader.Compounds.loadCID(value, document.title);
-				}, "compound");
+				Loader.Compounds.loadCID(value, document.title);
 			}
 			else if(key == "pdbid")
 			{
-				Messages.process(function()
-				{
-					Loader.Proteins.loadPDBID(value, value.toUpperCase());
-				}, "protein");
+				Loader.Proteins.loadPDBID(value, value.toUpperCase());
 			}
 			else if(key == "codid")
 			{
-				Messages.process(function()
-				{
-					Loader.Crystals.loadCODID(value, document.title);
-				}, "protein");
+				Loader.Crystals.loadCODID(value, document.title);
 			}
 			else if(key == "dialog")
 			{

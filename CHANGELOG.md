@@ -6,6 +6,8 @@ Changelog
 Revisions
 - Hide molecule-image when unavailable
 - Improved small screen messages layout
+- Crystals CODID direct search
+- Removed unnecessary Messages.progress for CID, PDBID and CODID loading
 
 2.1.1 (2014-07-04)
 ---------

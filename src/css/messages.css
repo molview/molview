@@ -44,14 +44,14 @@ body.process
 .message .text
 {
 	margin: 10px 0;
-	font-size: 18pt;
+	font-size: 14pt;
 }
 
-@media all and (min-width: 1200px)
+@media all and (min-width: 400px)
 {
 	.message .text
 	{
-		font-size: 14pt;
+		font-size: 18pt;
 	}
 }
 
