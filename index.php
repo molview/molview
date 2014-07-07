@@ -96,7 +96,7 @@ else if(isset($codid))
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/Thing">
 	<!--
-	MolView v2.1.2 (http://molview.org)
+	MolView v2.1.3 (http://molview.org)
 	Copyright (c) 2014, Herman Bergwerf
 	ALL RIGHTS RESERVED
 	
@@ -544,7 +544,7 @@ else if(isset($codid))
 					</li>
 				</ul>
 				<p style="text-align: center;">
-					MolView v2.1.2
+					MolView v2.1.3
 					&nbsp;|&nbsp;
 					&copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
 					&nbsp;|&nbsp;

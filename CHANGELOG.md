@@ -3,7 +3,7 @@
 Bugfixes:
 
   - Removed wrong reference to `cb` in the `Loader.loadCID` CIR fallback
-  - Added PubChem 2D fallback for SMILES error in the `Loader.loadCID` CIR fallback 
+  - Added PubChem 2D fallback for SMILES error in the `Loader.loadCID` CIR fallback
 
 ## 2.1.2 (2014-07-05)
 
