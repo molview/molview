@@ -231,6 +231,7 @@ var Loader = {
 				Request.PubChem.mol(cid, true, function(mol2d)
 				{
 					Sketcher.loadMOL(mol2d);
+					Sketcher.CID = cid;
 					Sketcher.markUpdated();
 					
 					Progress.increment();
@@ -242,7 +243,6 @@ var Loader = {
 						
 						Loader.lastQuery.type = "cid";
 						Loader.lastQuery.content = "" + cid;
-						Sketcher.CID = cid;
 						
 						document.title = name || "MolView";
 						History.push("cid", cid);
@@ -261,8 +261,18 @@ var Loader = {
 						}
 						catch(error)
 						{
-							Messages.alert("smiles_load_error", error);
-							if(cb !== undefined && !success_cb) cb();
+							Model.loadMOL(mol2d);
+							$("#resolve").addClass("updated");
+							
+							Loader.lastQuery.type = "cid";
+							Loader.lastQuery.content = "" + cid;
+							
+							document.title = name || "MolView";
+							History.push("cid", cid);
+							
+							Progress.complete();
+							Messages.hide();
+							
 							return;
 						}
 						
@@ -275,7 +285,6 @@ var Loader = {
 							
 							Loader.lastQuery.type = "cid";
 							Loader.lastQuery.content = "" + cid;
-							Sketcher.CID = cid;
 							
 							document.title = name || "MolView";
 							History.push("cid", cid);
