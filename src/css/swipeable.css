@@ -14,3 +14,8 @@
 {
 	min-width: 1100px;
 }
+
+#edit-tools > .inner
+{
+	min-width: 550px;
+}

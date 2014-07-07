@@ -5,6 +5,10 @@ Bugfixes:
   - Removed wrong reference to `cb` in the `Loader.loadCID` CIR fallback
   - Added PubChem 2D fallback for SMILES error in the `Loader.loadCID` CIR fallback
 
+Revisions:
+
+  - Added `min-width: 550px;` for `#edit-tools > .inner`
+
 ## 2.1.2 (2014-07-05)
 
 Revisions:
