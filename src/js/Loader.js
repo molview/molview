@@ -595,7 +595,7 @@ var Loader = {
 		{
 			var text = $("#search-input").val();
 			
-			if(!isNaN(text))//is number
+			if(!isNaN(text) && text.length == 7)//is number with 7 digits
 			{
 				Loader.Crystals.loadCODID(text, document.title);
 			}

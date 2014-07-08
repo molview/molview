@@ -3,7 +3,7 @@
 Bugfixes:
 
   - Added GLmol zoom boundary
-  > Direct CODID search boundary
+  - Direct CODID search boundary
   - Added `Loader.Crystals.loadCODID` CIF validation
 
 Revisions:
