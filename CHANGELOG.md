@@ -1,13 +1,30 @@
-## 2.1.3
+## 2.2.0
 
 Bugfixes:
 
-  - Removed wrong reference to `cb` in the `Loader.loadCID` CIR fallback
-  - Added PubChem 2D fallback for SMILES error in the `Loader.loadCID` CIR fallback
+  > Added GLmol zoom boundary
+  > Direct CODID search boundary
+  - Added `Loader.Crystals.loadCODID` CIF validation
 
 Revisions:
 
   - Added `min-width: 550px;` for `#edit-tools > .inner`
+
+Features:
+
+  > Custom GLmol menu for WebGL devices
+  > Custom protein coloring in GLmol menu
+  > Custom chain representation in GLmol menu
+  > Biological assembly in GLmol menu
+  > Query parameters for GLmol representation
+  > Query parameters for crystal packing and biological assembly
+
+## 2.1.3 (2014-07-07)
+
+Bugfixes:
+
+  - Removed wrong reference to `cb` in the `Loader.Compounds.loadCID` CIR fallback
+  - Added PubChem 2D fallback for SMILES error in the `Loader.Compounds.loadCID` CIR fallback
 
 ## 2.1.2 (2014-07-05)
 
@@ -15,8 +32,11 @@ Revisions:
 
   - Hide molecule-image when unavailable
   - Improved small screen messages layout
-  - Crystals CODID direct search
   - Removed unnecessary `Messages.progress` calls for CID, PDBID and CODID loading
+
+Features:
+
+  - Crystals CODID direct search
 
 ## 2.1.1 (2014-07-04)
 
@@ -27,7 +47,7 @@ Bugfixes:
 
 Revisions:
 
-- ChemicalData image loading appearance
+  - ChemicalData image loading appearance
 
 ## 2.1.0 (2014-07-04)
 

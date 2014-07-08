@@ -1,5 +1,5 @@
 /*!
-MolView v2.1 (http://molview.org)
+MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
@@ -32,7 +32,7 @@ var Messages = {
 	smiles_load_error: "Failed to load structure from sketcher",
 	smiles_load_error_force: "Failed to load structure from sketcher",
 	
-	load_fail: "Failed to load structure <small>The source database might be offline.</small>",
+	load_fail: "Failed to load structure",
 	search_fail: "Structure cannot be found",
 	resolve_fail: "Structure cannot be resolved",
 	clean_fail: "Structure cannot be cleaned",

@@ -1,5 +1,5 @@
 /*!
-MolView v2.1 (http://molview.org)
+MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
@@ -650,36 +650,42 @@ var Loader = {
 				
 				Request.COD.CIF(codid, function(cif)
 				{
-					Model.loadCIF(cif);
-					Request.COD.SMILES(codid, function(data)
+					if(cif.length > 1)
 					{
-						if(data.records[0].smiles == "")
+						Model.loadCIF(cif);
+						Request.COD.SMILES(codid, function(data)
 						{
-							finish();
-							Messages.alert("crystal_2d_fail");
-						}
-						else
-						{
-							Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
-							function(mol2d)
-							{
-								Sketcher.loadMOL(mol2d);
-								Sketcher.markUpdated();
-								finish();
-							},
-							function()
+							if(data.records[0].smiles == "")
 							{
 								finish();
 								Messages.alert("crystal_2d_fail");
-							});
-						}
-					},
-					function()
+							}
+							else
+							{
+								Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
+								function(mol2d)
+								{
+									Sketcher.loadMOL(mol2d);
+									Sketcher.markUpdated();
+									finish();
+								},
+								function()
+								{
+									finish();
+									Messages.alert("crystal_2d_fail");
+								});
+							}
+						},
+						function()
+						{
+							finish();
+							Messages.alert("crystal_2d_fail");
+						});
+					}
+					else
 					{
-						finish();
-						Messages.alert("crystal_2d_fail");
-					});
-					
+						Messages.alert("load_fail");
+					}
 				},
 				function()
 				{

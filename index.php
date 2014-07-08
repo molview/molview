@@ -96,7 +96,7 @@ else if(isset($codid))
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/Thing">
 	<!--
-	MolView v2.1.3 (http://molview.org)
+	MolView v2.2.0 (http://molview.org)
 	Copyright (c) 2014, Herman Bergwerf
 	ALL RIGHTS RESERVED
 	
@@ -544,7 +544,7 @@ else if(isset($codid))
 					</li>
 				</ul>
 				<p style="text-align: center;">
-					MolView v2.1.3
+					MolView v2.2.0
 					&nbsp;|&nbsp;
 					&copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
 					&nbsp;|&nbsp;
@@ -576,7 +576,7 @@ else if(isset($codid))
 					document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
 				}
 				</script>
-				<a class="link" href="docs/MolView-v2.1-manual-revision-1.pdf" target="_blank">Download PDF version</a></p>
+				<a class="link" href="docs/MolView-v2.2-manual-revision-1.pdf" target="_blank">Download PDF version</a></p>
 				<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 				<h3>Subjects</h3>
 				<div class="expandable">
@@ -746,7 +746,7 @@ else if(isset($codid))
 			<div class="dialog styled-headings" id="embed-dialog" style="display: none;">
 				<h2>Embed</h2>
 				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
-				<div class="alert-bar alert-info">Embedded proteins can not be viewed on smartphones without WebGL</div>
+				<div class="alert-bar alert-info">Embedded proteins cannot be viewed on smartphones without WebGL</div>
 				<div class="expandable">
 					<div class="title no-select">
 						<b>Dimensions</b>
