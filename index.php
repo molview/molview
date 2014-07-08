@@ -46,7 +46,7 @@ else if(isset($pdbid)) $image_url = "http://www.rcsb.org/pdb/images/".$pdbid."_b
 //layout
 $contentClass = "vsplit";
 if(isset($layout)) $contentClass = $layout;
-else if(isset($pdbid) || isset($codid)) $contentClass = "model";
+else if(isset($pdbid)) $contentClass = "model";
 
 //data via PubChem
 if(isset($pubchem_query))

@@ -9,6 +9,7 @@ Bugfixes:
 Revisions:
 
   - Added `min-width: 550px;` for `#edit-tools > .inner`
+  - Removed model onload layout for CODID
 
 Features:
 
@@ -17,7 +18,7 @@ Features:
   > Custom chain representation in GLmol menu
   > Biological assembly in GLmol menu
   > Query parameters for GLmol representation
-  > Query parameters for crystal packing and biological assembly
+  > Query parameters for biological assembly
 
 ## 2.1.3 (2014-07-07)
 
