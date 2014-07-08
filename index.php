@@ -279,7 +279,7 @@ else if(isset($codid))
 		</div>
 		<div id="menu" class="no-select menu swipeable">
 			<div class="inner">
-				<ul class="brick menu-bar">
+				<ul id="main-menu" class="brick menu-bar">
 					<li class="dropdown">
 						<a class="dropdown-toggle brand">MolView<b class="caret"></b></a>
 						<ul class="dropdown-menu">
@@ -332,6 +332,24 @@ else if(isset($codid))
 							<li><a id="cif-unit-cell">Load unit cell</a></li>
 							<li><a id="cif-2x2x2-cell">Load 2x2x2 supercell</a></li>
 							<li><a id="cif-1x3x3-cell">Load 1x3x3 supercell</a></li>
+						</ul>
+					</li>
+					<li id="glmol-menu" class="dropdown" style="display: none;">
+						<a class="dropdown-toggle">GLmol<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a id="bio-assembly">Biological assembly</a></li>
+							<li class="header">Chain representation</li>
+							<li><a id="glmol-lucent" class="checked">Ribbon</a></li>
+							<li><a id="glmol-lucent">Strand</a></li>
+							<li><a id="glmol-lucent">Cylinder and plate</a></li>
+							<li><a id="glmol-lucent">C-alpha trace</a></li>
+							<li><a id="glmol-lucent">B-factor tube</a></li>
+							<li><a id="glmol-lucent">Bonds (everything)</a></li>
+							<li class="header">Chain coloring</li>
+							<li><a id="mep-lucent" class="checked">Secondary structure</a></li>
+							<li><a id="mep-lucent">Spectrum</a></li>
+							<li><a id="mep-lucent">Chain</a></li>
+							<li><a id="mep-lucent">B-factor</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -390,6 +408,8 @@ else if(isset($codid))
 				Request.ChemicalIdentifierResolver.available = true;/*<?php
 				echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
 				?>;*/
+				
+				if(Detector.webgl) $("#glmol-menu").show();
 				
 				MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 				MolView.query = getQuery();

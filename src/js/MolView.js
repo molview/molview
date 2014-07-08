@@ -27,6 +27,8 @@ var MolView = {
 		if(this.mobile && !Detector.webgl)
 			$("#proteins-search").hide();
 		
+		$("#menu > .inner").css("min-width", $("#main-menu").width() + $("#search").width() + 3);
+		
 		Progress.init();
 		if(this.loadDefault)
 		{
@@ -356,7 +358,7 @@ var MolView = {
 	}
 };
 
-$(document).on("ready", function()
+$(window).on("load", function()
 {
 	MolView.init();
 });
