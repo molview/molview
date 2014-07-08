@@ -13,6 +13,7 @@ Revisions:
 
 Features:
 
+  - Direct PDBID search
   > Custom GLmol menu for WebGL devices
   > Custom protein coloring in GLmol menu
   > Custom chain representation in GLmol menu

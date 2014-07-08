@@ -145,7 +145,7 @@ var Loader = {
 			
 			if(!isNaN(text))//is number
 			{
-				Loader.Compounds.loadCID(text, document.title);
+				Loader.Compounds.loadCID(text);
 			}
 			else
 			{
@@ -393,29 +393,37 @@ var Loader = {
 		
 		search: function()
 		{
-			Progress.clear();
-			Progress.setSteps(3);
 			
 			var text = $("#search-input").val();
 			
-			Request.RCSB.search(text, function()
+			if(text.length == 4 && parseInt(text[0]) > 0)//could be PDBID
 			{
-				Messages.hide();
-				
-				$("#load-more-compounds").css("display", "none");
-				$("#load-more-proteins").css("display", "block");
-				$("#load-more-crystals").css("display", "none");
-				
-				$("#search-results .container").empty();
-				Actions.show_search_results();
-				
-				Loader.Proteins.i = 0;
-				Loader.Proteins.loadNextSet();
-			},
-			function()
+				Loader.Proteins.loadPDBID(text);
+			}
+			else
 			{
-				Messages.alert("search_fail");
-			});
+				Progress.clear();
+				Progress.setSteps(3);
+				
+				Request.RCSB.search(text, function()
+				{
+					Messages.hide();
+					
+					$("#load-more-compounds").css("display", "none");
+					$("#load-more-proteins").css("display", "block");
+					$("#load-more-crystals").css("display", "none");
+					
+					$("#search-results .container").empty();
+					Actions.show_search_results();
+					
+					Loader.Proteins.i = 0;
+					Loader.Proteins.loadNextSet();
+				},
+				function()
+				{
+					Messages.alert("search_fail");
+				});
+			}
 		},
 		
 		loadPDBID: function(pdbid, name)
@@ -597,7 +605,7 @@ var Loader = {
 			
 			if(!isNaN(text) && text.length == 7)//is number with 7 digits
 			{
-				Loader.Crystals.loadCODID(text, document.title);
+				Loader.Crystals.loadCODID(text);
 			}
 			else
 			{
