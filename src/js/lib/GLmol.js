@@ -27,7 +27,6 @@ Modifications by Herman Bergwerf:
  - canvas_atom_radius
  - canvas_bond_width
  - canvas_vdw (use vdw atom sizes)
-- attempt to add multitouch translation (disabled)
 */
 
 //workaround for Intel GMA series (gl_FrontFacing causes compilation error)
@@ -2100,14 +2099,19 @@ var GLmol = (function ()
 			ev.preventDefault();
 			if(!me.scene) return;
 			
-			var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+			var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
+			if(scaleFactor > 2000) scaleFactor = 2000;
+			
 			if(ev.originalEvent.detail) { // Webkit
 			me.rotationGroup.position.z += scaleFactor * ev.originalEvent.detail / 10;
 			} else if (ev.originalEvent.wheelDelta) { // Firefox
 			me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
 			}
 			
-			console.log(ev.originalEvent.wheelDelta, ev.originalEvent.detail, me.rotationGroup.position.z);
+			if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
+			if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
+			
+			console.log(me.rotationGroup.position.z, scaleFactor);
 			me.show();
 		});
 		glDOM.bind("contextmenu", function (ev)
