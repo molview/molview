@@ -339,17 +339,17 @@ else if(isset($codid))
 						<ul class="dropdown-menu">
 							<li><a id="bio-assembly">Biological assembly</a></li>
 							<li class="header">Chain representation</li>
-							<li><a id="glmol-lucent" class="checked">Ribbon</a></li>
-							<li><a id="glmol-lucent">Strand</a></li>
-							<li><a id="glmol-lucent">Cylinder and plate</a></li>
-							<li><a id="glmol-lucent">C-alpha trace</a></li>
-							<li><a id="glmol-lucent">B-factor tube</a></li>
-							<li><a id="glmol-lucent">Bonds (everything)</a></li>
+							<li><a id="glmol-chain-ribbon" class="glmol-chain checked">Ribbon</a></li>
+							<li><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
+							<li><a id="glmol-chain-trace" class="glmol-chain">C-alpha trace</a></li>
+							<li><a id="glmol-chain-tube" class="glmol-chain">B-factor tube</a></li>
+							<li><a id="glmol-chain-bonds" class="glmol-chain">Bonds (everything)</a></li>
 							<li class="header">Chain coloring</li>
-							<li><a id="mep-lucent" class="checked">Secondary structure</a></li>
-							<li><a id="mep-lucent">Spectrum</a></li>
-							<li><a id="mep-lucent">Chain</a></li>
-							<li><a id="mep-lucent">B-factor</a></li>
+							<li><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
+							<li><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
+							<li><a id="glmol-color-chain" class="glmol-color">Chain</a></li>
+							<li><a id="glmol-color-bfactor" class="glmol-color">B-factor</a></li>
+							<li><a id="glmol-color-polarity" class="glmol-color">Polarity</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">

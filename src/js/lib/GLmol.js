@@ -1973,7 +1973,7 @@ var GLmol = (function ()
 
 		if(!keepSlab)
 		{
-			this.slabNear = -maxD / 1.9;
+			this.slabNear = -maxD / 1;
 			this.slabFar = maxD / 3;
 		}
 
@@ -2188,18 +2188,18 @@ var GLmol = (function ()
 			var dx = (x - me.mouseStartX) / me.WIDTH;
 			var dy = (y - me.mouseStartY) / me.HEIGHT;
 			var r = Math.sqrt(dx * dx + dy * dy);
-			if(mode == 3 || (me.mouseButton == 3 && ev.ctrlKey))
+			if(mode == 3 || me.mouseButton == 3)//(me.mouseButton == 3 && ev.ctrlKey))
 			{ // Slab
 				me.slabNear = me.cslabNear + dx * 100;
 				me.slabFar = me.cslabFar + dy * 100;
 			}
-			else if(mode == 2 || me.mouseButton == 3 || ev.shiftKey)
+			else if(mode == 2)//|| me.mouseButton == 3 || ev.shiftKey)
 			{ // Zoom
 				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 80) scaleFactor = 80;
 				me.rotationGroup.position.z = me.cz - dy * scaleFactor;
 			}
-			else if(mode == 1 || me.mouseButton == 2 || ev.ctrlKey)
+			else if(mode == 1 || me.mouseButton == 2)// || ev.ctrlKey)
 			{ // Translate
 				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 20) scaleFactor = 20;

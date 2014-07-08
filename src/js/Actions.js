@@ -6,7 +6,9 @@ ALL RIGHTS RESERVED
 "use strict";
 
 var Actions = {
-	//molview menu
+	/*
+	MolView menu
+	*/
 	window_sketcher: function() { MolView.setLayout("sketcher"); },
 	window_model: function() { MolView.setLayout("model"); },
 	window_vsplit: function() { MolView.setLayout("vsplit"); },
@@ -22,7 +24,9 @@ var Actions = {
 		MolView.showDialog("about");
 	},
 	
-	//tools menu
+	/*
+	Tools menu
+	*/
 	share: function()
 	{
 		Link.updateShareDialog();
@@ -177,14 +181,15 @@ var Actions = {
 		}, "search");
 	},
 	
-	//model menu
-	model_reset: function() { Model.reset(); },
-	
-	model_balls: function() { Model.setRepresentation("balls"); },
-	model_stick: function() { Model.setRepresentation("stick"); },
-	model_vdw: function() { Model.setRepresentation("vdw"); },
+	/*
+	Model menu
+	*/
+	model_reset:     function() { Model.reset(); },
+	model_balls:     function() { Model.setRepresentation("balls"); },
+	model_stick:     function() { Model.setRepresentation("stick"); },
+	model_vdw:       function() { Model.setRepresentation("vdw"); },
 	model_wireframe: function() { Model.setRepresentation("wireframe"); },
-	model_line: function() { Model.setRepresentation("line"); },
+	model_line:      function() { Model.setRepresentation("line"); },
 	
 	engine_glmol: function()
 	{
@@ -254,15 +259,32 @@ var Actions = {
 			}, "crystal_structure");
 		}
 	},
+	
+	/*
+	GLmol menu
+	*/
+	bio_assembly:          function() { Model.GLmol.toggleBioAssembly(); },
+	glmol_chain_ribbon:    function() { Model.GLmol.setChainRepresentation("ribbon"); },
+	glmol_chain_cylinders: function() { Model.GLmol.setChainRepresentation("cylinders"); },
+	glmol_chain_trace:     function() { Model.GLmol.setChainRepresentation("trace"); },
+	glmol_chain_tube:      function() { Model.GLmol.setChainRepresentation("tube"); },
+	glmol_chain_bonds:     function() { Model.GLmol.setChainRepresentation("bonds"); },
+	glmol_color_ss:        function() { Model.GLmol.setChainColoring("ss"); },
+	glmol_color_spectrum:  function() { Model.GLmol.setChainColoring("spectrum"); },
+	glmol_color_chain:     function() { Model.GLmol.setChainColoring("chain"); },
+	glmol_color_bfactor:   function() { Model.GLmol.setChainColoring("bfactor"); },
+	glmol_color_polarity:  function() { Model.GLmol.setChainColoring("polarity"); },
 		
-	//jmol menu
-	jmol_clean: function() { Model.JSmol.clean(); },
-	mep_lucent: function() { Model.JSmol.loadMEPSurface(true); },
-	mep_opaque: function() { Model.JSmol.loadMEPSurface(false); },
-	vdw_surface: function() { Model.JSmol.loadVDWSurface(); },
-	jmol_charge: function() { Model.JSmol.displayCharge(); },
-	bond_dipoles: function() { Model.JSmol.displayDipoles(); },
-	net_dipole: function() { Model.JSmol.displayNetDipole(); },
+	/*
+	Jmol menu
+	*/
+	jmol_clean:    function() { Model.JSmol.clean(); },
+	mep_lucent:    function() { Model.JSmol.loadMEPSurface(true); },
+	mep_opaque:    function() { Model.JSmol.loadMEPSurface(false); },
+	vdw_surface:   function() { Model.JSmol.loadVDWSurface(); },
+	jmol_charge:   function() { Model.JSmol.displayCharge(); },
+	bond_dipoles:  function() { Model.JSmol.displayDipoles(); },
+	net_dipole:    function() { Model.JSmol.displayNetDipole(); },
 	jmol_minimize: function() { Model.JSmol.calculateEnergyMinimization(); },
 	
 	measure_distance: function()

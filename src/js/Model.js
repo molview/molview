@@ -240,9 +240,13 @@ var Model = {
 		view: undefined,
 		canvas: undefined,
 		container: undefined,
-		
+		load_bio_assembly: false,
+		chain: {
+			representation: "ribbon",//ribbon || cylinders || trace || tube || bonds
+			coloring: "ss",//ss || spectrum || chain || bfactor || polarity
+		},
 		init: function(cb)
-		{			
+		{
 			if(Detector.canvas)
 			{
 				this.view = new GLmol("glmol", true, !Detector.webgl, MolView.mobile ? 1.5 : 1.0);
@@ -254,9 +258,44 @@ var Model = {
 				this.view.defineRepresentation = function()
 				{
 					var all = this.getAllAtoms();
-					var hetatm = this.removeSolvents(this.getHetatms(all));
+					if(Model.GLmol.load_bio_assembly && this.protein.biomtChains != "") all = this.getChain(all, this.protein.biomtChains);
+					var all_het = this.getHetatms(all);
+					var hetatm = this.removeSolvents(all_het);
+					var chain = Model.GLmol.chain;
+
 					this.colorByAtom(all, {});
-					this.colorByStructure(all, 0xcc00cc, 0x00cccc);
+					if(chain.coloring == "ss") this.colorByStructure(all, 0xcc00cc, 0x00cccc);
+					else if(chain.coloring == "spectrum") this.colorChainbow(all);
+					else if(chain.coloring == "chain") this.colorByChain(all);
+					else if(chain.coloring == "bfactor") this.colorByBFactor(all);
+					else if(chain.coloring == "polarity") this.colorByPolarity(all, 0xcc0000, 0xcccccc);
+
+					var asu = new THREE.Object3D();
+					var do_not_smoothen = false;
+					if(chain.representation == "ribbon")
+					{
+						this.drawCartoon(asu, all, do_not_smoothen);
+						this.drawCartoonNucleicAcid(asu, all);
+					}
+					else if(chain.representation == "cylinders")
+					{
+						this.drawHelixAsCylinder(asu, all, 1.6);
+						this.drawCartoonNucleicAcid(asu, all);
+					}
+					else if(chain.representation == "trace")
+					{
+						this.drawMainchainCurve(asu, all, this.curveWidth, "CA", 1);
+						this.drawMainchainCurve(asu, all, this.curveWidth, "O3'", 1);
+					}
+					else if(chain.representation == "tube")
+					{
+						this.drawMainchainTube(asu, all, "CA");
+						this.drawMainchainTube(asu, all, "O3'");
+					}
+					else if(chain.representation == "bonds")
+					{
+						this.drawBondsAsLine(asu, all, this.lineWidth);
+					}
 
 					var target = this.modelGroup;
 					this.canvas_vdw = false;
@@ -291,10 +330,11 @@ var Model = {
 						this.canvas_bond_width = 0.1;
 						this.drawBondsAsLine(target, hetatm, 1);
 					}
-							
-					this.drawCartoon(target, all, false);
-					this.drawCartoonNucleicAcid(target, all);
+
+					if(Model.GLmol.load_bio_assembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
+					this.modelGroup.add(asu);
 				};
+				
 				Model._setRenderEngine("GLmol");
 				this.ready = true;
 				if(cb) cb();
@@ -348,7 +388,62 @@ var Model = {
 		loadPDB: function(pdb)
 		{
 			if(this.view !== undefined)
+			{
+				this.load_bio_assembly = false;
+				$("#bio-assembly").removeClass("checked");
+				
 				this.view.loadMoleculeStr(false, pdb);
+			}
+		},
+		
+		toggleBioAssembly: function()
+		{
+			if(Model.engine == "GLmol" && Model.data.current == "PDB")
+			{
+				this.load_bio_assembly = !this.load_bio_assembly;
+				if(this.load_bio_assembly) $("#bio-assembly").addClass("checked");
+				else $("#bio-assembly").removeClass("checked");
+				
+				Messages.process(function()
+				{
+					if(Model.GLmol.load_bio_assembly)
+					{
+						Model.GLmol.view.rebuildScene();
+						Model.GLmol.view.setBackground("#000000");
+						Model.GLmol.view.zoomInto(Model.GLmol.view.getAllAtoms());
+						Model.GLmol.view.show();
+					}
+					else Model.GLmol.view.loadMoleculeStr(false, Model.data.pdb);//in order to center protein
+					
+					Messages.hide();
+				}, "misc");
+			}
+		},
+		
+		setChainRepresentation: function(representation)
+		{
+			$(".glmol-chain").removeClass("checked");
+			$("#glmol-chain-" + representation).addClass("checked");
+			
+			this.chain.representation = representation;
+			if(Model.engine == "GLmol") Messages.process(function()
+			{
+				Model.GLmol.setRepresentation.call(Model.GLmol);
+				Messages.hide();
+			}, "misc");
+		},
+		
+		setChainColoring: function(coloring)
+		{
+			$(".glmol-color").removeClass("checked");
+			$("#glmol-color-" + coloring).addClass("checked");
+			
+			this.chain.coloring = coloring;
+			if(Model.engine == "GLmol") Messages.process(function()
+			{
+				Model.GLmol.setRepresentation.call(Model.GLmol);
+				Messages.hide();
+			}, "misc");
 		},
 		
 		toDataURL: function()

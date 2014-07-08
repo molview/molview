@@ -200,6 +200,18 @@ var MolView = {
 			$("#engine-jmol").on(this.trigger, Actions.engine_jmol);
 			$("#engine-cdw").on(this.trigger, Actions.engine_cdw);
 			
+			$("#bio-assembly").on(this.trigger, Actions.bio_assembly);
+			$("#glmol-chain-ribbon").on(this.trigger, Actions.glmol_chain_ribbon);
+			$("#glmol-chain-cylinders").on(this.trigger, Actions.glmol_chain_cylinders);
+			$("#glmol-chain-trace").on(this.trigger, Actions.glmol_chain_trace);
+			$("#glmol-chain-tube").on(this.trigger, Actions.glmol_chain_tube);
+			$("#glmol-chain-bonds").on(this.trigger, Actions.glmol_chain_bonds);
+			$("#glmol-color-ss").on(this.trigger, Actions.glmol_color_ss);
+			$("#glmol-color-spectrum").on(this.trigger, Actions.glmol_color_spectrum);
+			$("#glmol-color-chain").on(this.trigger, Actions.glmol_color_chain);
+			$("#glmol-color-bfactor").on(this.trigger, Actions.glmol_color_bfactor);
+			$("#glmol-color-polarity").on(this.trigger, Actions.glmol_color_polarity);
+			
 			$("#jmol-clean").on(this.trigger, Actions.jmol_clean);
 			$("#mep-lucent").on(this.trigger, Actions.mep_lucent);
 			$("#mep-opaque").on(this.trigger, Actions.mep_opaque);
