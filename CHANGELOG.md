@@ -16,6 +16,7 @@ Features:
   - Direct PDBID search
   - Custom GLmol menu for WebGL devices
   - Chain representation/coloring and biological assembly in GLmol menu
+  - Updated logo
 
 ## 2.1.3 (2014-07-07)
 

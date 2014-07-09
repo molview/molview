@@ -299,36 +299,40 @@ var Model = {
 
 					var target = this.modelGroup;
 					this.canvas_vdw = false;
-					if(Model.representation == "balls")
+					
+					if(!Model.GLmol.load_bio_assembly)
 					{
-						this.canvas_atom_radius = 0.4;
-						this.canvas_bond_width = 0.3;
-						this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius * 5, true, true, 0.3);
-					}
-					else if(Model.representation == "stick")
-					{
-						this.canvas_atom_radius = 0.3;
-						this.canvas_bond_width = 0.6;
-						this.drawBondsAsStick(target, hetatm, this.cylinderRadius, this.cylinderRadius, true);
-					}
-					else if(Model.representation == "vdw")
-					{
-						this.canvas_vdw = true;
-						this.canvas_atom_radius = 0.5;
-						this.canvas_bond_width = 0.3;
-						this.drawAtomsAsSphere(target, hetatm, this.sphereRadius);
-					}
-					else if(Model.representation == "wireframe")
-					{
-						this.canvas_atom_radius = 0.2;
-						this.canvas_bond_width = 0.1;
-						this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, true, 0.05);
-					}
-					else if(Model.representation == "line")
-					{
-						this.canvas_atom_radius = 0.05;
-						this.canvas_bond_width = 0.1;
-						this.drawBondsAsLine(target, hetatm, 1);
+						if(Model.representation == "balls")
+						{
+							this.canvas_atom_radius = 0.4;
+							this.canvas_bond_width = 0.3;
+							this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius * 5, true, true, 0.3);
+						}
+						else if(Model.representation == "stick")
+						{
+							this.canvas_atom_radius = 0.3;
+							this.canvas_bond_width = 0.6;
+							this.drawBondsAsStick(target, hetatm, this.cylinderRadius, this.cylinderRadius, true);
+						}
+						else if(Model.representation == "vdw")
+						{
+							this.canvas_vdw = true;
+							this.canvas_atom_radius = 0.5;
+							this.canvas_bond_width = 0.3;
+							this.drawAtomsAsSphere(target, hetatm, this.sphereRadius);
+						}
+						else if(Model.representation == "wireframe")
+						{
+							this.canvas_atom_radius = 0.2;
+							this.canvas_bond_width = 0.1;
+							this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, true, 0.05);
+						}
+						else if(Model.representation == "line")
+						{
+							this.canvas_atom_radius = 0.05;
+							this.canvas_bond_width = 0.1;
+							this.drawBondsAsLine(target, hetatm, 1);
+						}
 					}
 
 					if(Model.GLmol.load_bio_assembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);

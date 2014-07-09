@@ -116,8 +116,8 @@ else if(isset($codid))
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		
-		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
 		
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
 		
@@ -125,10 +125,10 @@ else if(isset($codid))
 		
 		<link rel="icon" sizes="196x196" href="src/img/icon/196.png">
 		<link rel="icon" sizes="128x128" href="src/img/icon/128.png">
-		<link rel="apple-touch-icon" href="src/img/icon/48.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="src/img/icon/76.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="src/img/icon/120.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="src/img/icon/152.png">
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="src/img/icon/57.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="src/img/icon/72.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="src/img/icon/114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="src/img/icon/114.png">
 		
 		<link rel="icon" href="src/img/icon/32.png" />
 		
