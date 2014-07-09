@@ -40,6 +40,14 @@ var Request = {
 				+ "&langpair=" + Request.alternativeLanguages[0] + "|en&de=hermanbergwerf@gmail.com&ip=" + Request.HTTP_CLIENT_IP,
 				success: function(response)
 				{
+					for(var i = 0; i < response.matches.length; i++)
+					{
+						if(response.matches[i].translation == text)
+						{
+							success(text)
+							return;
+						}
+					}
 					success(response.responseData.translatedText);
 				},
 				error: function(jqXHR, textStatus)
@@ -232,7 +240,7 @@ var Request = {
 				if(error) error();
 				return;
 			}
-		
+					
 			Request.translation(text, function(translated)
 			{
 				Progress.increment();

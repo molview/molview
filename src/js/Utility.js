@@ -7,13 +7,15 @@ ALL RIGHTS RESERVED
 
 function ucfirst(str)
 {
-	return str.charAt(0).toUpperCase() + str.slice(1);
+	if(str === undefined) return str;
+	else return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function humanize(str)
 {
+	if(str === undefined) return str;
 	//reverse case for all words with uppercase characters only
-	return str.replace(/(\b[A-Z]+\b)/g, function(word)
+	else return str.replace(/(\b[A-Z]+\b)/g, function(word)
 	{
 		return word.toLowerCase();
 	});

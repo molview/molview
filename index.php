@@ -632,7 +632,7 @@ else if(isset($codid))
 						<p>This function sets the model position, zoom and rotation back to default.</p>
 						<h4>Representation</h4>
 						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Proteins are automatically drawn using ribbons.</p>
-						<h4>Engine</h4>
+						<h4>Engines</h4>
 						<p>You can choose from three different render engines. MolView uses GLmol, Jmol and ChemDoodle Web as render engines. MolView automatically switches to:</p>
 						<ol>
 							<li>Jmol if your browser doesn't support WebGL</li>
@@ -641,6 +641,8 @@ else if(isset($codid))
 						</ol>
 						<p>You might want to switch back to GLmol after case 2 and 3.</p>
 						<p>Note that proteins are drawn slightly different in each engine. ChemDoodle Web provides the most sophisticated protein display. You should, however, avoid using ChemDoodle Web for large proteins.</p>
+						<h4>Model transformation</h4>
+						<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle Web) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
 						<h4>Crystallography</h4>
 						<p>This submenu contains functions to load an array of crystal 'boxes'.</p>
 						<ul>
@@ -703,6 +705,12 @@ else if(isset($codid))
 							<li><b>PNG image:</b> snapshot from interactive spectrum</li>
 							<li><b>JCAMP file:</b> JCAMP-DX file of the current spectrum</li>
 						</ul>
+					</div>
+				</div>
+				<div class="expandable">
+					<div class="title"><i class="fa"></i><b>Custom GLmol display</b></div>
+					<div class="content">
+						
 					</div>
 				</div>
 				<div class="expandable">

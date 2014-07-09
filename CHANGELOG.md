@@ -5,6 +5,8 @@ Bugfixes:
   - Added GLmol zoom boundary
   - Direct CODID search boundary
   - Added `Loader.Crystals.loadCODID` CIF validation
+  - ucfirst() and humanize() undefined input protection
+  - Test if translation is not necessary
 
 Revisions:
 
@@ -17,6 +19,7 @@ Features:
   - Custom GLmol menu for WebGL devices
   - Chain representation/coloring and biological assembly in GLmol menu
   - Updated logo
+  - JSmol middle mouse button dragging
 
 ## 2.1.3 (2014-07-07)
 
