@@ -118,16 +118,19 @@ var Model = {
 	{
 		this.representation = res;
 		
-		$(".r-mode").removeClass("checked");
-		if(res == "balls") $("#model-balls").addClass("checked");
-		else if(res == "stick") $("#model-stick").addClass("checked");
-		else if(res == "vdw") $("#model-vdw").addClass("checked");
-		else if(res == "wireframe") $("#model-wireframe").addClass("checked");
-		else if(res == "line") $("#model-line").addClass("checked");
-		
-		if(this.engine == "GLmol") this.GLmol.setRepresentation();
-		else if(this.engine == "JSmol") this.JSmol.setRepresentation(res);
-		else if(this.engine == "CDW") this.CDW.setRepresentation(res);
+		window.setTimeout((function()
+		{
+			$(".r-mode").removeClass("checked");
+			if(res == "balls") $("#model-balls").addClass("checked");
+			else if(res == "stick") $("#model-stick").addClass("checked");
+			else if(res == "vdw") $("#model-vdw").addClass("checked");
+			else if(res == "wireframe") $("#model-wireframe").addClass("checked");
+			else if(res == "line") $("#model-line").addClass("checked");
+			
+			if(this.engine == "GLmol") this.GLmol.setRepresentation();
+			else if(this.engine == "JSmol") this.JSmol.setRepresentation(res);
+			else if(this.engine == "CDW") this.CDW.setRepresentation(res);
+		}).bind(this), 300);
 	},
 	
 	loadContent: function()

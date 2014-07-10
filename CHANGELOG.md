@@ -6,7 +6,7 @@ Bugfixes:
   - Direct CODID search boundary
   - Added `Loader.Crystals.loadCODID` CIF validation
   - ucfirst() and humanize() undefined input protection
-  - Test if translation is not necessary
+  - Test if translation is necessary
 
 Revisions:
 
@@ -20,6 +20,7 @@ Features:
   - Chain representation/coloring and biological assembly in GLmol menu
   - Updated logo
   - JSmol middle mouse button dragging
+  - Fast search autocomplete to CID, PDBID or CODID
 
 ## 2.1.3 (2014-07-07)
 

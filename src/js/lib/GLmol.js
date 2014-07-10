@@ -1973,7 +1973,7 @@ var GLmol = (function ()
 
 		if(!keepSlab)
 		{
-			this.slabNear = -maxD / 1;
+			this.slabNear = -maxD * 1;
 			this.slabFar = maxD / 3;
 		}
 
