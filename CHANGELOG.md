@@ -20,7 +20,7 @@ Features:
   - Chain representation/coloring and biological assembly in GLmol menu
   - Updated logo
   - JSmol middle mouse button dragging
-  - Fast search autocomplete to CID, PDBID or CODID
+  - Fast search auto-complete to CID, PDBID or CODID
 
 ## 2.1.3 (2014-07-07)
 

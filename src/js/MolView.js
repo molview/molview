@@ -39,6 +39,7 @@ var MolView = {
 		History.init();
 		Link.init();
 		ChemicalData.init();
+		Autocomplete.init();
 		
 		//window events		
 		$(window).on("resize", function()

@@ -192,6 +192,7 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="src/css/share.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/periodictable.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
+		<link type="text/css" rel="stylesheet" href="src/css/autocomplete.css" media="screen" />
 		
 		<!-- JS -->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
@@ -242,6 +243,7 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/Share.js"></script>
 		<script type="text/javascript" src="src/js/Link.js"></script>
 		<script type="text/javascript" src="src/js/ChemicalData.js"></script>
+		<script type="text/javascript" src="src/js/Autocomplete.js"></script>
 		<script type="text/javascript" src="src/js/MolView.js"></script>
 		
 		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
@@ -476,7 +478,7 @@ else if(isset($codid))
 						<canvas id="moledit-canvas"></canvas>
 					</div>
 				</div>				
-				<div id="sketcher-messages" class="layer full-cover dark-glass">
+				<div id="sketcher-messages" class="message-box full-cover dark-glass">
 					<div class="center">
 						<div class="message progress">
 							<img class="process" src="src/img/loading-white.svg" alt="" />
@@ -494,7 +496,7 @@ else if(isset($codid))
 				<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 				<div id="glmol" class="render-engine full-cover" style="display: none;"></div>
 				
-				<div id="model-messages" class="layer full-cover dark-glass">
+				<div id="model-messages" class="message-box full-cover dark-glass">
 					<div class="center">
 						<div class="message">
 							<img class="process" src="src/img/loading-white.svg" alt="" />
@@ -505,7 +507,7 @@ else if(isset($codid))
 					</div>
 				</div>
 				
-				<div id="start-messages" class="layer full-cover dark-glass">
+				<div id="start-messages" class="message-box full-cover dark-glass">
 					<div class="center">
 						<div class="message">
 							<p class="text">
@@ -519,7 +521,7 @@ else if(isset($codid))
 				</div>
 				<div id="start-messages-close" class="close-btn"></div>
 			</div>
-			<div id="content-messages" class="layer full-cover dark-glass">
+			<div id="content-messages" class="message-box full-cover dark-glass">
 				<div class="center">
 					<div class="message">
 						<img class="process" src="src/img/loading-white.svg" alt="" />
@@ -535,6 +537,7 @@ else if(isset($codid))
 				<div id="load-more-proteins" class="more" style="display: none;"></div>
 				<div id="load-more-crystals" class="more" style="display: none;"></div>
 			</div>
+			<div id="search-autocomplete" style="display: none;"></div>
 		</div>
 		<div id="window-layer" class="window-layer" style="display: none;">
 			<div class="dialog" id="about-dialog" style="display: none;">
@@ -590,13 +593,13 @@ else if(isset($codid))
 			<div class="dialog styled-headings" id="help-dialog" style="display: none;">
 				<h2>Help</h2>
 				<script type="text/javascript">
-				if(isTouchDevice())
-				{
-					document.write('<div class="alert-bar alert-danger"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
-					document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
-				}
+					if(isTouchDevice())
+					{
+						document.write('<div class="alert-bar alert-danger"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
+						document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
+					}
 				</script>
-				<a class="link" href="docs/MolView-v2.2-manual-revision-1.pdf" target="_blank">Download PDF version</a></p>
+				<p><a class="link" href="docs/MolView-v2.2-manual-revision-1.pdf" target="_blank">Download PDF version</a></p>
 				<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 				<h3>Subjects</h3>
 				<div class="expandable">

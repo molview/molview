@@ -1,0 +1,18 @@
+#search-autocomplete
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 100%;
+	max-height: 100%;
+	
+	background: #eee;
+}
+
+@media all and (min-width: 1200px)
+{
+	#search-autocomplete
+	{
+		width: 638px;
+	}
+}

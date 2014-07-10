@@ -59,6 +59,7 @@ src/js/Actions.js\n\
 src/js/Share.js\n\
 src/js/Link.js\n\
 src/js/ChemicalData.js\n\
+src/js/Autocomplete.js\n\
 src/js/MolView.js\n\
 */\n',
 				compress: { drop_console: true }
@@ -130,6 +131,7 @@ src/js/MolView.js\n\
 					'src/js/Share.js',
 					'src/js/Link.js',
 					'src/js/ChemicalData.js',
+					'src/js/Autocomplete.js',
 					'src/js/MolView.js'
 				],
 				dest: 'build/<%= pkg.name %>.min.js'

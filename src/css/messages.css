@@ -1,4 +1,4 @@
-.layer
+.message-box
 {
 	display: none;
 	
@@ -69,7 +69,7 @@ body.process
 }
 
 /* alert centering trick */
-.layer .center
+.message-box .center
 {
 	position: absolute;
 	top: 0;
@@ -83,7 +83,7 @@ body.process
 	white-space: nowrap;
 }
 
-.layer .center:before
+.message-box .center:before
 {
 	content: '';
 	display: inline-block;
