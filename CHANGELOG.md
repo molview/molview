@@ -12,6 +12,8 @@ Revisions:
 
   - Added `min-width: 550px;` for `#edit-tools > .inner`
   - Removed model onload layout for CODID
+  > CCS efficiency review
+  > CSS minification
 
 Features:
 

@@ -13,6 +13,7 @@ var MolView = {
 	trigger: "click",
 	query: {},
 	loadDefault: true,
+	proteins: true,
 	
 	init: function()
 	{		
@@ -25,7 +26,10 @@ var MolView = {
 		this.height = window.innerHeight;
 		
 		if(this.mobile && !Detector.webgl)
+		{
+			this.proteins = false;
 			$("#proteins-search").hide();
+		}
 		
 		$("#menu > .inner").css("min-width", $("#main-menu").width() + $("#search").width() + 3);
 		
@@ -161,7 +165,6 @@ var MolView = {
 		
 		Model.init(function()
 		{
-			
 			//actions
 			$("#window-sketcher").on(this.trigger, Actions.window_sketcher);
 			$("#window-model").on(this.trigger, Actions.window_model);
@@ -230,7 +233,6 @@ var MolView = {
 			$("#jmol-render-normal").on(this.trigger, Actions.jmol_render_normal);
 			$("#jmol-render-minimal").on(this.trigger, Actions.jmol_render_minimal);
 			
-			$("#search").on("submit", Actions.fast_search);
 			$("#pubchem-search").on("click", Actions.pubchem_search);
 			$("#proteins-search").on("click", Actions.proteins_search);
 			$("#crystals-search").on("click", Actions.crystals_search);

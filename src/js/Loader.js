@@ -218,6 +218,24 @@ var Loader = {
 				Messages.alert("search_fail");
 			});
 		},
+		
+		loadName: function(name)
+		{
+			Progress.clear();
+			Progress.setSteps(5);
+			
+			Messages.process(function()
+			{
+				Request.PubChem.nameToCID(name, function(cid)
+				{
+					Loader.Compounds._loadCID(cid, name);
+				},
+				function()
+				{
+					Messages.alert("load_fail");
+				});
+			}, "compound");
+		},
 				
 		loadCID: function(cid, name)
 		{
@@ -228,18 +246,66 @@ var Loader = {
 			
 			Messages.process(function()
 			{
-				Request.PubChem.mol(cid, true, function(mol2d)
+				Loader.Compounds._loadCID(cid, name);
+			}, "compound");
+		},
+		
+		_loadCID: function(cid, name)
+		{
+			Request.PubChem.mol(cid, true, function(mol2d)
+			{
+				Sketcher.loadMOL(mol2d);
+				Sketcher.CID = cid;
+				Sketcher.markUpdated();
+				
+				Progress.increment();
+				
+				//request 3D molecule
+				Request.PubChem.mol(cid, false, function(mol3d)
 				{
-					Sketcher.loadMOL(mol2d);
-					Sketcher.CID = cid;
-					Sketcher.markUpdated();
+					Model.loadMOL(mol3d);
+					
+					Loader.lastQuery.type = "cid";
+					Loader.lastQuery.content = "" + cid;
+					
+					document.title = name || "MolView";
+					History.push("cid", cid);
+					
+					Progress.complete();
+					Messages.hide();
+				},
+				function()//error: resolve using NCI
+				{
+					Progress.increment();
+					
+					var smiles;
+					try
+					{
+						smiles = Sketcher.getSMILES();
+					}
+					catch(error)
+					{
+						Model.loadMOL(mol2d);
+						$("#resolve").addClass("updated");
+						
+						Loader.lastQuery.type = "cid";
+						Loader.lastQuery.content = "" + cid;
+						
+						document.title = name || "MolView";
+						History.push("cid", cid);
+						
+						Progress.complete();
+						Messages.hide();
+						
+						return;
+					}
 					
 					Progress.increment();
 					
-					//request 3D molecule
-					Request.PubChem.mol(cid, false, function(mol3d)
+					Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol3d)
 					{
 						Model.loadMOL(mol3d);
+						$("#resolve").addClass("updated");
 						
 						Loader.lastQuery.type = "cid";
 						Loader.lastQuery.content = "" + cid;
@@ -250,59 +316,16 @@ var Loader = {
 						Progress.complete();
 						Messages.hide();
 					},
-					function()//error: resolve using NCI
+					function()
 					{
-						Progress.increment();
-						
-						var smiles;
-						try
-						{
-							smiles = Sketcher.getSMILES();
-						}
-						catch(error)
-						{
-							Model.loadMOL(mol2d);
-							$("#resolve").addClass("updated");
-							
-							Loader.lastQuery.type = "cid";
-							Loader.lastQuery.content = "" + cid;
-							
-							document.title = name || "MolView";
-							History.push("cid", cid);
-							
-							Progress.complete();
-							Messages.hide();
-							
-							return;
-						}
-						
-						Progress.increment();
-						
-						Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol3d)
-						{
-							Model.loadMOL(mol3d);
-							$("#resolve").addClass("updated");
-							
-							Loader.lastQuery.type = "cid";
-							Loader.lastQuery.content = "" + cid;
-							
-							document.title = name || "MolView";
-							History.push("cid", cid);
-							
-							Progress.complete();
-							Messages.hide();
-						},
-						function()
-						{
-							Messages.alert("load_fail");
-						});
+						Messages.alert("load_fail");
 					});
-				},
-				function()
-				{
-					Messages.alert("load_fail");
 				});
-			}, "compound");
+			},
+			function()
+			{
+				Messages.alert("load_fail");
+			});
 		}
 	},
 	

@@ -243,7 +243,7 @@ var Model = {
 		view: undefined,
 		canvas: undefined,
 		container: undefined,
-		load_bio_assembly: false,
+		loadBioAssembly: false,
 		chain: {
 			representation: "ribbon",//ribbon || cylinders || trace || tube || bonds
 			coloring: "ss",//ss || spectrum || chain || bfactor || polarity
@@ -261,7 +261,7 @@ var Model = {
 				this.view.defineRepresentation = function()
 				{
 					var all = this.getAllAtoms();
-					if(Model.GLmol.load_bio_assembly && this.protein.biomtChains != "") all = this.getChain(all, this.protein.biomtChains);
+					if(Model.GLmol.loadBioAssembly && this.protein.biomtChains != "") all = this.getChain(all, this.protein.biomtChains);
 					var all_het = this.getHetatms(all);
 					var hetatm = this.removeSolvents(all_het);
 					var chain = Model.GLmol.chain;
@@ -303,7 +303,7 @@ var Model = {
 					var target = this.modelGroup;
 					this.canvas_vdw = false;
 					
-					if(!Model.GLmol.load_bio_assembly)
+					if(!Model.GLmol.loadBioAssembly)
 					{
 						if(Model.representation == "balls")
 						{
@@ -338,7 +338,7 @@ var Model = {
 						}
 					}
 
-					if(Model.GLmol.load_bio_assembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
+					if(Model.GLmol.loadBioAssembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
 					this.modelGroup.add(asu);
 				};
 				
@@ -396,7 +396,7 @@ var Model = {
 		{
 			if(this.view !== undefined)
 			{
-				this.load_bio_assembly = false;
+				this.loadBioAssembly = false;
 				$("#bio-assembly").removeClass("checked");
 				
 				this.view.loadMoleculeStr(false, pdb);
@@ -407,13 +407,13 @@ var Model = {
 		{
 			if(Model.engine == "GLmol" && Model.data.current == "PDB")
 			{
-				this.load_bio_assembly = !this.load_bio_assembly;
-				if(this.load_bio_assembly) $("#bio-assembly").addClass("checked");
+				this.loadBioAssembly = !this.loadBioAssembly;
+				if(this.loadBioAssembly) $("#bio-assembly").addClass("checked");
 				else $("#bio-assembly").removeClass("checked");
 				
 				Messages.process(function()
 				{
-					if(Model.GLmol.load_bio_assembly)
+					if(Model.GLmol.loadBioAssembly)
 					{
 						Model.GLmol.view.rebuildScene();
 						Model.GLmol.view.setBackground("#000000");

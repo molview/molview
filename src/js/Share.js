@@ -19,7 +19,7 @@ $.fn.share = function(url, display_count, message)
 			
 			if(display_count)
 			{
-				$.ajax({
+				AJAX({
 					url: "https://api.facebook.com/method/fql.query?query=" + encodeURIComponent("select total_count from link_stat where url='" + (url.fb || url.all) + "'") + "&format=json&callback=?",
 					dataType: "jsonp",
 					success: function(data)
@@ -44,7 +44,7 @@ $.fn.share = function(url, display_count, message)
 				
 			if(display_count)
 			{
-				$.ajax({
+				AJAX({
 					url: "http://cdn.api.twitter.com/1/urls/count.json?url=" + encodeURIComponent(url.twitter || url.all) + "&callback=?",
 					dataType: "jsonp",
 					success: function(data)
@@ -69,7 +69,7 @@ $.fn.share = function(url, display_count, message)
 				
 			if(display_count)
 			{
-				$.ajax({
+				AJAX({
 					url: "gplus.php?url=" + encodeURIComponent(url.gplus || url.all),
 					dataType: "json",
 					success: function(data)

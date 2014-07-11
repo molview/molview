@@ -116,3 +116,11 @@ a.a:active
 	background: #000;
 	background: rgba(0, 0, 0, 0.9);
 }
+
+.clearfix:after
+{ 
+	content: " ";
+	display: block; 
+	height: 0; 
+	clear: both;
+}

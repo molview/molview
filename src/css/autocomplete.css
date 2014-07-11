@@ -7,6 +7,9 @@
 	max-height: 100%;
 	
 	background: #eee;
+	
+	overflow: auto;
+	overflow-x: hidden;
 }
 
 @media all and (min-width: 1200px)
@@ -15,4 +18,36 @@
 	{
 		width: 638px;
 	}
+}
+
+#search-autocomplete > ul
+{
+	margin: 0;
+	padding: 0;
+}
+
+.autocomplete-item
+{
+	cursor: pointer;
+	list-style: none;
+	margin: 0;
+	padding: 5px;
+}
+
+.autocomplete-protein { color: #a94442; background: #f2dede; }
+.autocomplete-mineral { color: #31708f; background: #d9edf7; }
+.autocomplete-pubchem { color: #8a6d3b; background: #fcf8e3; }
+
+/* same style as in hover.css */
+.autocomplete-item-active
+{
+	color: #fff;
+	background: #f30;
+}
+
+.autocomplete-type
+{
+	float: right;
+	margin: 0 10px;
+	font-style: italic;
 }

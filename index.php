@@ -200,6 +200,7 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
 		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
 		<script type="text/javascript" src="src/js/lib/jMouseWheel.js"></script>
+		<script type="text/javascript" src="src/js/lib/fuse.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/Polyfill.js"></script>
         <script type="text/javascript" src="src/js/m2s/prototype.js"></script>
         <script type="text/javascript" src="src/js/m2s/util/common.js"></script>
@@ -231,7 +232,7 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/lib/FileSaver.js"></script>
 		<script type="text/javascript" src="src/js/lib/PeriodicTable.js"></script>
 		<script type="text/javascript" src="src/js/Utility.js"></script>
-		<script type="text/javascript" src="src/js/Variables.js"></script>
+		<script type="text/javascript" src="src/js/Data.js"></script>
 		<script type="text/javascript" src="src/js/History.js"></script>
 		<script type="text/javascript" src="src/js/Progress.js"></script>
 		<script type="text/javascript" src="src/js/Messages.js"></script>
@@ -415,7 +416,7 @@ else if(isset($codid))
 				
 				MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 				MolView.query = getQuery();
-				if($.isEmptyObject(MolView.query)) $("#content").addClass("start-messages");
+				if($.isEmptyObject(MolView.query) && Detector.webgl) $("#content").addClass("start-messages");
 				if($(window).height() > $(window).width()
 					&& !MolView.query.layout
 					&& MolView.layout != "model") Actions.window_hsplit();
@@ -537,7 +538,7 @@ else if(isset($codid))
 				<div id="load-more-proteins" class="more" style="display: none;"></div>
 				<div id="load-more-crystals" class="more" style="display: none;"></div>
 			</div>
-			<div id="search-autocomplete" style="display: none;"></div>
+			<div id="search-autocomplete"></div>
 		</div>
 		<div id="window-layer" class="window-layer" style="display: none;">
 			<div class="dialog" id="about-dialog" style="display: none;">

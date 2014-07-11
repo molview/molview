@@ -4,6 +4,9 @@ Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
 
+//xhr to abort large AJAX calls
+var xhr;
+
 function getISOLanguageCode(str)
 {
 	//cut off from '-' / '_' / ';'
@@ -33,8 +36,7 @@ var Request = {
 	{
 		if(Request.alternativeLanguages.length > 0 && text.length > 0)
 		{
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
+			AJAX({
 				dataType: "json",
 				url: "http://mymemory.translated.net/api/get?q=" + encodeURI(text)
 				+ "&langpair=" + Request.alternativeLanguages[0] + "|en&de=hermanbergwerf@gmail.com&ip=" + Request.HTTP_CLIENT_IP,
@@ -266,6 +268,7 @@ var Request = {
 			});
 		},
 		
+		//request PubChem compound list
 		listkey: function(query, value, type, success, error)
 		{
 			if(xhr !== undefined) xhr.abort();
@@ -286,6 +289,7 @@ var Request = {
 			});
 		},
 		
+		//retrieve PubChem compound list
 		list: function(listkey, success, wait, error)
 		{
 			if(xhr !== undefined) xhr.abort();
@@ -307,6 +311,25 @@ var Request = {
 					{
 						if(error) error();
 					}
+				},
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
+			});
+		},
+		
+		nameToCID: function(name, success, error)
+		{
+			AJAX({
+				dataType: "json",
+				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + name + "/cids/json",
+				success: function(data)
+				{
+					if(data.IdentifierList)
+						success(data.IdentifierList.CID[0]);
+					else error();
 				},
 				error: function(jqXHR, textStatus)
 				{
@@ -463,7 +486,7 @@ var Request = {
 						<record>
 							<dimStructure.structureId>1BLU</dimStructure.structureId>
 							<dimStructure.structureTitle>
-							STRUCTURE OF THE 2[4FE-4S] FERREDOXIN FROM CHROMATIUM VINOSUM
+								STRUCTURE OF THE 2[4FE-4S] FERREDOXIN FROM CHROMATIUM VINOSUM
 							</dimStructure.structureTitle>
 						</record>
 					</dataset>
@@ -708,87 +731,4 @@ var Request = {
 			});
 		}
 	}
-	
-	/* ChemSpider: {
-		//http://www.chemspider.com/FilesHandler.ashx?type=blob&disp=1&id={spc_id}
-		token: "eb952f07-9d2e-4831-9c90-8b3b7eccec8a",
-		
-		spectrumList: function(csid, success, error)
-		{
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
-				dataType: "text",
-				url: "http://www.chemspider.com/Spectra.asmx/GetCompoundSpectraInfo?csid=" + csid + "&token=" + Request.ChemSpider.token,
-				success: function(xml)
-				{
-					/* convert XML to JSON:
-					<ArrayOfCSSpectrumInfo>
-						<CSSpectrumInfo>
-							<spc_id></spc_id>
-							<spc_type></spc_type>
-							<comments></comments>
-						</CSSpectrumInfo>
-					</ArrayOfCSSpectrumInfo>
-					
-					to
-					
-					{
-						ArrayOfCSSpectrumInfo: [
-							{
-								"spc_type": "",
-								"records": [
-									{
-										"spc_id": "",
-										"spc_type": "",
-										"comments": ""
-									}
-								]
-							}
-						]
-					}
-					*
-					
-					var json = {
-						ArrayOfCSSpectrumInfo: []
-					};
-					var ArrayOfCSSpectrumInfo = [];//store unsorted records here
-					var i;//loop index
-					
-					var records = $(xml).find("CSSpectrumInfo");
-					for(i = 0; i < records.length; i++)
-					{
-						ArrayOfCSSpectrumInfo.push({
-							"spc_id": $(records[i]).find("spc_id").text(),
-							"spc_type": $(records[i]).find("spc_type").text(),
-							"comments": $(records[i]).find("comments").text()
-						});
-					}
-					
-					//get spc_type in alphabetic order
-					for(i = 0; i < ArrayOfCSSpectrumInfo.length; i++)
-					{
-						if(json.ArrayOfCSSpectrumInfo.indexOf(ArrayOfCSSpectrumInfo[i].spc_type) == -1)
-							json.ArrayOfCSSpectrumInfo.push({ spc_type: ArrayOfCSSpectrumInfo[i].spc_type, records: [] });
-					}
-					json.ArrayOfCSSpectrumInfo.sort(function(a, b){ return a.spc_type < b.spc_type; });
-					
-					for(i = 0; i < json.ArrayOfCSSpectrumInfo.length; i++)
-					{
-						for(var j = 0; j < ArrayOfCSSpectrumInfo.length; j++)
-						{
-							if(json.ArrayOfCSSpectrumInfo[i].spc_type == ArrayOfCSSpectrumInfo[j].spc_type)
-								json.ArrayOfCSSpectrumInfo[i].records.push(ArrayOfCSSpectrumInfo[j]);
-						}
-					}
-					
-					console.log(json);
-				},
-				error: function(jqXHR, textStatus)
-				{
-					if(textStatus != "error") return;
-					if(error) error();
-				}
-			});
-		}
-	} */
 };

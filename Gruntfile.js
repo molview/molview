@@ -16,6 +16,7 @@ src/js/lib/jquery-1.11.0.min.js\n\
 src/js/lib/jquery.hotkeys.js\n\
 src/js/lib/Detector.js\n\
 src/js/lib/jMouseWheel.js\n\
+src/js/lib/fuse.min.js\n\
 src/js/lib/Polyfill.js\n\
 src/js/m2s/prototype.js\n\
 src/js/m2s/util/common.js\n\
@@ -47,7 +48,7 @@ src/js/lib/Blob.js\n\
 src/js/lib/FileSaver.js\n\
 src/js/lib/PeriodicTable.js\n\
 src/js/Utility.js\n\
-src/js/Variables.js\n\
+src/js/Data.js\n\
 src/js/History.js\n\
 src/js/Progress.js\n\
 src/js/Messages.js\n\
@@ -74,6 +75,7 @@ src/js/MolView.js\n\
 					'src/js/lib/jquery.hotkeys.js',
 					'src/js/lib/Detector.js',
 					'src/js/lib/jMouseWheel.js',
+					'src/js/lib/fuse.min.js',
 					'src/js/lib/Polyfill.js',
 					
 					//Ketcher
@@ -119,7 +121,7 @@ src/js/MolView.js\n\
 					
 					//MolView source
 					'src/js/Utility.js',
-					'src/js/Variables.js',
+					'src/js/Data.js',
 					'src/js/History.js',
 					'src/js/Progress.js',
 					'src/js/Messages.js',

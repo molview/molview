@@ -1,5 +1,6 @@
-/* form */
-
+/*
+form
+*/
 select:hover
 {
 	border-bottom-color: #f50;
@@ -22,8 +23,9 @@ select:hover
 	color: #f50;
 }
 
-/* menu */
-
+/*
+menu
+*/
 .menu .dropdown-toggle:hover
 {
 	background-color: #eee !important;
@@ -35,30 +37,34 @@ ul.dropdown-menu > li > a:not(.disabled):hover
 	background: #f50;
 }
 
-/* sketcher */
-
+/*
+sketcher
+*/
 .toolbar .button:not(.disabled):hover
 {
 	opacity: 1.0;
 	background-color: #f30;
 }
 
-/* periodictable */
-
+/*
+periodictable
+*/
 #periodictable .element:hover
 {
 	background: #ddd;
 }
 
-/* help */
-
+/*
+help
+*/
 .expandable .title:hover
 {
 	background: #fff;
 }
 
-/* search */
-
+/*
+search
+*/
 .search-results > .more:hover
 {
 	color: #fff;
@@ -73,4 +79,13 @@ ul.dropdown-menu > li > a:not(.disabled):hover
 .result:not(.title-select-only):hover .title
 {
 	background: #f50;
+}
+
+/*
+autocomplete
+*/
+.autocomplete-item:hover
+{
+	color: #fff;
+	background: #f30;
 }
