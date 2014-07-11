@@ -4,9 +4,11 @@ module.exports = function(grunt)
 		pkg: grunt.file.readJSON('package.json'),
 		uglify:
 		{
-			options:
+			index:
 			{
-				banner: '/*!\n\
+				options:
+				{
+					banner: '/*!\n\
 MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
 Copyright (c) 2014, Herman Bergwerf\n\
 ALL RIGHTS RESERVED\n\
@@ -63,10 +65,8 @@ src/js/ChemicalData.js\n\
 src/js/Autocomplete.js\n\
 src/js/MolView.js\n\
 */\n',
-				compress: { drop_console: true }
-			},
-			build:
-			{
+					compress: { drop_console: true }
+				},
 				src: [
 					'src/js/lib/JSmol.min.js',
 					
@@ -137,10 +137,137 @@ src/js/MolView.js\n\
 					'src/js/MolView.js'
 				],
 				dest: 'build/<%= pkg.name %>.min.js'
+			},
+			embed:
+			{
+				options:
+				{
+					banner: '/*!\n\
+MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
+Copyright (c) 2014, Herman Bergwerf\n\
+ALL RIGHTS RESERVED\n\
+Included files (can be found under http://molview.org/{path})\n\
+src/js/lib/JSmol.min.js\n\
+src/js/lib/jquery-1.11.0.min.js\n\
+src/js/lib/Detector.js\n\
+src/js/lib/jMouseWheel.js\n\
+src/js/lib/Polyfill.js\n\
+src/js/lib/Three49custom.js\n\
+src/js/lib/GLmol.js\n\
+src/js/lib/ChemDoodleWeb.js\n\
+src/js/Utility.js\n\
+src/js/Progress.js\n\
+src/js/Messages.Embed.js\n\
+src/js/Model.js\n\
+src/js/Request.js\n\
+src/js/Loader.Embed.js\n\
+src/js/MolView.Embed.js\n\
+*/\n',
+					compress: { drop_console: true }
+				},
+				src: [
+					'src/js/lib/JSmol.min.js',
+					'src/js/lib/jquery-1.11.0.min.js',
+					'src/js/lib/Detector.js',
+					'src/js/lib/jMouseWheel.js',
+					'src/js/lib/Polyfill.js',
+					'src/js/lib/Three49custom.js',
+					'src/js/lib/GLmol.js',
+					'src/js/lib/ChemDoodleWeb.js',
+					'src/js/Utility.js',
+					'src/js/Progress.js',
+					'src/js/Messages.Embed.js',
+					'src/js/Model.js',
+					'src/js/Request.js',
+					'src/js/Loader.Embed.js',
+					'src/js/MolView.Embed.js'
+				],
+				dest: 'build/<%= pkg.name %>.embed.min.js'
+			}
+		},
+		cssmin:
+		{
+			index:
+			{
+				options:
+				{
+					banner: '/*!\n\
+MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
+Copyright (c) 2014, Herman Bergwerf\n\
+ALL RIGHTS RESERVED\n\
+Included files (can be found under http://molview.org/{path})\n\
+src/css/form.css\n\
+src/css/global.css\n\
+src/css/layout.css\n\
+src/css/menu.css\n\
+src/css/menu-theme.css\n\
+src/css/sketcher.css\n\
+src/css/model.css\n\
+src/css/search.css\n\
+src/css/messages.css\n\
+src/css/progress.css\n\
+src/css/swipeable.css\n\
+src/css/dialogs.css\n\
+src/css/alert.css\n\
+src/css/help.css\n\
+src/css/share.css\n\
+src/css/periodictable.css\n\
+src/css/chemicaldata.css\n\
+src/css/autocomplete.css\n\
+*/\n',
+					keepSpecialComments: 0
+				},
+				src: [
+					'src/css/form.css',
+					'src/css/global.css',
+					'src/css/layout.css',
+					'src/css/menu.css',
+					'src/css/menu-theme.css',
+					'src/css/sketcher.css',
+					'src/css/model.css',
+					'src/css/search.css',
+					'src/css/messages.css',
+					'src/css/progress.css',
+					'src/css/swipeable.css',
+					'src/css/dialogs.css',
+					'src/css/alert.css',
+					'src/css/help.css',
+					'src/css/share.css',
+					'src/css/periodictable.css',
+					'src/css/chemicaldata.css',
+					'src/css/autocomplete.css'
+				],
+				dest: 'src/css/<%= pkg.name %>.min.css'
+			},
+			embed:
+			{
+				options:
+				{
+					banner: '/*!\n\
+MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
+Copyright (c) 2014, Herman Bergwerf\n\
+ALL RIGHTS RESERVED\n\
+Included files (can be found under http://molview.org/{path})\n\
+src/css/form.css\n\
+src/css/global.css\n\
+src/css/model.css\n\
+src/css/embed.css\n\
+*/\n',
+					keepSpecialComments: 0
+				},
+				src: [
+					'src/css/form.css',
+					'src/css/global.css',
+					'src/css/model.css',
+					'src/css/messages.css',
+					'src/css/embed.css'
+				],
+				dest: 'src/css/<%= pkg.name %>.embed.min.css'
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.registerTask('default', ['uglify']);
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.registerTask('default', ['uglify', 'cssmin']);
 };

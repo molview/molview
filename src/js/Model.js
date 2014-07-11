@@ -30,7 +30,7 @@ var Model = {
 	init: function(cb, rnd)
 	{
 		if(MolView.loadDefault)
-			this.data.mol = defaultMol3D;
+			this.data.mol = defaultMol3D || "";
 		
 		this.setRenderEngine(rnd || "GLmol", cb);
 	},

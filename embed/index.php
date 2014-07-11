@@ -167,40 +167,36 @@ else if(isset($codid))
 			}
 		?>
 		
-		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
-		
+		<!-- CSS
 		<link type="text/css" rel="stylesheet" href="../src/css/form.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="../src/css/global.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="../src/css/model.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="../src/css/messages.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="../src/css/embed.css" media="screen" />
-		
-		<!-- JSmol -->
+		 -->
+		 
+		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+		<link type="text/css" rel="stylesheet" href="../src/css/molview.embed.min.css" media="screen" />
+		 
+		<!-- JS
 		<script type="text/javascript" src="../src/js/lib/JSmol.min.js"></script>
-		
-		<!-- Misc -->
 		<script type="text/javascript" src="../src/js/lib/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="../src/js/lib/Detector.js"></script>
 		<script type="text/javascript" src="../src/js/lib/jMouseWheel.js"></script>
 		<script type="text/javascript" src="../src/js/lib/Polyfill.js"></script>
-		
-		<!-- GLmol -->
 		<script type="text/javascript" src="../src/js/lib/Three49custom.js"></script>
 		<script type="text/javascript" src="../src/js/lib/GLmol.js"></script>
-		
-		<!-- ChemDoodle -->
 		<script type="text/javascript" src="../src/js/lib/ChemDoodleWeb.js"></script>
+		<script type="text/javascript" src="../src/js/Utility.js"></script>
+		<script type="text/javascript" src="../src/js/Progress.js"></script>
+		<script type="text/javascript" src="../src/js/Messages.Embed.js"></script>
+		<script type="text/javascript" src="../src/js/Model.js"></script>
+		<script type="text/javascript" src="../src/js/Request.js"></script>
+		<script type="text/javascript" src="../src/js/Loader.Embed.js"></script>
+		<script type="text/javascript" src="../src/js/MolView.Embed.js"></script>
+		-->
 		
-		<!-- JS Source -->
-		<script type="text/javascript" src='../src/js/Utility.js'></script>
-		<script type="text/javascript" src='../src/js/Variables.js'></script>
-		<script type="text/javascript" src='../src/js/Progress.js'></script>
-		<script type="text/javascript" src='../src/js/Messages.Embed.js'></script>
-		<script type="text/javascript" src='../src/js/Model.js'></script>
-		<script type="text/javascript" src='../src/js/Request.js'></script>
-		<script type="text/javascript" src='../src/js/Loader.Embed.js'></script>
-		<script type="text/javascript" src='../src/js/MolView.Embed.js'></script>
+		<script type="text/javascript" src="../build/molview.embed.min.js"></script>
 		
 		<!-- Google Analytics -->
 		<script>

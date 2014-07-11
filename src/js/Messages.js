@@ -40,7 +40,7 @@ var Messages = {
 	
 	init: function()
 	{		
-		$("#start-messages-close").on("click", function(){ $("#start-messages-close").hide(); Messages.hide(); });
+		$("#start-messages-close").on("click", function(){ Messages.hide(); });
 		$("#sketcher-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
 		$("#model-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
 		$("#content-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
@@ -65,6 +65,7 @@ var Messages = {
 		- misc
 		*/
 		
+		$("#start-messages-close").hide();
 		$("body").addClass("progress-cursor");
 		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages");
 		
@@ -120,6 +121,7 @@ var Messages = {
 		- crystal_2d_fail
 		*/
 		
+		$("#start-messages-close").hide();
 		$("body").removeClass("progress-cursor");
 		$("#content").removeClass("start-messages content-messages "
 			/* do not hide sketcher-messages or model-messages if smiles cannot be loaded
@@ -163,6 +165,7 @@ var Messages = {
 	
 	hide: function()
 	{
+		$("#start-messages-close").hide();
 		$("body").removeClass("progress-cursor");
 		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages");
 	},
