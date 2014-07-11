@@ -16,7 +16,7 @@
 {
 	#search-autocomplete
 	{
-		width: 638px;
+		width: 655px;
 	}
 }
 
@@ -32,6 +32,8 @@
 	list-style: none;
 	margin: 0;
 	padding: 5px;
+	
+	border-bottom: 1px solid #ccc;
 }
 
 .autocomplete-protein { color: #a94442; background: #f2dede; }

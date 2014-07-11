@@ -709,20 +709,6 @@ var Model = {
 				Model.JSmol.script(JmolScripts.resetLabels);
 			}, "jmol_calculation", true);
 		},
-
-		loadVDWSurface: function()
-		{
-			//exit when protein
-			if(Model.data.current == "PDB") return;
-			
-			MolView.makeModelVisible();
-			
-			Model.JSmol.safeCallback(function()
-			{
-				Model.JSmol.script("isosurface vdw translucent;");
-				Model.JSmol.script(JmolScripts.resetLabels);
-			}, "jmol_calculation", true);
-		},
 		
 		displayCharge: function()
 		{

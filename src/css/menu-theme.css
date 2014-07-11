@@ -4,7 +4,7 @@
 	background: linear-gradient(#ccc, #ddd) !important;
 }
 
-.dropdown > .dropdown-toggle.brand
+.brand
 {
 	background-image: url(../img/brand.svg);
 	background-repeat: no-repeat;
@@ -12,38 +12,33 @@
 	padding-left: 40px !important;
 }
 
-.dropdown.open > .dropdown-toggle.brand
-{
-	background-image: url(../img/brand.svg);
-}
-
-ul.menu-bar > .dropdown.open > .dropdown-toggle
+.dropdown.open > .dropdown-toggle
 {
 	color: #111;
 	background-color: #fff !important;
 }
 
-.dropdown-toggle .caret
+.caret
 {
 	border-top-color: #111;
 }
 
-ul.menu-bar > li
+.menu-bar > li
 {
 }
 
-.menu .dropdown-toggle
+.dropdown-toggle
 {
 	color: #111;
 }
 
-ul.dropdown-menu
+.dropdown-menu
 {	
 	background: #fff;
 	border-color: #111;
 }
 
-ul.dropdown-menu > .header
+li.menu-header
 {	
 	font-weight: bold;
 	text-transform: uppercase;
@@ -51,18 +46,13 @@ ul.dropdown-menu > .header
 	background: #ccc;
 }
 
-ul.dropdown-menu > .divider
-{
-	border-bottom: 1px solid #111;
-}
-
-ul.dropdown-menu > li > a
+.dropdown-menu > li > a
 {
 	color: #111;
 	background: #fff;
 }
 
-ul.dropdown-menu > li > a.checked:after
+.dropdown-menu > li > a.checked:after
 {
 	float: right;
 	margin-right: -20px;
@@ -71,19 +61,19 @@ ul.dropdown-menu > li > a.checked:after
 	content: '\f14a';
 }
 
-body:not(.touch) ul.dropdown-menu > li > a:not(.disabled).checked:hover:after,
-body:not(.touch) ul.dropdown-menu > li > a:not(.disabled).checked:active:after
+body:not(.touch) .dropdown-menu > li > a:not(.disabled).checked:hover:after,
+body:not(.touch) .dropdown-menu > li > a:not(.disabled).checked:active:after
 {
 	color: #fff;
 }
 
-ul.dropdown-menu > li > a.disabled
+.dropdown-menu > li > a.disabled
 {
 	color: #aaa;
 	cursor: default;
 }
 
-ul.dropdown-menu > li > a.disabled.checked:after
+.dropdown-menu > li > a.disabled.checked:after
 {
 	color: #aaa;
 }

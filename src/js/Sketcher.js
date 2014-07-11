@@ -27,7 +27,7 @@ var Sketcher = {
 			this.moledit.onChanged = function()
 			{
 				Sketcher.CID = undefined;
-				$("#resolve").removeClass("updated");
+				$("#resolve").removeClass("resolve-updated");
 				if(!Sketcher.title_lock) document.title = "MolView";
 			};
 		}
@@ -54,10 +54,9 @@ var Sketcher = {
 				var element = table[group].elements[i];
 				
 				for(var f = position; f < element.position - 1; f++)//fill remaining space
-					$('<div class="space"></div>').appendTo("#periodictable");
+					$('<div class="pt-space"></div>').appendTo("#periodictable");
 				
-				$('<div class="element"></div>')
-					.addClass(element.group.toLowerCase())
+				$('<div class="pt-element"></div>')
 					.attr("title", element.name)
 					.append($("<h3></h3>").html(element.number))
 					.append($("<h4></h4>").html(element.small)
@@ -65,8 +64,8 @@ var Sketcher = {
 					.data("nr", element.small)
 					.on(MolView.trigger, function()
 					{
-						$("#moledit .button:not(.custom)").not(this).removeClass("selected");
-						$("#me-elements").addClass("selected");
+						$("#moledit .tool-button:not(.custom)").not(this).removeClass("tool-button-selected");
+						$("#me-elements").addClass("tool-button-selected");
 						
 						Sketcher.moledit.setElement.call(Sketcher.moledit, $(this).data("nr"));
 						window.setTimeout(MolView.hideWindows, 0);
@@ -79,7 +78,7 @@ var Sketcher = {
 		
 		$("#me-elements").on(MolView.trigger, function()
 		{
-			$("#me-elements").removeClass("selected");
+			$("#me-elements").removeClass("tool-button-selected");
 			MolView.showDialog("elements");
 		});
 	},
@@ -116,12 +115,12 @@ var Sketcher = {
 	
 	markOutdated: function()
 	{
-		$("#resolve").removeClass("updated");
+		$("#resolve").removeClass("resolve-updated");
 	},
 	
 	markUpdated: function()
 	{
-		$("#resolve").addClass("updated");
+		$("#resolve").addClass("resolve-updated");
 	},
 	
 	toDataURL: function()

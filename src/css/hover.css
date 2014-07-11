@@ -6,13 +6,13 @@ select:hover
 	border-bottom-color: #f50;
 }
 
-.btn:not(.btn-primary):hover
+.btn:hover
 {
 	background: #fff;
 	border-color: #f50;
 }
 
-.btn.btn-primary:hover
+.btn-primary:hover
 {
 	background: #f30;
 	border-color: #f00;
@@ -26,12 +26,12 @@ select:hover
 /*
 menu
 */
-.menu .dropdown-toggle:hover
+.dropdown-toggle:hover
 {
 	background-color: #eee !important;
 }
 
-ul.dropdown-menu > li > a:not(.disabled):hover
+.dropdown-menu > li > a:not(.disabled):hover
 {
 	color: #fff;
 	background: #f50;
@@ -40,16 +40,22 @@ ul.dropdown-menu > li > a:not(.disabled):hover
 /*
 sketcher
 */
-.toolbar .button:not(.disabled):hover
+.tool-button:hover
 {
 	opacity: 1.0;
 	background-color: #f30;
 }
 
+.tool-button-disabled:hover
+{
+	opacity: 0.3;
+	background-color: #000;
+}
+
 /*
 periodictable
 */
-#periodictable .element:hover
+.pt-element:hover
 {
 	background: #ddd;
 }
@@ -57,7 +63,7 @@ periodictable
 /*
 help
 */
-.expandable .title:hover
+.expandable-title:hover
 {
 	background: #fff;
 }
@@ -65,18 +71,18 @@ help
 /*
 search
 */
-.search-results > .more:hover
+.load-more:hover
 {
 	color: #fff;
 	background-color: #f50;
 }
 
-.result .title:hover
+.result-title:hover
 {
 	background: #f50;
 }
 
-.result:not(.title-select-only):hover .title
+.result-notext:hover > .result-title
 {
 	background: #f50;
 }

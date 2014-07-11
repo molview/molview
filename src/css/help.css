@@ -1,16 +1,66 @@
-.dialog.styled-headings h3
+.custom-headings h3
 {
 	margin-top: 25px;
 	margin-bottom: 5px;
 }
 
-.dialog.styled-headings h4
+.custom-headings h4
 {
 	margin: 20px 0 5px 0;
 	border-bottom: 1px solid #ccc;
 }
 
-.tool-icon
+.expandable
+{
+	margin: 10px 0;
+}
+
+.expandable-title
+{
+	cursor: pointer;
+	padding: 7px 15px;
+	
+	font-weight: bold;
+	color: #111;
+	border: 1px solid #111;
+	background: #eee;
+	
+	border-radius: 4px;
+}
+
+.expandable-title i.fa
+{
+	float: right;
+	padding: 3px;
+}
+
+.expandable-title > i.fa:before
+{
+	content: '\f078';
+}
+
+.expandable-title > i.fa:before
+{
+	content: '\f078';
+}
+
+.expandable.open > .expandable-title > i.fa:before
+{
+	content: '\f077';
+}
+
+.expandable-content
+{
+	display: none;
+	padding: 10px 10px;
+}
+
+.expandable.open > .expandable-content
+{
+	display: block;
+}
+
+/* .tool-icon
 {
 	display: inline-block;
 	padding: 1px;
@@ -27,71 +77,4 @@
 	vertical-align: middle;
 	
 	border-radius: 4px;
-}
-
-.brackets
-{
-	color: #31708f;
-	font-style: italic;
-}
-
-.expandable
-{
-	margin: 10px 0;
-}
-
-.expandable .title
-{
-	cursor: pointer;
-	padding: 7px 15px;
-	
-	font-weight: bold;
-	color: #111;
-	border: 1px solid #111;
-	background: #eee;
-	
-	border-radius: 4px;
-}
-
-.expandable i.fa
-{
-	float: right;
-	padding: 3px;
-}
-
-.expandable i.fa:before
-{
-	content: '\f078';
-}
-
-.expandable i.fa:before
-{
-	content: '\f078';
-}
-
-.expandable.open i.fa:before
-{
-	content: '\f077';
-}
-
-.expandable .content
-{
-	display: none;
-	padding: 10px 10px;
-}
-
-.expandable.open .content
-{
-	display: block;
-}
-
-.tool-list
-{
-	margin: 10px 10px 20px 10px;
-}
-
-.tool-list span
-{
-	display: block;
-	margin: 5px;
-}
+} */

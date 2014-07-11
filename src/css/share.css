@@ -3,7 +3,7 @@
 	margin: 25px 5px;
 }
 
-.social .share
+.share
 {
 	cursor: pointer;
 	display: inline-block;
@@ -15,12 +15,12 @@
 	border-radius: 4px;
 }
 
-.social .share:hover span:after
+.share:hover > span:after
 {
 	opacity: 1;
 }
 
-.social .share span
+.share > span
 {
 	display: inline-block;
 	position: relative;
@@ -35,14 +35,14 @@
 	border-radius: 0 4px 4px 0;
 }
 
-.social .share.twitter, .social .share.twitter span:after
+.share-twitter, .share-twitter > span:after
 { background: #55acee; }
-.social .share.facebook, .social .share.facebook span:after
+.share-facebook, .share-facebook > span:after
 { background: #3b5999; }
-.social .share.googleplus, .social .share.googleplus span:after
+.share-googleplus, .share-googleplus > span:after
 { background: #d34836; }
 
-.social .share:before
+.share:before
 {
 	display: block;
 	position: absolute;
@@ -56,7 +56,7 @@
 	color: #fff;
 }
 
-.social .share span:after
+.share > span:after
 {
 	display: block;
 	position: absolute;
@@ -74,16 +74,16 @@
 	border-radius: 0 4px 4px 0;
 }
 
-.social .share.facebook:before
+.share-facebook:before
 { content: '\f09a'; }
-.social .share.twitter:before
+.share-twitter:before
 { content: '\f099'; }
-.social .share.googleplus:before
+.share-googleplus:before
 { content: '\f0d5'; }
 
-.social .share.facebook span:after
+.share-facebook span:after
 { content: 'Share'; }
-.social .share.twitter span:after
+.share-twitter span:after
 { content: 'Tweet'; }
-.social .share.googleplus span:after
+.share-googleplus span:after
 { content: '+1'; }

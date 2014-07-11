@@ -73,15 +73,16 @@
 	background-size: 64px;
 }
 
-.chemprop.unavailable:after
+.chemprop-unavailable:after
 {
 	content: "unavailable";
 	font-style: italic;
 	color: #888;
 }
 
-.chemprop.loading
+.chemprop-loading
 {
+	cursor: progress;
 	background-image: url(../img/loading-black.svg);
 	background-size: 32px;
 	background-repeat: no-repeat;
@@ -109,7 +110,7 @@
 	margin: 10px 0;
 }
 
-input.chemprop.unavailable
+input.chemprop-unavailable
 {
 	border-bottom: 3px solid #f00;
 	background: #fcb3bc !important;

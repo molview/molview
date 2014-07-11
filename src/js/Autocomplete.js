@@ -14,6 +14,7 @@ var Autocomplete = {
 	PUBCHEM_NUMBER: 10,//max number of pubchem records in final mix
 	MIX_THRESHOLD: 0.05,
 	
+	minLength: 2,
 	maxLength: 32,
 	maxResults: 10,
 	proteins: undefined,
@@ -79,23 +80,26 @@ var Autocomplete = {
 	{		
 		var text = $("#search-input").val();
 		if(text.length > Autocomplete.maxLength) return;
-		
-		var mix = [];
-		if(MolView.proteins)
-			mix = this.proteins.search(text).slice(0, this.PROTEINS_NUMBER)
-		  .concat(this.minerals.search(text).slice(0, this.MINERALS_NUMBER));
-		else mix = this.minerals.search(text);
-		
-		this.getPubChemAutocomplete(text, function(array)
-		{
-			var fuse = new Fuse(mix.concat(array), {
-				shouldSort: false,
-				threshold: Autocomplete.MIX_THRESHOLD,
-				keys: ["name"]
-			});
+		else if(text.length < Autocomplete.minLength) Autocomplete.display([]);
+		else
+		{		
+			var mix = [];
+			if(MolView.proteins)
+				mix = this.proteins.search(text).slice(0, this.PROTEINS_NUMBER)
+			  .concat(this.minerals.search(text).slice(0, this.MINERALS_NUMBER));
+			else mix = this.minerals.search(text);
 			
-			Autocomplete.display(fuse.search(text).slice(0, Autocomplete.maxResults));
-		});
+			this.getPubChemAutocomplete(text, function(array)
+			{
+				var fuse = new Fuse(mix.concat(array), {
+					shouldSort: false,
+					threshold: Autocomplete.MIX_THRESHOLD,
+					keys: ["name"]
+				});
+				
+				Autocomplete.display(fuse.search(text).slice(0, Autocomplete.maxResults));
+			});
+		}
 	},
 	
 	display: function(records)

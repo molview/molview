@@ -6,11 +6,6 @@
 	overflow: auto;
 }
 
-body.process
-{
-	cursor: progress;
-}
-
 .message
 {
 	padding: 20px;
@@ -24,38 +19,28 @@ body.process
 	min-width: 100px;
 }
 
-.message img
+.process-img, .alert-img
 {
-	display: none;
 	margin: 0 auto;
 	margin-bottom: 20px;
 }
 
-.message-process .message img.process
-{
-	display: block;
-}
-
-.message-alert .message img.alert
-{
-	display: block;
-}
-
-.message .text
+.message-text
 {
 	margin: 10px 0;
 	font-size: 14pt;
+	color: #fff;
 }
 
 @media all and (min-width: 400px)
 {
-	.message .text
+	.message-text
 	{
 		font-size: 18pt;
 	}
 }
 
-.message .text small
+.message-text > small
 {
 	display: block;
 	margin-top: 12px;
@@ -63,13 +48,13 @@ body.process
 	line-height: 14pt;
 }
 
-.message .btn
+.message-btn
 {
 	margin: 25px 5px;
 }
 
-/* alert centering trick */
-.message-box .center
+/* centering trick */
+.message-wrapper
 {
 	position: absolute;
 	top: 0;
@@ -83,7 +68,7 @@ body.process
 	white-space: nowrap;
 }
 
-.message-box .center:before
+.message-wrapper:before
 {
 	content: '';
 	display: inline-block;
@@ -110,11 +95,9 @@ Layout types
 .content-messages
 */
 .start-messages #start-messages { display: block; }
-#start-messages-close { display: none; }
 .start-messages #start-messages-close { display: block; }
 .sketcher-messages #sketcher-messages { display: block; }
 .model-messages #model-messages { display: block; }
 .content-messages #content-messages { display: block; }
 
-.message-process .message .btn.ok { display: none; }
-.message-alert.stay .message .btn.ok { display: none; }
+.message-process .message-btn { display: none; }

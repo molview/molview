@@ -142,7 +142,7 @@ var MolView = {
 		});
 		
 		//enable expandable expanding
-		$(".expandable .title").on(this.trigger, function(e)
+		$(".expandable-title").on(this.trigger, function(e)
 		{
 			$(this).parent().toggleClass("open");
 		});
@@ -219,7 +219,6 @@ var MolView = {
 			$("#jmol-clean").on(this.trigger, Actions.jmol_clean);
 			$("#mep-lucent").on(this.trigger, Actions.mep_lucent);
 			$("#mep-opaque").on(this.trigger, Actions.mep_opaque);
-			$("#vdw-surface").on(this.trigger, Actions.vdw_surface);
 			$("#jmol-charge").on(this.trigger, Actions.jmol_charge);
 			$("#bond-dipoles").on(this.trigger, Actions.bond_dipoles);
 			$("#net-dipole").on(this.trigger, Actions.net_dipole);

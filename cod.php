@@ -131,10 +131,10 @@ else if($type == "information" && isset($codids))
 			echo "{";
 			echo '"codid":'.json_encode($row[0]);
 			if(isset($row[1])) if($row[1] != "?") echo ',"mineral":'.json_encode(utf8_encode($row[1]));
-			if(isset($row[2])) echo ',"commonname":'.json_encode(utf8_encode($row[2]));
-			if(isset($row[3])) echo ',"chemname":'.json_encode(utf8_encode($row[3]));
-			if(isset($row[4])) echo ',"formula":'.json_encode(utf8_encode($row[4]));
-			if(isset($row[5])) echo ',"title":'.json_encode(utf8_encode($row[5]));
+			if(isset($row[2])) if($row[2] != "?") echo ',"commonname":'.json_encode(utf8_encode($row[2]));
+			if(isset($row[3])) if($row[3] != "?") echo ',"chemname":'.json_encode(utf8_encode($row[3]));
+			if(isset($row[4])) if($row[4] != "?") echo ',"formula":'.json_encode(utf8_encode($row[4]));
+			if(isset($row[5])) if($row[5] != "?") echo ',"title":'.json_encode(utf8_encode($row[5]));
 			echo "}";
 		}
 		echo "]}";

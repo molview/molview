@@ -9,7 +9,7 @@
 	overflow: auto;
 }
 
-.window-layer .dialog
+.window-layer > .dialog
 {
 	margin: 43px auto;
 	padding: 20px;
@@ -39,7 +39,7 @@
 	margin: 5px 0;
 }
 
-.dialog .footer
+.dialog > .footer
 {
 	margin-top: 10px;
 	text-align: right;

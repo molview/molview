@@ -12,7 +12,7 @@ $.fn.share = function(url, display_count, message)
 	
 	this.children().each(function()
 	{
-		if($(this).hasClass("facebook"))
+		if($(this).hasClass("share-facebook"))
 		{
 			var self = $(this);
 			self.empty().unbind();
@@ -37,7 +37,7 @@ $.fn.share = function(url, display_count, message)
 				window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url.fb || url.all));
 			});
 		}
-		else if($(this).hasClass("twitter"))
+		else if($(this).hasClass("share-twitter"))
 		{
 			var self = $(this);
 			self.empty().unbind();
@@ -62,7 +62,7 @@ $.fn.share = function(url, display_count, message)
 				window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message || default_msg) + "&url=" + encodeURIComponent(url.twitter || url.all) + "&via=molview");
 			});
 		}
-		else if($(this).hasClass("googleplus"))
+		else if($(this).hasClass("share-googleplus"))
 		{
 			var self = $(this);
 			self.empty().unbind();

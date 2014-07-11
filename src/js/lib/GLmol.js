@@ -1974,7 +1974,7 @@ var GLmol = (function ()
 		if(!keepSlab)
 		{
 			this.slabNear = -maxD * 1;
-			this.slabFar = maxD / 3;
+			this.slabFar = maxD * 1;
 		}
 
 		this.rotationGroup.position.z = maxD * 0.35 / Math.tan(Math.PI / 180.0 * this.camera.fov / 2) - 150;

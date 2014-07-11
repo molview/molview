@@ -69,16 +69,16 @@ function ChemicalView(parent, canvas)
 		that.toolButtonClicked(this);
 	}
 	
-	$("#moledit .button.mode:not(.custom)").on("mousedown", function(e)
+	$("#moledit .tool-button.mode:not(.custom)").on("mousedown", function(e)
 	{
-		$("#moledit .button:not(.custom)").not(this).removeClass("selected");
-		$(this).toggleClass("selected");
+		$("#moledit .tool-button:not(.custom)").not(this).removeClass("tool-button-selected");
+		$(this).toggleClass("tool-button-selected");
 	});
 	
 	$("#me-rect, #me-lasso").on("mousedown", function(e)
 	{
-		$("#me-rect, #me-lasso").removeClass("selected");
-		$(this).toggleClass("selected");
+		$("#me-rect, #me-lasso").removeClass("tool-button-selected");
+		$(this).toggleClass("tool-button-selected");
 	});
 	
 	//chem tools
@@ -294,7 +294,7 @@ ChemicalView.prototype.toolButtonClicked = function(button)
 
 	if((this.activeTool || { id: "" }).id == button.id)
 	{
-		jQuery("#me-move").addClass("selected");
+		jQuery("#me-move").addClass("tool-button-selected");
 		this.activeTool = { id: "me-move", toolType: "move" };
 	}
 	else
@@ -323,12 +323,12 @@ ChemicalView.prototype.changed = function(not_changed)
 		this.onChanged();
 	
 	if(this.undoStack.length > 0)
-		 jQuery("#me-undo").removeClass("disabled");
-	else jQuery("#me-undo").addClass("disabled");
+		 jQuery("#me-undo").removeClass("tool-button-disabled");
+	else jQuery("#me-undo").addClass("tool-button-disabled");
 	
 	if(this.redoStack.length > 0)
-		 jQuery("#me-redo").removeClass("disabled");
-	else jQuery("#me-redo").addClass("disabled");
+		 jQuery("#me-redo").removeClass("tool-button-disabled");
+	else jQuery("#me-redo").addClass("tool-button-disabled");
 }
 
 ChemicalView.prototype.isEmpty = function()

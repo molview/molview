@@ -281,7 +281,6 @@ var Actions = {
 	jmol_clean:    function() { Model.JSmol.clean(); },
 	mep_lucent:    function() { Model.JSmol.loadMEPSurface(true); },
 	mep_opaque:    function() { Model.JSmol.loadMEPSurface(false); },
-	vdw_surface:   function() { Model.JSmol.loadVDWSurface(); },
 	jmol_charge:   function() { Model.JSmol.displayCharge(); },
 	bond_dipoles:  function() { Model.JSmol.displayDipoles(); },
 	net_dipole:    function() { Model.JSmol.displayNetDipole(); },

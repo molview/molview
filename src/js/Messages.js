@@ -40,10 +40,10 @@ var Messages = {
 	
 	init: function()
 	{		
-		$("#start-messages-close").on("click", function(){ Messages.hide(); });
-		$("#sketcher-messages .btn.ok").on("click", function(){ Progress.complete(); Messages.hide(); });
-		$("#model-messages .btn.ok").on("click", function(){ Progress.complete(); Messages.hide(); });
-		$("#content-messages .btn.ok").on("click", function(){ Progress.complete(); Messages.hide(); });
+		$("#start-messages-close").on("click", function(){ $("#start-messages-close").hide(); Messages.hide(); });
+		$("#sketcher-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
+		$("#model-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
+		$("#content-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
 	},
 	
 	process: function(cb, what)
@@ -65,29 +65,32 @@ var Messages = {
 		- misc
 		*/
 		
-		$("body").addClass("process");
-		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages message-alert stay")
-			.addClass("message-process");
+		$("body").addClass("progress-cursor");
+		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages");
+		
+		$(".message-btn").hide();
+		$(".process-img, .alert-img").hide();
+		$(".process-img").show();
 		
 		if(what == "clean")
 		{
-			$("#sketcher-messages .text").first().html(Messages[what]);
+			$("#sketcher-messages .message-text").html(Messages[what]);
 			$("#content").addClass("sketcher-messages");
 		}
 		else if(what == "switch_engine" || what == "protein" || what == "resolve"
 			 || what == "init_jmol" || what == "jmol_calculation" || what == "crystal_structure")
 		{
-			$("#model-messages .text").first().html(Messages[what]);
+			$("#model-messages .message-text").html(Messages[what]);
 			$("#content").addClass("model-messages");
 		}
 		else if(what == "compound" || what == "crystal" || what == "search")
 		{
-			$("#content-messages .text").first().html(Messages[what]);
+			$("#content-messages .message-text").html(Messages[what]);
 			$("#content").addClass("content-messages");
 		}
 		else if(what == "misc")
 		{
-			$("#content-messages .text").first().html("");
+			$("#content-messages .message-text").html("");
 			$("#content").addClass("content-messages");
 		}
 		
@@ -117,39 +120,41 @@ var Messages = {
 		- crystal_2d_fail
 		*/
 		
-		$("body").removeClass("process");
-		$("#content").removeClass("start-messages content-messages message-process stay "
+		$("body").removeClass("progress-cursor");
+		$("#content").removeClass("start-messages content-messages "
 			/* do not hide sketcher-messages or model-messages if smiles cannot be loaded
 			so the error message is automatically displayed in the right messages layer */
-			+ ((cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail") ? "" : "sketcher-messages model-messages"))
-			.addClass("message-alert");
+			+ ((cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail") ? "" : "sketcher-messages model-messages"));
+		
+		$(".message-btn").show();
+		$(".process-img, .alert-img").hide();
+		$(".alert-img").show();
 		
 		if(cause == "sketcher_no_proteins" || cause == "crystal_2d_fail")
 		{
-			$("#sketcher-messages .text").first().html(Messages[cause]);
+			$("#sketcher-messages .message-text").html(Messages[cause]);
 			$("#content").addClass("sketcher-messages");
 		}
 		else if(cause == "no_webgl_support" || cause == "no_glmol_crystals")
 		{
-			$("#model-messages .text").first().html(Messages[cause]);
+			$("#model-messages .message-text").html(Messages[cause]);
 			$("#content").addClass("model-messages");
 		}
 		else if(cause == "cir_down" || cause == "cir_func_down" || cause == "no_canvas_support" || cause == "search_fail" || cause == "load_fail"  || cause == "mobile_old_no_proteins")
 		{
-			$("#content-messages .text").first().html(Messages[cause]);
+			$("#content-messages .message-text").html(Messages[cause]);
 			$("#content").addClass("content-messages");
 			
-			if(cause == "no_canvas_support")
-				$("#content").addClass("stay");
+			if(cause == "no_canvas_support") $(".message-btn").hide();
 		}
 		else if(cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail")
 		{
-			if(error) $("#sketcher-messages .text, #model-messages .text, #content-messages .text").html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
-			else $("#sketcher-messages .text, #model-messages .text, #content-messages .text").html(Messages[cause]);
+			if(error) $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text").html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
+			else $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text").html(Messages[cause]);
 		}
 		else if(cause == "smiles_load_error_force")
 		{
-			if(error) $("#content-messages .text").html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
+			if(error) $("#content-messages .message-text").html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
 			$("#content").addClass("content-messages");
 		}
 		
@@ -158,7 +163,7 @@ var Messages = {
 	
 	hide: function()
 	{
-		$("body").removeClass("process");
-		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages message-process message-alert stay");
+		$("body").removeClass("progress-cursor");
+		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages");
 	},
 };

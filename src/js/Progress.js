@@ -14,7 +14,7 @@ var Progress = {
 	init: function()
 	{
 		this.bar = $("#progress");
-		this.part = $("#progress .part");
+		this.part = $("#progress > .progress-part");
 	},
 	
 	setValue: function(val)

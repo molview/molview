@@ -63,7 +63,7 @@ var ChemicalData = {
 	{
 		if(this.smiles != smiles && smiles != "")
 		{
-			$(".chemprop").removeClass("unavailable").addClass("loading");
+			$(".chemprop").removeClass("chemprop-unavailable").addClass("chemprop-loading");
 			$(".chemprop:not(.chem-spectrum)").html("").val("");
 			$("#molecule-image").attr("src", "src/img/empty.png");
 			$("#molecule-info").hide();
@@ -91,16 +91,16 @@ var ChemicalData = {
 		function(formula)
 		{
 			ChemicalData.data["formula"] = formula;
-			$("#prop-formula").html(chemFormulaFormat(formula)).removeClass("loading");
-		}, function(){ $("#prop-formula").addClass("unavailable") });
+			$("#prop-formula").html(chemFormulaFormat(formula)).removeClass("chemprop-loading");
+		}, function(){ $("#prop-formula").addClass("chemprop-unavailable") });
 		
 		//update mass
 		Request.ChemicalIdentifierResolver.getProperty(this.smiles, "mw",
 		function(mw)
 		{
 			ChemicalData.data["mw"] = mw;
-			$("#prop-weight").text(mw + " u").removeClass("loading");
-		}, function(){ $("#prop-weight").addClass("unavailable") });
+			$("#prop-weight").text(mw + " u").removeClass("chemprop-loading");
+		}, function(){ $("#prop-weight").addClass("chemprop-unavailable") });
 		
 		//update primary properties
 		this.CIRproperty("prop-h-donors", "h_bond_donor_count");
@@ -132,7 +132,7 @@ var ChemicalData = {
 		if(Sketcher.CID)
 		{
 			ChemicalData.data.CID = Sketcher.CID;
-			$("#prop-cid").val(ChemicalData.data.CID).removeClass("loading");
+			$("#prop-cid").val(ChemicalData.data.CID).removeClass("chemprop-loading");
 			addCIDlink();
 			
 			Request.PubChem.description(Sketcher.CID, function(data)
@@ -143,13 +143,12 @@ var ChemicalData = {
 				$("#molecule-title").text(ucfirst(data.Title));
 				$("#molecule-description").text(data.Description);
 				
-				ChemicalData.PubChemProperty("prop-iupac", "IUPACName");
-				ChemicalData.PubChemProperty("prop-smiles", "CanonicalSMILES");
+				ChemicalData.PubChemProperties([ "prop-iupac", "prop-smiles" ], [ "IUPACName", "CanonicalSMILES" ]);
 			},
 			function()
 			{
-				$("#prop-smiles").val(ChemicalData.smiles).removeClass("loading");
-				$("#prop-iupac").removeClass("loading").addClass("unavailable");
+				$("#prop-smiles").val(ChemicalData.smiles).removeClass("chemprop-loading");
+				$("#prop-iupac").removeClass("chemprop-loading").addClass("chemprop-unavailable");
 			});
 		}
 		else//retireve cid
@@ -159,7 +158,7 @@ var ChemicalData = {
 				data = data.InformationList.Information[0];
 				
 				ChemicalData.data.CID = data.CID;
-				$("#prop-cid").val(data.CID).removeClass("loading");
+				$("#prop-cid").val(data.CID).removeClass("chemprop-loading");
 				addCIDlink();
 				
 				$("#molecule-info").show();
@@ -170,9 +169,9 @@ var ChemicalData = {
 			},
 			function()
 			{
-				$("#prop-smiles").val(ChemicalData.smiles).removeClass("loading");
-				$("#prop-cid").removeClass("loading").addClass("unavailable");
-				$("#prop-iupac").removeClass("loading").addClass("unavailable");
+				$("#prop-smiles").val(ChemicalData.smiles).removeClass("chemprop-loading");
+				$("#prop-cid").removeClass("chemprop-loading").addClass("chemprop-unavailable");
+				$("#prop-iupac").removeClass("chemprop-loading").addClass("chemprop-unavailable");
 			});
 		}
 	},
@@ -317,20 +316,20 @@ var ChemicalData = {
 	{
 		if(ChemicalData.smiles == "") return;
 		
-		$("#molecule-image").addClass("loading");
+		$("#molecule-image").addClass("chemprop-loading");
 		$("#molecule-image-wrapper").show();
 		
 		var imgw = $("#molecule-image").width() * (MolView.mobile ? 1.5 : 1);
 		var img = new Image();
 		img.onload = function()
 		{
-			$("#molecule-image").attr("src", img.src).removeClass("loading");
+			$("#molecule-image").attr("src", img.src).removeClass("chemprop-loading");
 			$("#molecule-image-wrapper").show();
 		}
 		img.onerror = function()
 		{
 			$("#molecule-image-wrapper").hide();
-			$("#molecule-image").attr("src", "src/img/empty.png").removeClass("loading");
+			$("#molecule-image").attr("src", "src/img/empty.png").removeClass("chemprop-loading");
 		}
 		
 		if(Sketcher.CID)
@@ -365,7 +364,7 @@ var ChemicalData = {
 				}
 				
 				ChemicalData.data[property] = value;
-				$(id).removeClass("loading");
+				$(id).removeClass("chemprop-loading");
 				if($(id).is("input")) $(id).val(value);
 				else $(id).text(value);
 				if(success) success();
@@ -377,7 +376,7 @@ var ChemicalData = {
 			},
 			function()
 			{
-				$(id).removeClass("loading").addClass("unavailable");
+				$(id).removeClass("chemprop-loading").addClass("chemprop-unavailable");
 				if(error) error();
 			});
 		}
@@ -395,18 +394,19 @@ var ChemicalData = {
 			for(var i = 0; i < targets.length; i++)
 			{
 				var tar = "#" + targets[i];
-				$(tar).removeClass("loading");
+				$(tar).removeClass("chemprop-loading");
 				if(data[properties[i]])
 				{
 					ChemicalData.data[properties[i]] = data[properties[i]];
 					if($(tar).is("input")) $(tar).val(data[properties[i]]);
 					else $(tar).text(data[properties[i]]);
 				}
-				else $(tar).addClass("unavailable");
+				else $(tar).addClass("chemprop-unavailable");
 			}
 		}, function()
 		{
-			$("#" + targets.reduce(function(a, b){ return a + ",#" + b; })).removeClass("loading").addClass("unavailable");
+			$("#" + targets.reduce(function(a, b){ return a + ",#" + b; }))
+				.removeClass("chemprop-loading").addClass("chemprop-unavailable");
 		});
 	}
 };

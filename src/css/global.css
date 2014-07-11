@@ -124,3 +124,8 @@ a.a:active
 	height: 0; 
 	clear: both;
 }
+
+.progress-cursor
+{
+	cursor: progress;
+}

@@ -59,36 +59,28 @@ var Loader = {
 			/*
 			Search output:
 			<div class="result">
-				<div class="title"><span>Name</span></div>
-				<!-- <div class="description">Description</div> -->
-				<div class="img-wrap><div class="img" style="background-image: url(image.png)"/></div>
+				<div class="result-title"><span>Name</span></div>
+				<div class="result-img-wrap><div class="result-img" style="background-image: url(image.png)"/></div>
 			</div>
 			*/
 			
-			var result = $("<div class='result clickable'></div>");
+			var result = $('<div class="result result-notext"></div>');
 			
-			$("<div class='img'></div>").css("background-image",
+			$("<div class='result-img'></div>").css("background-image",
 				"url(" + Request.PubChem.image(data.CID) + ")")
-				.appendTo($("<div class='img-wrap'></div>").appendTo(result));
+				.appendTo($('<div class="result-img-wrap"></div>').appendTo(result));
 			
 			result.appendTo("#search-results .container");
 			
 			if(data.Title)
 			{
-				var title = $("<div class='title'><span>" + data.Title + "</span></div>");
+				var title = $('<div class="result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
 				result.append(title);
 				title.textfill({ maxFontPixels: 30 });
 			}
 			
-			/*if(data.Description)
-			{
-				result.addClass("description");
-				var desc = $("<div class='description'>" + data.Description + "</div>");
-				result.append(desc);
-			}*/
-			
 			result.data("cid", data.CID);
-			result.data("title", data.Title);
+			result.data("title", ucfirst(humanize(data.Title)));
 			result.on("click", function()
 			{
 				if(window.getSelection().type != "Range")
@@ -109,8 +101,8 @@ var Loader = {
 					Loader.Compounds.write(data.InformationList.Information[i]);
 				
 				if(Loader.Compounds.i >= Request.PubChem.data.length)
-					$("#search-results .more").css("display", "none");
-				else $("#search-results .more").removeClass("loading");
+					$(".load-more").css("display", "none");
+				else $("#load-more-compounds").removeClass("load-more-progress");
 				
 				Loader.Compounds.loading = false;
 				
@@ -135,7 +127,7 @@ var Loader = {
 				this.loadCIDS(Request.PubChem.data.slice(start, end));
 				this.i = end;
 				
-				$("#search-results .more").addClass("loading");
+				$("#load-more-compounds").addClass("load-more-progress");
 			}
 		},
 		
@@ -286,7 +278,7 @@ var Loader = {
 					catch(error)
 					{
 						Model.loadMOL(mol2d);
-						$("#resolve").addClass("updated");
+						Sketcher.markUpdated();
 						
 						Loader.lastQuery.type = "cid";
 						Loader.lastQuery.content = "" + cid;
@@ -305,7 +297,7 @@ var Loader = {
 					Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol3d)
 					{
 						Model.loadMOL(mol3d);
-						$("#resolve").addClass("updated");
+						Sketcher.markUpdated();
 						
 						Loader.lastQuery.type = "cid";
 						Loader.lastQuery.content = "" + cid;
@@ -339,26 +331,26 @@ var Loader = {
 		{
 			/*
 			Search output:
-			<div class="result imgdesc">
-				<div class="title"><span>structureId</span></div>
-				<div class="description">structureTitle</div>
-				<div class="img-wrap><div class="img" style="background-image: url(image.png)"/></div>
+			<div class="result result-imgdesc">
+				<div class="result-description">structureTitle</div>
+				<div class="result-title"><span>structureId</span></div>
+				<div class="result-img-wrap><div class="result-img" style="background-image: url(image.png)"/></div>
 			</div>
 			*/
 			
-			var result = $("<div class='result imgdesc title-select-only'></div>");
+			var result = $("<div class='result result-imgdesc'></div>");
 			
-			var img = $("<div class='img'></div>").css("background-image",
+			var img = $('<div class="result-img"></div>').css("background-image",
 				"url(" + Request.RCSB.image(data.structureId) + ")");
-			img.appendTo($("<div class='img-wrap'></div>").appendTo(result));
+			img.appendTo($('<div class="result-img-wrap"></div>').appendTo(result));
 			
 			result.appendTo("#search-results .container");
 			
-			var title = $("<div class='title'><span>" + data.structureId + "</span></div>");
+			var title = $('<div class="result-title"><span>' + data.structureId + "</span></div>");
 			result.append(title);
 			title.textfill({ maxFontPixels: 30 });
 			
-			var desc = $("<div class='description light-scroll'>" + ucfirst(humanize(data.structureTitle)) + "</div>");
+			var desc = $('<div class="result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
 			result.append(desc);
 			
 			var clickable = title;
@@ -383,8 +375,8 @@ var Loader = {
 					Loader.Proteins.write(data.dataset[i]);
 				
 				if(Loader.Proteins.i >= Request.RCSB.data.length)
-					$("#search-results .more").css("display", "none");
-				else $("#search-results .more").removeClass("loading");
+					$(".load-more").css("display", "none");
+				else $("#load-more-proteins").removeClass("load-more-progress");
 				
 				Loader.Proteins.loading = false;
 				
@@ -410,7 +402,7 @@ var Loader = {
 				this.loadPDBIDS(Request.RCSB.data.slice(start, end));
 				this.i = end;
 				
-				$("#search-results .more").addClass("loading");
+				$("#load-more-proteins").addClass("load-more-progress");
 			}
 		},
 		
@@ -543,17 +535,17 @@ var Loader = {
 			/*
 			Search output:
 			<div class="result">
-				<div class="title"><span>title</span></div>
-				<div class="description">description</div>
+				<div class="result-title"><span>title</span></div>
+				<div class="result-description">description</div>
 			</div>
 			*/
 			
-			var result = $("<div class='result title-select-only'></div>").appendTo("#search-results .container");
+			var result = $('<div class="result"></div>').appendTo("#search-results .container");
 			
 			data.formula = chemFormulaFormat(data.formula);
 			var title_str = (data.mineral || data.commonname || data.chemname || data.formula || "?");
 			
-			var title = $("<div class='title'><span>" + title_str + "</span></div>");
+			var title = $('<div class="result-title"><span>' + title_str + "</span></div>");
 			result.append(title);
 			title.textfill({ maxFontPixels: 30 });
 			
@@ -566,7 +558,7 @@ var Loader = {
 			
 			description += data.title;
 			
-			var desc = $("<div class='description light-scroll'>" + description + "</div>");
+			var desc = $('<div class="result-description">' + description + "</div>");
 			result.append(desc);
 			
 			var clickable = title;
@@ -592,8 +584,8 @@ var Loader = {
 					Loader.Crystals.write(data.records[i]);
 				
 				if(Loader.Crystals.i >= Request.COD.data.length)
-					$("#search-results .more").css("display", "none");
-				else $("#search-results .more").removeClass("loading");
+					$(".load-more").css("display", "none");
+				else $("#load-more-crystals").removeClass("load-more-progress");
 				
 				Loader.Crystals.loading = false;
 				
@@ -618,7 +610,7 @@ var Loader = {
 				this.loadCODIDS(Request.COD.data.slice(start, end));
 				this.i = end;
 				
-				$("#search-results .more").addClass("loading");
+				$("#load-more-crystals").addClass("load-more-progress");
 			}
 		},
 		
@@ -791,7 +783,7 @@ var Loader = {
 		Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol)
 		{
 			Model.loadMOL(mol);
-			$("#resolve").addClass("updated");
+			Sketcher.markUpdated();
 			
 			Progress.complete();
 			Messages.hide();

@@ -35,12 +35,14 @@ var Messages = {
 		- crystal
 		*/
 		
-		$("body").removeClass("message-alert").addClass("message-process process");
+		$("body").addClass("progress-cursor");
+		$(".process-img, .alert-img").hide();
+		$(".process-img").show();
 		
-		$("#model-messages .text").first().html(Messages[what]);
+		$("#model-messages .message-text").html(Messages[what]);
 		$("body").addClass("model-messages");
 		
-		window.setTimeout(cb, 100);
+		window.setTimeout(cb, 300);
 	},
 	
 	alert: function(cause)
@@ -58,9 +60,11 @@ var Messages = {
 		- mobile_old_no_proteins
 		*/
 		
-		$("body").removeClass("message-process process").addClass("message-alert");
+		$("body").removeClass("progress-cursor");
+		$(".process-img, .alert-img").hide();
+		$(".process-img").show();
 		
-		$("#model-messages .text").first().html(Messages[cause] || "");
+		$("#model-messages .message-text").html(Messages[cause] || "");
 		$("body").addClass("model-messages");
 		
 		Progress.alert();
@@ -68,7 +72,8 @@ var Messages = {
 	
 	hide: function()
 	{
-		$("body").removeClass("model-messages message-process message-alert process");
+		$("body").removeClass("progress-cursor");
+		$("body").removeClass("model-messages");
 	},
 };
 

@@ -103,7 +103,7 @@ select:focus
 	border-bottom: 3px solid #ccc;
 }
 
-.btn:not(.btn-primary):focus
+.btn:focus
 {
 	outline: none;
 	border-bottom: 3px solid #f50;
@@ -119,7 +119,6 @@ select:focus
 
 .btn-primary:focus
 {
-	outline: none;
 	border-bottom: 3px solid #f00;
 }
 

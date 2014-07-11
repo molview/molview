@@ -9,12 +9,12 @@
 	clear: both;
 }
 
-#periodictable .space, #periodictable .element
+.pt-space, .pt-element
 {
 	float: left;
 }
 
-#periodictable .element
+.pt-element
 {
 	cursor: pointer;
 	text-align: center;
@@ -23,13 +23,13 @@
 	border-radius: 4px;
 }
 
-#periodictable .space, #periodictable .element
+.pt-space, .pt-element
 {
 	width: 30px;
 	height: 30px;
 }
 
-.element h3
+.pt-element > h3
 {
 	display: none;
 	margin: 0;
@@ -37,7 +37,7 @@
 	font-size: 6pt;
 }
 
-.element h4
+.pt-element > h4
 {
 	display: block;
 	margin: 0;
@@ -47,13 +47,13 @@
 
 @media all and (min-width: 1000px)
 {
-	#periodictable .space, #periodictable .element
+	.pt-space, .pt-element
 	{
 		width: 50px;
 		height: 50px;
 	}
 
-	.element h3
+	.pt-element > h3
 	{
 		display: block;
 		margin: 0;
@@ -61,7 +61,7 @@
 		font-size: 6pt;
 	}
 
-	.element h4
+	.pt-element > h4
 	{
 		display: block;
 		margin: 0;
@@ -69,15 +69,3 @@
 		line-height: 20pt;
 	}
 }
-
-#periodictable .element { }
-#periodictable .element.noble { }
-#periodictable .element.alkali { }
-#periodictable .element.alkaline { }
-#periodictable .element.metalloid { }
-#periodictable .element.nonmetal { }
-#periodictable .element.halogen { }
-#periodictable .element.poor { }
-#periodictable .element.transition { }
-#periodictable .element.actinoid { }
-#periodictable .element.lanthanoid { }

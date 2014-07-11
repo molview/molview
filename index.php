@@ -278,7 +278,7 @@ else if(isset($codid))
 	</head>
 	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
 		<div id="progress" class="no-select progress-bar">
-			<div class="part" style="width: 0; opacity: 0;"></div>
+			<div class="progress-part" style="width: 0; opacity: 0;"></div>
 		</div>
 		<div id="menu" class="no-select menu swipeable">
 			<div class="inner">
@@ -286,14 +286,14 @@ else if(isset($codid))
 					<li class="dropdown">
 						<a class="dropdown-toggle brand">MolView<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li class="header">Layout</li>
+							<li class="menu-header">Layout</li>
 							<li id="layout-menu">
 								<a id="window-model" <?php if($contentClass == "model") echo 'class="selected"' ?>></a>
 								<a id="window-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>></a>
 								<a id="window-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
 								<a id="window-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
-							<li class="header">Information</li>
+							<li class="menu-header">Information</li>
 							<li><a id="mv-help">Help</a></li>
 							<li><a id="mv-about">About</a></li>
 						</ul>
@@ -301,17 +301,17 @@ else if(isset($codid))
 					<li class="dropdown">
 						<a class="dropdown-toggle">Tools<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li class="header">Link</li>
+							<li class="menu-header">Link</li>
 							<li><a id="mv-share">Share</a></li>
 							<li><a id="mv-embed">Embed</a></li>
-							<li class="header">Export</li>
+							<li class="menu-header">Export</li>
 							<li><a id="export-2d">Structural formula image</a></li>
 							<li><a id="export-3d">3D model image</a></li>
 							<li><a id="save-local-3d">file</a></li>
-							<li class="header">Chemical data</li>
+							<li class="menu-header">Chemical data</li>
 							<li><a id="data-properties">Properties</a></li>
 							<li><a id="data-spectra">Spectroscopy</a></li>
-							<li class="header">Advanced search</li>
+							<li class="menu-header">Advanced search</li>
 							<li><a id="search-similarity">Similarity</a></li>
 							<li><a id="search-substructure">Substructure</a></li>
 							<li><a id="search-superstructure">Superstructure</a></li>
@@ -321,17 +321,17 @@ else if(isset($codid))
 						<a class="dropdown-toggle">Model<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a id="model-reset">Reset</a></li>
-							<li class="header">Representation</li>
+							<li class="menu-header">Representation</li>
 							<li><a id="model-balls" class="r-mode checked">Ball and Stick</a></li>
 							<li><a id="model-stick" class="r-mode">Stick</a></li>
 							<li><a id="model-vdw" class="r-mode">van der Waals Spheres</a></li>
 							<li><a id="model-wireframe" class="r-mode">Wireframe</a></li>
 							<li><a id="model-line" class="r-mode">Line</a></li>
-							<li class="header">Engine</li>
+							<li class="menu-header">Engine</li>
 							<li><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
 							<li><a id="engine-jmol">Jmol (extensive)</a></li>
 							<li><a id="engine-cdw">ChemDoodle</a></li>
-							<li class="header">Crystallography</li>
+							<li class="menu-header">Crystallography</li>
 							<li><a id="cif-unit-cell">Load unit cell</a></li>
 							<li><a id="cif-2x2x2-cell">Load 2x2x2 supercell</a></li>
 							<li><a id="cif-1x3x3-cell">Load 1x3x3 supercell</a></li>
@@ -341,13 +341,13 @@ else if(isset($codid))
 						<a class="dropdown-toggle">GLmol<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a id="bio-assembly">Biological assembly</a></li>
-							<li class="header">Chain representation</li>
+							<li class="menu-header">Chain representation</li>
 							<li><a id="glmol-chain-ribbon" class="glmol-chain checked">Ribbon</a></li>
 							<li><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
 							<li><a id="glmol-chain-trace" class="glmol-chain">C-alpha trace</a></li>
 							<li><a id="glmol-chain-tube" class="glmol-chain">B-factor tube</a></li>
 							<li><a id="glmol-chain-bonds" class="glmol-chain">Bonds (everything)</a></li>
-							<li class="header">Chain coloring</li>
+							<li class="menu-header">Chain coloring</li>
 							<li><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
 							<li><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
 							<li><a id="glmol-color-chain" class="glmol-color">Chain</a></li>
@@ -359,19 +359,18 @@ else if(isset($codid))
 						<a class="dropdown-toggle">Jmol<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a id="jmol-clean" class="jmol-script">Clean</a></li>
-							<li class="header">Calculations</li>
+							<li class="menu-header">Calculations</li>
 							<li><a id="mep-lucent" class="jmol-script">MEP surface lucent</a></li>
 							<li><a id="mep-opaque" class="jmol-script">MEP surface opaque</a></li>
-							<!-- <li><a id="vdw-surface" class="jmol-script">van der Waals surface</a></li> -->
 							<li><a id="jmol-charge" class="jmol-script">Charge</a></li>
 							<li><a id="bond-dipoles" class="jmol-script">Bond dipoles</a></li>
 							<li><a id="net-dipole" class="jmol-script">Overall dipole</a></li>
 							<li><a id="jmol-minimize" class="jmol-script">Energy minimization</a></li>
-							<li class="header">Measurement</li>
+							<li class="menu-header">Measurement</li>
 							<li><a id="measure-distance" class="jmol-script jmol-picking">Distance (2 atoms)</a></li>
 							<li><a id="measure-angle" class="jmol-script jmol-picking">Angle (3 atoms)</a></li>
 							<li><a id="measure-torsion" class="jmol-script jmol-picking">Torsion (4 atoms)</a></li>
-							<li class="header">Render mode</li>
+							<li class="menu-header">Render mode</li>
 							<li><a id="jmol-render-all" class="jmol-rnd">Everything</a></li>
 							<li><a id="jmol-render-normal" class="jmol-rnd checked">Normal</a></li>
 							<li><a id="jmol-render-minimal" class="jmol-rnd">Minimal</a></li>
@@ -416,7 +415,10 @@ else if(isset($codid))
 				
 				MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 				MolView.query = getQuery();
-				if($.isEmptyObject(MolView.query) && Detector.webgl) $("#content").addClass("start-messages");
+				
+				if($.isEmptyObject(MolView.query) && Detector.webgl)
+					$("#content").addClass("start-messages");
+				
 				if($(window).height() > $(window).width()
 					&& !MolView.query.layout
 					&& MolView.layout != "model") Actions.window_hsplit();
@@ -424,55 +426,55 @@ else if(isset($codid))
 			
 			<div id="sketcher">
 				<div id="moledit" class="sketcher">
-					<div id="chem-tools" class="toolbar vertical swipeable">
+					<div id="chem-tools" class="toolbar swipeable">
 						<div class="inner">
-							<div id="me-single" class="button mode selected" title="Single bond"></div>
-							<div id="me-double" class="button mode" title="Double bond"></div>
-							<div id="me-triple" class="button mode" title="Triple bond"></div>
-							<div id="me-updown" class="button mode" title="Up/Down bond"></div>
-							<div class="separator"></div>
-							<div id="me-frag-0" class="button mode" title="Benzene"></div>
-							<div id="me-frag-1" class="button mode" title="Cyclopropane"></div>
-							<div id="me-frag-2" class="button mode" title="Cyclobutane"></div>
+							<div id="me-single" class="tool-button mode tool-button-selected" title="Single bond"></div>
+							<div id="me-double" class="tool-button mode" title="Double bond"></div>
+							<div id="me-triple" class="tool-button mode" title="Triple bond"></div>
+							<div id="me-updown" class="tool-button mode" title="Up/Down bond"></div>
+							<div class="vertical-separator"></div>
+							<div id="me-frag-0" class="tool-button mode" title="Benzene"></div>
+							<div id="me-frag-1" class="tool-button mode" title="Cyclopropane"></div>
+							<div id="me-frag-2" class="tool-button mode" title="Cyclobutane"></div>
 							<div id="me-frag-3" class="button mode" title="Cyclopentane"></div>
-							<div id="me-frag-4" class="button mode" title="Cyclohexane"></div>
-							<div id="me-frag-5" class="button mode" title="Cycloheptane"></div>
-							<div class="separator"></div>
-							<div id="me-chain" class="button mode" title="Click and drag to draw a chain of carbon atoms"></div>
-							<div id="me-charge-add" class="button mode" title="Charge +">e<sup>+</sup></div>
-							<div id="me-charge-sub" class="button mode" title="Charge -">e<sup>-</sup></div>
+							<div id="me-frag-4" class="tool-button mode" title="Cyclohexane"></div>
+							<div id="me-frag-5" class="tool-button mode" title="Cycloheptane"></div>
+							<div class="vertical-separator"></div>
+							<div id="me-chain" class="tool-button mode" title="Click and drag to draw a chain of carbon atoms"></div>
+							<div id="me-charge-add" class="tool-button mode" title="Charge +">e<sup>+</sup></div>
+							<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>-</sup></div>
 						</div>
 					</div>
-					<div id="edit-tools" class="toolbar horizontal swipeable">
+					<div id="edit-tools" class="toolbar swipeable">
 						<div class="inner">
-							<div id="me-new" class="button" title="Clear all"></div>
-							<div id="me-eraser" class="button mode" title="Erase"></div>
-							<div id="me-move" class="button mode" title="Move"></div>
-							<div class="separator"></div>
-							<div id="me-undo" class="button disabled" title="Undo"></div>
-							<div id="me-redo" class="button disabled" title="Redo"></div>
-							<div class="separator"></div>
-							<div id="me-rect" class="button mode custom selected" title="Rectangle selection"></div>
-							<div id="me-lasso" class="button mode custom" title="Lasso selection"></div>
-							<div class="separator"></div>
-							<div id="me-deselect" class="button" title="Clear selection"></div>
-							<div id="me-center" class="button" title="Center structure"></div>
-							<div id="me-clean" class="button" title="Cleanup structure"></div>
-							<div class="separator"></div>
-							<div id="resolve" class="button" title="Update 3D view">2D to 3D</div>
+							<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
+							<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
+							<div id="me-move" class="tool-button tool-button-horizontal mode" title="Move"></div>
+							<div class="horizontal-separator"></div>
+							<div id="me-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
+							<div id="me-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
+							<div class="horizontal-separator"></div>
+							<div id="me-rect" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Rectangle selection"></div>
+							<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
+							<div class="horizontal-separator"></div>
+							<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
+							<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
+							<div id="me-clean" class="tool-button tool-button-horizontal" title="Cleanup structure"></div>
+							<div class="horizontal-separator"></div>
+							<div id="resolve" class="tool-button tool-button-horizontal" title="Update 3D view">2D to 3D</div>
 						</div>
 					</div>
-					<div id="elem-tools" class="toolbar vertical swipeable">
+					<div id="elem-tools" class="toolbar swipeable">
 						<div class="inner">
-							<div id="me-atom-h" class="button element mode" title="Hydrogen">H</div>
-							<div id="me-atom-c" class="button element mode" title="Carbon">C</div>
-							<div id="me-atom-n" class="button element mode" title="Nitrogen">N</div>
-							<div id="me-atom-o" class="button element mode" title="Oxygen">O</div>
-							<div id="me-atom-s" class="button element mode" title="Sulfur">S</div>
-							<div id="me-atom-p" class="button element mode" title="Phosphorus">P</div>
-							<div id="me-elements" class="button element" title="Periodic Table">...</div>
-							<div class="separator"></div>
-							<div id="me-info" class="button" title="Information"></div>
+							<div id="me-atom-h" class="tool-button mode" title="Hydrogen">H</div>
+							<div id="me-atom-c" class="tool-button mode" title="Carbon">C</div>
+							<div id="me-atom-n" class="tool-button mode" title="Nitrogen">N</div>
+							<div id="me-atom-o" class="tool-button mode" title="Oxygen">O</div>
+							<div id="me-atom-s" class="tool-button mode" title="Sulfur">S</div>
+							<div id="me-atom-p" class="tool-button mode" title="Phosphorus">P</div>
+							<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
+							<div class="vertical-separator"></div>
+							<div id="me-info" class="tool-button" title="Information"></div>
 						</div>
 					</div>
 					<div id="moledit-area" class="edit-area">
@@ -480,12 +482,12 @@ else if(isset($codid))
 					</div>
 				</div>				
 				<div id="sketcher-messages" class="message-box full-cover dark-glass">
-					<div class="center">
-						<div class="message progress">
-							<img class="process" src="src/img/loading-white.svg" alt="" />
-							<img class="alert" src="src/img/alert-white.svg" alt="" />
-							<p class="text"></p>
-							<button class="btn ok btn-large btn-primary">OK</button>
+					<div class="message-wrapper">
+						<div class="message">
+							<img class="process-img" src="src/img/loading-white.svg" alt="" />
+							<img class="alert-img" src="src/img/alert-white.svg" alt="" />
+							<p class="message-text"></p>
+							<button class="message-btn btn btn-large btn-primary">OK</button>
 						</div>
 					</div>
 				</div>
@@ -496,47 +498,49 @@ else if(isset($codid))
 				</div>
 				<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 				<div id="glmol" class="render-engine full-cover" style="display: none;"></div>
-				
 				<div id="model-messages" class="message-box full-cover dark-glass">
-					<div class="center">
+					<div class="message-wrapper">
 						<div class="message">
-							<img class="process" src="src/img/loading-white.svg" alt="" />
-							<img class="alert" src="src/img/alert-white.svg" alt="" />
-							<p class="text"></p>
-							<button class="btn ok btn-large btn-primary">OK</button>
+							<img class="process-img" src="src/img/loading-white.svg" alt="" />
+							<img class="alert-img" src="src/img/alert-white.svg" alt="" />
+							<p class="message-text"></p>
+							<button class="message-btn btn btn-large btn-primary">OK</button>
 						</div>
 					</div>
 				</div>
-				
 				<div id="start-messages" class="message-box full-cover dark-glass">
-					<div class="center">
+					<div class="message-wrapper">
 						<div class="message">
-							<p class="text">
+							<p class="message-text">
                                 Keep updated!<br/><a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>, <a class="link" target="_blank" title="Facebook" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>, <a class="link" target="_blank" title="Google+" href="https://plus.google.com/102377643104393981977" rel="publisher">Google+</a>, <a class="link" target="_blank" title="Twitter" href="https://twitter.com/molview">Twitter</a>
 							</p>
-							<button id="start-help" class="btn btn-primary btn-large">Getting started</button>
-							<p class="text">We need your help to keep this up!<br/>If you think MolView is useful, please support development and maintenance of MolView.</p>
-							<a class="btn btn-primary btn-large" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">PayPal donation&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
+							<button id="start-help" class="message-btn btn btn-primary btn-large">Getting started</button>
+							<p class="message-text">We need your help to keep this up!<br/>If you think MolView is useful, please support development and maintenance of MolView.</p>
+							<a class="message-btn btn btn-primary btn-large" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">PayPal donation&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
 						</div>
 					</div>
 				</div>
-				<div id="start-messages-close" class="close-btn"></div>
+				<div id="start-messages-close" class="close-btn" style="display: none;"></div>
+				<script type="text/javascript">
+					if($("#content").hasClass("start-messages"))
+						$("#start-messages-close").show();
+				</script>
 			</div>
 			<div id="content-messages" class="message-box full-cover dark-glass">
-				<div class="center">
+				<div class="message-wrapper">
 					<div class="message">
-						<img class="process" src="src/img/loading-white.svg" alt="" />
-						<img class="alert" src="src/img/alert-white.svg" alt="" />
-						<p class="text"></p>
-						<button class="btn ok btn-large btn-primary">OK</button>
+						<img class="process-img" src="src/img/loading-white.svg" alt="" />
+						<img class="alert-img" src="src/img/alert-white.svg" alt="" />
+						<p class="message-text"></p>
+						<button class="message-btn btn btn-large btn-primary">OK</button>
 					</div>
 				</div>
 			</div>
 			<div id="search-results" class="search-results full-cover dark-glass" style="display: none;">
 				<div class="container"></div>
-				<div id="load-more-compounds" class="more" style="display: none;"></div>
-				<div id="load-more-proteins" class="more" style="display: none;"></div>
-				<div id="load-more-crystals" class="more" style="display: none;"></div>
+				<div id="load-more-compounds" class="load-more" style="display: none;"></div>
+				<div id="load-more-proteins" class="load-more" style="display: none;"></div>
+				<div id="load-more-crystals" class="load-more" style="display: none;"></div>
 			</div>
 			<div id="search-autocomplete"></div>
 		</div>
@@ -591,7 +595,7 @@ else if(isset($codid))
 					<button class="btn close btn-primary pull-right">OK</button>
 				</div>
 			</div>
-			<div class="dialog styled-headings" id="help-dialog" style="display: none;">
+			<div class="dialog custom-headings" id="help-dialog" style="display: none;">
 				<h2>Help</h2>
 				<script type="text/javascript">
 					if(isTouchDevice())
@@ -604,8 +608,8 @@ else if(isset($codid))
 				<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 				<h3>Subjects</h3>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>Drawing structural formulas</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>Drawing structural formulas</b></div>
+					<div class="expandable-content">
 						<p>You can draw structural formulas using the sketching component.</p>
 						<h4>Top toolbar</h4>
 						<p>The top toolbar contains all general editing tools. These tools include a clear all tool, an erase tool, a move atoms tool, an undo and redo tool, two selection tools, a clear selection tool, a center structure tool, a cleanup tool and a resolve tool. The last one converts the structural formula to a 3D molecule displayed in the model window.</p>
@@ -616,8 +620,8 @@ else if(isset($codid))
 					</div>
 				</div>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>Finding structures</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
+					<div class="expandable-content">
 						<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type whatever and enter or click the kind of structures you want to find:</p>
 						<ul>
 							<li><b>Compounds:</b> small molecules</li>
@@ -629,8 +633,8 @@ else if(isset($codid))
 					</div>
 				</div>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>3D model</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>3D model</b></div>
+					<div class="expandable-content">
 						<p>You can find the general 3D <i>Model</i> menu in the menubar.</p>
 						<h4>Reset</h4>
 						<p>This function sets the model position, zoom and rotation back to default.</p>
@@ -657,8 +661,8 @@ else if(isset($codid))
 					</div>
 				</div>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>Advanced tools</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>Advanced tools</b></div>
+					<div class="expandable-content">
 						<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
 						<h4>Link</h4>
 						<p>You can link to a specific compound, protein or crystal using URL parameters. This menu gives you two options:</p>
@@ -695,8 +699,8 @@ else if(isset($codid))
 					</div>
 				</div>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>Spectroscopy</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
+					<div class="expandable-content">
 						<p>The Spectroscopy menu item is located under <i>Model > Chemical</i> data in the menubar. This menuitem shows the spectroscopy dialog where you can choose from a number of spectra (if available)</p>
 						<ol>
 							<li>H1-NMR prediction</li>
@@ -712,14 +716,14 @@ else if(isset($codid))
 					</div>
 				</div>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>Custom GLmol display</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
+					<div class="expandable-content">
 						
 					</div>
 				</div>
 				<div class="expandable">
-					<div class="title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
-					<div class="content">
+					<div class="expandable-title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
+					<div class="expandable-content">
 						<p>Jmol provides several advanced functions. Some of these can be accessed via the Jmol menu in the menubar.</p>
 						<h4>Clear</h4>
 						<p>Clears all executed calculations and measurements.</p>
@@ -761,30 +765,27 @@ else if(isset($codid))
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog styled-headings" id="share-dialog" style="display: none;">
+			<div class="dialog custom-headings" id="share-dialog" style="display: none;">
 				<h2>Share</h2>
 				<div id="share-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
 				<h3>URL</h3>
 				<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
 				<div class="social no-select">
-					<div class="facebook share"></div>
-					<div class="twitter share"></div>
-					<div class="googleplus share"></div>
+					<div class="share share-facebook"></div>
+					<div class="share share-twitter"></div>
+					<div class="share share-googleplus"></div>
 				</div>
 				<div class="footer">
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog styled-headings" id="embed-dialog" style="display: none;">
+			<div class="dialog custom-headings" id="embed-dialog" style="display: none;">
 				<h2>Embed</h2>
 				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
 				<div class="alert-bar alert-info">Embedded proteins cannot be viewed on smartphones without WebGL</div>
 				<div class="expandable">
-					<div class="title no-select">
-						<b>Dimensions</b>
-						<i class="fa"></i>
-					</div>
-					<div class="content">
+					<div class="expandable-title no-select"><b>Dimensions</b><i class="fa"></i></div>
+					<div class="expandable-content">
 						<h4>Width</h4>
 						<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
 						<h4>Height</h4>

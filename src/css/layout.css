@@ -38,14 +38,14 @@ body.no-menu #menu
 	display: none;
 }
 
-#search-input
-{
-	width: 300px;
-}
-
 body.no-menu #progress
 {
 	top: 0;
+}
+
+body.no-menu #content
+{
+	top: 3px;
 }
 
 #content
@@ -55,11 +55,6 @@ body.no-menu #progress
 	left: 0;
 	right: 0;
 	bottom: 0;
-}
-
-body.no-menu #content
-{
-	top: 3px;
 }
 
 #sketcher

@@ -1,5 +1,6 @@
-/* form */
-
+/*
+form
+*/
 .btn:active, .btn-primary:active
 {
 	color: #fff !important;
@@ -12,37 +13,45 @@
 	color: #f00;
 }
 
-/* menu */
-
-.menu .dropdown-toggle:active
+/*
+menu
+*/
+.dropdown-toggle:active
 {
 	background-color: #fff !important;
 }
 
-ul.dropdown-menu > li > a:not(.disabled):active
+.dropdown-menu > li > a:not(.disabled):active
 {
 	color: #fff;
 	background: #f00;
 }
 
-/* sketcher */
-
-.toolbar .button:not(.disabled):active
+/*
+sketcher
+*/
+.tool-button:active
 {
 	opacity: 1.0;
 	background-color: #f00;
 }
 
-/* periodictable */
+.tool-button-disabled:active
+{
+	opacity: 0.3;
+	background-color: #000;
+}
 
-#periodictable .element:active
+/* periodictable */
+.pt-element:active
 {
 	background: #f00;
 }
 
-/* help */
-
-.expandable .title:active
+/*
+help
+*/
+.expandable-title:active
 {
 	color: #f00;
 }

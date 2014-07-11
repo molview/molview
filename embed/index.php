@@ -238,12 +238,12 @@ else if(isset($codid))
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 		<div id="glmol" class="render-engine full-cover" style="display: none;"></div>
 		
-		<div id="model-messages" class="layer full-cover dark-glass">
-			<div class="center">
+		<div id="model-messages" class="message-box full-cover dark-glass">
+			<div class="message-wrapper">
 				<div class="message">
-					<img class="process" src="../src/img/loading-white.svg" alt="" />
-					<img class="alert" src="../src/img/alert-white.svg" alt="" />
-					<p class="text"></p>
+					<img class="process-img" src="../src/img/loading-white.svg" alt="" />
+					<img class="alert-img" src="../src/img/alert-white.svg" alt="" />
+					<p class="message-text"></p>
 				</div>
 			</div>
 		</div>
