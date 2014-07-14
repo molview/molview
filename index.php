@@ -26,7 +26,7 @@ else if(isset($codid)) $title = "COD: ".$codid;
 //description
 $description = "MolView is a web application for drawing, searching and viewing chemical structures on desktops, tablets and smartphones.";
 if(isset($q) || isset($smiles) || isset($cid)) $description = "View this structure at http://molview.org";
-else if(isset($pdbid)) $description = "View this protein at http://molview.org";
+else if(isset($pdbid)) $description = "View this biomolecule at http://molview.org";
 
 //same as
 $same_as = "http://molview.hermanbergwerf.com";
@@ -102,7 +102,7 @@ else if(isset($codid))
 	
 	Query parameters:
 	- q = search query
-	- search = fast || pubchem || proteins || crystals
+	- search = fast || pubchem || rcsb || cod
 	- smiles = resolve SMILES string
 	- cid = load CID
 	- pdbid = load PDBID
@@ -133,7 +133,7 @@ else if(isset($codid))
 		<link rel="icon" href="src/img/icon/32.png" />
 		
 		<meta name="author" content="Herman Bergwerf" />
-		<meta name="keywords" content="herman,bergwerf,free,molecule,chemistry,protein,application,smartphone,tablet,chrome os,properties,sketch,draw,edit,view" />
+		<meta name="keywords" content="molview,free,molecules,chemistry,compounds,proteins,biomolecules,crystals,smartphone,tablet,chrome,spectroscopy,sketch,draw,edit,view" />
 		
 		<!-- Open Graph + Schema.org + Twitter Card -->
 		<meta name="twitter:card" content="summary">
@@ -171,7 +171,10 @@ else if(isset($codid))
 			}
 		?>
 		
-		<!-- CSS
+		<!-- CSS -->
+		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+		
 		<link type="text/css" rel="stylesheet" href="src/css/form.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/global.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/layout.css" media="screen" />
@@ -190,13 +193,11 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="src/css/periodictable.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/autocomplete.css" media="screen" />
-		 -->
-		 
-		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
-		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
-		<link type="text/css" rel="stylesheet" href="src/css/molview.min.css" media="screen" />
 		
-		<!-- JS
+		 
+		<!-- <link type="text/css" rel="stylesheet" href="src/min/molview.min.css" media="screen" /> -->
+		
+		<!-- JS -->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
@@ -248,9 +249,9 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/ChemicalData.js"></script>
 		<script type="text/javascript" src="src/js/Autocomplete.js"></script>
 		<script type="text/javascript" src="src/js/MolView.js"></script>
-		-->
 		
-		<script type="text/javascript" src="build/molview.min.js"></script>
+		
+		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
 		
 		<!-- Custom styling -->
 		<script type="text/javascript">
@@ -261,7 +262,6 @@ else if(isset($codid))
 			}
 			else
 			{
-				//document.write('<link type="text/css" rel="stylesheet" href="src/css/scrollbar.css" media="screen" />');
 				document.write('<link type="text/css" rel="stylesheet" href="src/css/menu-nice.css" media="screen" />');
 				document.write('<link type="text/css" rel="stylesheet" href="src/css/smooth.css" media="screen" />');
 				document.write('<link type="text/css" rel="stylesheet" href="src/css/hover.css" media="screen" />');
@@ -388,9 +388,9 @@ else if(isset($codid))
 					</div>
 					<div class="btn-group">
 						<button id="fast-search" class="btn btn-white" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
-						<button id="pubchem-search" class="btn btn-white" type="button" title="Search via PubChem">PubChem</button>
-						<button id="proteins-search" class="btn btn-white" type="button" title="Search for proteins">Proteins</button>
-						<button id="crystals-search" class="btn btn-white" type="button" title="Search for crystals">Crystals</button>
+						<button id="pubchem-search" class="btn btn-white" type="button" title="Find compounds via PubChem">Compounds</button>
+						<button id="rcsb-search" class="btn btn-white" type="button" title="Find biomolecules via RCSB">Biomolecules</button>
+						<button id="cod-search" class="btn btn-white" type="button" title="Find crystals via COD">Crystals</button>
 						<button id="show-search-results" class="btn btn-white last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
 						<button id="hide-search-results" class="btn btn-white last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
 					</div>
@@ -541,9 +541,9 @@ else if(isset($codid))
 			</div>
 			<div id="search-results" class="search-results full-cover dark-glass" style="display: none;">
 				<div class="container"></div>
-				<div id="load-more-compounds" class="load-more" style="display: none;"></div>
-				<div id="load-more-proteins" class="load-more" style="display: none;"></div>
-				<div id="load-more-crystals" class="load-more" style="display: none;"></div>
+				<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
+				<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
+				<div id="load-more-cod" class="load-more" style="display: none;"></div>
 			</div>
 			<div id="search-autocomplete"></div>
 		</div>
@@ -565,7 +565,7 @@ else if(isset($codid))
 					<li>Databases/REST API's
 						<ul>
 							<li><a class="link" href="http://cactus.nci.nih.gov/chemical/structure" target="_blank" title="NCI/CADD Chemical Identifier Resolver API">NCI/CADD Chemical Identifier Resolver</a></li>
-							<li><a class="link" href="http://www.rcsb.org/pdb/software/rest.do" target="_blank" title="RCSB Protein Databank API">RCSB Protein Databank</a></li>
+							<li><a class="link" href="http://www.rcsb.org/pdb/software/rest.do" target="_blank" title="RCSB Protein Databank API">RCSB Protein Data Bank</a></li>
 							<li><a class="link" href="https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html" target="_blank" title="The PubChem Project API">The PubChem Project</a></li>
 							<li><a class="link" href="http://www.crystallography.net/" target="_blank" title="COD">Crystallography Open Database</a></li>
 							<li><a class="link" href="http://www.nmrdb.org/" target="_blank" title="NMRdb.org">NMR Database</a></li>
@@ -625,14 +625,15 @@ else if(isset($codid))
 				<div class="expandable">
 					<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
 					<div class="expandable-content">
-						<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type whatever and enter or click the kind of structures you want to find:</p>
+						<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type what you are looking for and enter or click one of the search categories listed below.</p>
 						<ul>
-							<li><b>Compounds:</b> small molecules</li>
-							<li><b>Proteins:</b> biopolymers</li>
-							<li><b>Crystals:</b> crystal structures</li>
+							<li><b>Compounds:</b> small molecules from the PubChem database</li>
+							<li><b>Biomolecules:</b> biomolecules from the RCSB database</li>
+							<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
 						</ul>
-						<p>It's recommended to use only one or two words for crystal structures search due to database limitations.</p>
-						<p>You can show or hide search results using the leftmost button. Note that proteins search is absent on mobile browsers which do not support WebGL (because they cannot display proteins fast enough)</p>
+						<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
+						<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Biomolecules</i> or a COD ID via <i>Crystals</i>.</p>
+						<p>You can show or hide search results using the leftmost button. Note that <i>Biomolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display biomolecules anyway.</p>
 					</div>
 				</div>
 				<div class="expandable">
@@ -642,7 +643,7 @@ else if(isset($codid))
 						<h4>Reset</h4>
 						<p>This function sets the model position, zoom and rotation back to default.</p>
 						<h4>Representation</h4>
-						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Proteins are automatically drawn using ribbons.</p>
+						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Biomolecules are automatically drawn using ribbons.</p>
 						<h4>Engines</h4>
 						<p>You can choose from three different render engines. MolView uses GLmol, Jmol and ChemDoodle Web as render engines. MolView automatically switches to:</p>
 						<ol>
@@ -651,7 +652,7 @@ else if(isset($codid))
 							<li>ChemDoodle if you load a crystal structure</li>
 						</ol>
 						<p>You might want to switch back to GLmol after case 2 and 3.</p>
-						<p>Note that proteins are drawn slightly different in each engine. ChemDoodle Web provides the most sophisticated protein display. You should, however, avoid using ChemDoodle Web for large proteins.</p>
+						<p>Note that biomolecules are drawn slightly different in each engine. ChemDoodle Web provides the finest biomolecule display. You should, however, avoid using ChemDoodle Web for large biomolecules.</p>
 						<h4>Model transformation</h4>
 						<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle Web) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
 						<h4>Crystallography</h4>
@@ -668,7 +669,7 @@ else if(isset($codid))
 					<div class="expandable-content">
 						<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
 						<h4>Link</h4>
-						<p>You can link to a specific compound, protein or crystal using URL parameters. This menu gives you two options:</p>
+						<p>You can link to a specific compound, biomolecule or crystal using URL parameters. This menu gives you two options:</p>
 						<ul>
 							<li><b>Share:</b> use this option if you want to share the current MolView content including chemical structure, layout and molecule representation.</li>
 							<li><b>Embed:</b> use this option if you want to embed the current model into your website. To add the 3D view with the current structure to your website, you have to copy the given HTML code into your website.</li>
@@ -680,13 +681,13 @@ else if(isset($codid))
 							<li><b>Structural formula image:</b> PNG snapshot from sketcher</li>
 							<li><b>3D model image:</b> PNG snapshot from model window</li>
 							<li><b>MOL file:</b> exports a MDL Molfile from the 3D model<br/><i>(displayed if the 3D model is a common molecule)</i></li>
-							<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a protein)</i></li>
+							<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a biomolecule)</i></li>
 							<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model<br/><i>(displayed if the 3D model is a crystal structure)</i></li>
 						</ul>
 						<h4>Properties</h4>
 						<p>Depending on the situation, this function gives you more information about the current molecule.</p>
 						<ul>
-							<li><b>If the model is a protein:</b> hotlink to RCSB Protein Data Bank page</li>
+							<li><b>If the model is a biomolecule:</b> hotlink to RCSB Biomolecule Data Bank page</li>
 							<li><b>If the model is a crystal structure:</b> hotlink to Crystallography Open Database page</li>
 							<li><b>Else:</b> shows a dialog with a number of properties for the structural formula from the sketcher</li>
 						</ul>
@@ -785,7 +786,7 @@ else if(isset($codid))
 			<div class="dialog custom-headings" id="embed-dialog" style="display: none;">
 				<h2>Embed</h2>
 				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
-				<div class="alert-bar alert-info">Embedded proteins cannot be viewed on smartphones without WebGL</div>
+				<div class="alert-bar alert-info">Embedded biomolecules cannot be viewed on smartphones without WebGL</div>
 				<div class="expandable">
 					<div class="expandable-title no-select"><b>Dimensions</b><i class="fa"></i></div>
 					<div class="expandable-content">

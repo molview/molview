@@ -136,13 +136,13 @@ var Actions = {
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
-			if(Sketcher.CID) Loader.Compounds.structureSearch("cid", Sketcher.CID, "substructure");
+			if(Sketcher.CID) Loader.PubChem.structureSearch("cid", Sketcher.CID, "substructure");
 			else
 			{
 				var smiles;
 				try { smiles = Sketcher.getSMILES(); }
 				catch(error) { Messages.alert("smiles_load_error_force", error); return; }
-				Loader.Compounds.structureSearch("smiles", smiles, "substructure");
+				Loader.PubChem.structureSearch("smiles", smiles, "substructure");
 			}
 		}, "search");
 	},
@@ -153,13 +153,13 @@ var Actions = {
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
-			if(Sketcher.CID) Loader.Compounds.structureSearch("cid", Sketcher.CID, "superstructure");
+			if(Sketcher.CID) Loader.PubChem.structureSearch("cid", Sketcher.CID, "superstructure");
 			else
 			{
 				var smiles;
 				try { smiles = Sketcher.getSMILES(); }
 				catch(error) { Messages.alert("smiles_load_error_force", error); return; }
-				Loader.Compounds.structureSearch("smiles", smiles, "superstructure");
+				Loader.PubChem.structureSearch("smiles", smiles, "superstructure");
 			}
 		}, "search");
 	},
@@ -170,13 +170,13 @@ var Actions = {
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
-			if(Sketcher.CID) Loader.Compounds.structureSearch("cid", Sketcher.CID, "similarity");
+			if(Sketcher.CID) Loader.PubChem.structureSearch("cid", Sketcher.CID, "similarity");
 			else
 			{
 				var smiles;
 				try { smiles = Sketcher.getSMILES(); }
 				catch(error) { Messages.alert("smiles_load_error_force", error); return; }
-				Loader.Compounds.structureSearch("smiles", smiles, "similarity");
+				Loader.PubChem.structureSearch("smiles", smiles, "similarity");
 			}
 		}, "search");
 	},
@@ -325,7 +325,9 @@ var Actions = {
 		Model.JSmol.setPlatformSpeed(1);
 	},
 	
-	//searching
+	/*
+	Searching
+	*/
 	fast_search: function()
 	{
 		if($("#search-input").val() === "")
@@ -354,11 +356,11 @@ var Actions = {
 			$("#search-input").blur();
 			MolView.hideWindows();
 			Actions.hide_search_results();
-			Messages.process(Loader.Compounds.search, "search");
+			Messages.process(Loader.PubChem.search, "search");
 		}
 	},
 	
-	proteins_search: function()
+	rcsb_search: function()
 	{
 		if($("#search-input").val() === "")
 		{
@@ -370,11 +372,11 @@ var Actions = {
 			$("#search-input").blur();
 			MolView.hideWindows();
 			Actions.hide_search_results();
-			Messages.process(Loader.Proteins.search, "search");
+			Messages.process(Loader.RCSB.search, "search");
 		}
 	},
 	
-	crystals_search: function()
+	cod_search: function()
 	{
 		if($("#search-input").val() === "")
 		{
@@ -386,7 +388,7 @@ var Actions = {
 			$("#search-input").blur();
 			MolView.hideWindows();
 			Actions.hide_search_results();
-			Messages.process(Loader.Crystals.search, "search");
+			Messages.process(Loader.COD.search, "search");
 		}
 	},
 	
@@ -404,19 +406,19 @@ var Actions = {
 		$("#search-results").css("display", "none");
 	},
 	
-	load_more_compounds: function()
+	load_more_pubchem: function()
 	{
-		Loader.Compounds.loadNextSet();
+		Loader.PubChem.loadNextSet();
 	},
 	
-	load_more_proteins: function()
+	load_more_rcsb: function()
 	{
-		Loader.Proteins.loadNextSet();
+		Loader.RCSB.loadNextSet();
 	},
 	
-	load_more_crystals: function()
+	load_more_cod: function()
 	{
-		Loader.Crystals.loadNextSet();
+		Loader.COD.loadNextSet();
 	},
 	
 	//sketcher

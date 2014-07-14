@@ -13,7 +13,7 @@ var MolView = {
 	trigger: "click",
 	query: {},
 	loadDefault: true,
-	proteins: true,
+	biomolecules: true,
 	
 	init: function()
 	{		
@@ -27,8 +27,8 @@ var MolView = {
 		
 		if(this.mobile && !Detector.webgl)
 		{
-			this.proteins = false;
-			$("#proteins-search").hide();
+			this.biomolecules = false;
+			$("#biomolecules-search").hide();
 		}
 		
 		$("#menu > .inner").css("min-width", $("#main-menu").width() + $("#search").width() + 3);
@@ -233,15 +233,15 @@ var MolView = {
 			$("#jmol-render-minimal").on(this.trigger, Actions.jmol_render_minimal);
 			
 			$("#pubchem-search").on("click", Actions.pubchem_search);
-			$("#proteins-search").on("click", Actions.proteins_search);
-			$("#crystals-search").on("click", Actions.crystals_search);
+			$("#rcsb-search").on("click", Actions.rcsb_search);
+			$("#cod-search").on("click", Actions.cod_search);
 			
 			$("#show-search-results, #menu-show-search-results").on(this.trigger, Actions.show_search_results);
 			$("#hide-search-results, #menu-hide-search-results").on(this.trigger, Actions.hide_search_results);
 			
-			$("#load-more-compounds").on(this.trigger, Actions.load_more_compounds);
-			$("#load-more-proteins").on(this.trigger, Actions.load_more_proteins);
-			$("#load-more-crystals").on(this.trigger, Actions.load_more_crystals);
+			$("#load-more-pubchem").on(this.trigger, Actions.load_more_pubchem);
+			$("#load-more-rcsb").on(this.trigger, Actions.load_more_rcsb);
+			$("#load-more-cod").on(this.trigger, Actions.load_more_cod);
 			
 			$("#me-clean").on(this.trigger, Actions.clean);
 			$("#resolve").on(this.trigger, Actions.resolve);
@@ -281,8 +281,10 @@ var MolView = {
 						Actions.fast_search();
 					else if(MolView.query.search == "pubchem")
 						Actions.pubchem_search();
-					else if(MolView.query.search == "proteins")
-						Actions.proteins_search();
+					else if(MolView.query.search == "rcsb")
+						Actions.rcsb_search();
+					else if(MolView.query.search == "cod")
+						Actions.cod_search();
 				}
 				else Actions.fast_search();
 			}
@@ -295,15 +297,15 @@ var MolView = {
 			}
 			else if(key == "cid")
 			{
-				Loader.Compounds.loadCID(value, document.title);
+				Loader.PubChem.loadCID(value, document.title);
 			}
 			else if(key == "pdbid")
 			{
-				Loader.Proteins.loadPDBID(value, value.toUpperCase());
+				Loader.RCSB.loadPDBID(value, value.toUpperCase());
 			}
 			else if(key == "codid")
 			{
-				Loader.Crystals.loadCODID(value, document.title);
+				Loader.COD.loadCODID(value, document.title);
 			}
 			else if(key == "dialog")
 			{

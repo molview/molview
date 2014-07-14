@@ -69,15 +69,15 @@ var MolView = {
 				}
 				else if(key == "cid")
 				{
-					Loader.Compounds.loadCID(value, document.title);
+					Loader.PubChem.loadCID(value, document.title);
 				}
 				else if(key == "pdbid")
 				{
-					Loader.Proteins.loadPDBID(value, value.toUpperCase());
+					Loader.RCSB.loadPDBID(value, value.toUpperCase());
 				}
 				else if(key == "codid")
 				{
-					Loader.Crystals.loadCODID(value, document.title);
+					Loader.COD.loadCODID(value, document.title);
 				}
 				else if(key == "mode")
 				{

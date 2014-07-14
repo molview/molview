@@ -444,15 +444,14 @@ var Request = {
 				if(xhr !== undefined) xhr.abort();
 				xhr = AJAX({
 					type: "POST",
-					data:
-						"<orgPdbQuery>\
-						<queryType>org.pdb.query.simple.AdvancedKeywordQuery</queryType>\
-						<description>Proteins search from MolView</description>\
-						<keywords>" + text + "</keywords>\
-						</orgPdbQuery>",
+					data: "<orgPdbQuery>\
+<queryType>org.pdb.query.simple.AdvancedKeywordQuery</queryType>\
+<description>Text search for: " + text + "(molview.org)</description>\
+<keywords>" + text + "</keywords>\
+</orgPdbQuery>",
 					contentType: "application/x-www-form-urlencoded",
 					dataType: "text",
-					url: "http://www.pdb.org/pdb/rest/search?sortfield=rank",
+					url: "http://www.rcsb.org/pdb/rest/search?sortfield=rank",
 					success: function(data)
 					{
 						Progress.increment();

@@ -34,8 +34,7 @@ var Loader = {
 		});
 	},
 	
-	//Advanced compound search
-	Compounds: {
+	RCSB: {
 		
 		loadCID: function(cid, name)
 		{
@@ -88,8 +87,7 @@ var Loader = {
 		}
 	},
 	
-	//RCSB protein search
-	Proteins: {
+	RCSB: {
 		loadPDBID: function(pdbid, name)
 		{
 			Progress.clear();
@@ -105,7 +103,7 @@ var Loader = {
 					{
 						if(MolView.mobile)
 						{
-							Messages.alert("mobile_old_no_proteins");
+							Messages.alert("mobile_old_no_biomolecules");
 						}
 						else
 						{
@@ -132,7 +130,7 @@ var Loader = {
 										Messages.hide();
 									});
 								}
-							}, "protein");
+							}, "biomolecule");
 						}
 					}
 					else
@@ -149,11 +147,11 @@ var Loader = {
 				{
 					Messages.alert("no_webgl_support");
 				});
-			}, "protein");
+			}, "biomolecule");
 		}
 	},
 	
-	Crystals: {
+	COD: {
 		loadCODID: function(codid, name)
 		{
 			Progress.clear();

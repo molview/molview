@@ -12,11 +12,11 @@
 	overflow-x: hidden;
 }
 
-@media all and (min-width: 1200px)
+@media all and (min-width: 1250px)
 {
 	#search-autocomplete
 	{
-		width: 655px;
+		width: 710px;
 	}
 }
 
@@ -33,10 +33,10 @@
 	margin: 0;
 	padding: 5px;
 	
-	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
 }
 
-.autocomplete-protein { color: #a94442; background: #f2dede; }
+.autocomplete-biomolecule { color: #a94442; background: #f2dede; }
 .autocomplete-mineral { color: #31708f; background: #d9edf7; }
 .autocomplete-pubchem { color: #8a6d3b; background: #fcf8e3; }
 

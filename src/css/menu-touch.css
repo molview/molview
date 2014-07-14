@@ -14,16 +14,13 @@ li.menu-header
 {
 	padding: 5px 20px;
 	font-size: 10pt;
-	
-	border-top: 2px solid #333;
-	border-bottom: 2px solid #333;
 }
 
 .dropdown-menu > li > a
 {
 	padding: 7px 30px 7px 20px;
 	font-size: 14pt;
-	border-top: 1px solid #ccc;
+	border-top: 1px solid #eee;
 }
 
 .menu-header + li > a

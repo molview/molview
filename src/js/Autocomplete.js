@@ -9,15 +9,15 @@ var Autocomplete = {
 	//fuzzy-search algorithm parameters
 	PROTEINS_THRESHOLD: 0.05,
 	MINERALS_THRESHOLD: 0.005,
-	PROTEINS_NUMBER: 10,//max number of protein records in final mix
+	PROTEINS_NUMBER: 10,//max number of biomolecule records in final mix
 	MINERALS_NUMBER: 10,//max number of mineral records in final mix
 	PUBCHEM_NUMBER: 10,//max number of pubchem records in final mix
 	MIX_THRESHOLD: 0.05,
 	
 	minLength: 2,
 	maxLength: 32,
-	maxResults: 10,
-	proteins: undefined,
+	maxResults: 20,
+	biomolecules: undefined,
 	minerals: undefined,
 	
 	oldText: "",
@@ -27,7 +27,7 @@ var Autocomplete = {
 	
 	init: function()
 	{
-		this.proteins = new Fuse(commonProteins.proteins, {
+		this.biomolecules = new Fuse(commonBiomolecules.biomolecules, {
 			threshold: this.PROTEINS_THRESHOLD,
 			keys: ["name"]
 		});
@@ -84,8 +84,8 @@ var Autocomplete = {
 		else
 		{		
 			var mix = [];
-			if(MolView.proteins)
-				mix = this.proteins.search(text).slice(0, this.PROTEINS_NUMBER)
+			if(MolView.biomolecules)
+				mix = this.biomolecules.search(text).slice(0, this.PROTEINS_NUMBER)
 			  .concat(this.minerals.search(text).slice(0, this.MINERALS_NUMBER));
 			else mix = this.minerals.search(text);
 			
@@ -107,7 +107,7 @@ var Autocomplete = {
 		/*
 		Record structure:
 		<ul>
-			<li class="clearfix autocomplete-item autocomplete-protein">
+			<li class="clearfix autocomplete-item autocomplete-biomolecule">
 				<span class="autocomplete-label">DNA</span>
 				<span class="autocomplete-type"></span>
 			</li>
@@ -124,10 +124,10 @@ var Autocomplete = {
 		{
 			var li = $('<li class="clearfix autocomplete-item"></li>');
 			$('<span class="autocomplete-label"></span>').html(ucfirst(humanize(records[i].name))).appendTo(li);
-			if(records[i].pdbids)//protein
+			if(records[i].pdbids)//biomolecule
 			{
-				li.addClass("autocomplete-protein");
-				$('<span class="autocomplete-type"></span>').html(commonProteins.types[records[i].type] + " (Protein)").appendTo(li);
+				li.addClass("autocomplete-biomolecule");
+				$('<span class="autocomplete-type"></span>').html(commonBiomolecules.types[records[i].type] + " (Biomolecule)").appendTo(li);
 			}
 			else if(records[i].codid)//mineral
 			{
@@ -185,19 +185,19 @@ var Autocomplete = {
 			{
 				$("#search-input").val(ucfirst(humanize(this.records[this.i].name)));
 				
-				if(this.records[this.i].pdbids)//protein
+				if(this.records[this.i].pdbids)//biomolecule
 				{
-					Loader.Proteins.loadPDBID(this.records[this.i].pdbids[0],
+					Loader.RCSB.loadPDBID(this.records[this.i].pdbids[0],
 						ucfirst(humanize(this.records[this.i].name)));
 				}
 				else if(this.records[this.i].codid)//mineral
 				{
-					Loader.Crystals.loadCODID(this.records[this.i].codid,
+					Loader.COD.loadCODID(this.records[this.i].codid,
 						ucfirst(humanize(this.records[this.i].name)));
 				}
 				else//pubchem
 				{
-					Loader.Compounds.loadName(this.records[this.i].name);
+					Loader.PubChem.loadName(this.records[this.i].name);
 				}
 			}
 		}

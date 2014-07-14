@@ -11,7 +11,7 @@ var JmolScripts = {
 	van_der_Waals_Spheres: "select *; spacefill 100%;",
 	Wireframe: "select *; wireframe 0.03; spacefill 0.08;",
 	Line: "select *; wireframe on; spacefill off;",
-	Proteins: "select protein or nucleic; ribbon only; color ribbons structure",
+	Biomolecules: "select biomolecule or nucleic; ribbon only; color ribbons structure; display not solvent;",
 	resetLabels: "hover off; color measures [xFFFF00]",
 	clearChargeDisplay: 'measure off; measure delete; mo off; isosurface off; echo ""; label ""; select formalCharge <> 0; label %C; select *; dipole bond delete; dipole molecular delete; color cpk;'
 };
@@ -261,7 +261,7 @@ var Model = {
 				this.view.defineRepresentation = function()
 				{
 					var all = this.getAllAtoms();
-					if(Model.GLmol.loadBioAssembly && this.protein.biomtChains != "") all = this.getChain(all, this.protein.biomtChains);
+					if(Model.GLmol.loadBioAssembly && this.biomolecule.biomtChains != "") all = this.getChain(all, this.biomolecule.biomtChains);
 					var all_het = this.getHetatms(all);
 					var hetatm = this.removeSolvents(all_het);
 					var chain = Model.GLmol.chain;
@@ -338,7 +338,7 @@ var Model = {
 						}
 					}
 
-					if(Model.GLmol.loadBioAssembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
+					if(Model.GLmol.loadBioAssembly) this.drawSymmetryMates2(this.modelGroup, asu, this.biomolecule.biomtMatrices);
 					this.modelGroup.add(asu);
 				};
 				
@@ -420,7 +420,7 @@ var Model = {
 						Model.GLmol.view.zoomInto(Model.GLmol.view.getAllAtoms());
 						Model.GLmol.view.show();
 					}
-					else Model.GLmol.view.loadMoleculeStr(false, Model.data.pdb);//in order to center protein
+					else Model.GLmol.view.loadMoleculeStr(false, Model.data.pdb);//in order to center biomolecule
 					
 					Messages.hide();
 				}, "misc");
@@ -583,7 +583,7 @@ var Model = {
 				else if(res == "line")
 					script += JmolScripts.Line;
 					
-				if(Model.data.current == "PDB") script += JmolScripts.Proteins;
+				if(Model.data.current == "PDB") script += JmolScripts.Biomolecules;
 				
 				this.scriptWaitOutput(JmolScripts.resetLabels);
 				this.scriptWaitOutput(script);
@@ -697,7 +697,7 @@ var Model = {
 		
 		loadMEPSurface: function(translucent)
 		{
-			//exit when protein
+			//exit when biomolecule
 			if(Model.data.current == "PDB") return;
 			
 			MolView.makeModelVisible();
@@ -712,7 +712,7 @@ var Model = {
 		
 		displayCharge: function()
 		{
-			//exit when protein
+			//exit when biomolecule
 			if(Model.data.current == "PDB") return;
 			
 			MolView.makeModelVisible();
@@ -728,7 +728,7 @@ var Model = {
 		
 		displayDipoles: function()
 		{
-			//exit when protein
+			//exit when biomolecule
 			if(Model.data.current == "PDB") return;
 			
 			MolView.makeModelVisible();
@@ -744,7 +744,7 @@ var Model = {
 		
 		displayNetDipole: function()
 		{
-			//exit when protein
+			//exit when biomolecule
 			if(Model.data.current == "PDB") return;
 			
 			MolView.makeModelVisible();
@@ -760,7 +760,7 @@ var Model = {
 		
 		calculateEnergyMinimization: function()
 		{
-			//exit when protein
+			//exit when biomolecule
 			if(Model.data.current == "PDB") return;
 			
 			MolView.makeModelVisible();
@@ -803,7 +803,7 @@ var Model = {
 			{
 				this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width(), $("#model").height());
 				this.view.specs.backgroundColor = "#000000";
-				this.view.specs.proteins_ribbonCartoonize = true;
+				this.view.specs.biomolecules_ribbonCartoonize = true;
 				this.view.specs.crystals_unitCellColor = "#ffffff";
 				Model._setRenderEngine("CDW");
 				this.ready = true;

@@ -163,7 +163,9 @@ li.menu-header
 #search
 {
 	float: right;
-	width: 655px;
+	width: 710px;
+	height: 40px;
+	overflow: hidden;
 }
 
 #search-input
@@ -182,8 +184,8 @@ li.menu-header
 /* absolute dimensions in order to make equal on all browsers */
 #search-input { width: 300px; }
 #fast-search { width: 40px; }
-#pubchem-search { width: 100px; }
-#proteins-search { width: 90px; }
-#crystals-search { width: 85px; }
+#pubchem-search { width: 120px; }
+#rcsb-search { width: 125px; }
+#cod-search { width: 85px; }
 #show-search-results { width: 40px; }
 #hide-search-results { width: 40px; }

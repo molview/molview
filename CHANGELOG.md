@@ -13,7 +13,13 @@ Revisions:
   - Added `min-width: 550px;` for `#edit-tools > .inner`
   - Removed model onload layout for CODID
   - CSS efficiency review
-  > JS and CSS minification
+  - JS and CSS minification
+  - Renamed protein to biomolecule
+  - Changed search query to search = fast || pubchem || rcsb || cod
+  - Renamed Loader.Compounds to Loader.PubChem
+  - Renamed Loader.Biomolecules to Loader.RCSB
+  - Renamed Loader.Crystals to Loader.COD
+  > SVG minification
 
 Features:
 

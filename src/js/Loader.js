@@ -48,7 +48,7 @@ var Loader = {
 	},
 	
 	//PubChem wrapper
-	Compounds: {
+	PubChem: {
 		i: 0,
 		step: 5,
 		loading: false,
@@ -86,7 +86,7 @@ var Loader = {
 				if(window.getSelection().type != "Range")
 				{
 					Actions.hide_search_results();
-					Loader.Compounds.loadCID($(this).data("cid"), $(this).data("title"));
+					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
 				}
 			});
 		},
@@ -98,13 +98,13 @@ var Loader = {
 			Request.PubChem.description(cids, function(data)
 			{				
 				for(var i = 0; i < data.InformationList.Information.length; i++)
-					Loader.Compounds.write(data.InformationList.Information[i]);
+					Loader.PubChem.write(data.InformationList.Information[i]);
 				
-				if(Loader.Compounds.i >= Request.PubChem.data.length)
+				if(Loader.PubChem.i >= Request.PubChem.data.length)
 					$(".load-more").css("display", "none");
-				else $("#load-more-compounds").removeClass("load-more-progress");
+				else $("#load-more-pubchem").removeClass("load-more-progress");
 				
-				Loader.Compounds.loading = false;
+				Loader.PubChem.loading = false;
 				
 				Progress.complete();
 			},
@@ -127,7 +127,7 @@ var Loader = {
 				this.loadCIDS(Request.PubChem.data.slice(start, end));
 				this.i = end;
 				
-				$("#load-more-compounds").addClass("load-more-progress");
+				$("#load-more-pubchem").addClass("load-more-progress");
 			}
 		},
 		
@@ -137,7 +137,7 @@ var Loader = {
 			
 			if(!isNaN(text))//is number
 			{
-				Loader.Compounds.loadCID(text);
+				Loader.PubChem.loadCID(text);
 			}
 			else
 			{
@@ -148,15 +148,15 @@ var Loader = {
 				{
 					Messages.hide();
 					
-					$("#load-more-compounds").css("display", "block");
-					$("#load-more-proteins").css("display", "none");
-					$("#load-more-crystals").css("display", "none");
+					$("#load-more-pubchem").css("display", "block");
+					$("#load-more-rcsb").css("display", "none");
+					$("#load-more-cod").css("display", "none");
 					
 					$("#search-results .container").empty();
 					Actions.show_search_results();
 					
-					Loader.Compounds.i = 0;
-					Loader.Compounds.loadNextSet();
+					Loader.PubChem.i = 0;
+					Loader.PubChem.loadNextSet();
 				},
 				function()
 				{
@@ -183,19 +183,19 @@ var Loader = {
 						
 						Messages.hide();
 						
-						$("#load-more-compounds").css("display", "block");
-						$("#load-more-proteins").css("display", "none");
+						$("#load-more-pubchem").css("display", "block");
+						$("#load-more-rcsb").css("display", "none");
 						
 						$("#search-results .container").empty();
 						Actions.show_search_results();
 						
-						Loader.Compounds.i = 0;
-						Loader.Compounds.loadNextSet();
+						Loader.PubChem.i = 0;
+						Loader.PubChem.loadNextSet();
 					},
 					function(newlistkey)//wait
 					{
 						listkey = newlistkey;
-						window.setTimeout(lookup, Loader.Compounds.ssli);
+						window.setTimeout(lookup, Loader.PubChem.ssli);
 					},
 					function()//error
 					{
@@ -220,7 +220,7 @@ var Loader = {
 			{
 				Request.PubChem.nameToCID(name, function(cid)
 				{
-					Loader.Compounds._loadCID(cid, name);
+					Loader.PubChem._loadCID(cid, name);
 				},
 				function()
 				{
@@ -238,7 +238,7 @@ var Loader = {
 			
 			Messages.process(function()
 			{
-				Loader.Compounds._loadCID(cid, name);
+				Loader.PubChem._loadCID(cid, name);
 			}, "compound");
 		},
 		
@@ -322,7 +322,7 @@ var Loader = {
 	},
 	
 	//RCSB wrapper
-	Proteins: {
+	RCSB: {
 		i: 0,
 		step: 10,
 		loading: false,
@@ -360,7 +360,7 @@ var Loader = {
 				if(window.getSelection().type != "Range")
 				{
 					Actions.hide_search_results();
-					Loader.Proteins.loadPDBID($(this).data("pdbid"));
+					Loader.RCSB.loadPDBID($(this).data("pdbid"));
 				}
 			});
 		},
@@ -372,13 +372,13 @@ var Loader = {
 			Request.RCSB.information(pdbids, function(data)
 			{
 				for(var i = 0; i < data.dataset.length; i++)
-					Loader.Proteins.write(data.dataset[i]);
+					Loader.RCSB.write(data.dataset[i]);
 				
-				if(Loader.Proteins.i >= Request.RCSB.data.length)
+				if(Loader.RCSB.i >= Request.RCSB.data.length)
 					$(".load-more").css("display", "none");
-				else $("#load-more-proteins").removeClass("load-more-progress");
+				else $("#load-more-rcsb").removeClass("load-more-progress");
 				
-				Loader.Proteins.loading = false;
+				Loader.RCSB.loading = false;
 				
 				Progress.complete();
 				Progress.hide();
@@ -402,7 +402,7 @@ var Loader = {
 				this.loadPDBIDS(Request.RCSB.data.slice(start, end));
 				this.i = end;
 				
-				$("#load-more-proteins").addClass("load-more-progress");
+				$("#load-more-rcsb").addClass("load-more-progress");
 			}
 		},
 		
@@ -413,7 +413,7 @@ var Loader = {
 			
 			if(text.length == 4 && parseInt(text[0]) > 0)//could be PDBID
 			{
-				Loader.Proteins.loadPDBID(text);
+				Loader.RCSB.loadPDBID(text);
 			}
 			else
 			{
@@ -424,15 +424,15 @@ var Loader = {
 				{
 					Messages.hide();
 					
-					$("#load-more-compounds").css("display", "none");
-					$("#load-more-proteins").css("display", "block");
-					$("#load-more-crystals").css("display", "none");
+					$("#load-more-pubchem").css("display", "none");
+					$("#load-more-rcsb").css("display", "block");
+					$("#load-more-cod").css("display", "none");
 					
 					$("#search-results .container").empty();
 					Actions.show_search_results();
 					
-					Loader.Proteins.i = 0;
-					Loader.Proteins.loadNextSet();
+					Loader.RCSB.i = 0;
+					Loader.RCSB.loadNextSet();
 				},
 				function()
 				{
@@ -457,7 +457,7 @@ var Loader = {
 					{
 						if(MolView.mobile)
 						{
-							Messages.alert("mobile_old_no_proteins");
+							Messages.alert("mobile_old_no_biomolecules");
 						}
 						else
 						{
@@ -473,7 +473,7 @@ var Loader = {
 									Progress.complete();
 									Messages.hide();
 									
-									Messages.alert("sketcher_no_proteins");
+									Messages.alert("sketcher_no_biomolecules");
 									Loader.lastQuery.type = "pdbid";
 									Loader.lastQuery.content = "" + pdbid;
 									History.push("pdbid", pdbid);
@@ -491,13 +491,13 @@ var Loader = {
 										Progress.complete();
 										Messages.hide();
 										
-										Messages.alert("sketcher_no_proteins");
+										Messages.alert("sketcher_no_biomolecules");
 										Loader.lastQuery.type = "pdbid";
 										Loader.lastQuery.content = "" + pdbid;
 										History.push("pdbid", pdbid);
 									});
 								}
-							}, "protein");
+							}, "biomolecule");
 						}
 					}
 					else
@@ -510,7 +510,7 @@ var Loader = {
 						Progress.complete();
 						Messages.hide();
 						
-						Messages.alert("sketcher_no_proteins");
+						Messages.alert("sketcher_no_biomolecules");
 						Loader.lastQuery.type = "pdbid";
 						Loader.lastQuery.content = "" + pdbid;
 						History.push("pdbid", pdbid);
@@ -520,12 +520,12 @@ var Loader = {
 				{
 					Messages.alert("load_fail");
 				});
-			}, "protein");
+			}, "biomolecule");
 		}
 	},
 	
 	//COD wrapper
-	Crystals: {
+	COD: {
 		i: 0,
 		step: 10,
 		loading: false,
@@ -569,7 +569,7 @@ var Loader = {
 				if(window.getSelection().type != "Range")
 				{
 					Actions.hide_search_results();
-					Loader.Crystals.loadCODID($(this).data("codid"), $(this).data("title"));
+					Loader.COD.loadCODID($(this).data("codid"), $(this).data("title"));
 				}
 			});
 		},
@@ -581,13 +581,13 @@ var Loader = {
 			Request.COD.information(codids, function(data)
 			{
 				for(var i = 0; i < data.records.length; i++)
-					Loader.Crystals.write(data.records[i]);
+					Loader.COD.write(data.records[i]);
 				
-				if(Loader.Crystals.i >= Request.COD.data.length)
+				if(Loader.COD.i >= Request.COD.data.length)
 					$(".load-more").css("display", "none");
-				else $("#load-more-crystals").removeClass("load-more-progress");
+				else $("#load-more-cod").removeClass("load-more-progress");
 				
-				Loader.Crystals.loading = false;
+				Loader.COD.loading = false;
 				
 				Progress.complete();
 			},
@@ -610,7 +610,7 @@ var Loader = {
 				this.loadCODIDS(Request.COD.data.slice(start, end));
 				this.i = end;
 				
-				$("#load-more-crystals").addClass("load-more-progress");
+				$("#load-more-cod").addClass("load-more-progress");
 			}
 		},
 		
@@ -620,7 +620,7 @@ var Loader = {
 			
 			if(!isNaN(text) && text.length == 7)//is number with 7 digits
 			{
-				Loader.Crystals.loadCODID(text);
+				Loader.COD.loadCODID(text);
 			}
 			else
 			{
@@ -631,15 +631,15 @@ var Loader = {
 				{
 					Messages.hide();
 					
-					$("#load-more-compounds").css("display", "none");
-					$("#load-more-proteins").css("display", "none");
-					$("#load-more-crystals").css("display", "block");
+					$("#load-more-pubchem").css("display", "none");
+					$("#load-more-rcsb").css("display", "none");
+					$("#load-more-cod").css("display", "block");
 					
 					$("#search-results .container").empty();
 					Actions.show_search_results();
 					
-					Loader.Crystals.i = 0;
-					Loader.Crystals.loadNextSet();
+					Loader.COD.i = 0;
+					Loader.COD.loadNextSet();
 				},
 				function()
 				{
