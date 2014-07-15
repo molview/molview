@@ -83,7 +83,7 @@
 .chemprop-loading
 {
 	cursor: progress;
-	background-image: url(../img/loading-black.svg);
+	background-image: url(../img/gears-black.svg);
 	background-size: 32px;
 	background-repeat: no-repeat;
 	background-position: center;

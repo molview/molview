@@ -22,6 +22,11 @@ Revisions:
   - Moved message SVG images to CSS
   - SVG minification
   - Light sketcher toolbars
+  - Replace '/' with '%5C' for Chemical Identifier Resolver lookup
+  - Sketcher selection restyling
+  > ChemicalData via PubChem when possible
+  > Alert message with dark foreground
+  > Progress message in small bar
 
 Features:
 
@@ -32,7 +37,10 @@ Features:
   - JSmol middle mouse button dragging
   - Fast search auto-complete to CID, PDBID or CODID
   - Model background switch
-  - ChemSpider resolver fallback
+  - Export images with alpha channel
+  > Functional groups in Sketcher
+  > 2D/3D conformation via PubChem first
+  > CHEMBIOGRID fallback for Chemical Identifier Resolver
 
 ## 2.1.3 (2014-07-07)
 

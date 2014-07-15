@@ -238,16 +238,9 @@ ChemicalView.prototype.drawMol = function ()
 
 	this.ctx = this.canvas.getContext("2d");
 
-	/* if(this.android)
-	{
-		this.ctx.fillStyle = "white";
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-	else
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); */
-	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	this.ctx.fillStyle = "white";
 	this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 	this.ctx.lineWidth = 1.5;
 
@@ -275,7 +268,7 @@ ChemicalView.prototype.drawMol = function ()
 		var p1 = this.wtos(at);
 		if(at.ms & M_CE)
 		{
-			this.ctx.fillStyle = "#b2ffb2";
+			this.ctx.fillStyle = this.selectionFillStyle;
 			this.ctx.beginPath();
 			this.ctx.arc(p1.x, p1.y, (1.4 / 6) * this.kfc, 0, 2 * Math.PI);
 			this.ctx.fill();
@@ -304,7 +297,8 @@ ChemicalView.prototype.drawMol = function ()
 			this.ctx.restore();
 		}
 	}
-	/* MODIFIED: don't draw when eraser is active or when <2 atoms are selected */
+	/* MODIFIED: don't draw rotateAroundPoint
+	when eraseris active or when <2 atoms are selected */
 	if(this.rotateAroundPoint != null
 		&& (!this.activeTool || this.activeTool.toolType != "eraser"))
 	{
@@ -446,7 +440,7 @@ ChemicalView.prototype.drawMol = function ()
 	//
 	if(this.lassoPath.length > 0)
 	{
-		this.ctx.fillStyle = "rgba(100, 100, 100, 0.5)"
+		this.ctx.fillStyle = this.selectAreaFillStyle;
 		this.ctx.strokeStyle = "#000000"
 		this.ctx.beginPath();
 		for(var i = 0; i < this.lassoPath.length; i++)

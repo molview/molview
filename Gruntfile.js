@@ -270,14 +270,6 @@ src/css/embed.css\n\
 			options:
 			{
 				plugins: [
-					{ cleanupIDs: true },
-					{ convertColors: true },
-					{ convertPathData: true },
-					{ convertTransform: true },
-					{ convertShapeToPath: true },
-					{ mergePaths: true },
-					{ removeViewBox: true },
-					{ removeUselessStrokeAndFill: true }
 				]
 			},
 			dist:

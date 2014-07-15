@@ -10,8 +10,8 @@ var JmolScripts = {
 	van_der_Waals_Spheres: "select *; spacefill 100%;",
 	Wireframe: "select *; wireframe 0.03; spacefill 0.08;",
 	Line: "select *; wireframe on; spacefill off;",
-	Biomolecules: "select biomolecule or nucleic; ribbon only; color ribbons structure; display not solvent;",
-	resetLabels: "hover off; color measures [xFFFF00]",
+	Biomolecules: "select protein or nucleic; ribbon only; color ribbons structure; display not solvent;",
+	resetLabels: "hover off; color measures magenta; font measure 18;",
 	clearChargeDisplay: 'measure off; measure delete; mo off; isosurface off; echo ""; label ""; select formalCharge <> 0; label %C; select *; dipole bond delete; dipole molecular delete; color cpk;'
 };
 
@@ -25,11 +25,12 @@ var Model = {
 	
 	engine: null,//"GLmol", "JSmol", "CDW"
 	representation: "balls",//balls || stick || vdw || wireframe || line
+	background: "black",
 	
 	init: function(cb, rnd)
 	{
 		if(MolView.loadDefault)
-			this.data.mol = defaultMol3D || "";
+			this.data.mol = (defaultMol3D || "");
 		
 		this.setRenderEngine(rnd || "GLmol", cb);
 	},
@@ -108,35 +109,56 @@ var Model = {
 		this.engine = engine;
 		this.resize();
 		
+		if(this.engine == "GLmol") this.GLmol.setBackground(this.background);
+		else if(this.engine == "JSmol") this.JSmol.setBackground(this.background);
+		else if(this.engine == "CDW") this.CDW.setBackground(this.background);
+		
 		/* if loadContent returns true, the render engine
 		has updated the representation already */
-		if(!this.loadContent()) this.setRepresentation(this.representation);
+		if(!this.loadContent())
+		{
+			if(this.engine == "GLmol") this.GLmol.setRepresentation();
+			else if(this.engine == "JSmol") this.JSmol.setRepresentation(this.representation);
+			else if(this.engine == "CDW") this.CDW.setRepresentation(this.representation);
+		}
 	},
 
 	setRepresentation: function(res)
 	{
+		$(".r-mode").removeClass("checked");
+		if(res == "balls") $("#model-balls").addClass("checked");
+		else if(res == "stick") $("#model-stick").addClass("checked");
+		else if(res == "vdw") $("#model-vdw").addClass("checked");
+		else if(res == "wireframe") $("#model-wireframe").addClass("checked");
+		else if(res == "line") $("#model-line").addClass("checked");
+			
 		this.representation = res;
 		
 		window.setTimeout((function()
 		{
-			$(".r-mode").removeClass("checked");
-			if(res == "balls") $("#model-balls").addClass("checked");
-			else if(res == "stick") $("#model-stick").addClass("checked");
-			else if(res == "vdw") $("#model-vdw").addClass("checked");
-			else if(res == "wireframe") $("#model-wireframe").addClass("checked");
-			else if(res == "line") $("#model-line").addClass("checked");
-			
 			if(this.engine == "GLmol") this.GLmol.setRepresentation();
-			else if(this.engine == "JSmol") this.JSmol.setRepresentation(res);
-			else if(this.engine == "CDW") this.CDW.setRepresentation(res);
+			else if(this.engine == "JSmol") this.JSmol.setRepresentation(this.representation);
+			else if(this.engine == "CDW") this.CDW.setRepresentation(this.representation);
 		}).bind(this), 300);
+	},
+	
+	setBackground: function(color)
+	{
+		$(".model-bg").removeClass("checked");
+		$("#model-bg-" + color).addClass("checked");
+		
+		this.background = color;
+		
+		if(this.engine == "GLmol") return this.GLmol.setBackground(this.background);
+		else if(this.engine == "JSmol") return this.JSmol.setBackground(this.background);
+		else if(this.engine == "CDW") return this.CDW.setBackground(this.background);
 	},
 	
 	loadContent: function()
 	{
-		     if(this.data.current == "MOL") return this.loadMOL(this.data.mol);
-		else if(this.data.current == "PDB") return this.loadPDB(this.data.pdb);
-		else if(this.data.current == "CIF") return this.loadCIF(this.data.cif);
+		     if(this.data.current == "MOL") return this._loadMOL(this.data.mol);
+		else if(this.data.current == "PDB") return this._loadPDB(this.data.pdb);
+		else if(this.data.current == "CIF") return this._loadCIF(this.data.cif);
 		else return false;
 	},
 	
@@ -148,8 +170,12 @@ var Model = {
 		
 		//show some Jmol menu options
 		$(".jmol-script").removeClass("disabled");
-			
-		//load molecule
+		
+		this._loadMOL(mol);
+	},
+	
+	_loadMOL: function(mol)
+	{
 		if(this.engine == "GLmol") return this.GLmol.loadMOL(mol);
 		else if(this.engine == "JSmol") return this.JSmol.loadMOL(mol);
 		else if(this.engine == "CDW") return this.CDW.loadMOL(mol);
@@ -166,7 +192,11 @@ var Model = {
 		//hide some Jmol menu options
 		$(".jmol-script").addClass("disabled");
 		
-		//load molecule
+		this._loadPDB(pdb);
+	},
+	
+	_loadPDB: function(pdb, exitload)
+	{
 		if(this.engine == "GLmol") return this.GLmol.loadPDB(pdb);
 		else if(this.engine == "JSmol") return this.JSmol.loadPDB(pdb);
 		else if(this.engine == "CDW") return this.CDW.loadPDB(pdb);
@@ -181,7 +211,11 @@ var Model = {
 		//show some Jmol menu options
 		$(".jmol-script").removeClass("disabled");
 		
-		//load molecule
+		this._loadCIF(cif, cell);
+	},
+	
+	_loadCIF: function(cif, cell)
+	{
 		cell = cell || [1, 1, 1];
 		if(this.engine == "GLmol")
 		{
@@ -237,6 +271,11 @@ var Model = {
 		return blob;
 	},
 	
+	getDataExstension: function()
+	{
+		return Model.data.current;
+	},
+	
 	GLmol: {
 		ready: false,
 		view: undefined,
@@ -247,11 +286,14 @@ var Model = {
 			representation: "ribbon",//ribbon || cylinders || trace || tube || bonds
 			coloring: "ss",//ss || spectrum || chain || bfactor || polarity
 		},
+		currentModel: "",
+		
 		init: function(cb)
 		{
 			if(Detector.canvas)
 			{
 				this.view = new GLmol("glmol", true, !Detector.webgl, MolView.mobile ? 1.5 : 1.0);
+				this.view.loadMoleculeStr(false, "");
 				
 				this.container = $("#glmol");
 				this.canvas = this.container.children("canvas").first();
@@ -260,7 +302,7 @@ var Model = {
 				this.view.defineRepresentation = function()
 				{
 					var all = this.getAllAtoms();
-					if(Model.GLmol.loadBioAssembly && this.biomolecule && this.biomolecule.biomtChains != "") all = this.getChain(all, this.biomolecule.biomtChains);
+					if(Model.GLmol.loadBioAssembly && this.protein.biomtChains != "") all = this.getChain(all, this.protein.biomtChains);
 					var all_het = this.getHetatms(all);
 					var hetatm = this.removeSolvents(all_het);
 					var chain = Model.GLmol.chain;
@@ -300,44 +342,44 @@ var Model = {
 					}
 
 					var target = this.modelGroup;
-					this.canvas_vdw = false;
+					this.canvasVDW = false;
 					
 					if(!Model.GLmol.loadBioAssembly)
 					{
 						if(Model.representation == "balls")
 						{
-							this.canvas_atom_radius = 0.4;
-							this.canvas_bond_width = 0.3;
+							this.canvasAtomRadius = 0.4;
+							this.canvasBondWidth = 0.3;
 							this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius * 5, true, true, 0.3);
 						}
 						else if(Model.representation == "stick")
 						{
-							this.canvas_atom_radius = 0.3;
-							this.canvas_bond_width = 0.6;
+							this.canvasAtomRadius = 0.3;
+							this.canvasBondWidth = 0.6;
 							this.drawBondsAsStick(target, hetatm, this.cylinderRadius, this.cylinderRadius, true);
 						}
 						else if(Model.representation == "vdw")
 						{
-							this.canvas_vdw = true;
-							this.canvas_atom_radius = 0.5;
-							this.canvas_bond_width = 0.3;
+							this.canvasVDW = true;
+							this.canvasAtomRadius = 0.5;
+							this.canvasBondWidth = 0.3;
 							this.drawAtomsAsSphere(target, hetatm, this.sphereRadius);
 						}
 						else if(Model.representation == "wireframe")
 						{
-							this.canvas_atom_radius = 0.2;
-							this.canvas_bond_width = 0.1;
+							this.canvasAtomRadius = 0.2;
+							this.canvasBondWidth = 0.1;
 							this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, true, 0.05);
 						}
 						else if(Model.representation == "line")
 						{
-							this.canvas_atom_radius = 0.05;
-							this.canvas_bond_width = 0.1;
+							this.canvasAtomRadius = 0.05;
+							this.canvasBondWidth = 0.1;
 							this.drawBondsAsLine(target, hetatm, 1);
 						}
 					}
 
-					if(Model.GLmol.loadBioAssembly && this.biomolecule) this.drawSymmetryMates2(this.modelGroup, asu, this.biomolecule.biomtMatrices);
+					if(Model.GLmol.loadBioAssembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
 					this.modelGroup.add(asu);
 				};
 				
@@ -380,24 +422,40 @@ var Model = {
 			if(this.view !== undefined)
 			{
 				this.view.rebuildScene();
-				this.view.setBackground("#000000");
 				this.view.show();
 			}
 		},
 		
+		setBackground: function(color)
+		{
+			this.view.setBackground(color == "white" ? 0xffffff : 0x000000);
+			this.view.show();
+		},
+		
 		loadMOL: function(mol)
 		{
+			if(this.currentModel == mol) return;
+			
 			if(this.view !== undefined)
+			{
+				this.currentModel = mol;
+				
+				this.loadBioAssembly = false;
+				$("#bio-assembly").removeClass("checked");
 				this.view.loadMoleculeStr(false, mol);
+			}
 		},
 		
 		loadPDB: function(pdb)
 		{
+			if(this.currentModel == pdb) return;
+			
 			if(this.view !== undefined)
 			{
+				this.currentModel = pdb;
+				
 				this.loadBioAssembly = false;
 				$("#bio-assembly").removeClass("checked");
-				
 				this.view.loadMoleculeStr(false, pdb);
 			}
 		},
@@ -415,7 +473,6 @@ var Model = {
 					if(Model.GLmol.loadBioAssembly)
 					{
 						Model.GLmol.view.rebuildScene();
-						Model.GLmol.view.setBackground("#000000");
 						Model.GLmol.view.zoomInto(Model.GLmol.view.getAllAtoms());
 						Model.GLmol.view.show();
 					}
@@ -456,15 +513,18 @@ var Model = {
 		{
 			if(this.view !== undefined)
 			{
-				if(Detector.webgl)
-				{
-					this.view.show();
-					return this.view.renderer.domElement.toDataURL("image/png");
-				}
-				else
-				{
-					return document.getElementById("glmol").firstChild.toDataURL("image/png");
-				}
+				this.view.setBackground(0x000000, 0);
+				this.view.show();
+				
+				var dataURL = "";
+				
+				if(!this.view.webglFailed) dataURL = this.view.renderer.domElement.toDataURL("image/png");
+				else dataURL = document.getElementById("glmol").firstChild.toDataURL("image/png");
+				
+				this.view.setBackground(Model.background == "white" ? 0xffffff : 0x000000);
+				this.view.show();
+				
+				return dataURL;
 			}
 			else return "";
 		}
@@ -475,6 +535,7 @@ var Model = {
 		readyCB: undefined,//only used in constructor
 		platformSpeed: 4,
 		picking: "OFF",
+		currentModel: "",
 		
 		init: function(cb)
 		{
@@ -498,7 +559,7 @@ var Model = {
 						disableInitialConsole: true,
 						use: "HTML5",
 						j2sPath: window.location.origin + window.location.pathname + "src/js/lib/jmol/j2s",
-						script: 'frank off; background black; unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate"; set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false; set hoverDelay 0.001; hover off; set MessageCallback "Model.JSmol.onMessage";',
+						script: 'frank off; background ' + Model.background + '; unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate"; set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false; set hoverDelay 0.001; hover off; font measure 18; set MessageCallback "Model.JSmol.onMessage";',
 						readyFunction: Model.JSmol.onReady.bind(Model.JSmol),
 						console: "none"
 					});
@@ -584,16 +645,25 @@ var Model = {
 					
 				if(Model.data.current == "PDB") script += JmolScripts.Biomolecules;
 				
-				this.scriptWaitOutput(JmolScripts.resetLabels);
 				this.scriptWaitOutput(script);
 				this.scriptWaitOutput(JmolScripts.resetLabels);
 			}
 		},
 		
-		loadMOL: function(mol)
+		setBackground: function(color)
 		{
 			if(this.ready)
+				Model.JSmol.scriptWaitOutput("background " + color + "; refresh;");
+		},
+		
+		loadMOL: function(mol)
+		{
+			if(this.currentModel == mol) return;
+			
+			if(this.ready)
 			{
+				this.currentModel = mol;
+				
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
 				this.setPicking(this.picking);
@@ -604,9 +674,13 @@ var Model = {
 		
 		loadPDB: function(pdb)
 		{
+			if(this.currentModel == pdb) return;
+			
 			if(this.ready)
 			{
-				this.script("set picking off;");
+				this.currentModel = pdb;
+				
+				this.scriptWaitOutput("set picking off;");
 				this._setPlatformSpeed(Model.JSmol.platformSpeed);
 				
 				JSmol.__loadModel(pdb);
@@ -618,8 +692,12 @@ var Model = {
 		
 		loadCIF: function(cif, cell)
 		{
+			if(this.currentModel == cif) return;
+			
 			if(this.ready)
 			{
+				this.currentModel = cif;
+				
 				cell = cell || [1, 1, 1];
 				this.scriptWaitOutput("set defaultLattice {" + cell.join(" ") + "};");
 				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
@@ -630,13 +708,6 @@ var Model = {
 				
 				return true;
 			}
-		},
-		
-		toDataURL: function()
-		{
-			if(this.ready)
-				return document.getElementById("JSmol_canvas2d").toDataURL("image/png");
-			else return "";
 		},
 		
 		setPlatformSpeed: function(i)
@@ -650,8 +721,8 @@ var Model = {
 		
 		_setPlatformSpeed: function(i)
 		{
-			this.script("set antialiasDisplay " + (i <= 2 ? "false" : "true") + "; set platformSpeed " + i + ";");
-			this.script(JmolScripts.resetLabels);
+			this.scriptWaitOutput("set antialiasDisplay " + (i <= 2 ? "false" : "true") + "; set platformSpeed " + i + ";");
+			this.scriptWaitOutput(JmolScripts.resetLabels);
 		},
 		
 		safeCallback: function(cb, what, show)
@@ -721,7 +792,7 @@ var Model = {
 			Model.JSmol.safeCallback(function()
 			{
 				if(!charge_calculated) Model.JSmol.calculatePartialCharge();
-				Model.JSmol.script("color {*} partialCharge; color label yellow; label %-8.4[partialcharge]; hover off;");
+				Model.JSmol.script("color {*} partialCharge; color label black; background label white; label %-8.4[partialcharge]; hover off;");
 			}, "jmol_calculation", !charge_calculated);
 		},
 		
@@ -777,15 +848,25 @@ var Model = {
 			{
 				if(type == "OFF")
 				{
-					Model.JSmol.script("set picking off;");
+					Model.JSmol.scriptWaitOutput("set picking off;");
 					Model.JSmol._setPlatformSpeed(Model.JSmol.platformSpeed);
 				}
 				else
 				{
 					Model.JSmol._setPlatformSpeed(2);
-					Model.JSmol.script("set picking off; set picking on; color measures yellow; set pickingstyle MEASURE; set picking MEASURE " + type + "; hover off;");
+					Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");
+					Model.JSmol.scriptWaitOutput(JmolScripts.resetLabels);
 				}
 			}, "jmol_calculation", false);
+		},
+		
+		toDataURL: function()
+		{
+			if(this.ready)
+			{
+				return document.getElementById("JSmol_canvas2d").toDataURL("image/png");
+			}
+			else return "";
 		}
 	},
 	
@@ -793,6 +874,7 @@ var Model = {
 		ready: false,
 		view: undefined,
 		molecule: undefined,
+		currentModel: "",
 		
 		init: function(cb)
 		{
@@ -801,9 +883,9 @@ var Model = {
 			if(Detector.webgl)
 			{
 				this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width(), $("#model").height());
-				this.view.specs.backgroundColor = "#000000";
+				this.view.specs.backgroundColor = (Model.background == "white" ? "#ffffff" : "#000000");
+				this.view.specs.crystals_unitCellColor = (Model.background != "white" ? "#ffffff" : "#000000");
 				this.view.specs.biomolecules_ribbonCartoonize = true;
-				this.view.specs.crystals_unitCellColor = "#ffffff";
 				Model._setRenderEngine("CDW");
 				this.ready = true;
 				if(cb) cb();
@@ -841,14 +923,33 @@ var Model = {
 			if(res == "vdw") res = "van der Waals Spheres";
 			if(res == "wireframe") res = "Wireframe";
 			if(res == "line") res = "Line";
+			
 			this.view.specs.set3DRepresentation(res);
+			this.view.specs.backgroundColor = (Model.background == "white" ? "#ffffff" : "#000000");
+			this.view.specs.crystals_unitCellColor = (Model.background != "white" ? "#ffffff" : "#000000");
+			this.view.specs.bonds_useJMOLColors = true;
+			if(res == "Ball and Stick") this.view.specs.bonds_cylinderDiameter_3D = 0.2;
+			
+			this.view.repaint();
+		},
+		
+		setBackground: function(color)
+		{
+			this.view.specs.backgroundColor = (color == "white" ? "#ffffff" : "#000000");
+			this.view.specs.crystals_unitCellColor = (Model.background != "white" ? "#ffffff" : "#000000");
+			if(color == "white") this.view.gl.clearColor(255, 255, 255, 255);
+			else this.view.gl.clearColor(0, 0, 0, 255);
 			this.view.repaint();
 		},
 		
 		loadMOL: function(mol)
 		{
+			if(this.currentModel == mol) return;
+			
 			if(this.view !== undefined)
 			{
+				this.currentModel = mol;
+				
 				this.molecule = ChemDoodle.readMOL(mol, 1);
 				this.view.specs.projectionPerspective_3D = true;
 				this.view.specs.compass_display = false;
@@ -858,8 +959,12 @@ var Model = {
 		
 		loadPDB: function(pdb)
 		{
+			if(this.currentModel == pdb) return;
+			
 			if(this.view !== undefined)
 			{
+				this.currentModel = pdb;
+				
 				this.molecule = ChemDoodle.readPDB(pdb);
 				this.view.specs.projectionPerspective_3D = true;
 				this.view.specs.compass_display = false;
@@ -869,8 +974,12 @@ var Model = {
 		
 		loadCIF: function(cif, cell)
 		{
+			if(this.currentModel == cif) return;
+			
 			if(this.view !== undefined)
 			{
+				this.currentModel = cif;
+				
 				cell = cell || [1, 1, 1];
 				this.view.specs.crystals_displayUnitCell = cell.reduce(function(a, b){ return a * b; }) == 1; 
 				this.view.specs.projectionPerspective_3D = false;
@@ -884,8 +993,14 @@ var Model = {
 		{
 			if(this.view !== undefined)
 			{
+				this.view.gl.clearColor(0, 0, 0, 0);
 				this.view.repaint();
-				return this.view.gl.canvas.toDataURL("image/png");
+				var dataURL = this.view.gl.canvas.toDataURL("image/png");
+				
+				if(Model.background == "white") this.view.gl.clearColor(255, 255, 255, 255);
+				else this.view.gl.clearColor(0, 0, 0, 255);
+				
+				return dataURL;
 			}
 			else return "";
 		}

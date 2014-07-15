@@ -55,7 +55,7 @@ var Actions = {
 	save_local_3D: function(name)
 	{
 		var blob = Model.getDataBlob();
-		saveAs(blob, (name || document.title) + "." + Model.data.current.toLowerCase());
+		saveAs(blob, (name || document.title) + "." + (Model.getDataExstension().toLowerCase()));
 	},
 	
 	data_properties: function()
@@ -189,6 +189,9 @@ var Actions = {
 	model_vdw:       function() { Model.setRepresentation("vdw"); },
 	model_wireframe: function() { Model.setRepresentation("wireframe"); },
 	model_line:      function() { Model.setRepresentation("line"); },
+	
+	model_bg_black: function() { Model.setBackground("black"); },
+	model_bg_white: function() { Model.setBackground("white"); },
 	
 	engine_glmol: function()
 	{

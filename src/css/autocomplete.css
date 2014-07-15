@@ -10,6 +10,8 @@
 	
 	overflow: auto;
 	overflow-x: hidden;
+	
+	border-left: 1px solid #ccc;
 }
 
 @media all and (min-width: 1250px)
@@ -33,7 +35,7 @@
 	margin: 0;
 	padding: 5px;
 	
-	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .autocomplete-biomolecule { color: #a94442; background: #f2dede; }

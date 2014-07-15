@@ -24,9 +24,9 @@ Modifications by Herman Bergwerf:
 - mobile multi touch zoom (me.zoom2D for canvas zooming)
 - me.isMultiDragging
 - canvas representation control by adding
- - canvas_atom_radius
- - canvas_bond_width
- - canvas_vdw (use vdw atom sizes)
+ - canvasAtomRadius
+ - canvasBondWidth
+ - canvasVDW (use vdw atom sizes)
 */
 
 //workaround for Intel GMA series (gl_FrontFacing causes compilation error)
@@ -99,7 +99,8 @@ var GLmol = (function ()
 			if(force2d) throw "WebGL disabled";
 			this.renderer = new THREE.WebGLRenderer(
 			{
-				antialias: true
+				antialias: true,
+				alpha: true
 			});
 			this.renderer.sortObjects = false; // hopefully improve performance
 			// 'antialias: true' now works in Firefox too!
@@ -131,6 +132,7 @@ var GLmol = (function ()
 		this.modelGroup = null;
 
 		this.bgColor = 0x000000;
+		this.bgAlpha = 1;
 		this.fov = 20;
 		this.fogStart = 0.4;
 		this.slabNear = -50; // relative to the center of rotationGroup
@@ -164,9 +166,9 @@ var GLmol = (function ()
 		/* INSERTED */
 		this.multiTouchD = 0;
 		this.zoom2D = 30;
-		this.canvas_atom_radius = 0.5;
-		this.canvas_bond_width = 0.3;
-		this.canvas_vdw = false;
+		this.canvasAtomRadius = 0.5;
+		this.canvasBondWidth = 0.3;
+		this.canvasVDW = false;
 		this.multic = { x: 0, y: 0 };
 		
 		this.currentModelPos = 0;
@@ -1933,9 +1935,17 @@ var GLmol = (function ()
 
 	GLmol.prototype.setBackground = function (hex, a)
 	{
-		a = a | 1.0;
+		if(!this.scene) return;
+		
+		var r = hex >> 16; r /= 255;
+		var g = hex >> 8 & 0xFF; g /= 255;
+		var b = hex & 0xFF; b /= 255;
+		if(a === undefined) a = 1.0;
+		
 		this.bgColor = hex;
-		if(this.renderer) this.renderer.setClearColorHex(hex, a);
+		this.bgAlpha = a;
+		
+		if(this.renderer) this.renderer.setClearColor({r:r,g:g,b:b}, a);
 		this.scene.fog.color = new TCo(hex);
 	};
 
@@ -2248,6 +2258,9 @@ var GLmol = (function ()
 	{
 		var ctx = this.canvas2d[0].getContext("2d");
 		this.scene.updateMatrixWorld();
+		ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
+		ctx.fillStyle = "rgba(" + 255 * (this.bgColor >> 16) + "," + 255 * (this.bgColor >> 8 & 0xFF)
+			+ "," + 255 * (this.bgColor & 0xFF) + "," + this.bgAlpha + ")";
 		ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
 		ctx.save();
 
@@ -2306,16 +2319,16 @@ var GLmol = (function ()
 					"," + (atom.color & 255) + ")";
 				ctx.lineWidth = 0.03;
 				ctx.beginPath();
-				ctx.arc(atom.screen.x, atom.screen.y, this.canvas_vdw ? toDraw[i][3] * this.canvas_atom_radius : this.canvas_atom_radius, 0, PI2, true);
+				ctx.arc(atom.screen.x, atom.screen.y, this.canvasVDW ? toDraw[i][3] * this.canvasAtomRadius : this.canvasAtomRadius, 0, PI2, true);
 				ctx.closePath();
 				ctx.fill();
 				ctx.strokeStyle = "#000000";
-				if(2 * this.canvas_atom_radius != this.canvas_bond_width) ctx.stroke();
+				if(2 * this.canvasAtomRadius != this.canvasBondWidth) ctx.stroke();
 			}
 			else
 			{
 				var atom2 = atoms[toDraw[i][3]];
-				ctx.lineWidth = this.canvas_bond_width;
+				ctx.lineWidth = this.canvasBondWidth;
 				var cx = (atom.screen.x + atom2.screen.x) / 2;
 				var cy = (atom.screen.y + atom2.screen.y) / 2;
 				ctx.strokeStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +

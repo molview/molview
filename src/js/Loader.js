@@ -219,7 +219,7 @@ var Loader = {
 			{
 				Request.PubChem.nameToCID(name, function(cid)
 				{
-					Loader.PubChem._loadCID(cid, name);
+					Loader.PubChem._loadCID(cid, ucfirst(name));
 				},
 				function()
 				{
@@ -735,6 +735,8 @@ var Loader = {
 			return;
 		}
 		
+		var updated = $("#resolve").hasClass("resolve-updated");
+		
 		Progress.clear();
 		Progress.setSteps(2);
 		
@@ -754,6 +756,7 @@ var Loader = {
 		Request.ChemicalIdentifierResolver.resolve2d(smiles, function(mol)
 		{
 			Sketcher.loadMOL(mol);
+			if(updated) Sketcher.markUpdated();
 			
 			Progress.complete();
 			Messages.hide();

@@ -12,7 +12,7 @@ body
 	height: 100%;
 	
 	font-family: 'Open Sans', sans-serif;
-	background: #000;
+	background: #eee;
 	overflow: hidden;
 }
 
@@ -51,7 +51,7 @@ body.no-menu #content
 #content
 {
 	position: absolute;
-	top: 43px;
+	top: 44px;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -64,6 +64,7 @@ body.no-menu #content
 	left: 0;
 	right: 50%;
 	bottom: 0;
+	background: #eee;
 }
 
 #content.layout-sketcher #sketcher, #content.layout-hsplit #sketcher
@@ -83,7 +84,7 @@ body.no-menu #content
 	right: 0;
 	bottom: 0;
 	
-	background-color: #000;
+	background: #000;
 	overflow: hidden;
 }
 

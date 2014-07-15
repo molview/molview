@@ -8,12 +8,13 @@
 	padding: 0;
 	
 	/* swipe trick */
-	height: 40px;
+	height: 41px;
 }
 
 .menu > .inner
 {
 	height: 40px;
+	border-bottom: 1px solid #333;
 }
 
 /* swipe trick: display menu on top of page */
@@ -163,8 +164,6 @@ li.menu-header
 #search
 {
 	float: right;
-	width: 710px;
-	height: 40px;
 	overflow: hidden;
 }
 
@@ -173,12 +172,14 @@ li.menu-header
 	height: 40px;
 }
 
-#search > .btn-group > button
+.btn-group > button
 {
+	float: left;
 	padding: 5px 10px;
 	line-height: 1;
 	min-width: 40px;
 	border-radius: 0;
+	box-sizing: border-box;
 }
 
 /* absolute dimensions in order to make equal on all browsers */

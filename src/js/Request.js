@@ -138,7 +138,7 @@ var Request = {
 				return;
 			}
 			
-			smiles = smiles.replace(/#/g, "%23");
+			smiles = smiles.replace(/#/g, "%23").replace(/\\/g, "%5C");
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "text",
@@ -165,7 +165,7 @@ var Request = {
 				return;
 			}
 			
-			smiles = smiles.replace(/#/g, "%23");
+			smiles = smiles.replace(/#/g, "%23").replace(/\\/g, "%5C");
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "text",
@@ -205,7 +205,7 @@ var Request = {
 				return;
 			}
             
-			smiles = smiles.replace(/#/g, "%23");
+			smiles = smiles.replace(/#/g, "%23").replace(/\\/g, "%5C");
 			AJAX({
 				dataType: "text",
 				url: "http://cactus.nci.nih.gov/chemical/structure/" + smiles + "/" + property,
@@ -471,7 +471,7 @@ var Request = {
 				});
 			});
 		},
-		
+
 		information: function(pdbids, success, error)//pdbids separated by ","
 		{
 			if(xhr !== undefined) xhr.abort();

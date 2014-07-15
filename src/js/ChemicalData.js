@@ -139,13 +139,14 @@ var ChemicalData = {
 			Request.PubChem.description(Sketcher.CID, function(data)
 			{
 				data = data.InformationList.Information[0];
+				data.Title = ucfirst(humanize(data.Title));
 				
-				document.title = ucfirst(data.Title);
+				document.title = data.Title;
 				$("#molecule-info").show();
-				$("#molecule-title").text(ucfirst(data.Title));
+				$("#molecule-title").text(data.Title);
 				$("#molecule-description").text(data.Description);
 				
-				ChemicalData.PubChemProperties([ "prop-iupac", "prop-smiles" ], [ "IUPACName", "CanonicalSMILES" ]);
+				ChemicalData.PubChemProperties([ "prop-iupac", "prop-smiles" ], [ "IUPACName", "IsomericSMILES" ]);
 			},
 			function()
 			{
@@ -158,17 +159,18 @@ var ChemicalData = {
 			Request.PubChem.SMILES.description(this.smiles, function(data)
 			{
 				data = data.InformationList.Information[0];
+				data.Title = ucfirst(humanize(data.Title));
 				
 				ChemicalData.data.CID = data.CID;
 				$("#prop-cid").val(data.CID).removeClass("chemprop-loading");
 				addCIDlink();
 				
-				document.title = ucfirst(data.Title);
+				document.title = data.Title;
 				$("#molecule-info").show();
-				$("#molecule-title").text(ucfirst(data.Title));
+				$("#molecule-title").text(data.Title);
 				$("#molecule-description").text(data.Description);
 				
-				ChemicalData.PubChemProperties([ "prop-iupac", "prop-smiles" ], [ "IUPACName", "CanonicalSMILES" ]);
+				ChemicalData.PubChemProperties([ "prop-iupac", "prop-smiles" ], [ "IUPACName", "IsomericSMILES" ]);
 			},
 			function()
 			{

@@ -27,10 +27,11 @@ var MolView = {
 		if(this.mobile && !Detector.webgl)
 		{
 			this.biomolecules = false;
-			$("#biomolecules-search").hide();
+			$("#rcsb-search").hide();
 		}
 		
-		$("#menu > .inner").css("min-width", $("#main-menu").width() + $("#search").width() + 3);
+		//add 10 to compensate small browser differences
+		$("#menu > .inner").css("min-width", $("#main-menu").outerWidth() + $("#search").outerWidth() + 10);
 		
 		Progress.init();
 		if(this.loadDefault)
@@ -194,6 +195,9 @@ var MolView = {
 			$("#model-vdw").on(this.trigger, Actions.model_vdw);
 			$("#model-wireframe").on(this.trigger, Actions.model_wireframe);
 			$("#model-line").on(this.trigger, Actions.model_line);
+			
+			$("#model-bg-black").on(this.trigger, Actions.model_bg_black);
+			$("#model-bg-white").on(this.trigger, Actions.model_bg_white);
 			
 			$("#cif-unit-cell").on(this.trigger, Actions.cif_unit_cell);
 			$("#cif-2x2x2-cell").on(this.trigger, Actions.cif_2x2x2_cell);

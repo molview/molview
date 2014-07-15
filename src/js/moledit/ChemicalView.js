@@ -10,18 +10,19 @@ See: http://molview.org
 */
 
 /*
-New:
+Some important changes:
 - jQuery
 - jMouseWheel
 - jquery.hotkeys
 - this.hoverStyle
+- this.selectAreaFillStyle
+- this.selectionFillStyle
 - this.removeImplicitHydrogen
 - this.deselectAll
 - this.setElement(element)
 - chem.magnet
 - this.getSelectedAtoms
 - different charge buttons
-- code changes
 */
 
 function ChemicalView(parent, canvas)
@@ -35,12 +36,15 @@ function ChemicalView(parent, canvas)
 	
 	this.hoverStyle = {
 		width: 2,
-		color: "#f50",
+		color: "#ff5500",
 		join: "square",
 		cap: "square"
 	};
-	this.drawSelectedBonds = false;//don't because selected bonds are not the same as selected atoms
-	this.onChanged = undefined;
+	this.selectAreaFillStyle = "rgba(255, 85, 0, 0.5)";
+	this.selectionFillStyle = "#ff5500";//#1a1a1a
+	
+	this.drawSelectedBonds = false;//don't since selected bonds are not equal to selected atoms
+	this.onChanged = undefined;//event called when molecule is changed
 	
 	var that = this;
 	this.parent = jQuery(parent);
@@ -69,16 +73,15 @@ function ChemicalView(parent, canvas)
 		that.toolButtonClicked(this);
 	}
 	
-	$("#moledit .tool-button.mode:not(.custom)").on("mousedown", function(e)
+	jQuery("#moledit .tool-button.mode:not(.custom)").on("mousedown", function(e)
 	{
-		$("#moledit .tool-button:not(.custom)").not(this).removeClass("tool-button-selected");
-		$(this).toggleClass("tool-button-selected");
+		jQuery("#moledit .tool-button:not(.custom)").not(this).removeClass("tool-button-selected");
+		jQuery(this).toggleClass("tool-button-selected");
 	});
 	
-	$("#me-rect, #me-lasso").on("mousedown", function(e)
+	jQuery("#me-rect, #me-lasso").on("mousedown", function(e)
 	{
-		$("#me-rect, #me-lasso").removeClass("tool-button-selected");
-		$(this).toggleClass("tool-button-selected");
+		jQuery("#me-rect, #me-lasso").removeClass("tool-button-selected");
 	});
 	
 	//chem tools
@@ -102,8 +105,25 @@ function ChemicalView(parent, canvas)
 	this.addTool("move", "me-move", toolFunc);
 	this.addTool("undo", "me-undo", function(){ that.undo(); });
 	this.addTool("redo", "me-redo", function(){ that.redo(); });
-	this.addTool("rect", "me-rect", function(){ that.selectType = MODE_RECT_SEL; });
-	this.addTool("lasso", "me-lasso", function(){ that.selectType = MODE_LASSO_SEL; });
+	
+	this.addTool("rect", "me-rect", function()
+	{
+		that.selectType = MODE_RECT_SEL;
+		that.activeTool = { id: "me-move", toolType: "move" };
+		
+		jQuery("#moledit .tool-button:not(.custom)").removeClass("tool-button-selected");
+		jQuery("#me-move").addClass("tool-button-selected");
+		jQuery("#me-rect").addClass("tool-button-selected");
+	});
+	this.addTool("lasso", "me-lasso", function()
+	{
+		that.selectType = MODE_LASSO_SEL;
+		that.activeTool = { id: "me-move", toolType: "move" };
+		
+		jQuery("#moledit .tool-button:not(.custom)").removeClass("tool-button-selected");
+		jQuery("#me-move").addClass("tool-button-selected");
+		jQuery("#me-lasso").addClass("tool-button-selected");
+	});
 	this.addTool("deselect", "me-deselect", function()
 	{
 		that.deselectAll();
@@ -121,6 +141,10 @@ function ChemicalView(parent, canvas)
 	this.addToolAtom("N", "me-atom-n", toolFunc);
 	this.addToolAtom("O", "me-atom-o", toolFunc);
 	this.addToolAtom("S", "me-atom-s", toolFunc);
+	this.addToolAtom("F", "me-atom-f", toolFunc);
+	this.addToolAtom("Cl", "me-atom-cl", toolFunc);
+	this.addToolAtom("Br", "me-atom-br", toolFunc);
+	this.addToolAtom("I", "me-atom-i", toolFunc);
 	this.addToolAtom("P", "me-atom-p", toolFunc);
 
 	//setup canvas
@@ -202,9 +226,9 @@ function ChemicalView(parent, canvas)
 	});
 	
 	//shortcuts
-	jQuery(document).bind("keydown", "ctrl+z", function(){ that.undo(); });
-	jQuery(document).bind("keydown", "ctrl+shift+z", function(){ that.redo(); });
-	jQuery(document).bind("keydown", "ctrl+y", function(){ that.redo(); });
+	jQuery(document).bind("keydown", "ctrl+z", function(e){ e.preventDefault(); that.undo(); });
+	jQuery(document).bind("keydown", "ctrl+shift+z", function(e){ e.preventDefault(); that.redo(); });
+	jQuery(document).bind("keydown", "ctrl+y", function(e){ e.preventDefault(); that.redo(); });
 	
 	//zooming with mousewheel
 	this.zoomSpeed = 0.08;

@@ -55,7 +55,7 @@ if(isset($pubchem_query))
 	$data = json_decode($json);
 	
 	if(isset($data -> InformationList -> Information[0] -> Title))
-		$title = ucfirst($data -> InformationList -> Information[0] -> Title);
+		$title = ucfirst(humanize($data -> InformationList -> Information[0] -> Title));
 	if(isset($data -> InformationList -> Information[0] -> Description))
 		$description = $data -> InformationList -> Information[0] -> Description;
 }
@@ -172,9 +172,7 @@ else if(isset($codid))
 			}
 		?>
 		
-		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
-		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+		<!-- CSS
 		<link type="text/css" rel="stylesheet" href="src/css/form.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/global.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/layout.css" media="screen" />
@@ -193,9 +191,11 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="src/css/periodictable.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/autocomplete.css" media="screen" />
+		-->
 		
-		<!--
-		<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />-->
+		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+		<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />
 		
 		<!-- JS-->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
@@ -330,6 +330,9 @@ else if(isset($codid))
 							<li><a id="model-vdw" class="r-mode">van der Waals Spheres</a></li>
 							<li><a id="model-wireframe" class="r-mode">Wireframe</a></li>
 							<li><a id="model-line" class="r-mode">Line</a></li>
+							<li class="menu-header">Background</li>
+							<li><a id="model-bg-black" class="model-bg checked">Black</a></li>
+							<li><a id="model-bg-white" class="model-bg">White</a></li>
 							<li class="menu-header">Engine</li>
 							<li><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
 							<li><a id="engine-jmol">Jmol (extensive)</a></li>
@@ -370,9 +373,9 @@ else if(isset($codid))
 							<li><a id="net-dipole" class="jmol-script">Overall dipole</a></li>
 							<li><a id="jmol-minimize" class="jmol-script">Energy minimization</a></li>
 							<li class="menu-header">Measurement</li>
-							<li><a id="measure-distance" class="jmol-script jmol-picking">Distance (2 atoms)</a></li>
-							<li><a id="measure-angle" class="jmol-script jmol-picking">Angle (3 atoms)</a></li>
-							<li><a id="measure-torsion" class="jmol-script jmol-picking">Torsion (4 atoms)</a></li>
+							<li><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
+							<li><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
+							<li><a id="measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
 							<li class="menu-header">Render mode</li>
 							<li><a id="jmol-render-all" class="jmol-rnd">Everything</a></li>
 							<li><a id="jmol-render-normal" class="jmol-rnd checked">Normal</a></li>
@@ -386,7 +389,7 @@ else if(isset($codid))
 							placeholder="Find structures"
 							autocomplete="off" spellcheck="false" />
 					</div>
-					<div class="btn-group">
+					<div id="search-buttons" class="btn-group">
 						<button id="fast-search" class="btn btn-white" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
 						<button id="pubchem-search" class="btn btn-white" type="button" title="Find compounds via PubChem">Compounds</button>
 						<button id="rcsb-search" class="btn btn-white" type="button" title="Find biomolecules via RCSB">Biomolecules</button>
@@ -452,18 +455,18 @@ else if(isset($codid))
 						<div class="inner">
 							<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
 							<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
-							<div id="me-move" class="tool-button tool-button-horizontal mode" title="Move"></div>
 							<div class="horizontal-separator"></div>
 							<div id="me-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
 							<div id="me-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
 							<div class="horizontal-separator"></div>
+							<div id="me-move" class="tool-button tool-button-horizontal mode" title="Move"></div>
+							<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
+							<div class="horizontal-separator"></div>
 							<div id="me-rect" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Rectangle selection"></div>
 							<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
-							<div class="horizontal-separator"></div>
 							<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
-							<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
-							<div id="me-clean" class="tool-button tool-button-horizontal" title="Cleanup structure"></div>
 							<div class="horizontal-separator"></div>
+							<div id="me-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
 							<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
 						</div>
 					</div>
@@ -475,6 +478,10 @@ else if(isset($codid))
 							<div id="me-atom-o" class="tool-button mode" title="Oxygen">O</div>
 							<div id="me-atom-s" class="tool-button mode" title="Sulfur">S</div>
 							<div id="me-atom-p" class="tool-button mode" title="Phosphorus">P</div>
+							<div id="me-atom-f" class="tool-button mode" title="Fluorine">F</div>
+							<div id="me-atom-i" class="tool-button mode" title="Iodine">I</div>
+							<div id="me-atom-cl" class="tool-button mode" title="Chlorine">Cl</div>
+							<div id="me-atom-br" class="tool-button mode" title="Bromine">Br</div>
 							<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
 							<div class="vertical-separator"></div>
 							<div id="me-info" class="tool-button" title="Information"></div>
@@ -523,7 +530,7 @@ else if(isset($codid))
 						</div>
 					</div>
 				</div>
-				<div id="start-messages-close" class="close-btn" style="display: none;"></div>
+				<div id="start-messages-close" class="close-btn no-select" style="display: none;"></div>
 				<script type="text/javascript">
 					if($("#content").hasClass("start-messages"))
 						$("#start-messages-close").show();
@@ -557,7 +564,7 @@ else if(isset($codid))
 						<ul>
 							<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4:</a> sketcher (modified with permission from <a class="link" href="https://www.molsoft.com" target="_blank" title="MolSoft">MolSoft</a>)</li>
 							<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher:</a> SMILES conversion (modified under GNU Affero GPL)</li>
-							<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47:</a> primary 3D rendering (modified under MIT licence)</li>
+							<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47:</a> primary 3D render engine (modified under MIT licence)</li>
 							<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol:</a> 3D rendering (Jmol v14.0.11)</li>
 							<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1:</a> 3D rendering and spectrum display</li>
 						</ul>
@@ -598,7 +605,7 @@ else if(isset($codid))
 					<button class="btn close btn-primary pull-right">OK</button>
 				</div>
 			</div>
-			<div class="dialog custom-headings" id="help-dialog" style="display: none;">
+			<div class="dialog styled-text" id="help-dialog" style="display: none;">
 				<h2>Help</h2>
 				<script type="text/javascript">
 					if(isTouchDevice())
@@ -615,7 +622,7 @@ else if(isset($codid))
 					<div class="expandable-content">
 						<p>You can draw structural formulas using the sketching component.</p>
 						<h4>Top toolbar</h4>
-						<p>The top toolbar contains all general editing tools. These tools include a clear all tool, an erase tool, a move atoms tool, an undo and redo tool, two selection tools, a clear selection tool, a center structure tool, a cleanup tool and a resolve tool. The last one converts the structural formula to a 3D molecule displayed in the model window.</p>
+						<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule displayed in the model window.</p>
 						<h4>Left toolbar</h4>
 						<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. In order to draw a carbon chain using the chain tool, you have to click a start point or atom and drag a chain.</p>
 						<h4>Right toolbar</h4>
@@ -632,7 +639,7 @@ else if(isset($codid))
 							<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
 						</ul>
 						<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
-						<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Biomolecules</i> or a COD ID via <i>Crystals</i>.</p>
+						<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Biomolecules</i> or a COD ID via <i>Crystals</i>. You can also directly enter a SMILES, InChi or InChiKey string in the search field (don't use the <i>Compounds</i> button)</p>
 						<p>You can show or hide search results using the leftmost button. Note that <i>Biomolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display biomolecules anyway.</p>
 					</div>
 				</div>
@@ -644,24 +651,20 @@ else if(isset($codid))
 						<p>This function sets the model position, zoom and rotation back to default.</p>
 						<h4>Representation</h4>
 						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Biomolecules are automatically drawn using ribbons.</p>
+						<h4>Background</h4>
+						<p>You can switch between a black and a white model background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
 						<h4>Engines</h4>
-						<p>You can choose from three different render engines. MolView uses GLmol, Jmol and ChemDoodle Web as render engines. MolView automatically switches to:</p>
+						<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
 						<ol>
-							<li>Jmol if your browser doesn't support WebGL</li>
-							<li>Jmol if you execute functions from the Jmol menu</li>
-							<li>ChemDoodle if you load a crystal structure</li>
+							<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
+							<li><b>ChemDoodle</b> if you load a crystal structure <i>(Glmol cannot render crystal structures)</i></li>
 						</ol>
-						<p>You might want to switch back to GLmol after case 2 and 3.</p>
-						<p>Note that biomolecules are drawn slightly different in each engine. ChemDoodle Web provides the finest biomolecule display. You should, however, avoid using ChemDoodle Web for large biomolecules.</p>
+						<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
+						<p>Note that biomolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for large biomolecules.</p>
 						<h4>Model transformation</h4>
-						<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle Web) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
+						<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
 						<h4>Crystallography</h4>
-						<p>This submenu contains functions to load an array of crystal 'boxes'.</p>
-						<ul>
-							<li><b>1x1x1</b> Unit cell <i>(default)</i></li>
-							<li><b>2x2x2</b> supercel</li>
-							<li><b>3x3x1</b> supercel</li>
-						</ul>
+						<p>You can load an array of crystal cells (2x2x2 or 1x3x3) or a single unit cell when viewing crystal structures.</p>
 					</div>
 				</div>
 				<div class="expandable">
@@ -678,8 +681,8 @@ else if(isset($codid))
 						<h4>Export</h4>
 						<p>Export options in the Export menu:</p>
 						<ul>
-							<li><b>Structural formula image:</b> PNG snapshot from sketcher</li>
-							<li><b>3D model image:</b> PNG snapshot from model window</li>
+							<li><b>Structural formula image:</b> PNG snapshot from sketcher <i>(transparent background)</i></li>
+							<li><b>3D model image:</b> PNG snapshot from model window<br/><i>(transparent background in GLmol and ChemDoodle)</i></li>
 							<li><b>MOL file:</b> exports a MDL Molfile from the 3D model<br/><i>(displayed if the 3D model is a common molecule)</i></li>
 							<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a biomolecule)</i></li>
 							<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model<br/><i>(displayed if the 3D model is a crystal structure)</i></li>
@@ -754,7 +757,7 @@ else if(isset($codid))
 				<div class="expandable">
 					<div class="expandable-title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
 					<div class="expandable-content">
-						<p>Jmol provides several advanced functions. Some of these can be accessed via the Jmol menu in the menubar.</p>
+						<p>Jmol offers some advanced functions. You can find them in the Jmol menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
 						<h4>Clear</h4>
 						<p>Clears all executed calculations and measurements.</p>
 						<h4>Calculations</h4>
@@ -764,15 +767,16 @@ else if(isset($codid))
 							<li><b>Charge:</b> calculates and projects atomic charge as text label and white to atom color gradient</li>
 							<li><b>Bond dipoles:</b> calculates and draws individual bond dipoles</li>
 							<li><b>Overall dipole:</b> calculates and draws netto bond dipole</li>
-							<li><b>Energy minimization:</b> executes an MMFF94 energy minimization calculation</li>
+							<li><b>Energy minimization:</b> executes an MMFF94 energy minimization calculation<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
 						</ul>
 						<h4>Measurement</h4>
-						<p>You can perform the following measurements in Jmol:</p>
+						<p>You can execute distance, angle and torsion measurements using Jmol. You can select one of these measurement modes via the Jmol menu <i>(click selected mode again to deselect)</i></p>
 						<ul>
-							<li><b>Distance</b> (nm)</li>
-							<li><b>Angle</b> (deg)</li>
-							<li><b>Torsion</b> (deg)</li>
+							<li><b>Distance</b> distance between two atoms in <b>nm</b> <i>(select two atoms)</i></li>
+							<li><b>Angle</b> angle between two bonds in <b>deg</b> <i>(select three atoms)</i></li>
+							<li><b>Torsion</b> torsion between four atoms in <b>deg</b> <i>(select four atoms)</i></li>
 						</ul>
+						<p>Note that the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
 						<h4>Render mode</h4>
 						<p>In Jmol, you can switch between different render modes in order to speed up performance or to increase quality.<br/>There are three render modes:</p>
 						<ol>
@@ -795,7 +799,7 @@ else if(isset($codid))
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog custom-headings" id="share-dialog" style="display: none;">
+			<div class="dialog styled-text" id="share-dialog" style="display: none;">
 				<h2>Share</h2>
 				<div id="share-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
 				<h3>URL</h3>
@@ -809,7 +813,7 @@ else if(isset($codid))
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog custom-headings" id="embed-dialog" style="display: none;">
+			<div class="dialog styled-text" id="embed-dialog" style="display: none;">
 				<h2>Embed</h2>
 				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
 				<div class="alert-bar alert-info">Embedded biomolecules cannot be viewed on smartphones without WebGL</div>

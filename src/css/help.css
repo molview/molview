@@ -1,13 +1,18 @@
-.custom-headings h3
+.styled-text h3
 {
 	margin-top: 25px;
 	margin-bottom: 5px;
 }
 
-.custom-headings h4
+.styled-text h4
 {
 	margin: 20px 0 5px 0;
 	border-bottom: 1px solid #ccc;
+}
+
+.styled-text li
+{
+	margin: 10px 0;
 }
 
 .expandable
