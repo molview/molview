@@ -64,17 +64,15 @@ body.no-menu #content
 	left: 0;
 	right: 50%;
 	bottom: 0;
-	
-	background-color: #000;
 }
 
-#content.sketcher #sketcher, #content.hsplit #sketcher
+#content.layout-sketcher #sketcher, #content.layout-hsplit #sketcher
 { right: 0; }
 
-#content.hsplit #sketcher
+#content.layout-hsplit #sketcher
 { bottom: 50%; }
 
-#content.model #sketcher
+#content.layout-model #sketcher
 { visibility: hidden; }
 
 #model
@@ -89,13 +87,13 @@ body.no-menu #content
 	overflow: hidden;
 }
 
-#content.model #model, #content.hsplit #model
+#content.layout-model #model, #content.layout-hsplit #model
 { left: 0; }
 
-#content.hsplit #model
+#content.layout-hsplit #model
 { top: 50%; }
 
-#content.sketcher #model
+#content.layout-sketcher #model
 { visibility: hidden; }
 
 #window-layer

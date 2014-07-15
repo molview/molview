@@ -23,7 +23,14 @@
 {
 	margin: 0 auto;
 	margin-bottom: 20px;
+	width: 128px;
+	height: 128px;
+	background-repeat: no-repeat;
+	background-position: center;
 }
+
+.process-img { background-image: url(../img/gears-white.svg); }
+.alert-img { background-image: url(../img/alert-white.svg); }
 
 .message-text
 {

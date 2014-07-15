@@ -112,19 +112,9 @@ else if(isset($codid))
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="mobile-web-app-capable" content="yes">
-		
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
 		
 		<?php echo "<title>".$title."</title>"; ?>
-		
-		<link rel="icon" sizes="196x196" href="../src/img/icon/196.png">
-		<link rel="icon" sizes="128x128" href="../src/img/icon/128.png">
-		<link rel="apple-touch-icon" href="../src/img/icon/48.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="../src/img/icon/76.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="../src/img/icon/120.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="../src/img/icon/152.png">
 		
 		<link rel="icon" href="../src/img/icon/32.png" />
 		
@@ -176,7 +166,7 @@ else if(isset($codid))
 		 -->
 		 
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
-		<link type="text/css" rel="stylesheet" href="../src/css/molview.embed.min.css" media="screen" />
+		<link type="text/css" rel="stylesheet" href="../build/molview.embed.min.css" media="screen" />
 		 
 		<!-- JS
 		<script type="text/javascript" src="../src/js/lib/JSmol.min.js"></script>
@@ -237,8 +227,8 @@ else if(isset($codid))
 		<div id="model-messages" class="message-box full-cover dark-glass">
 			<div class="message-wrapper">
 				<div class="message">
-					<img class="process-img" src="../src/img/loading-white.svg" alt="" />
-					<img class="alert-img" src="../src/img/alert-white.svg" alt="" />
+					<div class="process-img"></div>
+					<div class="alert-img"></div>
 					<p class="message-text"></p>
 				</div>
 			</div>

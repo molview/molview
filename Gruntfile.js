@@ -237,7 +237,7 @@ src/css/autocomplete.css\n\
 					'src/css/chemicaldata.css',
 					'src/css/autocomplete.css'
 				],
-				dest: 'src/css/<%= pkg.name %>.min.css'
+				dest: 'build/<%= pkg.name %>.min.css'
 			},
 			embed:
 			{
@@ -264,10 +264,38 @@ src/css/embed.css\n\
 				],
 				dest: 'src/css/<%= pkg.name %>.embed.min.css'
 			}
+		},
+		svgmin:
+		{
+			options:
+			{
+				plugins: [
+					{ cleanupIDs: true },
+					{ convertColors: true },
+					{ convertPathData: true },
+					{ convertTransform: true },
+					{ convertShapeToPath: true },
+					{ mergePaths: true },
+					{ removeViewBox: true },
+					{ removeUselessStrokeAndFill: true }
+				]
+			},
+			dist:
+			{
+				files: [
+					{
+						expand: true,
+						cwd: 'src/img',
+						src: ['**/*.svg'],
+						dest: 'img/',
+						ext: '.svg'
+					}]
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.registerTask('default', ['uglify', 'cssmin']);
+	grunt.loadNpmTasks('grunt-svgmin');
+	grunt.registerTask('default', ['uglify', 'cssmin', 'svgmin']);
 };

@@ -19,7 +19,9 @@ Revisions:
   - Renamed Loader.Compounds to Loader.PubChem
   - Renamed Loader.Biomolecules to Loader.RCSB
   - Renamed Loader.Crystals to Loader.COD
-  > SVG minification
+  - Moved message SVG images to CSS
+  - SVG minification
+  - Light sketcher toolbars
 
 Features:
 
@@ -29,6 +31,8 @@ Features:
   - Updated logo
   - JSmol middle mouse button dragging
   - Fast search auto-complete to CID, PDBID or CODID
+  - Model background switch
+  - ChemSpider resolver fallback
 
 ## 2.1.3 (2014-07-07)
 

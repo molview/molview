@@ -3,7 +3,6 @@ MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
-"use strict";
 
 var Loader = {
 	lastQuery: {
@@ -310,7 +309,17 @@ var Loader = {
 					},
 					function()
 					{
-						Messages.alert("load_fail");
+						Model.loadMOL(mol2d);
+						Sketcher.markUpdated();
+						
+						Loader.lastQuery.type = "cid";
+						Loader.lastQuery.content = "" + cid;
+						
+						document.title = name || "MolView";
+						History.push("cid", cid);
+						
+						Progress.complete();
+						Messages.hide();
 					});
 				});
 			},

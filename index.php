@@ -44,9 +44,9 @@ else if(isset($cid))	{ $pubchem_query = "cid"; $pubchem_value = $cid; }
 else if(isset($pdbid)) $image_url = "http://www.rcsb.org/pdb/images/".$pdbid."_bio_r_500.jpg";
 
 //layout
-$contentClass = "vsplit";
-if(isset($layout)) $contentClass = $layout;
-else if(isset($pdbid)) $contentClass = "model";
+$contentClass = "layout-vsplit";
+if(isset($layout)) $contentClass = "layout-".$layout;
+else if(isset($pdbid)) $contentClass = "layout-model";
 
 //data via PubChem
 if(isset($pubchem_query))
@@ -123,14 +123,15 @@ else if(isset($codid))
 		
 		<?php echo "<title>".$title."</title>"; ?>
 		
-		<link rel="icon" sizes="196x196" href="src/img/icon/196.png">
-		<link rel="icon" sizes="128x128" href="src/img/icon/128.png">
-		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="src/img/icon/57.png">
-		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="src/img/icon/72.png">
-		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="src/img/icon/114.png">
-		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="src/img/icon/114.png">
+		<link rel="icon" sizes="196x196" href="img/icon/196.png">
+		<link rel="icon" sizes="128x128" href="img/icon/128.png">
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/icon/57.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/icon/72.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/icon/114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
 		
-		<link rel="icon" href="src/img/icon/32.png" />
+		<link rel="icon" href="img/icon/32.png" />
 		
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" content="molview,free,molecules,chemistry,compounds,proteins,biomolecules,crystals,smartphone,tablet,chrome,spectroscopy,sketch,draw,edit,view" />
@@ -174,7 +175,6 @@ else if(isset($codid))
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
-		
 		<link type="text/css" rel="stylesheet" href="src/css/form.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/global.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/layout.css" media="screen" />
@@ -194,10 +194,10 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/autocomplete.css" media="screen" />
 		
-		 
-		<!-- <link type="text/css" rel="stylesheet" href="src/min/molview.min.css" media="screen" /> -->
+		<!--
+		<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />-->
 		
-		<!-- JS -->
+		<!-- JS-->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
@@ -251,7 +251,7 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/MolView.js"></script>
 		
 		
-		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
+		<!--<script type="text/javascript" src="build/molview.min.js"></script>-->
 		
 		<!-- Custom styling -->
 		<script type="text/javascript">
@@ -349,7 +349,7 @@ else if(isset($codid))
 							<li><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
 							<li><a id="glmol-chain-trace" class="glmol-chain">C-alpha trace</a></li>
 							<li><a id="glmol-chain-tube" class="glmol-chain">B-factor tube</a></li>
-							<li><a id="glmol-chain-bonds" class="glmol-chain">Bonds (everything)</a></li>
+							<li><a id="glmol-chain-bonds" class="glmol-chain">Bonds</a></li>
 							<li class="menu-header">Chain coloring</li>
 							<li><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
 							<li><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
@@ -439,7 +439,7 @@ else if(isset($codid))
 							<div id="me-frag-0" class="tool-button mode" title="Benzene"></div>
 							<div id="me-frag-1" class="tool-button mode" title="Cyclopropane"></div>
 							<div id="me-frag-2" class="tool-button mode" title="Cyclobutane"></div>
-							<div id="me-frag-3" class="button mode" title="Cyclopentane"></div>
+							<div id="me-frag-3" class="tool-button mode" title="Cyclopentane"></div>
 							<div id="me-frag-4" class="tool-button mode" title="Cyclohexane"></div>
 							<div id="me-frag-5" class="tool-button mode" title="Cycloheptane"></div>
 							<div class="vertical-separator"></div>
@@ -464,7 +464,7 @@ else if(isset($codid))
 							<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
 							<div id="me-clean" class="tool-button tool-button-horizontal" title="Cleanup structure"></div>
 							<div class="horizontal-separator"></div>
-							<div id="resolve" class="tool-button tool-button-horizontal" title="Update 3D view">2D to 3D</div>
+							<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
 						</div>
 					</div>
 					<div id="elem-tools" class="toolbar swipeable">
@@ -487,8 +487,8 @@ else if(isset($codid))
 				<div id="sketcher-messages" class="message-box full-cover dark-glass">
 					<div class="message-wrapper">
 						<div class="message">
-							<img class="process-img" src="src/img/loading-white.svg" alt="" />
-							<img class="alert-img" src="src/img/alert-white.svg" alt="" />
+							<div class="process-img"></div>
+							<div class="alert-img"></div>
 							<p class="message-text"></p>
 							<button class="message-btn btn btn-large btn-primary">OK</button>
 						</div>
@@ -504,8 +504,8 @@ else if(isset($codid))
 				<div id="model-messages" class="message-box full-cover dark-glass">
 					<div class="message-wrapper">
 						<div class="message">
-							<img class="process-img" src="src/img/loading-white.svg" alt="" />
-							<img class="alert-img" src="src/img/alert-white.svg" alt="" />
+							<div class="process-img"></div>
+							<div class="alert-img"></div>
 							<p class="message-text"></p>
 							<button class="message-btn btn btn-large btn-primary">OK</button>
 						</div>
@@ -532,8 +532,8 @@ else if(isset($codid))
 			<div id="content-messages" class="message-box full-cover dark-glass">
 				<div class="message-wrapper">
 					<div class="message">
-						<img class="process-img" src="src/img/loading-white.svg" alt="" />
-						<img class="alert-img" src="src/img/alert-white.svg" alt="" />
+							<div class="process-img"></div>
+							<div class="alert-img"></div>
 						<p class="message-text"></p>
 						<button class="message-btn btn btn-large btn-primary">OK</button>
 					</div>
@@ -607,7 +607,7 @@ else if(isset($codid))
 						document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
 					}
 				</script>
-				<p><a class="link" href="docs/MolView-v2.2-manual-revision-1.pdf" target="_blank">Download PDF version</a></p>
+				<p><a class="link" href="docs/MolView-v2.2-manual.pdf" target="_blank">Download PDF version</a></p>
 				<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 				<h3>Subjects</h3>
 				<div class="expandable">
@@ -628,7 +628,7 @@ else if(isset($codid))
 						<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type what you are looking for and enter or click one of the search categories listed below.</p>
 						<ul>
 							<li><b>Compounds:</b> small molecules from the PubChem database</li>
-							<li><b>Biomolecules:</b> biomolecules from the RCSB database</li>
+							<li><b>Biomolecules:</b> biological macromolecules from the RCSB database</li>
 							<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
 						</ul>
 						<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
@@ -722,7 +722,33 @@ else if(isset($codid))
 				<div class="expandable">
 					<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
 					<div class="expandable-content">
-						
+						<p>The GLmol render engine contains some custom display functions for biomolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
+						<h4>Biological assemlby</h4>
+						<p>Some biomolecules are only a small unit (asymmetric unit) of a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
+						<h4>Chain representation</h4>
+						<p>GLmol offers five different chain representations.</p>
+						<ol>
+							<li><b>Ribbon:</b> draws ribbon diagram <i>(default representation)</i></li>
+							<li><b>Cylinder and plate:</b> solid cylinders for α-helices and solid plates for β-sheets</li>
+							<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
+							<li><b>B-factor tube:</b> tube were thickness is calculated from the B-factor <i>(thermal motion)</i></li>
+							<li><b>Bonds:</b> all bonds are displayed as lines
+						</ol>
+						<h4>Chain coloring</h4>
+						<p>You can choose from five chain coloring methods.</p>
+						<ol>
+							<li><b>Secondary structures:</b> different colors for α-helices, β-sheets, etc.</li>
+							<li><b>Spectrum:</b> chain colored with full color spectrum <i>(blue-green-red)</i></li>
+							<li><b>Chain:</b> each chains gets a different color</li>
+							<li><b>B-factor:</b> blue for low B-factor and red for high B-factor <i>(if provided)</i></li>
+							<li><b>Polarity:</b> colors polar amino-acids red and non polar amino-acids white</li>
+						</ol>
+						<h4>Fog and clipping</h4>
+						<p>When you are viewing large structures, like biomolecules, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
+						<ol>
+							<li><b>Fog:</b> you can move the fog forward by dragging the mouse up while holding the right mousebutton and vice versa.</li>
+							<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the left while holding the right mousebutton and vice versa.</li>
+						</ol>
 					</div>
 				</div>
 				<div class="expandable">

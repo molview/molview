@@ -3,7 +3,6 @@ MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
-"use strict";
 
 var JmolScripts = {
 	Ball_and_Stick: "select *; wireframe 0.09; spacefill 28%;",
@@ -261,7 +260,7 @@ var Model = {
 				this.view.defineRepresentation = function()
 				{
 					var all = this.getAllAtoms();
-					if(Model.GLmol.loadBioAssembly && this.biomolecule.biomtChains != "") all = this.getChain(all, this.biomolecule.biomtChains);
+					if(Model.GLmol.loadBioAssembly && this.biomolecule && this.biomolecule.biomtChains != "") all = this.getChain(all, this.biomolecule.biomtChains);
 					var all_het = this.getHetatms(all);
 					var hetatm = this.removeSolvents(all_het);
 					var chain = Model.GLmol.chain;
@@ -338,7 +337,7 @@ var Model = {
 						}
 					}
 
-					if(Model.GLmol.loadBioAssembly) this.drawSymmetryMates2(this.modelGroup, asu, this.biomolecule.biomtMatrices);
+					if(Model.GLmol.loadBioAssembly && this.biomolecule) this.drawSymmetryMates2(this.modelGroup, asu, this.biomolecule.biomtMatrices);
 					this.modelGroup.add(asu);
 				};
 				

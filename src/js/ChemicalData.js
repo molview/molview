@@ -3,7 +3,6 @@ MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
-"use strict";
 
 var ChemicalData = {
 	smiles: "",
@@ -92,7 +91,8 @@ var ChemicalData = {
 		{
 			ChemicalData.data["formula"] = formula;
 			$("#prop-formula").html(chemFormulaFormat(formula)).removeClass("chemprop-loading");
-		}, function(){ $("#prop-formula").addClass("chemprop-unavailable") });
+		}, function(){ $("#prop-formula").removeClass("chemprop-loading").addClass("chemprop-unavailable") },
+		   function(){ $("#prop-formula").removeClass("chemprop-loading").addClass("chemprop-unavailable") });
 		
 		//update mass
 		Request.ChemicalIdentifierResolver.getProperty(this.smiles, "mw",
@@ -100,7 +100,8 @@ var ChemicalData = {
 		{
 			ChemicalData.data["mw"] = mw;
 			$("#prop-weight").text(mw + " u").removeClass("chemprop-loading");
-		}, function(){ $("#prop-weight").addClass("chemprop-unavailable") });
+		}, function(){ $("#prop-weight").removeClass("chemprop-loading").addClass("chemprop-unavailable") },
+		   function(){ $("#prop-weight").removeClass("chemprop-loading").addClass("chemprop-unavailable") });
 		
 		//update primary properties
 		this.CIRproperty("prop-h-donors", "h_bond_donor_count");
@@ -139,6 +140,7 @@ var ChemicalData = {
 			{
 				data = data.InformationList.Information[0];
 				
+				document.title = ucfirst(data.Title);
 				$("#molecule-info").show();
 				$("#molecule-title").text(ucfirst(data.Title));
 				$("#molecule-description").text(data.Description);
@@ -161,6 +163,7 @@ var ChemicalData = {
 				$("#prop-cid").val(data.CID).removeClass("chemprop-loading");
 				addCIDlink();
 				
+				document.title = ucfirst(data.Title);
 				$("#molecule-info").show();
 				$("#molecule-title").text(ucfirst(data.Title));
 				$("#molecule-description").text(data.Description);

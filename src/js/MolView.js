@@ -3,7 +3,6 @@ MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
-"use strict";
 
 var MolView = {
 	layout: "",
@@ -347,7 +346,7 @@ var MolView = {
 		if(layout == "vsplit") $("#window-vsplit").addClass("selected");
 		if(layout == "hsplit") $("#window-hsplit").addClass("selected");
 		
-		$("#content").removeClass("sketcher model vsplit hsplit").addClass(layout);		
+		$("#content").removeClass("layout-sketcher layout-model layout-vsplit layout-hsplit").addClass("layout-" + layout);		
 		this.layout = layout;
 		
 		Sketcher.resize();

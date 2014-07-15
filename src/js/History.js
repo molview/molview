@@ -3,7 +3,6 @@ MolView v2.2 (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 ALL RIGHTS RESERVED
 */
-"use strict";
 
 var History = {
 	init: function()
@@ -13,7 +12,8 @@ var History = {
 			var q = getQuery();
 			if(JSON.stringify(q) != JSON.stringify(MolView.query))
 			{
-				MolView.query = q
+				document.title = "MolView";
+				MolView.query = q;
 				MolView.executeQuery();
 			}
 		});

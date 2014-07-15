@@ -6,12 +6,13 @@
 	right: 0;
 	bottom: 0;
 	background: #fff;
+	border-top: 1px solid #333;
 }
 
 .toolbar
 {
 	position: absolute;
-	background: #000;
+	background: #eee;
 	cursor: default;
 	overflow: hidden;
 	
@@ -31,9 +32,9 @@
 	
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: 30px;
+	background-size: 20px;
 	cursor: pointer;
-	opacity: 0.7;
+	opacity: 0.8;
 	
     -webkit-user-select: none;
      -khtml-user-select: none;
@@ -68,7 +69,7 @@
 
 .tool-button
 {
-	color: #fff;
+	color: #000;
 	line-height: 40px;
 	text-align: center;
 	font-size: 16pt;
@@ -129,6 +130,10 @@
 	cursor: default;
 	overflow: hidden;
 	background: #fff;
+	
+	border-top: 1px solid #333;
+	border-left: 1px solid #333;
+	border-right: 1px solid #333;
 }
 
 /* MolEdit buttons */
@@ -164,15 +169,20 @@
 	padding: 0 10px;
 	width: auto;
 	
-	color: #ccc;
-	color: rgba(255, 255, 255, 0.8);
 	line-height: 40px;
 	font-size: 12pt;
 	font-weight: bold;
 	text-align: right;
+	
+	color: #f50;
+}
+
+#resolve:hover, #resolve:active
+{
+	color: #000;
 }
 
 .resolve-updated
 {
-	color: #0f0 !important;
+	color: #000 !important;
 }
