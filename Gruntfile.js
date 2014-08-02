@@ -18,7 +18,6 @@ src/js/lib/jquery-1.11.0.min.js\n\
 src/js/lib/jquery.hotkeys.js\n\
 src/js/lib/Detector.js\n\
 src/js/lib/jMouseWheel.js\n\
-src/js/lib/fuse.min.js\n\
 src/js/lib/Polyfill.js\n\
 src/js/m2s/prototype.js\n\
 src/js/m2s/util/common.js\n\
@@ -61,7 +60,8 @@ src/js/Loader.js\n\
 src/js/Actions.js\n\
 src/js/Share.js\n\
 src/js/Link.js\n\
-src/js/ChemicalData.js\n\
+src/js/ChemProps.js\n\
+src/js/Spectroscopy.js\n\
 src/js/Autocomplete.js\n\
 src/js/MolView.js\n\
 */\n',
@@ -69,15 +69,14 @@ src/js/MolView.js\n\
 				},
 				src: [
 					'src/js/lib/JSmol.min.js',
-					
+
 					//Misc
 					'src/js/lib/jquery-1.11.0.min.js',
 					'src/js/lib/jquery.hotkeys.js',
 					'src/js/lib/Detector.js',
 					'src/js/lib/jMouseWheel.js',
-					'src/js/lib/fuse.min.js',
 					'src/js/lib/Polyfill.js',
-					
+
 					//Ketcher
 					'src/js/m2s/prototype.js',
 					'src/js/m2s/util/common.js',
@@ -95,7 +94,7 @@ src/js/MolView.js\n\
 					'src/js/m2s/chem/stereocenters.js',
 					'src/js/m2s/chem/smiles.js',
 					'src/js/m2s/chem/inchi.js',
-					
+
 					//MolEdit
 					'src/js/moledit/Constants.js',
 					'src/js/moledit/Objects.js',
@@ -104,21 +103,21 @@ src/js/MolView.js\n\
 					'src/js/moledit/ChemicalView_core.js',
 					'src/js/moledit/ChemicalView_events.js',
 					'src/js/moledit/Utility.js',
-					
+
 					//GLmol
 					'src/js/lib/Three49custom.js',
 					'src/js/lib/GLmol.js',
-					
+
 					//ChemDoodle
 					'src/js/lib/ChemDoodleWeb.js',
-					
+
 					//FileSaver
 					'src/js/lib/Blob.js',
 					'src/js/lib/FileSaver.js',
-					
+
 					//Periodic Table
 					'src/js/lib/PeriodicTable.js',
-					
+
 					//MolView source
 					'src/js/Utility.js',
 					'src/js/Data.js',
@@ -132,7 +131,8 @@ src/js/MolView.js\n\
 					'src/js/Actions.js',
 					'src/js/Share.js',
 					'src/js/Link.js',
-					'src/js/ChemicalData.js',
+					'src/js/ChemProps.js',
+					'src/js/Spectroscopy.js',
 					'src/js/Autocomplete.js',
 					'src/js/MolView.js'
 				],
@@ -208,7 +208,6 @@ src/css/messages.css\n\
 src/css/progress.css\n\
 src/css/swipeable.css\n\
 src/css/dialogs.css\n\
-src/css/alert.css\n\
 src/css/help.css\n\
 src/css/share.css\n\
 src/css/periodictable.css\n\
@@ -230,7 +229,6 @@ src/css/autocomplete.css\n\
 					'src/css/progress.css',
 					'src/css/swipeable.css',
 					'src/css/dialogs.css',
-					'src/css/alert.css',
 					'src/css/help.css',
 					'src/css/share.css',
 					'src/css/periodictable.css',

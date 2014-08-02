@@ -5,7 +5,7 @@ Bugfixes:
   - Added GLmol zoom boundary
   - Direct CODID search boundary
   - Added `Loader.Crystals.loadCODID` CIF validation
-  - ucfirst() and humanize() undefined input protection
+  - `ucfirst()` and `humanize()` undefined input protection
   - Test if translation is necessary
 
 Revisions:
@@ -16,16 +16,24 @@ Revisions:
   - JS and CSS minification
   - Renamed protein to biomolecule
   - Changed search query to search = fast || pubchem || rcsb || cod
-  - Renamed Loader.Compounds to Loader.PubChem
-  - Renamed Loader.Biomolecules to Loader.RCSB
-  - Renamed Loader.Crystals to Loader.COD
+  - Renamed `Loader.Compounds` to `Loader.PubChem`
+  - Renamed `Loader.Biomolecules` to `Loader.RCSB`
+  - Renamed `Loader.Crystals` to `Loader.COD`
   - Moved message SVG images to CSS
   - SVG minification
   - Light sketcher toolbars
   - Replace '/' with '%5C' for Chemical Identifier Resolver lookup
   - Sketcher selection restyling
-  > ChemicalData via PubChem when possible
-  > Alert message with dark foreground
+  - Splitted `ChemicalData` into `ChemProps` and `Spectroscopy`
+  - Added two `ChemProps` dialogs; biomolecule and crystal
+  > Migrate CSS to LESS
+  > Property loading; PubChem > ChemSpider > Chemical Identifier Resolver
+  > CSID via ChemSpider webservice//http://www.chemspider.com/Search.asmx/SimpleSearch?query={smiles}&token=eb952f07-9d2e-4831-9c90-8b3b7eccec8a
+  > SMILES 2D depiction; PubChem > Chemical Identifier Resolver
+  > SMILES 3D conformation; PubChem > Chemical Identifier Resolver > CHEMBIOGRID
+  > SMILES 3D conformation URL key; CIS > InChiKey (CIR only) > SMILES
+  > Sketcher.InChiKey from Chemical Identifier Resolver search
+  > Mirror AJAX request via mirror.php if necessary
   > Progress message in small bar
 
 Features:
@@ -38,9 +46,11 @@ Features:
   - Fast search auto-complete to CID, PDBID or CODID
   - Model background switch
   - Export images with alpha channel
+  - Dialog close buttons
+  > Save user preferences using HTML5 Web Storage
+  > SMILES 3D conformation URL key; CIS > InChiKey (CIR only) > SMILES
   > Functional groups in Sketcher
-  > 2D/3D conformation via PubChem first
-  > CHEMBIOGRID fallback for Chemical Identifier Resolver
+  > COD image archive
 
 ## 2.1.3 (2014-07-07)
 
@@ -113,4 +123,3 @@ Features:
   - RCSB integration (PDB only)
   - COD integration (CIF only)
   - NIST Chemistry Webbook integration
-

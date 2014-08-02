@@ -1,14 +1,26 @@
 /*
 form
 */
-.btn:active, .btn-primary:active
+.btn:active
+{
+	background: #ddd !important;
+	background: linear-gradient(#fff, #ddd) !important;
+}
+
+.btn-primary:active
+{
+	background: #f00 !important;
+	background: linear-gradient(#f50, #f30) !important;
+}
+
+.btn-search:active
 {
 	color: #fff !important;
 	background: #f00 !important;
 	border-color: #f00 !important;
 }
 
-.close-btn:active
+.close-btn:active, .dialog-close-btn:active
 {
 	color: #f00;
 }
@@ -16,7 +28,7 @@ form
 /*
 menu
 */
-.dropdown-toggle:active
+.dropdown-toggle:not(.tool-button-disabled):active
 {
 	background-color: #fff !important;
 }
@@ -30,16 +42,10 @@ menu
 /*
 sketcher
 */
-.tool-button:active
+.tool-button:not(.tool-button-disabled):active
 {
-	opacity: 1.0;
-	background-color: #f00;
-}
-
-.tool-button-disabled:active
-{
-	opacity: 0.3;
-	background-color: #000;
+	opacity: 1.0 !important;
+	background-color: #f00 !important;
 }
 
 /* periodictable */

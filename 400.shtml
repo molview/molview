@@ -5,7 +5,7 @@
 		<link href="src/img/icon/32.png" type="image/png" rel="shortcut icon" />
 		<title>Bad Request</title>
 		<meta name="viewport" content="width=600" />
-		
+
 		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700,600" />
 		<style>
 		body
@@ -13,12 +13,12 @@
 			margin: 0;
 			padding: 0;
 			background: #eee;
-			
+
 			/* global font styling */
 			font-family: 'Open Sans', sans-serif;
 			color: #111;
 		}
-		
+
 		body .center
 		{
 			position: absolute;
@@ -27,7 +27,7 @@
 			right: 0;
 			bottom: 0;
 			min-width: 300px;/* should be larger than .message */
-			
+
 			text-align: center;
 			font-size: 0;
 			white-space: nowrap;
@@ -69,4 +69,3 @@
 		<div>
 	</body>
 </html>
-

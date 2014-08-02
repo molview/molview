@@ -3,7 +3,7 @@ input[type="text"]
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
-	
+
 	padding: 0 15px;
 	width: 200px;
 	height: 40px;
@@ -58,7 +58,7 @@ select
 	padding: 5px 10px;
 	max-width: 100%;
 	line-height: 20px;
-	
+
 	color: #111;
 	font-size: 12pt;
 	font-family: 'Open Sans', sans-serif;
@@ -66,7 +66,7 @@ select
 	background: #eee;
 	border: 1px solid #ccc;
 	border-bottom-width: 3px;
-	
+
 	border-radius: 4px;
 }
 
@@ -83,20 +83,17 @@ select:focus
 	margin: 10px 0 0 10px;
 	padding: 5px 15px;
 	height: 40px;
-	
+
 	color: #111;
 	font-size: 12pt;
 	font-family: 'Open Sans', sans-serif;
 	text-decoration: none;
 	background: #eee;
-	border-width: 1px 1px 3px 1px;
-	border-style: solid;
-	border-color: #ccc;
-	
-	border-radius: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
 }
 
-.btn-white
+.btn-search
 {
 	background: #fff;
 	border: 0;
@@ -106,20 +103,13 @@ select:focus
 .btn:focus
 {
 	outline: none;
-	border-bottom: 3px solid #f50;
 }
 
 .btn-primary
 {
 	color: #eee;
-	font-weight: bold;
-	background: #f60;
-	border-color: #f30;
-}
-
-.btn-primary:focus
-{
-	border-bottom: 3px solid #f00;
+	background: #f30;
+	border: 1px solid #f30;
 }
 
 .btn-large
@@ -127,8 +117,7 @@ select:focus
 	padding: 10px 20px;
 	height: auto;
 	font-size: 18pt;
-	font-weight: bold;
-	border-width: 1px 1px 4px 1px;
+	border-radius: 6px;
 }
 
 .close-btn
@@ -138,16 +127,15 @@ select:focus
 	top: 0;
 	right: 0;
 	padding: 10px;
-	
+
 	line-height: 1;
-	font-family: FontAwesome;
-	font-size: 16pt;
+	font-size: 32pt;
 	color: #eee;
 }
 
 .close-btn:after
 {
-	content: '\f00d';
+	content: '\00D7';
 }
 
 .input-append input, .input-append div, .input-append button

@@ -146,6 +146,7 @@ var Model = {
 	{
 		$(".model-bg").removeClass("checked");
 		$("#model-bg-" + color).addClass("checked");
+		$("#model").css("background", color);
 		
 		this.background = color;
 		
@@ -667,6 +668,7 @@ var Model = {
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
 				this.setPicking(this.picking);
+				this.scriptWaitOutput("rotate best");
 				
 				return true;
 			}
@@ -680,11 +682,14 @@ var Model = {
 			{
 				this.currentModel = pdb;
 				
+				this.scriptWaitOutput("set defaultLattice {0 0 0};");
+				this.scriptWaitOutput("set showUnitcell false;");
 				this.scriptWaitOutput("set picking off;");
 				this._setPlatformSpeed(Model.JSmol.platformSpeed);
 				
 				JSmol.__loadModel(pdb);
 				this.setRepresentation(Model.representation);
+				this.script("rotate best");
 				
 				return true;
 			}
@@ -692,19 +697,21 @@ var Model = {
 		
 		loadCIF: function(cif, cell)
 		{
-			if(this.currentModel == cif) return;
+			if(this.currentModel == cif + cell) return;
 			
 			if(this.ready)
 			{
-				this.currentModel = cif;
+				this.currentModel = cif + cell;
 				
 				cell = cell || [1, 1, 1];
 				this.scriptWaitOutput("set defaultLattice {" + cell.join(" ") + "};");
-				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
 				
 				JSmol.__loadModel(cif);
+				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
+				
 				this.setRepresentation(Model.representation);
 				this.setPicking(this.picking);
+				this.scriptWaitOutput("rotate best");
 				
 				return true;
 			}
@@ -974,11 +981,11 @@ var Model = {
 		
 		loadCIF: function(cif, cell)
 		{
-			if(this.currentModel == cif) return;
+			if(this.currentModel == cif + cell) return;
 			
 			if(this.view !== undefined)
 			{
-				this.currentModel = cif;
+				this.currentModel = cif + cell;
 				
 				cell = cell || [1, 1, 1];
 				this.view.specs.crystals_displayUnitCell = cell.reduce(function(a, b){ return a * b; }) == 1; 

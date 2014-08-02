@@ -33,13 +33,13 @@
 }
 
 .dropdown-menu
-{	
+{
 	background: #fff;
 	border-color: #111;
 }
 
 li.menu-header
-{	
+{
 	font-weight: bold;
 	text-transform: uppercase;
 	color: #333;
@@ -61,7 +61,6 @@ li.menu-header
 	content: '\f14a';
 }
 
-body:not(.touch) .dropdown-menu > li > a:not(.disabled).checked:hover:after,
 body:not(.touch) .dropdown-menu > li > a:not(.disabled).checked:active:after
 {
 	color: #fff;

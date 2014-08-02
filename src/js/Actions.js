@@ -12,17 +12,17 @@ var Actions = {
 	window_model: function() { MolView.setLayout("model"); },
 	window_vsplit: function() { MolView.setLayout("vsplit"); },
 	window_hsplit: function() { MolView.setLayout("hsplit"); },
-	
+
 	help: function()
 	{
 		MolView.showDialog("help");
 	},
-	
+
 	about: function()
 	{
 		MolView.showDialog("about");
 	},
-	
+
 	/*
 	Tools menu
 	*/
@@ -31,104 +31,94 @@ var Actions = {
 		Link.updateShareDialog();
 		MolView.showDialog("share");
 	},
-	
+
 	embed: function()
 	{
 		Link.updateEmbedDialog();
 		MolView.showDialog("embed");
 	},
-	
+
 	export_2D: function()
 	{
 		var dataURL = Sketcher.toDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (structural formula).png");
 	},
-	
+
 	export_3D: function()
 	{
 		var dataURL = Model.toDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (model).png");
 	},
-	
+
 	save_local_3D: function(name)
 	{
 		var blob = Model.getDataBlob();
 		saveAs(blob, (name || document.title) + "." + (Model.getDataExstension().toLowerCase()));
 	},
-	
+
 	data_properties: function()
 	{
-		if(Loader.lastQuery.type == "pdbid")
+		var smiles;
+		try { smiles = Sketcher.getSMILES(); }
+		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
+
+		ChemProps.update(smiles);
+		MolView.showDialog("properties-compound");
+
+		window.setTimeout(function()
 		{
-			window.open("http://www.rcsb.org/pdb/explore/explore.do?structureId=" + Loader.lastQuery.content);
-		}
-		else if(Loader.lastQuery.type == "codid")
-		{
-			window.open("http://www.crystallography.net/" + Loader.lastQuery.content + ".html");
-		}
-		else
-		{
-			var smiles;
-			try { smiles = Sketcher.getSMILES(); }
-			catch(error) { Messages.alert("smiles_load_error_force", error); return; }
-			
-			MolView.showDialog("properties");
-			
-			window.setTimeout(function()
-			{
-				ChemicalData.update(smiles);
-				ChemicalData.updateProperties();
-				ChemicalData.updateMoleculeImage();
-			}, 100);
-		}
+			ChemProps.updateImage();
+		}, 100);
 	},
-	
+
 	data_spectra: function()
 	{
 		var smiles;
 		try { smiles = Sketcher.getSMILES(); }
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
-		
-		if(ChemicalData.smiles != smiles)
-			ChemicalData.spectrumPrint("No spectrum selected");
+
+		if(ChemProps.smiles != smiles)
+			Spectroscopy.print("No spectrum selected");
+
+		if(Spectroscopy.update(smiles))
+			Spectroscopy.print("Loading\u2026");
+
 		MolView.showDialog("spectra");
-		
+
 		window.setTimeout(function()
 		{
-			ChemicalData.update(smiles);
-			ChemicalData.resizeSpectrum();
-			ChemicalData.updateSpectra();
+			Spectroscopy.resize();
 		}, 100);
 	},
-	
+
 	png_current_spectrum: function()
 	{
-		if(!ChemicalData.spectrum_data[$("#spectrum-select").val()])
+		if(!Specstrocopy.data[$("#spectrum-select").val()])
 		{
 			alert("No spectrum selected!");
 			return;
 		}
-		
+
 		var dataURL = document.getElementById("spectrum-canvas").toDataURL("image/png");
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".png");
 	},
-	
+
 	jcamp_current_spectrum: function()
 	{
-		if(!ChemicalData.spectrum_data[$("#spectrum-select").val()])
+		if(!Specstrocopy.data[$("#spectrum-select").val()])
 		{
 			alert("No spectrum selected!");
 			return;
 		}
-		
-		var blob = new Blob([ ChemicalData.spectrum_data[$("#spectrum-select").val()] ],
-			{type: "chemical/x-jcamp-dx;charset=utf-8"});
+
+		var blob = new Blob([ Specstrocopy.data[$("#spectrum-select").val()] ],
+			{ type: "chemical/x-jcamp-dx;charset=utf-8" });
 		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".jdx");
 	},
-	
+
 	search_substructure: function()
 	{
 		MolView.hideWindows();
@@ -145,7 +135,7 @@ var Actions = {
 			}
 		}, "search");
 	},
-	
+
 	search_superstructure: function()
 	{
 		MolView.hideWindows();
@@ -162,7 +152,7 @@ var Actions = {
 			}
 		}, "search");
 	},
-	
+
 	search_similarity: function()
 	{
 		MolView.hideWindows();
@@ -179,7 +169,7 @@ var Actions = {
 			}
 		}, "search");
 	},
-	
+
 	/*
 	Model menu
 	*/
@@ -189,43 +179,43 @@ var Actions = {
 	model_vdw:       function() { Model.setRepresentation("vdw"); },
 	model_wireframe: function() { Model.setRepresentation("wireframe"); },
 	model_line:      function() { Model.setRepresentation("line"); },
-	
+
 	model_bg_black: function() { Model.setBackground("black"); },
 	model_bg_white: function() { Model.setBackground("white"); },
-	
+
 	engine_glmol: function()
 	{
 		//clear Model window
 		Messages.hide();
-		
+
 		Messages.process(function()
 		{
 			Model.setRenderEngine("GLmol", Messages.hide);
 		}, "switch_engine");
 	},
-	
+
 	engine_jmol: function()
 	{
 		//clear Model window
 		Messages.hide();
-		
+
 		Messages.process(function()
 		{
 			Model.setRenderEngine("JSmol", Messages.hide);
 		}, "switch_engine");
 	},
-	
+
 	engine_cdw: function()
 	{
 		//clear Model window
 		Messages.hide();
-		
+
 		Messages.process(function()
 		{
 			Model.setRenderEngine("CDW", Messages.hide);
 		}, "switch_engine");
 	},
-	
+
 	cif_unit_cell: function()
 	{
 		if(Model.data.current == "CIF")
@@ -237,7 +227,7 @@ var Actions = {
 			}, "crystal_structure");
 		}
 	},
-	
+
 	cif_2x2x2_cell: function()
 	{
 		if(Model.data.current == "CIF")
@@ -249,7 +239,7 @@ var Actions = {
 			}, "crystal_structure");
 		}
 	},
-	
+
 	cif_1x3x3_cell: function()
 	{
 		if(Model.data.current == "CIF")
@@ -261,7 +251,7 @@ var Actions = {
 			}, "crystal_structure");
 		}
 	},
-	
+
 	/*
 	GLmol menu
 	*/
@@ -276,7 +266,7 @@ var Actions = {
 	glmol_color_chain:     function() { Model.GLmol.setChainColoring("chain"); },
 	glmol_color_bfactor:   function() { Model.GLmol.setChainColoring("bfactor"); },
 	glmol_color_polarity:  function() { Model.GLmol.setChainColoring("polarity"); },
-		
+
 	/*
 	Jmol menu
 	*/
@@ -287,7 +277,7 @@ var Actions = {
 	bond_dipoles:  function() { Model.JSmol.displayDipoles(); },
 	net_dipole:    function() { Model.JSmol.displayNetDipole(); },
 	jmol_minimize: function() { Model.JSmol.calculateEnergyMinimization(); },
-	
+
 	measure_distance: function()
 	{
 		var off = $("#measure-distance").hasClass("checked");
@@ -295,7 +285,7 @@ var Actions = {
 		if(!off) $("#measure-distance").addClass("checked");
 		Model.JSmol.setPicking(off ? "OFF" : "DISTANCE");
 	},
-	
+
 	measure_angle: function()
 	{
 		var off = $("#measure-angle").hasClass("checked");
@@ -303,7 +293,7 @@ var Actions = {
 		if(!off) $("#measure-angle").addClass("checked");
 		Model.JSmol.setPicking(off ? "OFF" : "ANGLE");
 	},
-	
+
 	measure_torsion: function()
 	{
 		var off = $("#measure-torsion").hasClass("checked");
@@ -311,22 +301,22 @@ var Actions = {
 		if(!off) $("#measure-torsion").addClass("checked");
 		Model.JSmol.setPicking(off ? "OFF" : "TORSION");
 	},
-	
+
 	jmol_render_all: function()
-	{		
+	{
 		Model.JSmol.setPlatformSpeed(7);
 	},
-	
+
 	jmol_render_normal: function()
-	{		
+	{
 		Model.JSmol.setPlatformSpeed(4);
 	},
-	
-	jmol_render_minimal: function() 
-	{		
+
+	jmol_render_minimal: function()
+	{
 		Model.JSmol.setPlatformSpeed(1);
 	},
-	
+
 	/*
 	Searching
 	*/
@@ -345,7 +335,7 @@ var Actions = {
 			Messages.process(Loader.CIRsearch, "search");
 		}
 	},
-	
+
 	pubchem_search: function()
 	{
 		if($("#search-input").val() === "")
@@ -361,7 +351,7 @@ var Actions = {
 			Messages.process(Loader.PubChem.search, "search");
 		}
 	},
-	
+
 	rcsb_search: function()
 	{
 		if($("#search-input").val() === "")
@@ -377,7 +367,7 @@ var Actions = {
 			Messages.process(Loader.RCSB.search, "search");
 		}
 	},
-	
+
 	cod_search: function()
 	{
 		if($("#search-input").val() === "")
@@ -393,48 +383,48 @@ var Actions = {
 			Messages.process(Loader.COD.search, "search");
 		}
 	},
-	
+
 	show_search_results: function()
 	{
 		$("#show-search-results").css("display", "none");
 		$("#hide-search-results").css("display", "block");
 		$("#search-results").css("display", "block");
 	},
-	
+
 	hide_search_results: function()
 	{
 		$("#hide-search-results").css("display", "none");
 		$("#show-search-results").css("display", "block");
 		$("#search-results").css("display", "none");
 	},
-	
+
 	load_more_pubchem: function()
 	{
 		Loader.PubChem.loadNextSet();
 	},
-	
+
 	load_more_rcsb: function()
 	{
 		Loader.RCSB.loadNextSet();
 	},
-	
+
 	load_more_cod: function()
 	{
 		Loader.COD.loadNextSet();
 	},
-	
+
 	//sketcher
 	clean: function()
 	{
 		Messages.process(Loader.clean, "clean");
 	},
-	
+
 	resolve: function()
 	{
 		$("#search-results").css("display", "none");
 		Messages.process(Loader.resolve, "resolve");
 	},
-	
+
 	//misc
 	request_fullscreen: function() { launchFullscreen(document.documentElement); },
 	exit_fullscreen: function() { exitFullscreen(); }

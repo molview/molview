@@ -53,7 +53,7 @@ if(isset($pubchem_query))
 {
 	$json = file_get_contents("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
 	$data = json_decode($json);
-	
+
 	if(isset($data -> InformationList -> Information[0] -> Title))
 		$title = ucfirst(humanize($data -> InformationList -> Information[0] -> Title));
 	if(isset($data -> InformationList -> Information[0] -> Description))
@@ -65,7 +65,7 @@ else if(isset($pdbid))
 {
 	$xml = file_get_contents("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
 	$data = new SimpleXMLElement($xml);
-	
+
 	if(isset($data -> {"record"} -> {"dimStructure.structureId"}))
 		$title = $data -> {"record"} -> {"dimStructure.structureId"};
 	if(isset($data -> {"record"} -> {"dimStructure.structureTitle"}))
@@ -82,12 +82,12 @@ else if(isset($codid))
 		if($result = $cod -> query($query))
 		{
 			while($row = $result -> fetch_row())//print JSON
-			{				
+			{
 				$title = isset($row[0]) ? $row[0] : (isset($row[1]) ? $row[1] : (isset($row[2]) ? $row[2] : $title));
 				$description = $row[3];
 			}
 		}
-		
+
 		$cod -> close();
 	}
 }
@@ -99,7 +99,7 @@ else if(isset($codid))
 	MolView v2.2.0 (http://molview.org)
 	Copyright (c) 2014, Herman Bergwerf
 	ALL RIGHTS RESERVED
-	
+
 	Query parameters:
 	- q = search query
 	- search = fast || pubchem || rcsb || cod
@@ -115,14 +115,14 @@ else if(isset($codid))
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		
+
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-capable" content="yes" />
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
-		
+
 		<?php echo "<title>".$title."</title>"; ?>
-		
+
 		<link rel="icon" sizes="196x196" href="img/icon/196.png">
 		<link rel="icon" sizes="128x128" href="img/icon/128.png">
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/icon/57.png">
@@ -130,12 +130,12 @@ else if(isset($codid))
 		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/icon/114.png">
 		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
 		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
-		
+
 		<link rel="icon" href="img/icon/32.png" />
-		
+
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" content="molview,free,molecules,chemistry,compounds,proteins,biomolecules,crystals,smartphone,tablet,chrome,spectroscopy,sketch,draw,edit,view" />
-		
+
 		<!-- Open Graph + Schema.org + Twitter Card -->
 		<meta name="twitter:card" content="summary">
 		<meta name="twitter:site" content="@molview">
@@ -143,15 +143,15 @@ else if(isset($codid))
 		<meta property="og:site_name" content="MolView" />
 		<?php
 			echo '<meta name="description" content="'.$description.'" />';
-			
+
 			echo '<meta name="twitter:title" property="og:title" content="'.$title.'" />';
 			echo '<meta itemprop="name" content="'.$title.'" />';
-			
+
 			echo '<meta name="twitter:description" property="og:description" content="'.$description.'" />';
 			echo '<meta itemprop="description" content="'.$description.'" />';
-			
+
 			echo '<meta itemprop="sameAs" content="'.$same_as.'" />';
-			
+
 			if(isset($pubchem_query))
 			{
 				if($pubchem_query == "smiles")
@@ -166,13 +166,16 @@ else if(isset($codid))
 				}
 			}
 			else
+
 			{
 				echo '<meta name="twitter:image:src" itemprop="image" property="og:image" content="'.$image_url.'" />';
 				echo '<meta itemprop="image" content="'.$image_url.'" />';
 			}
 		?>
-		
-		<!-- CSS
+
+		<!-- CSS -->
+		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700">
 		<link type="text/css" rel="stylesheet" href="src/css/form.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/global.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/layout.css" media="screen" />
@@ -185,25 +188,20 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="src/css/progress.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/swipeable.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/dialogs.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/alert.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/help.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/share.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/periodictable.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
 		<link type="text/css" rel="stylesheet" href="src/css/autocomplete.css" media="screen" />
-		-->
-		
-		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
-		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
-		<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />
-		
-		<!-- JS-->
+
+		<!--<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />-->
+
+		<!-- JS -->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
 		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
 		<script type="text/javascript" src="src/js/lib/jMouseWheel.js"></script>
-		<script type="text/javascript" src="src/js/lib/fuse.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/Polyfill.js"></script>
         <script type="text/javascript" src="src/js/m2s/prototype.js"></script>
         <script type="text/javascript" src="src/js/m2s/util/common.js"></script>
@@ -246,13 +244,13 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/Actions.js"></script>
 		<script type="text/javascript" src="src/js/Share.js"></script>
 		<script type="text/javascript" src="src/js/Link.js"></script>
-		<script type="text/javascript" src="src/js/ChemicalData.js"></script>
+		<script type="text/javascript" src="src/js/ChemProps.js"></script>
+		<script type="text/javascript" src="src/js/Spectroscopy.js"></script>
 		<script type="text/javascript" src="src/js/Autocomplete.js"></script>
 		<script type="text/javascript" src="src/js/MolView.js"></script>
-		
-		
-		<!--<script type="text/javascript" src="build/molview.min.js"></script>-->
-		
+
+		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
+
 		<!-- Custom styling -->
 		<script type="text/javascript">
 			if(isTouchDevice())
@@ -268,7 +266,7 @@ else if(isset($codid))
 				document.write('<link type="text/css" rel="stylesheet" href="src/css/active.css" media="screen" />');
 			}
 		</script>
-		
+
 		<!-- Google Analytics -->
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -310,9 +308,9 @@ else if(isset($codid))
 							<li class="menu-header">Export</li>
 							<li><a id="export-2d">Structural formula image</a></li>
 							<li><a id="export-3d">3D model image</a></li>
-							<li><a id="save-local-3d">file</a></li>
+							<li><a id="save-local-3d">MOL file</a></li>
 							<li class="menu-header">Chemical data</li>
-							<li><a id="data-properties">Properties</a></li>
+							<li><a id="data-properties">Information card</a></li>
 							<li><a id="data-spectra">Spectroscopy</a></li>
 							<li class="menu-header">Advanced search</li>
 							<li><a id="search-similarity">Similarity</a></li>
@@ -386,16 +384,16 @@ else if(isset($codid))
 				<form id="search" class="brick input-append" action="javascript:void(0)">
 					<div id="search-input-wrap">
 						<input id="search-input" name="q" type="text"
-							placeholder="Find structures"
+							placeholder="Name, InChiKey, SMILES &hellip;"
 							autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="search-buttons" class="btn-group">
-						<button id="fast-search" class="btn btn-white" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
-						<button id="pubchem-search" class="btn btn-white" type="button" title="Find compounds via PubChem">Compounds</button>
-						<button id="rcsb-search" class="btn btn-white" type="button" title="Find biomolecules via RCSB">Biomolecules</button>
-						<button id="cod-search" class="btn btn-white" type="button" title="Find crystals via COD">Crystals</button>
-						<button id="show-search-results" class="btn btn-white last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
-						<button id="hide-search-results" class="btn btn-white last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
+						<button id="fast-search" class="btn btn-search" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
+						<button id="pubchem-search" class="btn btn-search" type="button" title="Find compounds via PubChem">Compounds</button>
+						<button id="rcsb-search" class="btn btn-search" type="button" title="Find biomolecules via RCSB">Biomolecules</button>
+						<button id="cod-search" class="btn btn-search" type="button" title="Find crystals via COD">Crystals</button>
+						<button id="show-search-results" class="btn btn-search last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
+						<button id="hide-search-results" class="btn btn-search last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
 					</div>
 				</form>
 			</div>
@@ -412,24 +410,24 @@ else if(isset($codid))
 				else echo $_SERVER["REMOTE_ADDR"];
 				echo '"';
 				?>;
-				
+
 				Request.ChemicalIdentifierResolver.available = true;/*<?php
 				echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
 				?>;*/
-				
+
 				if(Detector.webgl) $("#glmol-menu").show();
-				
+
 				MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 				MolView.query = getQuery();
-				
+
 				if($.isEmptyObject(MolView.query) && Detector.webgl)
 					$("#content").addClass("start-messages");
-				
+
 				if($(window).height() > $(window).width()
 					&& !MolView.query.layout
 					&& MolView.layout != "model") Actions.window_hsplit();
 			</script>
-			
+
 			<div id="sketcher">
 				<div id="moledit" class="sketcher">
 					<div id="chem-tools" class="toolbar swipeable">
@@ -490,7 +488,7 @@ else if(isset($codid))
 					<div id="moledit-area" class="edit-area">
 						<canvas id="moledit-canvas"></canvas>
 					</div>
-				</div>				
+				</div>
 				<div id="sketcher-messages" class="message-box full-cover dark-glass">
 					<div class="message-wrapper">
 						<div class="message">
@@ -526,7 +524,7 @@ else if(isset($codid))
 							</p>
 							<button id="start-help" class="message-btn btn btn-primary btn-large">Getting started</button>
 							<p class="message-text">We need your help to keep this up!<br/>If you think MolView is useful, please support development and maintenance of MolView.</p>
-							<a class="message-btn btn btn-primary btn-large" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">PayPal donation&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
+							<a class="message-btn btn btn-primary btn-large" style="font-weight: bold;" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">DONATE&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
 						</div>
 					</div>
 				</div>
@@ -557,6 +555,7 @@ else if(isset($codid))
 		<div id="window-layer" class="window-layer" style="display: none;">
 			<div class="dialog" id="about-dialog" style="display: none;">
 				<h2>About</h2>
+				<div class="dialog-close-btn"></div>
 				<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
 				This web application is built upon the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
 				<ul>
@@ -607,6 +606,7 @@ else if(isset($codid))
 			</div>
 			<div class="dialog styled-text" id="help-dialog" style="display: none;">
 				<h2>Help</h2>
+				<div class="dialog-close-btn"></div>
 				<script type="text/javascript">
 					if(isTouchDevice())
 					{
@@ -801,6 +801,7 @@ else if(isset($codid))
 			</div>
 			<div class="dialog styled-text" id="share-dialog" style="display: none;">
 				<h2>Share</h2>
+				<div class="dialog-close-btn"></div>
 				<div id="share-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
 				<h3>URL</h3>
 				<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
@@ -815,6 +816,7 @@ else if(isset($codid))
 			</div>
 			<div class="dialog styled-text" id="embed-dialog" style="display: none;">
 				<h2>Embed</h2>
+				<div class="dialog-close-btn"></div>
 				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
 				<div class="alert-bar alert-info">Embedded biomolecules cannot be viewed on smartphones without WebGL</div>
 				<div class="expandable">
@@ -832,8 +834,12 @@ else if(isset($codid))
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog" id="properties-dialog" style="display: none;">
-				<h2>Chemical Properties</h2>
+			<div class="dialog properties-dialog" id="properties-compound-dialog" style="display: none;">
+				<h2>Properties</h2>
+				<div class="dialog-close-btn"></div>
+				<button id="goto-compound-card" class="info-card-tab">Compound card</button>
+				<button id="goto-rcsb-card" class="info-card-tab">Biomolecule card</button>
+				<button id="goto-cod-card" class="info-card-tab">Crystal card</button>
 				<div id="properties-wrapper">
 					<div id="general-properties">
 						<div id="molecule-image-wrapper" class="properties-block">
@@ -846,15 +852,10 @@ else if(isset($codid))
 							</div>
 							<table class="light-table">
 								<tbody>
-									<tr><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
-									<tr><td>Molecular weight</td><td id="prop-weight" class="chemprop"></td></tr>
-									<tr><td>Hydrogen bond donors</td><td id="prop-h-donors" class="chemprop"></td></tr>
-									<tr><td>Hydrogen bond acceptors</td><td id="prop-h-acceptors" class="chemprop"></td></tr>
-									<tr><td>Rule of 5 violations</td><td id="prop-ro5-violations" class="chemprop"></td></tr>
-									<tr><td>Freely rotatable bonds</td><td id="prop-fr-bonds" class="chemprop"></td></tr>
-									<tr><td>Effectively rotatable bonds</td><td id="prop-er-bonds" class="chemprop"></td></tr>
-									<tr><td>Rings</td><td id="prop-rings" class="chemprop"></td></tr>
-									<tr><td>Ring systems</td><td id="prop-ring-systems" class="chemprop"></td></tr>
+									<tr id="prop-wrapper-formula"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
+									<tr id="prop-wrapper-weight"><td>Molecular weight</td><td id="prop-weight" class="chemprop"></td></tr>
+									<tr id="prop-wrapper-donors"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
+									<tr id="prop-wrapper-acceptors"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
 								</tbody>
 							</table>
 						</div>
@@ -864,20 +865,55 @@ else if(isset($codid))
 							<tr><th>Identifiers</th></tr>
 						</thead>
 						<tbody>
-							<tr><th>IUPAC name</th></tr>
-							<tr><td><input type="text" id="prop-iupac" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr><th>Systematic name</th></tr>
+							<tr><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
 							<tr><th>SMILES</th></tr>
 							<tr><td><input type="text" id="prop-smiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>Standard InChiKey</th></tr>
+							<tr><th>InChiKey</th></tr>
 							<tr><td><input type="text" id="prop-stdinchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>Standard InChi</th></tr>
+							<tr><th>InChi</th></tr>
 							<tr><td><input type="text" id="prop-stdinchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>CAS Registry Number</th></tr>
+							<tr><th>CAS Number</th></tr>
 							<tr><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
 							<tr><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr><td><input type="text" id="prop-chemspider_id" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>PubChem CID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></th></tr>
+							<tr><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></th></tr>
 							<tr><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="footer">
+					<button class="btn close btn-primary pull-right">Close</button>
+				</div>
+			</div>
+			<div class="dialo properties-dialogg" id="properties-rcsb-dialog" style="display: none;">
+				<h2>Properties</h2>
+				<div class="dialog-close-btn"></div>
+				<div id="properties-wrapper">
+					<div id="general-properties">
+						<div id="rcsb-image-wrapper" class="properties-block">
+							<img id="rcsb-image" class="chemprop" src="src/img/empty.png" alt=""/>
+						</div>
+						<div class="properties-block">
+							<div id="rcsb-info">
+								<h3 id="rcsb-title"></h3>
+								<p id="rcsb-description"></p>
+							</div>
+							<a></a>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+					<button class="btn close btn-primary pull-right">Close</button>
+				</div>
+			</div>
+			<div class="dialog properties-dialog" id="properties-cod-dialog" style="display: none;">
+				<h2>Properties</h2>
+				<div class="dialog-close-btn"></div>
+				<div id="properties-wrapper">
+					<table class="light-table">
+						<tbody>
+							<tr id="prop-wrapper-"><td>Formula</td><td id="prop-" class="chemprop"></td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -887,6 +923,7 @@ else if(isset($codid))
 			</div>
 			<div class="dialog" id="spectra-dialog" style="display: none;">
 				<h2>Spectroscopy</h2>
+				<div class="dialog-close-btn"></div>
 				<div id="spectrum">
 					<select id="spectrum-select"></select>
 					<div id="spectrum-wrapper">
@@ -901,6 +938,7 @@ else if(isset($codid))
 			</div>
 			<div class="dialog" id="elements-dialog" style="display: none;">
 				<h2>Periodic Table</h2>
+				<div class="dialog-close-btn"></div>
 				<div id="periodictable" class="no-select"></div>
 				<div class="footer">
 					<button class="btn close btn-primary pull-right">Close</button>

@@ -5,13 +5,11 @@
 	right: 0;
 	width: 100%;
 	max-height: 100%;
-	
+
 	background: #eee;
-	
+
 	overflow: auto;
 	overflow-x: hidden;
-	
-	border-left: 1px solid #ccc;
 }
 
 @media all and (min-width: 1250px)
@@ -34,19 +32,20 @@
 	list-style: none;
 	margin: 0;
 	padding: 5px;
-	
-	border-bottom: 1px solid #ccc;
+
+	color: #111;
 }
 
-.autocomplete-biomolecule { color: #a94442; background: #f2dede; }
-.autocomplete-mineral { color: #31708f; background: #d9edf7; }
-.autocomplete-pubchem { color: #8a6d3b; background: #fcf8e3; }
+.autocomplete-pubchem { color: #3c763d; background: #dff0d8; border-left: 4px solid #0a0; }
+.autocomplete-biomolecule { color: #a94442; background: #f2dede; border-left: 4px solid #f10; }
+.autocomplete-mineral { color: #31708f; background: #d9edf7; border-left: 4px solid #07f; }
 
 /* same style as in hover.css */
 .autocomplete-item-active
 {
 	color: #fff;
-	background: #f30;
+	background: #f50;
+	border-color: #f50;
 }
 
 .autocomplete-type

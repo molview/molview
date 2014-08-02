@@ -6,19 +6,23 @@ select:hover
 	border-bottom-color: #f50;
 }
 
-.btn:hover
+.btn:not(.btn-primary):hover
 {
 	background: #fff;
-	border-color: #f50;
+	border-color: #aaa;
 }
 
 .btn-primary:hover
 {
-	background: #f30;
-	border-color: #f00;
+	background: #f50;
 }
 
-.close-btn:hover
+.btn-search:hover
+{
+	border-color: #f50 !important;
+}
+
+.close-btn:hover, .dialog-close-btn:hover
 {
 	color: #f50;
 }
@@ -33,23 +37,16 @@ menu
 
 .dropdown-menu > li > a:not(.disabled):hover
 {
-	color: #fff;
-	background: #f50;
+	background: #eee;
 }
 
 /*
 sketcher
 */
-.tool-button:hover
+.tool-button:not(.tool-button-selected):not(.tool-button-disabled):hover
 {
 	opacity: 1.0;
-	background-color: #f30;
-}
-
-.tool-button-disabled:hover
-{
-	opacity: 0.3;
-	background-color: #eee;
+	background-color: #ddd;
 }
 
 /*
@@ -93,5 +90,6 @@ autocomplete
 .autocomplete-item:hover
 {
 	color: #fff;
-	background: #f30;
+	background: #f50;
+	border-color: #f50;
 }
