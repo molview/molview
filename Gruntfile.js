@@ -185,55 +185,34 @@ src/js/MolView.Embed.js\n\
 				dest: 'build/<%= pkg.name %>.embed.min.js'
 			}
 		},
-		cssmin:
+		less:
 		{
 			index:
 			{
 				options:
 				{
-					banner: '/*!\n\
-MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
-Copyright (c) 2014, Herman Bergwerf\n\
-ALL RIGHTS RESERVED\n\
-Included files (can be found under http://molview.org/{path})\n\
-src/css/form.css\n\
-src/css/global.css\n\
-src/css/layout.css\n\
-src/css/menu.css\n\
-src/css/menu-theme.css\n\
-src/css/sketcher.css\n\
-src/css/model.css\n\
-src/css/search.css\n\
-src/css/messages.css\n\
-src/css/progress.css\n\
-src/css/swipeable.css\n\
-src/css/dialogs.css\n\
-src/css/help.css\n\
-src/css/share.css\n\
-src/css/periodictable.css\n\
-src/css/chemicaldata.css\n\
-src/css/autocomplete.css\n\
-*/\n',
-					keepSpecialComments: 0
+					compress: true,
+					cleancss: true
 				},
 				src: [
-					'src/css/form.css',
-					'src/css/global.css',
-					'src/css/layout.css',
-					'src/css/menu.css',
-					'src/css/menu-theme.css',
-					'src/css/sketcher.css',
-					'src/css/model.css',
-					'src/css/search.css',
-					'src/css/messages.css',
-					'src/css/progress.css',
-					'src/css/swipeable.css',
-					'src/css/dialogs.css',
-					'src/css/help.css',
-					'src/css/share.css',
-					'src/css/periodictable.css',
-					'src/css/chemicaldata.css',
-					'src/css/autocomplete.css'
+					'src/less/var.less',
+					'src/less/form.less',
+					'src/less/global.less',
+					'src/less/layout.less',
+					'src/less/menu.less',
+					'src/less/menu-theme.less',
+					'src/less/sketcher.less',
+					'src/less/model.less',
+					'src/less/search.less',
+					'src/less/messages.less',
+					'src/less/progress.less',
+					'src/less/swipeable.less',
+					'src/less/dialogs.less',
+					'src/less/help.less',
+					'src/less/share.less',
+					'src/less/periodictable.less',
+					'src/less/chemicaldata.less',
+					'src/less/autocomplete.less'
 				],
 				dest: 'build/<%= pkg.name %>.min.css'
 			},
@@ -241,26 +220,48 @@ src/css/autocomplete.css\n\
 			{
 				options:
 				{
-					banner: '/*!\n\
-MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
-Copyright (c) 2014, Herman Bergwerf\n\
-ALL RIGHTS RESERVED\n\
-Included files (can be found under http://molview.org/{path})\n\
-src/css/form.css\n\
-src/css/global.css\n\
-src/css/model.css\n\
-src/css/embed.css\n\
-*/\n',
-					keepSpecialComments: 0
+					compress: true,
+					cleancss: true
 				},
 				src: [
-					'src/css/form.css',
-					'src/css/global.css',
-					'src/css/model.css',
-					'src/css/messages.css',
-					'src/css/embed.css'
+					'src/less/var.less',
+					'src/less/form.less',
+					'src/less/global.less',
+					'src/less/model.less',
+					'src/less/messages.less',
+					'src/less/embed.less'
 				],
-				dest: 'src/css/<%= pkg.name %>.embed.min.css'
+				dest: 'build\/<%= pkg.name %>.embed.min.css'
+			},
+			touch:
+			{
+				options:
+				{
+					compress: true,
+					cleancss: true
+				},
+				src: [
+					'src/less/var.less',
+					'src/less/menu-touch.less',
+					'src/less/active.less'
+				],
+				dest: 'build\/<%= pkg.name %>.touch.min.css'
+			},
+			full:
+			{
+				options:
+				{
+					compress: true,
+					cleancss: true
+				},
+				src: [
+					'src/less/var.less',
+					'src/less/menu-nice.less',
+					'src/less/smooth.less',
+					'src/less/hover.less',
+					'src/less/active.less'
+				],
+				dest: 'build\/<%= pkg.name %>.full.min.css'
 			}
 		},
 		svgmin:
@@ -281,11 +282,19 @@ src/css/embed.css\n\
 						ext: '.svg'
 					}]
 			}
+		},
+		watch:
+		{
+			scripts: {
+				files: ['src/less/*.less'],
+				tasks: ['less'],
+			},
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-svgmin');
-	grunt.registerTask('default', ['uglify', 'cssmin', 'svgmin']);
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.registerTask('default', ['uglify', 'less', 'svgmin']);
 };

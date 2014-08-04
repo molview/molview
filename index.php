@@ -123,6 +123,7 @@ else if(isset($codid))
 
 		<?php echo "<title>".$title."</title>"; ?>
 
+		<link rel="shortcut icon" href="img/icon/32.png" />
 		<link rel="icon" sizes="196x196" href="img/icon/196.png">
 		<link rel="icon" sizes="128x128" href="img/icon/128.png">
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/icon/57.png">
@@ -131,10 +132,8 @@ else if(isset($codid))
 		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
 		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
 
-		<link rel="icon" href="img/icon/32.png" />
-
 		<meta name="author" content="Herman Bergwerf" />
-		<meta name="keywords" content="molview,free,molecules,chemistry,compounds,proteins,biomolecules,crystals,smartphone,tablet,chrome,spectroscopy,sketch,draw,edit,view" />
+		<meta name="keywords" content="molview,free,molecules,chemistry,compounds,macromolecules,proteins,biomolecules,crystals,smartphone,tablet,chrome,spectroscopy,sketch,draw,edit,view" />
 
 		<!-- Open Graph + Schema.org + Twitter Card -->
 		<meta name="twitter:card" content="summary">
@@ -176,25 +175,7 @@ else if(isset($codid))
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
 		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700">
-		<link type="text/css" rel="stylesheet" href="src/css/form.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/global.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/layout.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/menu.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/menu-theme.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/sketcher.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/model.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/search.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/messages.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/progress.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/swipeable.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/dialogs.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/help.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/share.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/periodictable.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/chemicaldata.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="src/css/autocomplete.css" media="screen" />
-
-		<!--<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />-->
+		<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />
 
 		<!-- JS -->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
@@ -255,15 +236,11 @@ else if(isset($codid))
 		<script type="text/javascript">
 			if(isTouchDevice())
 			{
-				document.write('<link type="text/css" rel="stylesheet" href="src/css/menu-touch.css" media="screen" />');
-				document.write('<link type="text/css" rel="stylesheet" href="src/css/active.css" media="screen" />');
+				document.write('<link type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />');
 			}
 			else
 			{
-				document.write('<link type="text/css" rel="stylesheet" href="src/css/menu-nice.css" media="screen" />');
-				document.write('<link type="text/css" rel="stylesheet" href="src/css/smooth.css" media="screen" />');
-				document.write('<link type="text/css" rel="stylesheet" href="src/css/hover.css" media="screen" />');
-				document.write('<link type="text/css" rel="stylesheet" href="src/css/active.css" media="screen" />');
+				document.write('<link type="text/css" rel="stylesheet" href="build/molview.full.min.css" media="screen" />');
 			}
 		</script>
 
@@ -390,7 +367,7 @@ else if(isset($codid))
 					<div id="search-buttons" class="btn-group">
 						<button id="fast-search" class="btn btn-search" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
 						<button id="pubchem-search" class="btn btn-search" type="button" title="Find compounds via PubChem">Compounds</button>
-						<button id="rcsb-search" class="btn btn-search" type="button" title="Find biomolecules via RCSB">Biomolecules</button>
+						<button id="rcsb-search" class="btn btn-search" type="button" title="Find macromolecules via RCSB">Macromolecules</button>
 						<button id="cod-search" class="btn btn-search" type="button" title="Find crystals via COD">Crystals</button>
 						<button id="show-search-results" class="btn btn-search last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
 						<button id="hide-search-results" class="btn btn-search last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
@@ -635,12 +612,12 @@ else if(isset($codid))
 						<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type what you are looking for and enter or click one of the search categories listed below.</p>
 						<ul>
 							<li><b>Compounds:</b> small molecules from the PubChem database</li>
-							<li><b>Biomolecules:</b> biological macromolecules from the RCSB database</li>
+							<li><b>Macromolecules:</b> biological macromolecules from the RCSB database</li>
 							<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
 						</ul>
 						<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
-						<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Biomolecules</i> or a COD ID via <i>Crystals</i>. You can also directly enter a SMILES, InChi or InChiKey string in the search field (don't use the <i>Compounds</i> button)</p>
-						<p>You can show or hide search results using the leftmost button. Note that <i>Biomolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display biomolecules anyway.</p>
+						<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. You can also directly enter a SMILES, InChi or InChiKey string in the search field (don't use the <i>Compounds</i> button)</p>
+						<p>You can show or hide search results using the leftmost button. Note that <i>Macromolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display macromolecules anyway.</p>
 					</div>
 				</div>
 				<div class="expandable">
@@ -650,7 +627,7 @@ else if(isset($codid))
 						<h4>Reset</h4>
 						<p>This function sets the model position, zoom and rotation back to default.</p>
 						<h4>Representation</h4>
-						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Biomolecules are automatically drawn using ribbons.</p>
+						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. /less/ are automatically drawn using ribbons.</p>
 						<h4>Background</h4>
 						<p>You can switch between a black and a white model background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
 						<h4>Engines</h4>
@@ -660,7 +637,7 @@ else if(isset($codid))
 							<li><b>ChemDoodle</b> if you load a crystal structure <i>(Glmol cannot render crystal structures)</i></li>
 						</ol>
 						<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
-						<p>Note that biomolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for large biomolecules.</p>
+						<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
 						<h4>Model transformation</h4>
 						<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
 						<h4>Crystallography</h4>
@@ -725,9 +702,9 @@ else if(isset($codid))
 				<div class="expandable">
 					<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
 					<div class="expandable-content">
-						<p>The GLmol render engine contains some custom display functions for biomolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
+						<p>The GLmol render engine contains some custom display functions for macromolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
 						<h4>Biological assemlby</h4>
-						<p>Some biomolecules are only a small unit (asymmetric unit) of a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
+						<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
 						<h4>Chain representation</h4>
 						<p>GLmol offers five different chain representations.</p>
 						<ol>
@@ -747,7 +724,7 @@ else if(isset($codid))
 							<li><b>Polarity:</b> colors polar amino-acids red and non polar amino-acids white</li>
 						</ol>
 						<h4>Fog and clipping</h4>
-						<p>When you are viewing large structures, like biomolecules, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
+						<p>When you are viewing large structures, like proteins, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
 						<ol>
 							<li><b>Fog:</b> you can move the fog forward by dragging the mouse up while holding the right mousebutton and vice versa.</li>
 							<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the left while holding the right mousebutton and vice versa.</li>
@@ -818,7 +795,7 @@ else if(isset($codid))
 				<h2>Embed</h2>
 				<div class="dialog-close-btn"></div>
 				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
-				<div class="alert-bar alert-info">Embedded biomolecules cannot be viewed on smartphones without WebGL</div>
+				<div class="alert-bar alert-info">Embedded macromolecules cannot be viewed on smartphones without WebGL</div>
 				<div class="expandable">
 					<div class="expandable-title no-select"><b>Dimensions</b><i class="fa"></i></div>
 					<div class="expandable-content">
@@ -835,7 +812,7 @@ else if(isset($codid))
 				</div>
 			</div>
 			<div class="dialog properties-dialog" id="properties-compound-dialog" style="display: none;">
-				<h2>Properties</h2>
+				<h2>Information</h2>
 				<div class="dialog-close-btn"></div>
 				<button id="goto-compound-card" class="info-card-tab">Compound card</button>
 				<button id="goto-rcsb-card" class="info-card-tab">Biomolecule card</button>
@@ -887,7 +864,7 @@ else if(isset($codid))
 				</div>
 			</div>
 			<div class="dialo properties-dialogg" id="properties-rcsb-dialog" style="display: none;">
-				<h2>Properties</h2>
+				<h2>Information</h2>
 				<div class="dialog-close-btn"></div>
 				<div id="properties-wrapper">
 					<div id="general-properties">
@@ -908,7 +885,7 @@ else if(isset($codid))
 				</div>
 			</div>
 			<div class="dialog properties-dialog" id="properties-cod-dialog" style="display: none;">
-				<h2>Properties</h2>
+				<h2>Information</h2>
 				<div class="dialog-close-btn"></div>
 				<div id="properties-wrapper">
 					<table class="light-table">

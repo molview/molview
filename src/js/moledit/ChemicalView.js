@@ -14,43 +14,57 @@ Some important changes:
 - jQuery
 - jMouseWheel
 - jquery.hotkeys
+- this.bondThicknessHalf
+- this.bondStyle
 - this.hoverStyle
+- this.selectionStyle
 - this.selectAreaFillStyle
-- this.selectionFillStyle
 - this.removeImplicitHydrogen
 - this.deselectAll
 - this.setElement(element)
-- chem.magnet
 - this.getSelectedAtoms
 - different charge buttons
 */
 
 function ChemicalView(parent, canvas)
-{	
+{
 	//use this to fix low DPI on mobile
 	this.mobile = isMobile();
 	this.android = navigator.userAgent.match(/Android/i);
 	this.iOS = navigator.userAgent.match(/iPhone|iPad|iPod/i);
 	this.touch = isTouchDevice();
 	this.scaleFactor = this.mobile ? 1.5 : 1.0;
-	
+
+	this.bondThicknessHalf = 0.2;
+
+	this.bondStyle = {
+		width: 1.5,
+		stroke: "#111111"
+	};
 	this.hoverStyle = {
 		width: 2,
-		color: "#ff5500",
 		join: "square",
-		cap: "square"
+		cap: "square",
+		stroke: "#ff1100",
+		radius: 0.3
 	};
-	this.selectAreaFillStyle = "rgba(255, 85, 0, 0.5)";
-	this.selectionFillStyle = "#ff5500";//#1a1a1a
-	
-	this.drawSelectedBonds = false;//don't since selected bonds are not equal to selected atoms
+	this.selectionStyle = {
+		width: 2,
+		fill: "#98fb98",
+		radius: 0.3
+	};
+	this.selectAreaStyle = {
+		fill: "rgba(255, 85, 0, 0.5)"
+	};
+
+	this.drawSelectedBonds = true;
 	this.onChanged = undefined;//event called when molecule is changed
-	
+
 	var that = this;
 	this.parent = jQuery(parent);
 	this.selectType = MODE_RECT_SEL;
 	this.toolButtons = [];
-	
+
 	/*
 	activeTool = {
 		id,
@@ -65,25 +79,25 @@ function ChemicalView(parent, canvas)
 		toolType: "bond",
 		ty: 1
 	};
-	
+
 	this.atomDislayMask = 0;
-	
+
 	var toolFunc = function(ev)
 	{
 		that.toolButtonClicked(this);
 	}
-	
+
 	jQuery("#moledit .tool-button.mode:not(.custom)").on("mousedown", function(e)
 	{
 		jQuery("#moledit .tool-button:not(.custom)").not(this).removeClass("tool-button-selected");
 		jQuery(this).toggleClass("tool-button-selected");
 	});
-	
+
 	jQuery("#me-rect, #me-lasso").on("mousedown", function(e)
 	{
 		jQuery("#me-rect, #me-lasso").removeClass("tool-button-selected");
 	});
-	
+
 	//chem tools
 	this.addToolBond(1, "me-single", toolFunc);
 	this.addToolBond(2, "me-double", toolFunc);
@@ -98,19 +112,19 @@ function ChemicalView(parent, canvas)
 	this.addTool("chain", "me-chain", toolFunc);
 	this.addTool("charge-add", "me-charge-add", toolFunc);
 	this.addTool("charge-sub", "me-charge-sub", toolFunc);
-	
+
 	//edit tools
 	this.addTool("new", "me-new", function(){ that.clearMol(); });
 	this.addTool("eraser", "me-eraser", toolFunc);
 	this.addTool("move", "me-move", toolFunc);
 	this.addTool("undo", "me-undo", function(){ that.undo(); });
 	this.addTool("redo", "me-redo", function(){ that.redo(); });
-	
+
 	this.addTool("rect", "me-rect", function()
 	{
 		that.selectType = MODE_RECT_SEL;
 		that.activeTool = { id: "me-move", toolType: "move" };
-		
+
 		jQuery("#moledit .tool-button:not(.custom)").removeClass("tool-button-selected");
 		jQuery("#me-move").addClass("tool-button-selected");
 		jQuery("#me-rect").addClass("tool-button-selected");
@@ -119,7 +133,7 @@ function ChemicalView(parent, canvas)
 	{
 		that.selectType = MODE_LASSO_SEL;
 		that.activeTool = { id: "me-move", toolType: "move" };
-		
+
 		jQuery("#moledit .tool-button:not(.custom)").removeClass("tool-button-selected");
 		jQuery("#me-move").addClass("tool-button-selected");
 		jQuery("#me-lasso").addClass("tool-button-selected");
@@ -134,7 +148,7 @@ function ChemicalView(parent, canvas)
 		that.updateZoom = true;
 		that.drawMol();
 	});
-	
+
 	//elements
 	this.addToolAtom("H", "me-atom-h", toolFunc);
 	this.addToolAtom("C", "me-atom-c", toolFunc);
@@ -150,23 +164,23 @@ function ChemicalView(parent, canvas)
 	//setup canvas
 	this.canvas = canvas;
 	this.canvas.style.backgroundColor = "#ffffff";
-	
+
 	this.canvas.width = this.parent.width() * this.scaleFactor;
 	this.canvas.height = this.parent.height() * this.scaleFactor;
 	jQuery(this.canvas).css({
 		"width": this.parent.width(),
 		"height": this.parent.height()
 	});
-	
+
 	this.canvas.onselectstart = function(ev)
 	{
 		ev.preventDefault();
 		return false;
 	}
-	
+
 	this.undoStack = [];
 	this.redoStack = [];
-	
+
 	this.chem = new Chemical();
 	this.chemIsReady = true;
 	this.ctx = null;
@@ -182,11 +196,11 @@ function ChemicalView(parent, canvas)
 	this.button = -1;
 	this.updateZoom = true;
 	this.mode = 0;
-	
+
 	this.blockMouse = 0;
-	
+
 	if(this.touch)
-	{		
+	{
 		this.canvas.addEventListener("touchstart", function(ev)
 		{
 			that.blockMouse++;
@@ -205,7 +219,7 @@ function ChemicalView(parent, canvas)
 			that.onMouseUp(ev);
 		}, false);
 	}
-	
+
 	this.canvas.addEventListener("mousedown", function(ev)
 	{
 		if(that.blockMouse > 0) that.blockMouse--;
@@ -224,37 +238,37 @@ function ChemicalView(parent, canvas)
 	{
 		if(jQuery('input:focus').length === 0) that.onKeyPress(ev);
 	});
-	
+
 	//shortcuts
 	jQuery(document).bind("keydown", "ctrl+z", function(e){ e.preventDefault(); that.undo(); });
 	jQuery(document).bind("keydown", "ctrl+shift+z", function(e){ e.preventDefault(); that.redo(); });
 	jQuery(document).bind("keydown", "ctrl+y", function(e){ e.preventDefault(); that.redo(); });
-	
+
 	//zooming with mousewheel
 	this.zoomSpeed = 0.08;
 	this.minKFC = 5;
 	this.parent.jMouseWheel((function(ev)
 	{
 		ev.preventDefault();
-		
+
 		var mult = 1 + (ev.deltaY / 3) * this.zoomSpeed;
-		
+
 		var cx = this.canvas.width / 2;
 		var cy = this.canvas.height / 2;
-		
+
 		var dx = cx - this.dx;
 		var dy = cy - this.dy;
-		
+
 		this.kfc *= mult;
 		if(this.kfc < this.minKFC)
 		{
 			mult = this.minKFC / (this.kfc / mult);
 			this.kfc = this.minKFC;
 		}
-		
+
 		this.dx = cx - dx * mult;
 		this.dy = cy - dy * mult;
-  
+
 		this.updateZoom = false;
 		this.drawMol();
 	}).bind(this));
@@ -271,7 +285,7 @@ ChemicalView.prototype.resize = function()
 		"width": this.parent.width(),
 		"height": this.parent.height()
 	});
-	
+
 	this.updateZoom = true;
 	this.drawMol();
 }
@@ -325,12 +339,12 @@ ChemicalView.prototype.toolButtonClicked = function(button)
 	{
 		this.activeTool = {};
 		this.activeTool.id = button.id;
-		
+
 		button = jQuery(button);
 		this.activeTool.toolType = button.data("toolType");
 		if(button.data("ty")) this.activeTool.ty = button.data("ty");
 		if(button.data("cd")) this.activeTool.cd = button.data("cd");
-		
+
 		if(this.activeTool.toolType == "eraser")
 		{
 			this.undoPush();
@@ -345,11 +359,11 @@ ChemicalView.prototype.changed = function(not_changed)
 {
 	if(this.onChanged !== undefined && !not_changed)
 		this.onChanged();
-	
+
 	if(this.undoStack.length > 0)
 		 jQuery("#me-undo").removeClass("tool-button-disabled");
 	else jQuery("#me-undo").addClass("tool-button-disabled");
-	
+
 	if(this.redoStack.length > 0)
 		 jQuery("#me-redo").removeClass("tool-button-disabled");
 	else jQuery("#me-redo").addClass("tool-button-disabled");
@@ -369,10 +383,10 @@ ChemicalView.prototype.undoPush = function (not_changed)
 ChemicalView.prototype.loadMOL = function(mol)
 {
 	this.undoPush();
-	
+
 	this.chem = new Chemical().parseMol(mol);
 	this.last_atom_length = this.chem.atoms.length;
-	
+
 	this.updateZoom = true;
 	this.drawMol();
 }
@@ -425,7 +439,7 @@ ChemicalView.prototype.redo = function()
 ChemicalView.prototype.removeImplicitHydrogen = function()
 {
 	var implicit_h = [];
-	
+
 	function getBond(a, b)
 	{
 		for(var i = 0; i < this.chem.bonds.length; i++)
@@ -435,7 +449,7 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 				return this.chem.bonds[i];
 		}
 	}
-	
+
 	function isInRing(a)
 	{
 		for(var i = 0; i < this.chem.rings.length; i++)
@@ -444,7 +458,7 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 		}
         return false;
 	}
-	
+
 	for(var i = 0; i < this.chem.bonds.length; i++)
 	{
 		/*
@@ -454,11 +468,11 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 		- Carbon doesn't have up/down bonds
 		- Carbon not double connected to non carbon OR carbon is in ring
 		*/
-		
+
 		var bond = this.chem.bonds[i];
 		var hydrogen = this.chem.atoms[bond.fr].cd == 1 ? bond.fr : this.chem.atoms[bond.to].cd == 1 ? bond.to : -1;
 		var carbon   = this.chem.atoms[bond.fr].cd == 6 ? bond.fr : this.chem.atoms[bond.to].cd == 6 ? bond.to : -1;
-		
+
 		if(hydrogen != -1 && carbon != -1 && !(bond.ms & M_BO_UP || bond.ms & M_BO_DW))//HC, single bond
 		{
 			var double_to_non_hc = false;
@@ -471,17 +485,17 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 				if(bo.ms & M_BO_UP || bo.ms & M_BO_DW) updown = true;
 			}
 			if((double_to_non_hc && !isInRing.call(this, carbon)) || updown) continue;
-			
+
 			if(this.chem.atoms[bond.fr].cd == 1)
 				implicit_h.push(bond.fr);
 			else implicit_h.push(bond.to);
 		}
 	}
-	
+
 	this.undoPush();
-	
+
 	this.chem.removeAtoms(implicit_h);
-	
+
 	this.h_bond = this.h_atom = -1;
 	this.updateZoom = true;
 	this.drawMol();

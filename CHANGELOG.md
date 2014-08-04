@@ -5,7 +5,7 @@ Bugfixes:
   - Added GLmol zoom boundary
   - Direct CODID search boundary
   - Added `Loader.Crystals.loadCODID` CIF validation
-  - `ucfirst()` and `humanize()` undefined input protection
+  - Catch `ucfirst()` and `humanize()` undefined input
   - Test if translation is necessary
 
 Revisions:
@@ -26,7 +26,7 @@ Revisions:
   - Sketcher selection restyling
   - Splitted `ChemicalData` into `ChemProps` and `Spectroscopy`
   - Added two `ChemProps` dialogs; biomolecule and crystal
-  > Migrate CSS to LESS
+  - Migrate CSS to LESS
   > Property loading; PubChem > ChemSpider > Chemical Identifier Resolver
   > CSID via ChemSpider webservice//http://www.chemspider.com/Search.asmx/SimpleSearch?query={smiles}&token=eb952f07-9d2e-4831-9c90-8b3b7eccec8a
   > SMILES 2D depiction; PubChem > Chemical Identifier Resolver
@@ -47,6 +47,8 @@ Features:
   - Model background switch
   - Export images with alpha channel
   - Dialog close buttons
+  - UI restyle with smaller UI components
+  > Switch to Desktop or Touch theme via MolView menu
   > Save user preferences using HTML5 Web Storage
   > SMILES 3D conformation URL key; CIS > InChiKey (CIR only) > SMILES
   > Functional groups in Sketcher

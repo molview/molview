@@ -53,7 +53,7 @@ if(isset($pubchem_query))
 {
 	$json = file_get_contents("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
 	$data = json_decode($json);
-	
+
 	if(isset($data -> InformationList -> Information[0] -> Title))
 		$title = ucfirst($data -> InformationList -> Information[0] -> Title);
 	if(isset($data -> InformationList -> Information[0] -> Description))
@@ -65,7 +65,7 @@ else if(isset($pdbid))
 {
 	$xml = file_get_contents("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
 	$data = new SimpleXMLElement($xml);
-	
+
 	if(isset($data -> {"record"} -> {"dimStructure.structureId"}))
 		$title = $data -> {"record"} -> {"dimStructure.structureId"};
 	if(isset($data -> {"record"} -> {"dimStructure.structureTitle"}))
@@ -82,12 +82,12 @@ else if(isset($codid))
 		if($result = $cod -> query($query))
 		{
 			while($row = $result -> fetch_row())//print JSON
-			{				
+			{
 				$title = isset($row[0]) ? $row[0] : (isset($row[1]) ? $row[1] : (isset($row[2]) ? $row[2] : $title));
 				$description = $row[3];
 			}
 		}
-		
+
 		$cod -> close();
 	}
 }
@@ -99,7 +99,7 @@ else if(isset($codid))
 	MolView v2.0 (http://molview.org)
 	Copyright (c) 2014, Herman Bergwerf
 	ALL RIGHTS RESERVED
-		
+
 	Query parameters:
 	- q = search query (auto fast search)
 	- smiles = resolve SMILES string
@@ -111,16 +111,16 @@ else if(isset($codid))
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
-		
+
 		<?php echo "<title>".$title."</title>"; ?>
-		
+
 		<link rel="icon" href="../src/img/icon/32.png" />
-		
+
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" content="herman,bergwerf,free,molecule,chemistry,protein,application,smartphone,tablet,chrome os,properties,sketch,draw,edit,view" />
-		
+
 		<!-- Open Graph + Schema.org + Twitter Card -->
 		<meta name="twitter:card" content="summary">
 		<meta name="twitter:site" content="@molview">
@@ -128,15 +128,15 @@ else if(isset($codid))
 		<meta property="og:site_name" content="MolView" />
 		<?php
 			echo '<meta name="description" content="'.$description.'" />';
-			
+
 			echo '<meta name="twitter:title" property="og:title" content="'.$title.'" />';
 			echo '<meta itemprop="name" content="'.$title.'" />';
-			
+
 			echo '<meta name="twitter:description" property="og:description" content="'.$description.'" />';
 			echo '<meta itemprop="description" content="'.$description.'" />';
-			
+
 			echo '<meta itemprop="sameAs" content="'.$same_as.'" />';
-			
+
 			if(isset($pubchem_query))
 			{
 				if($pubchem_query == "smiles")
@@ -156,18 +156,11 @@ else if(isset($codid))
 				echo '<meta itemprop="image" content="'.$image_url.'" />';
 			}
 		?>
-		
-		<!-- CSS
-		<link type="text/css" rel="stylesheet" href="../src/css/form.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="../src/css/global.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="../src/css/model.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="../src/css/messages.css" media="screen" />
-		<link type="text/css" rel="stylesheet" href="../src/css/embed.css" media="screen" />
-		 -->
-		 
+
+		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
 		<link type="text/css" rel="stylesheet" href="../build/molview.embed.min.css" media="screen" />
-		 
+
 		<!-- JS
 		<script type="text/javascript" src="../src/js/lib/JSmol.min.js"></script>
 		<script type="text/javascript" src="../src/js/lib/jquery-1.11.0.min.js"></script>
@@ -185,9 +178,9 @@ else if(isset($codid))
 		<script type="text/javascript" src="../src/js/Loader.Embed.js"></script>
 		<script type="text/javascript" src="../src/js/MolView.Embed.js"></script>
 		-->
-		
+
 		<script type="text/javascript" src="../build/molview.embed.min.js"></script>
-		
+
 		<!-- Google Analytics -->
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -197,7 +190,7 @@ else if(isset($codid))
 			ga('create', 'UA-49088779-3', 'molview.org');
 			ga('send', 'pageview');
 		</script>
-		
+
 		<script type="text/javascript">
 			Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
 			Request.HTTP_CLIENT_IP = <?php
@@ -209,7 +202,7 @@ else if(isset($codid))
 			else echo $_SERVER["REMOTE_ADDR"];
 			echo '"';
 			?>;
-			
+
 			Request.ChemicalIdentifierResolver.available = true;/*<?php
 			echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
 			?>;*/
@@ -217,13 +210,13 @@ else if(isset($codid))
 	</head>
 	<body id="model">
 		<input id="search-input" style="display: none" />
-		
+
 		<div id="chemdoodle" class="render-engine full-cover" style="display: none;">
 			<canvas id="chemdoodle-canvas"></canvas>
 		</div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 		<div id="glmol" class="render-engine full-cover" style="display: none;"></div>
-		
+
 		<div id="model-messages" class="message-box full-cover dark-glass">
 			<div class="message-wrapper">
 				<div class="message">
@@ -235,4 +228,3 @@ else if(isset($codid))
 		</div>
 	</body>
 </html>
-

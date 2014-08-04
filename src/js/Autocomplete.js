@@ -36,7 +36,7 @@ var Autocomplete = {
 	minLength: 1,
 	maxLength: 32,
 	maxResults: 20,
-	biomolecules: undefined,
+	macromolecules: undefined,
 	minerals: undefined,
 
 	oldText: "",
@@ -46,7 +46,7 @@ var Autocomplete = {
 
 	init: function()
 	{
-		this.biomolecules = new AutocompleteBuilder(commonBiomolecules.biomolecules, "name");
+		this.macromolecules = new AutocompleteBuilder(commonMacromolecules.macromolecules, "name");
 		this.minerals = new AutocompleteBuilder(mineralNames.minerals, "name");
 
 		$("#search-input")[0].addEventListener("input", Autocomplete.refresh.bind(Autocomplete));
@@ -72,8 +72,8 @@ var Autocomplete = {
 		function focus_item(i)
 		{
 			var target = $(".autocomplete-item").eq(i);
-			$(".autocomplete-item").removeClass("autocomplete-item-active");
-			if(i != -1) target.addClass("autocomplete-item-active");
+			$(".autocomplete-item").removeClass("autocomplete-item-hover");
+			if(i != -1) target.addClass("autocomplete-item-hover");
 			if(i != -1 &&
 				(target.position().top + target.height() > $("#search-autocomplete").height()
 				|| target.position().top < 0))
@@ -105,8 +105,8 @@ var Autocomplete = {
 		else
 		{
 			var mix = [];
-			if(MolView.biomolecules)
-				mix = this.biomolecules.sort(text, this.MIN_SIM, this.MAX_NUMBER)
+			if(MolView.macromolecules)
+				mix = this.macromolecules.sort(text, this.MIN_SIM, this.MAX_NUMBER)
 			  .concat(this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER));
 			else mix = this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER);
 
@@ -122,7 +122,7 @@ var Autocomplete = {
 		/*
 		Record structure:
 		<ul>
-			<li class="clearfix autocomplete-item autocomplete-biomolecule">
+			<li class="clearfix autocomplete-item autocomplete-macromolecule">
 				<span class="autocomplete-label">DNA</span>
 				<span class="autocomplete-type"></span>
 			</li>
@@ -139,10 +139,10 @@ var Autocomplete = {
 		{
 			var li = $('<li class="clearfix autocomplete-item"></li>');
 			$('<span class="autocomplete-label"></span>').html(ucfirst(humanize(records[i].name))).appendTo(li);
-			if(records[i].pdbids)//biomolecule
+			if(records[i].pdbids)//macromolecule
 			{
-				li.addClass("autocomplete-biomolecule");
-				$('<span class="autocomplete-type"></span>').html(commonBiomolecules.types[records[i].type] + " (Biomolecule)").appendTo(li);
+				li.addClass("autocomplete-macromolecule");
+				$('<span class="autocomplete-type"></span>').html("Macromolecule [" + commonMacromolecules.types[records[i].type] + "]").appendTo(li);
 			}
 			else if(records[i].codid)//mineral
 			{
@@ -171,7 +171,7 @@ var Autocomplete = {
 	show: function()
 	{
 		Autocomplete.i = -1;
-		$(".autocomplete-item").removeClass("autocomplete-item-active");
+		$(".autocomplete-item").removeClass("autocomplete-item-hover");
 		$("#search-autocomplete").show();
 	},
 
@@ -203,7 +203,7 @@ var Autocomplete = {
 				$("#search-input").val(ucfirst(humanize(this.records[this.i].name)));
 				$("#search-autocomplete").empty();
 
-				if(this.records[this.i].pdbids)//biomolecule
+				if(this.records[this.i].pdbids)//macromolecule
 				{
 					Loader.RCSB.loadPDBID(this.records[this.i].pdbids[0],
 						ucfirst(humanize(this.records[this.i].name)));

@@ -916,7 +916,7 @@ Chemical.prototype.assignCIP = function ()
                                 //console.log("xxxxxxxxxxx:",p2at.ou, p[i].p);
                             }
                         }
-                        //if (!atms && (cipms&ChemicalData::cipUnique) && nBonds(pat)==2 && areConnected(pat->bo[0],pat->bo[1]))  
+                        //if (!atms && (cipms&ChemicalData::cipUnique) && nBonds(pat)==2 && areConnected(pat->bo[0],pat->bo[1]))
                         //  p[i].append(1);
                         p[i].sort();
                     }
@@ -1282,7 +1282,7 @@ Chemical.prototype.toMol = function ()
             sprintf("%10.4f%10.4f%10.4f %-3s%2d%3d%3d%3d%s",
                 a.x, a.y, 0.,
                 p,
-                0, // wtdf, 
+                0, // wtdf,
                 0, /*qfm_map[(a.qfm<-3?0:a.qfm>3?0:a.qfm)+3],*/
                 a.peo, // stereo
                 this.atProp(a, 'H', 0),
@@ -1493,7 +1493,7 @@ Chemical.prototype.findClosestAtom = function (p)
     var at = -1;
     for(var i = 0; i < this.atoms.length; i++)
     {
-        if(vectorLength(vector(this.atoms[i], p)) <= 0.5)
+        if(vectorLength(vector(this.atoms[i], p)) <= closestAtomThreshold)
         {
             at = i;
             break;

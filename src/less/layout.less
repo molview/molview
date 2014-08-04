@@ -1,3 +1,5 @@
+@import "vars";
+
 html
 {
 	overflow: hidden;
@@ -10,7 +12,8 @@ body
 	padding: 0;
 	width: 100%;
 	height: 100%;
-	
+
+	color: @foreground;
 	font-family: 'Open Sans', sans-serif;
 	background: #eee;
 	overflow: hidden;
@@ -18,6 +21,7 @@ body
 
 #progress
 {
+	z-index: 2;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -27,6 +31,7 @@ body
 
 #menu
 {
+	z-index: 1;
 	position: absolute;
 	top: 3px;
 	left: 0;
@@ -83,7 +88,7 @@ body.no-menu #content
 	left: 50%;
 	right: 0;
 	bottom: 0;
-	
+
 	background: #000;
 	overflow: hidden;
 }
@@ -99,7 +104,7 @@ body.no-menu #content
 
 #window-layer
 {
-	z-index: 2;/* on top of menu.open */
+	z-index: 3;
 	background: rgba(0, 0, 0, 0.5);
 }
 
@@ -110,4 +115,3 @@ body.no-menu #content
 	font-weight: bold;
 	color: #333;
 }
-

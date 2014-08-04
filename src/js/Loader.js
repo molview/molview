@@ -466,7 +466,7 @@ var Loader = {
 					{
 						if(MolView.mobile)
 						{
-							Messages.alert("mobile_old_no_biomolecules");
+							Messages.alert("mobile_old_no_macromolecules");
 						}
 						else
 						{
@@ -482,7 +482,7 @@ var Loader = {
 									Progress.complete();
 									Messages.hide();
 
-									Messages.alert("sketcher_no_biomolecules");
+									Messages.alert("sketcher_no_macromolecules");
 									Loader.lastQuery.type = "pdbid";
 									Loader.lastQuery.content = "" + pdbid;
 									History.push("pdbid", pdbid);
@@ -500,13 +500,13 @@ var Loader = {
 										Progress.complete();
 										Messages.hide();
 
-										Messages.alert("sketcher_no_biomolecules");
+										Messages.alert("sketcher_no_macromolecules");
 										Loader.lastQuery.type = "pdbid";
 										Loader.lastQuery.content = "" + pdbid;
 										History.push("pdbid", pdbid);
 									});
 								}
-							}, "biomolecule");
+							}, "macromolecule");
 						}
 					}
 					else
@@ -519,7 +519,7 @@ var Loader = {
 						Progress.complete();
 						Messages.hide();
 
-						Messages.alert("sketcher_no_biomolecules");
+						Messages.alert("sketcher_no_macromolecules");
 						Loader.lastQuery.type = "pdbid";
 						Loader.lastQuery.content = "" + pdbid;
 						History.push("pdbid", pdbid);
@@ -529,7 +529,7 @@ var Loader = {
 				{
 					Messages.alert("load_fail");
 				});
-			}, "biomolecule");
+			}, "macromolecule");
 		}
 	},
 

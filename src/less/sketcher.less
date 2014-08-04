@@ -1,3 +1,5 @@
+@import "vars";
+
 .sketcher
 {
 	position: absolute;
@@ -6,19 +8,18 @@
 	right: 0;
 	bottom: 0;
 	background: #fff;
-	
-	border-left: 1px solid #333;
-	border-right: 1px solid #333;
-	border-bottom: 1px solid #333;
+
+	border-right: 1px solid @contrast;
+	border-bottom: 1px solid @contrast;
 }
 
 .toolbar
 {
 	position: absolute;
-	background: #eee;
+	background: @light2;
 	cursor: default;
 	overflow: hidden;
-	
+
     -webkit-user-select: none;
      -khtml-user-select: none;
        -moz-user-select: none;
@@ -28,17 +29,17 @@
 
 .tool-button
 {
-	width: 40px;
-	height: 40px;
+	width: @toolbar-size;
+	height: @toolbar-size;
 	margin: 0;
 	padding: 0;
-	
+
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: 20px;
+	background-size: @toolbar-iconsize;
 	cursor: pointer;
 	opacity: 0.8;
-	
+
     -webkit-user-select: none;
      -khtml-user-select: none;
        -moz-user-select: none;
@@ -73,9 +74,9 @@
 .tool-button
 {
 	color: #000;
-	line-height: 40px;
+	line-height: @toolbar-size;
 	text-align: center;
-	font-size: 16pt;
+	font-size: @toolbar-fontsize;
 	font-weight: bold;
 }
 
@@ -83,17 +84,17 @@
 {
 	margin: 5px 5px 0 5px;
 	width: 0;
-	height: 30px;
+	height: @toolbar-size - 10px;
 	float: left;
-	border-right: 1px solid #333;
+	border-right: 1px solid @contrast;
 }
 
 .vertical-separator
 {
 	margin: 5px 0 5px 5px;
-	width: 30px;
+	width: @toolbar-size - 10px;
 	height: 0;
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid @contrast;
 }
 
 #chem-tools
@@ -101,42 +102,42 @@
 	top: 0;
 	left: 0;
 	bottom: 0;
-	width: 40px;
+	width: @toolbar-size;
 }
 
 #edit-tools
 {
 	top: 0;
-	left: 40px;
+	left: @toolbar-size;
 	right: 0;
-	height: 40px;
+	height: @toolbar-size;
 }
 
 #elem-tools
 {
-	top: 40px;
+	top: @toolbar-size;
 	right: 0;
 	bottom: 0;
-	width: 40px;
+	width: @toolbar-size;
 }
 
 .edit-area
 {
 	position: absolute;
-	top: 40px;
-	left: 40px;
-	right: 40px;
+	top: @toolbar-size;
+	left: @toolbar-size;
+	right: @toolbar-size;
 	bottom: 0;
 	min-width: 1px;
 	min-height: 1px;
-	
+
 	cursor: default;
 	overflow: hidden;
 	background: #fff;
-	
-	border-top: 1px solid #333;
-	border-left: 1px solid #333;
-	border-right: 1px solid #333;
+
+	border-top: 1px solid @contrast;
+	border-left: 1px solid @contrast;
+	border-right: 1px solid @contrast;
 }
 
 /* MolEdit buttons */
@@ -171,12 +172,12 @@
 {
 	padding: 0 10px;
 	width: auto;
-	
-	line-height: 40px;
-	font-size: 12pt;
+
+	line-height: @toolbar-size;
+	font-size: @toolbar-fontsize - 4pt;
 	font-weight: bold;
 	text-align: right;
-	
+
 	color: #f50;
 }
 

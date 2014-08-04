@@ -10,7 +10,7 @@ var Messages = {
 
 	switch_engine: "",
 	compound: "Loading compound&hellip;",
-	biomolecule: "Loading biomolecule&hellip;",
+	macromolecule: "Loading macromolecule&hellip;",
 	crystal: "Loading crystal&hellip;",
 	crystal_structure: "Loading crystal structure&hellip;",
 
@@ -26,8 +26,8 @@ var Messages = {
 	no_webgl_support: Detector.getWebGLErrorMessage(),
 	no_canvas_support: "Your browser doesn't support this web application, try <a class='link' href='//google.com/chrome' title='A modern browser'>Google Chrome</a> instead.",
 
-	sketcher_no_biomolecules: "Biomolecules cannot be displayed in the sketcher",
-	mobile_old_no_biomolecules: "Biomolecules cannot be viewed on your device",
+	sketcher_no_macromolecules: "Macromolecules cannot be displayed in the sketcher",
+	mobile_old_no_macromolecules: "Macromolecules cannot be viewed on your device",
 	smiles_load_error: "Failed to load structure from sketcher",
 	smiles_load_error_force: "Failed to load structure from sketcher",
 
@@ -51,7 +51,7 @@ var Messages = {
 		Valid strings for {what}
 		- switch_engine
 		- compound
-		- biomolecule
+		- macromolecule
 		- crystal
 		- crystal_cell
 
@@ -77,7 +77,7 @@ var Messages = {
 			$("#sketcher-messages .message-text").html(Messages[what]);
 			$("#content").addClass("sketcher-messages");
 		}
-		else if(what == "switch_engine" || what == "biomolecule" || what == "resolve"
+		else if(what == "switch_engine" || what == "macromolecule" || what == "resolve"
 			 || what == "init_jmol" || what == "jmol_calculation" || what == "crystal_structure")
 		{
 			$("#model-messages .message-text").html(Messages[what]);
@@ -108,7 +108,7 @@ var Messages = {
 		- no_webgl_support
 		- no_glmol_crystals
 
-		- sketcher_no_biomolecules
+		- sketcher_no_macromolecules
 
 		- smiles_load_error
 		- smiles_load_error_force
@@ -131,7 +131,7 @@ var Messages = {
 		$(".process-img, .alert-img").hide();
 		$(".alert-img").show();
 
-		if(cause == "sketcher_no_biomolecules" || cause == "crystal_2d_fail")
+		if(cause == "sketcher_no_macromolecules" || cause == "crystal_2d_fail")
 		{
 			$("#sketcher-messages .message-text").html(Messages[cause]);
 			$("#content").addClass("sketcher-messages");
@@ -141,7 +141,7 @@ var Messages = {
 			$("#model-messages .message-text").html(Messages[cause]);
 			$("#content").addClass("model-messages");
 		}
-		else if(cause == "cir_down" || cause == "cir_func_down" || cause == "no_canvas_support" || cause == "search_fail" || cause == "load_fail"  || cause == "mobile_old_no_biomolecules")
+		else if(cause == "cir_down" || cause == "cir_func_down" || cause == "no_canvas_support" || cause == "search_fail" || cause == "load_fail"  || cause == "mobile_old_no_macromolecules")
 		{
 			$("#content-messages .message-text").html(Messages[cause]);
 			$("#content").addClass("content-messages");

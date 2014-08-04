@@ -1,12 +1,10 @@
 .menu
 {
-	z-index: 1;
-	
 	display: block;
 	position: relative;
 	margin: 0;
 	padding: 0;
-	
+
 	/* swipe trick */
 	height: 41px;
 }
@@ -14,7 +12,6 @@
 .menu > .inner
 {
 	height: 40px;
-	border-bottom: 1px solid #333;
 }
 
 /* swipe trick: display menu on top of page */
@@ -75,18 +72,19 @@
 	line-height: 20px;
 }
 
+.dropdown.open
+{
+	z-index: 2;
+}
+
 .dropdown-menu
 {
 	display: none;
-	z-index: 1000;
 	position: absolute;
 	margin: 0 0 0 -1px;
-	padding: 0;
+	padding: 5px 0;
 	min-width: 200px;
-	
-	border-style: solid;
-	border-width: 0 1px 1px 1px;
-	
+
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -95,6 +93,9 @@ li.menu-header
 {
 	display: block;
 	cursor: default;
+	margin-top: 10px;
+	margin-bottom: 5px;
+	padding: 3px 10px;
 	line-height: 15px;
 	white-space: nowrap;
 }
@@ -147,7 +148,7 @@ li.menu-header
 		padding: 0;
 		width: 160px;
 		height: 90px;
-		
+
 		background-repeat: no-repeat;
 		background-position: center;
 		border: 3px solid #333;
@@ -185,8 +186,8 @@ li.menu-header
 /* absolute dimensions in order to make equal on all browsers */
 #search-input { width: 300px; }
 #fast-search { width: 40px; }
-#pubchem-search { width: 120px; }
-#rcsb-search { width: 125px; }
-#cod-search { width: 85px; }
+#pubchem-search { width: 113px; }
+#rcsb-search { width: 145px; }
+#cod-search { width: 80px; }
 #show-search-results { width: 40px; }
 #hide-search-results { width: 40px; }

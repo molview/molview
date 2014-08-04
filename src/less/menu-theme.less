@@ -1,7 +1,9 @@
+@import "vars";
+
 .menu > .inner
 {
-	background: #ccc !important;
-	background: linear-gradient(#ccc, #ddd) !important;
+	background: @light3;
+	border-bottom: 1px solid @contrast;
 }
 
 .brand
@@ -23,56 +25,45 @@
 	border-top-color: #111;
 }
 
-.menu-bar > li
-{
-}
-
-.dropdown-toggle
-{
-	color: #111;
-}
-
 .dropdown-menu
 {
 	background: #fff;
-	border-color: #111;
+	border: 1px solid @contrast;
+	border-radius: 0 @small-border-radius @small-border-radius @small-border-radius;
 }
 
 li.menu-header
 {
 	font-weight: bold;
 	text-transform: uppercase;
-	color: #333;
-	background: #ccc;
+	border-bottom: 1px solid @contrast;
 }
 
 .dropdown-menu > li > a
 {
 	color: #111;
-	background: #fff;
 }
 
 .dropdown-menu > li > a.checked:after
 {
 	float: right;
-	margin-right: -20px;
-	color: #F50;
+	margin-right: -30px;
 	font-family: FontAwesome;
-	content: '\f14a';
+	content: '\f00c';
 }
 
-body:not(.touch) .dropdown-menu > li > a:not(.disabled).checked:active:after
+.dropdown-menu > li > a:not(.disabled).checked:active:after
 {
 	color: #fff;
 }
 
 .dropdown-menu > li > a.disabled
 {
-	color: #aaa;
+	color: @foreground-disabled;
 	cursor: default;
 }
 
 .dropdown-menu > li > a.disabled.checked:after
 {
-	color: #aaa;
+	color: @foreground-disabled;
 }

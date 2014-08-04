@@ -40,8 +40,8 @@ ChemicalView.prototype.bondRect = function (bo)
 {
 	var at1 = this.chem.atoms[bo.fr];
 	var at2 = this.chem.atoms[bo.to];
-	var dir = vectorSetLength(vector(at1, at2), 0.2);
-	var v = vectorSetLength(vector(at1, at2), 0.2);
+	var dir = vectorSetLength(vector(at1, at2), this.bondThicknessHalf);
+	var v = vectorSetLength(vector(at1, at2), this.bondThicknessHalf);
 	v = {
 		x: -v.y,
 		y: v.x,
@@ -163,7 +163,7 @@ ChemicalView.prototype.onKeyPress = function (ev)
 			this.changed();
 			this.drawMol();
 		}
-		//console.log(code); 
+		//console.log(code);
 	}
 }
 
@@ -233,8 +233,7 @@ ChemicalView.prototype.drawMol = function ()
 {
 	var fontSize = 14 * this.scaleFactor;
 
-	if(!this.chemIsReady)
-		return;
+	if(!this.chemIsReady) return;
 
 	this.ctx = this.canvas.getContext("2d");
 
@@ -242,37 +241,62 @@ ChemicalView.prototype.drawMol = function ()
 	this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-	this.ctx.lineWidth = 1.5;
-
 	if(this.updateZoom)
 		this.updateKfc(this.chem, 16);
 
-	//
-	this.ctx.font = "bold " + fontSize + "px Arial";
-	if(this.mode == MODE_CHAIN && this.chem.atoms[this.connectToAtom] != null && this.chem.atoms[this.connectToAtom].bo[0] >= 0)
+	/* selected bonds */
+	for(var i = 0; i < this.chem.bonds.length; i++)
 	{
-		//var lastToM = vector(this.wtos(this.chem.atoms[this.connectToAtom]),this.lastPos);
-		var diff = this.chem.atoms.length - this.newCount;
-		var dX = 0.25 * (vector(this.wtos(this.chem.atoms[this.chem.atoms[this.connectToAtom].bo[0]]), this.wtos(this.chem.atoms[this.connectToAtom]))
-			.x);
-		var dY = 0.25 * (vector(this.wtos(this.chem.atoms[this.chem.atoms[this.connectToAtom].bo[0]]), this.wtos(this.chem.atoms[this.connectToAtom]))
-			.y);
-		this.ctx.fillStyle = "#000000";
-		this.ctx.fillText(this.chem.atoms.length - diff, this.wtos(this.chem.atoms[this.connectToAtom])
-			.x + dX, this.wtos(this.chem.atoms[this.connectToAtom])
-			.y + dY);
+		var bo = this.chem.bonds[i];
+		if(bo.ms & (M_CE /*|M_AR*/ ))
+		{
+			this.ctx.beginPath();
+
+			this.ctx.lineWidth = this.selectionStyle.width;
+			this.ctx.strokeStyle = this.selectionStyle.stroke;
+			this.ctx.fillStyle = this.selectionStyle.fill;
+			this.ctx.lineJoin = this.selectionStyle.join;
+			this.ctx.lineCap = this.selectionStyle.cap;
+
+			var poly = this.bondRect(bo);
+			for(var k = 0; k < poly.length; k++)
+			{
+				if(k == 0) this.lineTo(poly[k], poly[(k + 1) % poly.length]);
+				else this.lineTo(poly[k], poly[(k + 1) % poly.length]);
+			}
+
+			this.ctx.closePath();
+			if(this.selectionStyle.fill) this.ctx.fill();
+			if(this.selectionStyle.stroke) this.ctx.stroke();
+		}
 	}
+
+	/* selected atoms */
 	for(var i = 0; i < this.chem.atoms.length; i++)
 	{
 		var at = this.chem.atoms[i];
 		var p1 = this.wtos(at);
+
+		/* selection */
 		if(at.ms & M_CE)
 		{
-			this.ctx.fillStyle = this.selectionFillStyle;
+			this.ctx.lineWidth = this.selectionStyle.width;
+			this.ctx.strokeStyle = this.selectionStyle.stroke;
+			this.ctx.fillStyle = this.selectionStyle.fill;
 			this.ctx.beginPath();
-			this.ctx.arc(p1.x, p1.y, (1.4 / 6) * this.kfc, 0, 2 * Math.PI);
-			this.ctx.fill();
+			this.ctx.arc(p1.x, p1.y, this.selectionStyle.radius * this.kfc, 0, 2 * Math.PI);
+			if(this.selectionStyle.fill) this.ctx.fill();
+			if(this.selectionStyle.stroke) this.ctx.stroke();
 		}
+	}
+
+	/* atoms */
+	for(var i = 0; i < this.chem.atoms.length; i++)
+	{
+		var at = this.chem.atoms[i];
+		var p1 = this.wtos(at);
+
+		/* atom label */
 		var lbl;
 		this.ctx.textBaseline = "middle";
 		this.ctx.textAlign = "center";
@@ -284,45 +308,23 @@ ChemicalView.prototype.drawMol = function ()
 			this.ctx.fillStyle = color;
 			this.ctx.fillText(lbl, p1.x, p1.y);
 		}
+
+		/* hover */
 		if(this.h_atom == i)
 		{
-			r = this.atomRect(at, 10);
-			
-			this.ctx.save();
 			this.ctx.lineWidth = this.hoverStyle.width;
-			this.ctx.strokeStyle = this.hoverStyle.color;
-			this.ctx.lineJoin = this.hoverStyle.join;
-			this.ctx.lineCap = this.hoverStyle.cap;
-			this.ctx.strokeRect(r.x, r.y, r.w, r.h);
-			this.ctx.restore();
+			this.ctx.strokeStyle = this.hoverStyle.stroke;
+			this.ctx.fillStyle = this.hoverStyle.fill;
+			this.ctx.beginPath();
+			this.ctx.arc(p1.x, p1.y, this.hoverStyle.radius * this.kfc, 0, 2 * Math.PI);
+			if(this.hoverStyle.fill) this.ctx.fill();
+			if(this.hoverStyle.stroke) this.ctx.stroke();
 		}
 	}
-	/* MODIFIED: don't draw rotateAroundPoint
-	when eraseris active or when <2 atoms are selected */
-	if(this.rotateAroundPoint != null
-		&& (!this.activeTool || this.activeTool.toolType != "eraser"))
-	{
-		var p = this.wtos(this.rotateAroundPoint);
-		this.ctx.drawImage(rotateAroundImage, p.x - rotateAroundImage.width / 2, p.y - rotateAroundImage.height / 2);
-	}
-	if(this.drawSelectedBonds)
-	{
-		for(var i = 0; i < this.chem.bonds.length; i++)
-		{
-			var bo = this.chem.bonds[i];
-			if(bo.ms & (M_CE /*|M_AR*/ ))
-			{
-				var p1 = this.wtos(vemulby(veadd(this.chem.atoms[bo.fr], this.chem.atoms[bo.to]), 0.5));
-				this.ctx.fillStyle = "#b2ffb2";
-				this.ctx.beginPath();
-				this.ctx.arc(p1.x, p1.y, (1.4 / 6) * this.kfc, 0, 2 * Math.PI);
-				this.ctx.fill();
-			}
-		}
-	}
-	//
-	//
-	this.ctx.strokeStyle = "#1a1a1a";
+
+	/* bonds */
+	this.ctx.lineWidth = this.bondStyle.width;
+	this.ctx.strokeStyle = this.bondStyle.stroke;
 	this.ctx.fillStyle = "#000000"
 	this.ctx.beginPath();
 	for(var i = 0; i < this.chem.bonds.length; i++)
@@ -347,8 +349,7 @@ ChemicalView.prototype.drawMol = function ()
 
 		switch(bo.ty)
 		{
-		case 2:
-			{
+			case 2:
 				var v = this.bondOrtho(bo.fr, bo.to, bo.ty, 0.25);
 
 				if(this.chem.atoms[bo.fr].bo.length == 1 || this.chem.atoms[bo.to].bo.length == 1)
@@ -362,20 +363,22 @@ ChemicalView.prototype.drawMol = function ()
 					var shift = vectorSetLength(vector(fr, to), 0.2);
 					this.drawLine(veadd(veadd(fr, v), shift), veadd(veadd(to, v), vemulby(shift, -1)));
 				}
-			}
-			break;
-		case 3:
-			{
+
+				break;
+
+			case 3:
+
 				this.drawLine(fr, to);
 				var v = this.bondOrtho(bo.fr, bo.to, bo.ty, 0.15);
 				var shift = vectorSetLength(vector(fr, to), 0.2);
 				this.drawLine(veadd(veadd(fr, v), shift), veadd(veadd(to, v), vemulby(shift, -1)));
 				v = vemulby(v, -1);
 				this.drawLine(veadd(veadd(fr, v), shift), veadd(veadd(to, v), vemulby(shift, -1)));
-			}
-			break;
-		default:
-			{
+
+				break;
+
+			default:
+
 				if(bo.ms & M_BO_UP)
 				{
 					this.ctx.closePath();
@@ -408,40 +411,68 @@ ChemicalView.prototype.drawMol = function ()
 						pp = veadd(pp, vstep);
 					}
 				}
-				else
-					this.drawLine(fr, to);
-			}
-			break;
+				else this.drawLine(fr, to);
+
+				break;
 		}
 
 	}
 	this.ctx.closePath();
 	this.ctx.stroke();
 
+	/* hovered bond */
 	if(this.h_bond != -1)
 	{
 		this.ctx.beginPath();
+
+		this.ctx.lineWidth = this.hoverStyle.width;
+		this.ctx.strokeStyle = this.hoverStyle.stroke;
+		this.ctx.fillStyle = this.hoverStyle.fill;
+		this.ctx.lineJoin = this.hoverStyle.join;
+		this.ctx.lineCap = this.hoverStyle.cap;
 
 		var bo = this.chem.bonds[this.h_bond];
 		var poly = this.bondRect(bo);
 		for(var k = 0; k < poly.length; k++)
 		{
-			this.drawLine(poly[k], poly[(k + 1) % poly.length]);
+			if(k == 0) this.lineTo(poly[k], poly[(k + 1) % poly.length]);
+			else this.lineTo(poly[k], poly[(k + 1) % poly.length]);
 		}
-	
-		this.ctx.save();
-		this.ctx.lineWidth = this.hoverStyle.width;
-		this.ctx.strokeStyle = this.hoverStyle.color;
-		this.ctx.lineJoin = this.hoverStyle.join;
-		this.ctx.lineCap = this.hoverStyle.cap;
-		this.ctx.stroke();
-		this.ctx.restore();
+
+		this.ctx.closePath();
+		if(this.hoverStyle.fill) this.ctx.fill();
+		if(this.hoverStyle.stroke) this.ctx.stroke();
 	}
-	//
+
+	/* rotateAroundPoint: don't draw rotateAroundPoint
+	when eraser is active or when <2 atoms are selected */
+	if(this.rotateAroundPoint != null
+		&& (!this.activeTool || this.activeTool.toolType != "eraser"))
+	{
+		var p = this.wtos(this.rotateAroundPoint);
+		this.ctx.drawImage(rotateAroundImage, p.x - rotateAroundImage.width / 2, p.y - rotateAroundImage.height / 2);
+	}
+
+	/* chain length number */
+	this.ctx.font = "bold " + fontSize + "px Arial";
+	if(this.mode == MODE_CHAIN && this.chem.atoms[this.connectToAtom] != null && this.chem.atoms[this.connectToAtom].bo[0] >= 0)
+	{
+		//var lastToM = vector(this.wtos(this.chem.atoms[this.connectToAtom]),this.lastPos);
+		var diff = this.chem.atoms.length - this.newCount;
+		var dX = 0.25 * (vector(this.wtos(this.chem.atoms[this.chem.atoms[this.connectToAtom].bo[0]]), this.wtos(this.chem.atoms[this.connectToAtom]))
+			.x);
+		var dY = 0.25 * (vector(this.wtos(this.chem.atoms[this.chem.atoms[this.connectToAtom].bo[0]]), this.wtos(this.chem.atoms[this.connectToAtom]))
+			.y);
+		this.ctx.fillStyle = "#000000";
+		this.ctx.fillText(this.chem.atoms.length - diff, this.wtos(this.chem.atoms[this.connectToAtom])
+			.x + dX, this.wtos(this.chem.atoms[this.connectToAtom])
+			.y + dY);
+	}
+
+	/* draw lasso path */
 	if(this.lassoPath.length > 0)
 	{
-		this.ctx.fillStyle = this.selectAreaFillStyle;
-		this.ctx.strokeStyle = "#000000"
+		this.ctx.fillStyle = this.selectAreaStyle.fill;
 		this.ctx.beginPath();
 		for(var i = 0; i < this.lassoPath.length; i++)
 		{

@@ -9,7 +9,7 @@ var Messages = {
 	init_jmol: "Initializing Jmol&hellip;",
 
 	compound: "Loading compound&hellip;",
-	biomolecule: "Loading biomolecule&hellip;",
+	macromolecule: "Loading macromolecule&hellip;",
 	crystal: "Loading crystal&hellip;",
 
 	search: "Searching&hellip;",
@@ -17,7 +17,7 @@ var Messages = {
 	no_webgl_support: "You cannot use this render engine because your browser doesn't support WebGL, find out how to get it <a class='link' href='http://get.webgl.org/'>here</a>",
 	no_canvas_support: "Your browser doesn't support this web application, try <a class='link' href='//google.com/chrome' title='A modern browser'>Google Chrome</a> instead.",
 
-	mobile_old_no_biomolecules: "Biomolecules cannot be viewed on your device",
+	mobile_old_no_macromolecules: "Macromolecules cannot be viewed on your device",
 
 	load_fail: "Failed to load structure <small>This could mean the source database is offline</small>",
 	search_fail: "Structure cannot be found",
@@ -32,7 +32,7 @@ var Messages = {
 		Valid strings for {what}
 		- init_jmol
 		- compound
-		- biomolecule
+		- macromolecule
 		- crystal
 		*/
 
@@ -58,7 +58,7 @@ var Messages = {
 		- load_fail
 		- search_fail
 
-		- mobile_old_no_biomolecules
+		- mobile_old_no_macromolecules
 		*/
 
 		$("body").removeClass("progress-cursor");

@@ -46,10 +46,10 @@ ChemicalView.prototype.getMousePosArr = function (ev)
 }
 
 ChemicalView.prototype.onMouseDown = function (ev, isTouch)
-{	
+{
 	var that = this;
 	this.button = 0;
-	
+
 	if(isTouch && ev.targetTouches.length > 1)
 	{
 		//multi-touch
@@ -69,12 +69,12 @@ ChemicalView.prototype.onMouseDown = function (ev, isTouch)
 	{
 		//right
 		case 2: break;
-		
+
 		//middle
 		case 1:
 			this.lastPos = this.endPos = p;
 			break;
-		
+
 		//left
 		case 0:
 			this.h_atom = this.chem.findClosestAtom(this.stow(p));
@@ -122,12 +122,12 @@ ChemicalView.prototype.onMouseDown = function (ev, isTouch)
 				else if(this.activeTool && !(at.ms & M_CE) && this.activeTool.toolType.indexOf("charge") != -1)
 				{
 					this.undoPush();
-					
+
 					//CUSTOM charge logic
 					var atom = this.chem.atoms[this.h_atom];
 					atom.ms |= M_EXPLICT_QFM;
 					atom.qfm += this.activeTool.toolType.substr(7) == "add" ? 1 : -1;
-					
+
 					this.changed();
 				}
 				else if(this.activeTool && !(at.ms & M_CE) && this.activeTool.toolType == "bond")
@@ -250,7 +250,7 @@ ChemicalView.prototype.onMouseDown = function (ev, isTouch)
 						}
 						else if(this.activeTool.toolType == "chain")
 						{
-							//ch = (new Chemical()).makeBond(30,this.activeTool.ty); 	  
+							//ch = (new Chemical()).makeBond(30,this.activeTool.ty);
 							ch = (new Chemical())
 								.makeAtom(6);
 						}
@@ -277,14 +277,14 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 {
 	if(this.button != -1)
 		ev.preventDefault();
-	
+
 	var that = this;
 
 	if(isTouch && ev.targetTouches.length > 1)
 	{
 		//multi-touch
 		if(this.button == -1) return;
-		
+
 		var p = this.getMousePosArr(ev);
 
 		if(p.length == this.lastPosArr.length)
@@ -334,17 +334,17 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 	if(this.mode == MODE_DRAG_ATOMS)
 	{
 		if(manhatanD <= 4) return;
-		
+
 		if(this.rotateAroundPoint != null)
 		{
 			var vect = vector(this.rotateAroundPoint, this.stow(p));
-			
+
 			if(vectorLength(vector(this.rotateAroundPoint, this.chem.atoms[this.h_atom])) < 0.001)
 				return;//because the h_atom is the center of rotation
-				
+
 			if(vectorLength(vect) < 0.001)
 				return;
-				
+
 			this.chem.rotateAtomsVector(this.dragAtoms, this.rotateAroundPoint, vect, -1);
 		}
 		else this.chem.moveAtoms(this.dragAtoms, this.stowd(vesub(p, this.lastPos)));
@@ -353,7 +353,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		this.drawMol();
 		return;
 	}
-	
+
 	//rect selection
 	if(this.mode == MODE_RECT_SEL)
 	{
@@ -383,7 +383,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		this.drawMol();
 		return;
 	}
-	
+
 	//lasso selection
 	/* MODIFIED */
 	if(this.mode == MODE_LASSO_SEL && this.h_atom == -1 && this.lastPos != null)
@@ -399,7 +399,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		}
 		return;
 	}
-	
+
 	//chain draw
 	if(this.mode == MODE_CHAIN)
 	{
@@ -441,7 +441,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		if(d1 > 1.2 && d0 > 1.2 && !this.chem.hasCollisions(connectTo) && canDrawCheck)
 		{
 			//quickfind
-			
+
 			if(this.newCount == 0)
 				this.atomHold = this.connectToAtom;
 			if(ev.altKey)
@@ -516,7 +516,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		return;
 	}
 
-	//rotate newly added fragment 
+	//rotate newly added fragment
 	if(this.dragAtoms.length > 0 && this.connectToAtom != -1 && manhatanD > 5)
 	{
 		if(this.activeTool)
@@ -536,7 +536,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		this.drawMol();
 		return;
 	}
-	
+
 	//highlight atom or bond
 	var redraw = false;
 	h_at = this.chem.findClosestAtom(this.stow(p));
@@ -561,7 +561,7 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		else if(apo.length == 0)
 			this.rotateAroundPoint = this.chem.centerPoint();
 	}
-	
+
 	//or find closest bond
 	if(h_at == -1)
 	{
@@ -578,21 +578,11 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		this.h_bond = -1;
 	}
 
-	if(this.h_atom != -1)
-	{
-		this.showStatus("<b>Hint</b>: to change atom type press 'C','N','O',etc.. ");
-	}
-	else if(this.h_bond != -1)
-	{
-		this.showStatus("<b>Hint</b>: to change bond type press '-','=','#','u','d'");
-	}
-	else this.clearStatus();
-
 	if(redraw) this.drawMol();
 }
 
 ChemicalView.prototype.onMouseUp = function (ev)
-{	
+{
 	this.clearStatus();
 	if(this.dragAtoms.length > 0)
 	{
@@ -628,7 +618,7 @@ ChemicalView.prototype.multiTouch = function (pp1, pp2)
 
 	//z-rot
 	//if(Math.max( Math.abs(d.x), Math.abs(d.y) ) < 5)
-	
+
 	var d1 = vectorLength(vesub(pp1[0], pp2[0]));
 	var d2 = vectorLength(vesub(pp1[1], pp2[1]));
 
@@ -658,7 +648,7 @@ ChemicalView.prototype.multiTouch = function (pp1, pp2)
 			this.chem.rotateAtomsAround(atli, this.stow(pc), angle);
 		}
 	}
-	
+
 	//zoom & translate
 	d1 = vectorLength(vesub(pp1[0], pp1[1]));
 	d2 = vectorLength(vesub(pp2[0], pp2[1]));
@@ -671,7 +661,7 @@ ChemicalView.prototype.multiTouch = function (pp1, pp2)
 	this.dx += pc1.x - pc2.x + d.x;
 	this.dy += pc1.y - pc2.y + d.y;
 
-	// 
+	//
 	this.updateZoom = false;
 	this.drawMol();
 }

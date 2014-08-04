@@ -74,4 +74,5 @@ var TO_DEG = 57.29577951308232;
 
 /* MODIFICATION */
 var rotateAroundImage = new Image();
-	rotateAroundImage.src = "src/img/action/rotate.svg"
+//rotateAroundImage.src = "src/img/action/rotate.svg"
+var closestAtomThreshold = 0.3;

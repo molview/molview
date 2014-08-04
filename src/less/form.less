@@ -1,3 +1,16 @@
+@import "vars";
+
+.form-box
+{
+	color: @foreground;
+	font-size: 12pt;
+	font-family: 'Open Sans', sans-serif;
+	text-decoration: none;
+	background: #eee;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
 input[type="text"]
 {
 	-webkit-box-sizing: border-box;
@@ -59,15 +72,7 @@ select
 	max-width: 100%;
 	line-height: 20px;
 
-	color: #111;
-	font-size: 12pt;
-	font-family: 'Open Sans', sans-serif;
-	text-decoration: none;
-	background: #eee;
-	border: 1px solid #ccc;
-	border-bottom-width: 3px;
-
-	border-radius: 4px;
+	.form-box
 }
 
 select:focus
@@ -84,13 +89,7 @@ select:focus
 	padding: 5px 15px;
 	height: 40px;
 
-	color: #111;
-	font-size: 12pt;
-	font-family: 'Open Sans', sans-serif;
-	text-decoration: none;
-	background: #eee;
-	border: 1px solid #ccc;
-	border-radius: 4px;
+	.form-box
 }
 
 .btn-search

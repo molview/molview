@@ -12,7 +12,7 @@ var MolView = {
 	trigger: "click",
 	query: {},
 	loadDefault: true,
-	biomolecules: true,
+	macromolecules: true,
 
 	init: function()
 	{
@@ -20,13 +20,12 @@ var MolView = {
 			this.loadDefault = false;
 
 		this.touch = isTouchDevice();
-		if(this.touch) $(document.body).addClass("touch");
 		this.mobile = isMobile();
 		this.height = window.innerHeight;
 
 		if(this.mobile && !Detector.webgl)
 		{
-			this.biomolecules = false;
+			this.macromolecules = false;
 			$("#rcsb-search").hide();
 		}
 

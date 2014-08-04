@@ -102,7 +102,7 @@ var Loader = {
 					{
 						if(MolView.mobile)
 						{
-							Messages.alert("mobile_old_no_biomolecules");
+							Messages.alert("mobile_old_no_macromolecules");
 						}
 						else
 						{
@@ -129,7 +129,7 @@ var Loader = {
 										Messages.hide();
 									});
 								}
-							}, "biomolecule");
+							}, "macromolecule");
 						}
 					}
 					else
@@ -146,7 +146,7 @@ var Loader = {
 				{
 					Messages.alert("no_webgl_support");
 				});
-			}, "biomolecule");
+			}, "macromolecule");
 		}
 	},
 	
