@@ -331,7 +331,6 @@ var Actions = {
 		{
 			$("#search-input").blur();
 			MolView.hideWindows();
-			Actions.hide_search_results();
 			Messages.process(Loader.CIRsearch, "search");
 		}
 	},
@@ -347,7 +346,6 @@ var Actions = {
 		{
 			$("#search-input").blur();
 			MolView.hideWindows();
-			Actions.hide_search_results();
 			Messages.process(Loader.PubChem.search, "search");
 		}
 	},
@@ -363,7 +361,6 @@ var Actions = {
 		{
 			$("#search-input").blur();
 			MolView.hideWindows();
-			Actions.hide_search_results();
 			Messages.process(Loader.RCSB.search, "search");
 		}
 	},
@@ -379,23 +376,29 @@ var Actions = {
 		{
 			$("#search-input").blur();
 			MolView.hideWindows();
-			Actions.hide_search_results();
 			Messages.process(Loader.COD.search, "search");
 		}
 	},
 
 	show_search_results: function()
 	{
-		$("#show-search-results").css("display", "none");
-		$("#hide-search-results").css("display", "block");
-		$("#search-results").css("display", "block");
+		$("#show-search-results").hide();
+		$("#hide-search-results").show();
+
+		$("#content").hide();
+		$("#search-results").show()
 	},
 
 	hide_search_results: function()
 	{
-		$("#hide-search-results").css("display", "none");
-		$("#show-search-results").css("display", "block");
-		$("#search-results").css("display", "none");
+		$("#show-search-results").show();
+		$("#hide-search-results").hide();
+
+		$("#content").show();
+		$("#search-results").hide();
+
+		Sketcher.resize();
+		Model.resize();
 	},
 
 	load_more_pubchem: function()

@@ -44,7 +44,7 @@ Frontend:
   - Dialog close buttons
   - Sketcher selection restyling
   - UI restyle with flat design
-  > New search results layout
+  - New search results layout
   > New welcome message
   > Progress message in small bar
   > Information card external references (Chemicalize, Google, PDB, COD)

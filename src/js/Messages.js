@@ -64,7 +64,7 @@ var Messages = {
 		*/
 
 		$("body").addClass("progress-cursor");
-		$("#content").removeClass("sketcher-messages model-messages content-messages");
+		$(".message-box").hide();
 
 		$(".message-btn").hide();
 		$(".process-img, .alert-img").hide();
@@ -74,22 +74,23 @@ var Messages = {
 		{
 			$("#sketcher-messages .message-text").html(Messages[what]);
 			$("#content").addClass("sketcher-messages");
+			$("#sketcher-messages").show();
 		}
 		else if(what == "switch_engine" || what == "macromolecule" || what == "resolve"
 			 || what == "init_jmol" || what == "jmol_calculation" || what == "crystal_structure")
 		{
 			$("#model-messages .message-text").html(Messages[what]);
-			$("#content").addClass("model-messages");
+			$("#model-messages").show();
 		}
 		else if(what == "compound" || what == "crystal" || what == "search")
 		{
 			$("#content-messages .message-text").html(Messages[what]);
-			$("#content").addClass("content-messages");
+			$("#content-messages").show();
 		}
 		else if(what == "misc")
 		{
 			$("#content-messages .message-text").html("");
-			$("#content").addClass("content-messages");
+			$("#content-messages").show();
 		}
 
 		window.setTimeout(cb, 300);
@@ -120,10 +121,9 @@ var Messages = {
 
 		$("#-close").hide();
 		$("body").removeClass("progress-cursor");
-		$("#content").removeClass("content-messages "
-			/* do not hide sketcher-messages or model-messages if smiles cannot be loaded
-			so the error message is automatically displayed in the right messages layer */
-			+ ((cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail") ? "" : "sketcher-messages model-messages"));
+		if(cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail")
+			$("#content-messages").hide();
+		else $(".message-box").hide();
 
 		$(".message-btn").show();
 		$(".process-img, .alert-img").hide();
@@ -132,29 +132,32 @@ var Messages = {
 		if(cause == "sketcher_no_macromolecules" || cause == "crystal_2d_fail")
 		{
 			$("#sketcher-messages .message-text").html(Messages[cause]);
-			$("#content").addClass("sketcher-messages");
+			$("#sketcher-messages").show();
 		}
 		else if(cause == "no_webgl_support" || cause == "no_glmol_crystals")
 		{
 			$("#model-messages .message-text").html(Messages[cause]);
-			$("#content").addClass("model-messages");
+			$("#model-messages").show();
 		}
-		else if(cause == "cir_down" || cause == "cir_func_down" || cause == "no_canvas_support" || cause == "search_fail" || cause == "load_fail"  || cause == "mobile_old_no_macromolecules")
+		else if(cause == "cir_down" || cause == "cir_func_down" || cause == "no_canvas_support"
+			|| cause == "search_fail" || cause == "load_fail"  || cause == "mobile_old_no_macromolecules")
 		{
 			$("#content-messages .message-text").html(Messages[cause]);
-			$("#content").addClass("content-messages");
+			$("#content-messages").show();
 
 			if(cause == "no_canvas_support") $(".message-btn").hide();
 		}
 		else if(cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail")
 		{
-			if(error) $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text").html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
+			if(error) $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text")
+				.html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
 			else $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text").html(Messages[cause]);
 		}
 		else if(cause == "smiles_load_error_force")
 		{
-			if(error) $("#content-messages .message-text").html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
-			$("#content").addClass("content-messages");
+			if(error) $("#content-messages .message-text").html(Messages[cause]
+				+ " <small>" + (error.message || error.detailMessage || error) + "</small>");
+			$("#content-messages").show();
 		}
 
 		Progress.alert();
@@ -163,6 +166,6 @@ var Messages = {
 	hide: function()
 	{
 		$("body").removeClass("progress-cursor");
-		$("#content").removeClass("sketcher-messages model-messages content-messages");
+		$(".message-box").hide();
 	},
 };

@@ -1,11 +1,12 @@
 @import (reference) "vars";
-@import (reference) "global";
 
 .message-box
 {
-	.full-cover;
-
 	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	text-shadow: 0 0 10px @dark-shadow;
 	background: #fff;
 	background: rgba(255, 255, 255, 0.5);
 	overflow: auto;
@@ -96,17 +97,3 @@
     font-size: medium;
 	font-size: initial;
 }
-
-/*
-Layout types
-(#content classes)
-.start-messages
-.sketcher-messages
-.model-messages
-.content-messages
-*/
-.sketcher-messages #sketcher-messages { display: block; }
-.model-messages #model-messages { display: block; }
-.content-messages #content-messages { display: block; }
-
-.message-process .message-btn { display: none; }

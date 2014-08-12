@@ -47,6 +47,9 @@ var MolView = {
 		//window events
 		$(window).on("resize", function()
 		{
+			//don't resize when content is hidden
+			if($("#content").is(":hidden")) return;
+
 			//don't resize for virtual keyboard (common on touch devices)
 			if(!(document.activeElement.id == "search-input" && MolView.touch))
 			{
@@ -346,8 +349,7 @@ var MolView = {
 		$("#content").removeClass("layout-sketcher layout-model layout-vsplit layout-hsplit").addClass("layout-" + layout);
 		this.layout = layout;
 
-		Sketcher.resize();
-		Model.resize();
+		Actions.hide_search_results();
 	},
 
 	makeModelVisible: function()

@@ -1,57 +1,59 @@
-@import (reference) "global";
+@import (reference) "vars";
 
 .search-results
 {
-	.full-cover;
-
 	margin: 0;
 	padding: 10px;
-
-	background: #111;
-	background: rgba(0, 0, 0, 0.5);
+	text-align: center;
+	background: @pubchem-pngbg;
 	overflow: auto;
 }
 
-.load-more, .result
+.search-results > .container
 {
-	position: relative;
-	float: left;
-	margin: 10px;
-
-	background: #fff;
-	/* border: 3px solid #000; */
-
-	border-radius: 10px;
+	font-size: 0;
 }
 
-.load-more, .result-notext
+.result
+{
+	position: relative;
+	display: inline-block;
+	margin: 10px;
+
+	font-size: medium;
+	font-size: initial;
+	background: @light;
+	border: 1px solid @contrast;
+	box-shadow: 0 0 10px @light-shadow;
+}
+
+.result-notext
 {
 	cursor: pointer;
 }
 
 .load-more
 {
-	margin-right: 100%;
-	color: #000;
-	text-align: center;
-	background: #fff;
+	margin: 10px;
+	padding: 10px;
+	font-size: 20pt;
+	border: 1px solid @pubchem-pngbg;
 }
 
 .load-more:before
 {
-	content: "Load more"
+	content: "Load more";
 }
 
 .load-more-progress
 {
-	cursor: progress;
-	color: #fff;
-	background: #f50;
+	background: @pubchem-pngbg !important;
+	border-color: @pubchem-pngbg !important;
 }
 
 .load-more-progress:before
 {
-	content: "Loading..."
+	content: "Loading...";
 }
 
 /*
@@ -71,10 +73,8 @@ Search output:
 	right: 0;
 
 	text-align: center;
-	background: #ccc;
-	border-bottom: 1px solid #333;
-	border-radius: 4px 4px 0 0;
-	transition: background .1s ease-in;
+	background: @light2;
+	border-bottom: 1px solid @contrast;
 }
 
 .result-description
@@ -85,10 +85,10 @@ Search output:
 	bottom: 0;
 	margin: 5px;
 
-	background: #fff;
+	word-wrap: break-word;
+	text-align: left;
 	overflow-x: hidden;
 	overflow-y: auto;
-	word-wrap: break-word;
 }
 
 .result-img-wrap
@@ -97,7 +97,6 @@ Search output:
 	left: 0;
 	bottom: 0;
 
-	background-color: #fff;
 	background-image: url(../img/gears-black.svg);
 	background-size: 64px;
 	background-repeat: no-repeat;
@@ -118,109 +117,44 @@ Search output:
 
 }
 
-.result-img-wrap, .result-img
+.result
 {
-	border-radius: 0 0 15px 15px;
+	width: 300px;
+	height: 350px;
 }
 
-/* @media all and (max-width: 649px)
-{ */
-	.load-more, .result
-	{
-		width: 150px;
-		height: 180px;
-	}
-
-	.load-more
-	{
-		line-height: 180px;
-		font-size: 16pt;
-	}
-
-	.result-imgdesc
-	{
-		width: 320px;
-	}
-
-	.result-title
-	{
-		height: 20px;
-		line-height: 20px;
-		padding: 5px 10px;
-	}
-
-	.result-title > span
-	{
-		text-decoration: underline;
-		border-bottom: 0;
-	}
-
-	.result-description
-	{
-		top: 30px;
-		padding: 5px;
-		font-size: 8pt;
-	}
-
-	.result-imgdesc > .result-description
-	{
-		left: 150px;
-	}
-
-	.result-img-wrap
-	{
-		top: 30px;
-		width: 150px;
-	}
-/* } */
-
-@media all and (min-width: 650px)
+.result-imgdesc
 {
-	.load-more, .result
-	{
-		width: 300px;
-		height: 350px;
-	}
+	width: 620px;
+}
 
-	.load-more
-	{
-		line-height: 350px;
-		font-size: 22pt;
-	}
+.result-title
+{
+	height: 30px;
+	line-height: 30px;
+	padding: 10px 20px;
+}
 
-	.result-imgdesc
-	{
-		width: 620px;
-	}
+.result-title > span
+{
+	text-decoration: none;
+	border-bottom: 2px solid #111;
+}
 
-	.result-title
-	{
-		height: 30px;
-		line-height: 30px;
-		padding: 10px 20px;
-	}
+.result-description
+{
+	top: 50px;
+	padding: 10px;
+	font-size: 12pt;
+}
 
-	.result-title > span
-	{
-		text-decoration: none;
-		border-bottom: 2px solid #111;
-	}
+.result-imgdesc > .result-description
+{
+	left: 300px;
+}
 
-	.result-description
-	{
-		top: 50px;
-		padding: 10px;
-		font-size: 12pt;
-	}
-
-	.result-imgdesc > .result-description
-	{
-		left: 300px;
-	}
-
-	.result-img-wrap
-	{
-		top: 50px;
-		width: 300px;
-	}
+.result-img-wrap
+{
+	top: 50px;
+	width: 300px;
 }

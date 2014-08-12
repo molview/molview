@@ -66,7 +66,7 @@ var Messages = {
 		$(".process-img").show();
 
 		$("#model-messages .message-text").html(Messages[cause] || "");
-		$("body").addClass("model-messages");
+		$("#model-messages").show();
 
 		Progress.alert();
 	},
@@ -74,6 +74,6 @@ var Messages = {
 	hide: function()
 	{
 		$("body").removeClass("progress-cursor");
-		$("body").removeClass("model-messages");
+		$("#model-messages").hide();
 	},
 };

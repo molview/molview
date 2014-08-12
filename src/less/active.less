@@ -29,7 +29,6 @@ menu
 .dropdown-menu > li > a:not(.disabled):active
 {
 	background: @light3;
-	box-shadow: inset 0 0 10px @light-shadow;
 }
 
 /*
@@ -55,4 +54,18 @@ help
 .expandable-title:active
 {
 	.form-box-active;
+}
+
+/*
+search
+*/
+.result-title:active, .result-notext:active > .result-title, .load-more:active
+{
+	background: @light2;
+	box-shadow: inset 0 0 10px @contrast;
+}
+
+.load-more:active
+{
+	border-color: @contrast;
 }

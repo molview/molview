@@ -375,7 +375,7 @@ else if(isset($codid))
 				</form>
 			</div>
 		</div>
-		<div id="content" <?php echo 'class="'.$contentClass.'"' ?>>
+		<div id="content" <?php echo 'class="content '.$contentClass.'"' ?>>
 			<script type="text/javascript">
 				Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
 				Request.HTTP_CLIENT_IP = <?php
@@ -492,24 +492,24 @@ else if(isset($codid))
 					</div>
 				</div>
 			</div>
-			<div id="content-messages" class="message-box">
-				<div class="message-wrapper">
-					<div class="message">
-							<div class="process-img"></div>
-							<div class="alert-img"></div>
-						<p class="message-text"></p>
-						<button class="message-btn btn btn-large btn-primary">OK</button>
-					</div>
+		</div>
+		<div id="search-results" class="content search-results" style="display: none;">
+			<div class="container"></div>
+			<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
+			<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
+			<div id="load-more-cod" class="load-more" style="display: none;"></div>
+		</div>
+		<div id="content-messages" class="content message-box">
+			<div class="message-wrapper">
+				<div class="message">
+						<div class="process-img"></div>
+						<div class="alert-img"></div>
+					<p class="message-text"></p>
+					<button class="message-btn btn btn-large btn-primary">OK</button>
 				</div>
 			</div>
-			<div id="search-results" class="search-results" style="display: none;">
-				<div class="container"></div>
-				<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
-				<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
-				<div id="load-more-cod" class="load-more" style="display: none;"></div>
-			</div>
-			<div id="search-autocomplete"></div>
 		</div>
+		<div id="search-autocomplete"></div>
 		<div id="window-layer" class="window-layer">
 			<div class="dialog" id="start-dialog">
 				<h1>WELCOME!</h1>

@@ -49,7 +49,7 @@ var Loader = {
 	//PubChem wrapper
 	PubChem: {
 		i: 0,
-		step: 5,
+		step: 10,
 		loading: false,
 		ssli: 1000,//structure search lookup interval
 
