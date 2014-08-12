@@ -279,12 +279,13 @@ function ChemicalView(parent, canvas)
 
 ChemicalView.prototype.resize = function()
 {
-	this.canvas.width = this.parent.width() * this.scaleFactor;
-	this.canvas.height = this.parent.height() * this.scaleFactor;
 	jQuery(this.canvas).css({
 		"width": this.parent.width(),
 		"height": this.parent.height()
 	});
+
+	this.canvas.width = this.parent.width() * this.scaleFactor;
+	this.canvas.height = this.parent.height() * this.scaleFactor;
 
 	this.updateZoom = true;
 	this.drawMol();
@@ -506,5 +507,9 @@ ChemicalView.prototype.deselectAll = function()
 	for(var i = 0; i < this.chem.atoms.length; i++)
 	{
 		this.chem.atoms[i].ms &= ~M_CE;
+	}
+	for(var i = 0; i < this.chem.bonds.length; i++)
+	{
+		this.chem.bonds[i].ms &= ~M_CE;
 	}
 }

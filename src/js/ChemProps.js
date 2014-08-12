@@ -173,7 +173,7 @@ var ChemProps = {
 					value = array[0];
 				}
 
-				ChemProps.data[id.substr(5)] = value;
+				ChemProps.data[id.substr(6)] = value;
 				$(id).removeClass("chemprop-loading");
 				if($(id).is("input")) $(id).val(value);
 				else $(id).text(value);

@@ -1,3 +1,5 @@
+@import (reference) "vars";
+
 .window-layer
 {
 	position: absolute;
@@ -6,6 +8,7 @@
 	right: 0;
 	bottom: 0;
 
+	background: rgba(0, 0, 0, 0.5);
 	overflow: auto;
 }
 
@@ -17,7 +20,8 @@
 	left: 0px;
 	right: 0px;
 
-	background: #fff;
+	background: @light;
+	box-shadow: 0 0 40px #000;
 	overflow: hidden;
 }
 
@@ -29,15 +33,8 @@
 
 	text-align: center;
 	color: #111;
-	background: #eee;
-	border-bottom: 1px solid #ccc;
-
-	border-radius: 10px 10px 0 0;
-}
-
-.dialog p
-{
-	margin: 5px 0;
+	background: @light2;
+	border-bottom: 1px solid @contrast;
 }
 
 .dialog > .footer
@@ -51,7 +48,6 @@
 	#help-dialog, #about-dialog, #share-dialog, #embed-dialog
 	{
 		max-width: 960px;
-		border-radius: 10px;
 	}
 }
 
@@ -80,6 +76,7 @@ Properties dialog
 .properties-dialog
 {
 	max-width: 600px;
+	background: @pubchem-pngbg;
 }
 
 @media all and (min-width: 1200px)
@@ -98,14 +95,6 @@ Properties dialog
 	}
 }
 
-@media all and (min-width: 700px)
-{
-	.properties-dialog
-	{
-		border-radius: 10px;
-	}
-}
-
 /*
 Elements dialog
 */
@@ -120,7 +109,5 @@ Elements dialog
 	#elements-dialog
 	{
 		width: 900px;
-
-		border-radius: 10px;
 	}
 }

@@ -1,4 +1,4 @@
-@import "vars";
+@import (reference) "vars";
 
 .form-box
 {
@@ -6,9 +6,27 @@
 	font-size: 12pt;
 	font-family: 'Open Sans', sans-serif;
 	text-decoration: none;
-	background: #eee;
-	border: 1px solid #ccc;
-	border-radius: 4px;
+	background: @light3;
+	border: 1px solid @contrast;
+
+	&:focus
+	{
+		outline: none;
+		border-color: @contrast3;
+	}
+}
+
+.form-box-hover
+{
+	background: @light;
+	border-color: @contrast3;
+}
+
+.form-box-active
+{
+	background: @light2;
+	border-color: @contrast3;
+	box-shadow: inset 0 0 10px @light-shadow;
 }
 
 input[type="text"]
@@ -17,19 +35,24 @@ input[type="text"]
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
 
-	padding: 0 15px;
-	width: 200px;
-	height: 40px;
-	line-height: 20px;
+	padding: 10px 15px;
+	min-width: 200px;
+
 	font-family: 'Open Sans', sans-serif;
-	background: #eee;
-	border: 0;
-	border-bottom: 3px solid #ccc;
+	background: @light2;
+	border: 1px solid @contrast;
 }
 
-input[type="text"].contrast
+input[type="text"]:focus
 {
-	border-color: #111;
+	background: @light;
+	border: 1px solid @highlight;
+}
+
+input[type="text"].alert
+{
+	border-color: @error;
+	background: @error-light;
 }
 
 input[type="text"].expand
@@ -37,86 +60,41 @@ input[type="text"].expand
 	width: 100%;
 }
 
-input[type="text"]:focus, input[type="radio"]:focus, select:focus
-{
-	outline: none;
-}
-
 input[type="text"]:focus
 {
-	border-bottom: 3px solid #f50;
-}
-
-input[type="text"].alert
-{
-	border-bottom: 3px solid #f00;
-	background: #fcb3bc;
-}
-
-input[type="radio"]
-{
-	cursor: pointer;
-	margin: 5px;
-}
-
-input[type="radio"] + span
-{
-	cursor: default;
-	vertical-align: top;
+	outline: none;
 }
 
 select
 {
+	.form-box;
+
 	cursor: pointer;
-	padding: 5px 10px;
+	padding: 5px;
 	max-width: 100%;
 	line-height: 20px;
-
-	.form-box
-}
-
-select:focus
-{
-	outline: none;
-	border-bottom-color: #f50;
 }
 
 .btn
 {
+	.form-box;
+
 	cursor: pointer;
 	display: inline-block;
 	margin: 10px 0 0 10px;
 	padding: 5px 15px;
-	height: 40px;
-
-	.form-box
 }
 
 .btn-search
 {
-	background: #fff;
-	border: 0;
-	border-bottom: 3px solid #ccc;
-}
-
-.btn:focus
-{
-	outline: none;
-}
-
-.btn-primary
-{
-	color: #eee;
-	background: #f30;
-	border: 1px solid #f30;
+	height: 40px;
+	border-color: @light3;
 }
 
 .btn-large
 {
 	padding: 10px 20px;
-	height: auto;
 	font-size: 18pt;
-	border-radius: 6px;
 }
 
 .close-btn
@@ -155,12 +133,13 @@ table
 {
 	padding: 5px 20px 5px 5px;
 	min-width: 32px;
+	border: 1px solid @contrast;
 }
 
 table > thead > tr > th
 {
-	background-color: #111;
-	color: #eee;
+	background: @foreground;
+	color: @light2;
 	font-weight: bold;
 	text-align: center;
 }
@@ -170,8 +149,8 @@ table > thead > tr > th
 	font-weight: bold;
 }
 
-.light-table td { background-color: #ccc; }
-.light-table > tbody > tr:nth-child(even) > td { background-color: #ddd; }
+.light-table td { background-color: @light2; }
+.light-table > tbody > tr:nth-child(even) > td { background-color: @light3; }
 
 .input-table td { padding: 0; }
 .input-table th { padding: 5px 20px 5px 5px; }

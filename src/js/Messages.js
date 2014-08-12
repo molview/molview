@@ -16,7 +16,7 @@ var Messages = {
 
 	search: "Searching&hellip;",
 	clean: "Cleaning&hellip;",
-	resolve: "Resolving&hellip;",
+	resolve: "Updating&hellip;",
 
 	no_glmol_crystals: "You cannot view crystals using GLmol",
 
@@ -39,7 +39,6 @@ var Messages = {
 
 	init: function()
 	{
-		$("#start-messages-close").on("click", function(){ Messages.hide(); });
 		$("#sketcher-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
 		$("#model-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
 		$("#content-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
@@ -64,9 +63,8 @@ var Messages = {
 		- misc
 		*/
 
-		$("#start-messages-close").hide();
 		$("body").addClass("progress-cursor");
-		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages");
+		$("#content").removeClass("sketcher-messages model-messages content-messages");
 
 		$(".message-btn").hide();
 		$(".process-img, .alert-img").hide();
@@ -120,9 +118,9 @@ var Messages = {
 		- crystal_2d_fail
 		*/
 
-		$("#start-messages-close").hide();
+		$("#-close").hide();
 		$("body").removeClass("progress-cursor");
-		$("#content").removeClass("start-messages content-messages "
+		$("#content").removeClass("content-messages "
 			/* do not hide sketcher-messages or model-messages if smiles cannot be loaded
 			so the error message is automatically displayed in the right messages layer */
 			+ ((cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail") ? "" : "sketcher-messages model-messages"));
@@ -164,8 +162,7 @@ var Messages = {
 
 	hide: function()
 	{
-		$("#start-messages-close").hide();
 		$("body").removeClass("progress-cursor");
-		$("#content").removeClass("start-messages sketcher-messages model-messages content-messages");
+		$("#content").removeClass("sketcher-messages model-messages content-messages");
 	},
 };

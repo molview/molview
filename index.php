@@ -174,7 +174,7 @@ else if(isset($codid))
 
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
-		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700">
+		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" media="screen" />
 
 		<!-- JS -->
@@ -393,12 +393,10 @@ else if(isset($codid))
 				?>;*/
 
 				if(Detector.webgl) $("#glmol-menu").show();
+				else $("#menu > .inner").css("min-width", 1200);
 
 				MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 				MolView.query = getQuery();
-
-				if($.isEmptyObject(MolView.query) && Detector.webgl)
-					$("#content").addClass("start-messages");
 
 				if($(window).height() > $(window).width()
 					&& !MolView.query.layout
@@ -466,7 +464,7 @@ else if(isset($codid))
 						<canvas id="moledit-canvas"></canvas>
 					</div>
 				</div>
-				<div id="sketcher-messages" class="message-box full-cover dark-glass">
+				<div id="sketcher-messages" class="message-box">
 					<div class="message-wrapper">
 						<div class="message">
 							<div class="process-img"></div>
@@ -478,12 +476,12 @@ else if(isset($codid))
 				</div>
 			</div>
 			<div id="model">
-				<div id="chemdoodle" class="render-engine full-cover" style="display: none;">
+				<div id="chemdoodle" class="render-engine" style="display: none;">
 					<canvas id="chemdoodle-canvas"></canvas>
 				</div>
-				<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
-				<div id="glmol" class="render-engine full-cover" style="display: none;"></div>
-				<div id="model-messages" class="message-box full-cover dark-glass">
+				<div id="jsmol" class="render-engine" style="display: none;"></div>
+				<div id="glmol" class="render-engine" style="display: none;"></div>
+				<div id="model-messages" class="message-box">
 					<div class="message-wrapper">
 						<div class="message">
 							<div class="process-img"></div>
@@ -493,25 +491,8 @@ else if(isset($codid))
 						</div>
 					</div>
 				</div>
-				<div id="start-messages" class="message-box full-cover dark-glass">
-					<div class="message-wrapper">
-						<div class="message">
-							<p class="message-text">
-                                Keep updated!<br/><a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>, <a class="link" target="_blank" title="Facebook" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>, <a class="link" target="_blank" title="Google+" href="https://plus.google.com/102377643104393981977" rel="publisher">Google+</a>, <a class="link" target="_blank" title="Twitter" href="https://twitter.com/molview">Twitter</a>
-							</p>
-							<button id="start-help" class="message-btn btn btn-primary btn-large">Getting started</button>
-							<p class="message-text">We need your help to keep this up!<br/>If you think MolView is useful, please support development and maintenance of MolView.</p>
-							<a class="message-btn btn btn-primary btn-large" style="font-weight: bold;" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">DONATE&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
-						</div>
-					</div>
-				</div>
-				<div id="start-messages-close" class="close-btn no-select" style="display: none;"></div>
-				<script type="text/javascript">
-					if($("#content").hasClass("start-messages"))
-						$("#start-messages-close").show();
-				</script>
 			</div>
-			<div id="content-messages" class="message-box full-cover dark-glass">
+			<div id="content-messages" class="message-box">
 				<div class="message-wrapper">
 					<div class="message">
 							<div class="process-img"></div>
@@ -521,7 +502,7 @@ else if(isset($codid))
 					</div>
 				</div>
 			</div>
-			<div id="search-results" class="search-results full-cover dark-glass" style="display: none;">
+			<div id="search-results" class="search-results" style="display: none;">
 				<div class="container"></div>
 				<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
 				<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
@@ -529,7 +510,23 @@ else if(isset($codid))
 			</div>
 			<div id="search-autocomplete"></div>
 		</div>
-		<div id="window-layer" class="window-layer" style="display: none;">
+		<div id="window-layer" class="window-layer">
+			<div class="dialog" id="start-dialog">
+				<h1>WELCOME!</h1>
+				<p>
+					Keep updated!<br/>
+					<a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>,
+					<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>,
+					<a class="link" target="_blank" title="+MolView" href="https://plus.google.com/102377643104393981977" rel="publisher">Google+</a>,
+					<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
+				</p>
+				<button id="start-help" class="btn btn-large">Getting started</button>
+				<p>We need your help to keep this up!<br/>If you think MolView is useful, please support development and maintenance of MolView.</p>
+				<a class="btn btn-large" style="font-weight: bold;" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">DONATE&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
+				<div class="footer">
+					<button class="btn close btn-primary pull-right">Continue</button>
+				</div>
+			</div>
 			<div class="dialog" id="about-dialog" style="display: none;">
 				<h2>About</h2>
 				<div class="dialog-close-btn"></div>
@@ -557,7 +554,7 @@ else if(isset($codid))
 						</ul>
 					</li>
 				</ul>
-				<p style="text-align: center;">
+				<p id="about-links">
 					MolView v2.2.0
 					&nbsp;|&nbsp;
 					&copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
@@ -568,20 +565,20 @@ else if(isset($codid))
 					&nbsp;|&nbsp;
 					<a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
 					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="Facebook" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>
+					<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>
 					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="Google+" href="https://plus.google.com/102377643104393981977" rel="publisher">+MolView</a>
+					<a class="link" target="_blank" title="+MolView" href="https://plus.google.com/102377643104393981977" rel="publisher">Google+</a>
 					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="Twitter" href="https://twitter.com/molview">@molview</a>
+					<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
 					&nbsp;|&nbsp;
 					<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
 				</p>
 				<div id="disclaimer">DISCLAIMER: MolView does not warrant that the data contained in its website is complete and correct and shall not be liable whatsoever for any damages incurred as a result of its use.</div>
 				<div class="footer">
-					<button class="btn close btn-primary pull-right">OK</button>
+					<button class="btn close btn-primary pull-right">Continue</button>
 				</div>
 			</div>
-			<div class="dialog styled-text" id="help-dialog" style="display: none;">
+			<div class="dialog" id="help-dialog" style="display: none;">
 				<h2>Help</h2>
 				<div class="dialog-close-btn"></div>
 				<script type="text/javascript">
@@ -649,12 +646,7 @@ else if(isset($codid))
 					<div class="expandable-content">
 						<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
 						<h4>Link</h4>
-						<p>You can link to a specific compound, biomolecule or crystal using URL parameters. This menu gives you two options:</p>
-						<ul>
-							<li><b>Share:</b> use this option if you want to share the current MolView content including chemical structure, layout and molecule representation.</li>
-							<li><b>Embed:</b> use this option if you want to embed the current model into your website. To add the 3D view with the current structure to your website, you have to copy the given HTML code into your website.</li>
-						</ul>
-						<p>If you only want to link to the current chemical structure, you can also copy the URL from the adress bar. (make sure the URL links to the right structure by reloading the page)</p>
+						<p>You can embed or share a specific compound, biomolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the adress bar in order to link to the current structure.</p>
 						<h4>Export</h4>
 						<p>Export options in the Export menu:</p>
 						<ul>
@@ -664,13 +656,8 @@ else if(isset($codid))
 							<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a biomolecule)</i></li>
 							<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model<br/><i>(displayed if the 3D model is a crystal structure)</i></li>
 						</ul>
-						<h4>Properties</h4>
-						<p>Depending on the situation, this function gives you more information about the current molecule.</p>
-						<ul>
-							<li><b>If the model is a biomolecule:</b> hotlink to RCSB Biomolecule Data Bank page</li>
-							<li><b>If the model is a crystal structure:</b> hotlink to Crystallography Open Database page</li>
-							<li><b>Else:</b> shows a dialog with a number of properties for the structural formula from the sketcher</li>
-						</ul>
+						<h4>Information card</h4>
+						<p>This function collects and displays information about the structural formula.</p>
 						<h4>Spectroscopy</h4>
 						<p>This method shows a dialog where you can view spectra related to the structural formula from the sketcher. More details are covered in chapter 5.</p>
 						<h4>Advanced search</h4>
@@ -766,46 +753,44 @@ else if(isset($codid))
 				<p>
 					If you still have questions, found bugs or want to request new features. You can discuss them with me via social media or send me an email.
 					<ul>
-						<li>Twitter: <a class="link" target="_blank" title="Twitter" href="https://twitter.com/molview">@molview</a></li>
-						<li>Facebook: <a class="link" target="_blank" title="FaceBook" href="https://www.facebook.com/molview" rel="publisher">MolView</a></li>
-						<li>Google Plus: <a class="link" target="_blank" title="Google+" href="https://plus.google.com/102377643104393981977" rel="publisher">+MolView</a></li>
-						<li>Mail: <a class="link" target="_blank" title="Mail" href="mailto:support@molview.org">support@molview.org</a></li>
+						<li>Twitter: <a class="link" target="_blank" title="Twitter page" href="https://twitter.com/molview">@molview</a></li>
+						<li>Facebook: <a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview" rel="publisher">MolView</a></li>
+						<li>Google Plus: <a class="link" target="_blank" title="Google+ page" href="https://plus.google.com/102377643104393981977" rel="publisher">+MolView</a></li>
+						<li>Mail: <a class="link" target="_blank" title="Mail adress" href="mailto:support@molview.org">support@molview.org</a></li>
 					</ul>
 				</p>
 				<div class="footer">
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog styled-text" id="share-dialog" style="display: none;">
+			<div class="dialog" id="share-dialog" style="display: none;">
 				<h2>Share</h2>
 				<div class="dialog-close-btn"></div>
-				<div id="share-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
-				<h3>URL</h3>
-				<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
-				<div class="social no-select">
+				<ul>
+					<li id="share-2d-not-3d">Make sure to convert the strutural formula into a 3D model if you want to share the molecule from the sketcher</li>
+				</ul>
+				<div id="share-dialog-social" class="social no-select">
 					<div class="share share-facebook"></div>
 					<div class="share share-twitter"></div>
 					<div class="share share-googleplus"></div>
 				</div>
+				<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
 				<div class="footer">
 					<button class="btn close btn-primary pull-right">Close</button>
 				</div>
 			</div>
-			<div class="dialog styled-text" id="embed-dialog" style="display: none;">
+			<div class="dialog" id="embed-dialog" style="display: none;">
 				<h2>Embed</h2>
 				<div class="dialog-close-btn"></div>
-				<div id="embed-2d-not-3d" class="alert-bar alert-danger"><b>The structural formula and the model do not look the same!</b><p>make sure to resolve the strutural formula if you want to share the molecule from the sketcher</p></div>
-				<div class="alert-bar alert-info">Embedded macromolecules cannot be viewed on smartphones without WebGL</div>
-				<div class="expandable">
-					<div class="expandable-title no-select"><b>Dimensions</b><i class="fa"></i></div>
-					<div class="expandable-content">
-						<h4>Width</h4>
-						<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
-						<h4>Height</h4>
-						<input id="embed-height" class="contrast expand" type="text" value="300px" autocomplete="off" spellcheck="false" />
-					</div>
-				</div>
-				<h3>Code</h3>
+				<ul>
+					<li id="embed-2d-not-3d">Make sure to resolve the strutural formula if you want to embed the molecule from the sketcher</li>
+					<li>Embedded macromolecules cannot be viewed on smartphones without WebGL</li>
+				</ul>
+				<h4>Width</h3>
+				<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
+				<h4>Height</h4>
+				<input id="embed-height" class="contrast expand" type="text" value="300px" autocomplete="off" spellcheck="false" />
+				<h4>HTML code</h4>
 				<input id="embed-code" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
 				<div class="footer">
 					<button class="btn close btn-primary pull-right">Close</button>
@@ -814,9 +799,6 @@ else if(isset($codid))
 			<div class="dialog properties-dialog" id="properties-compound-dialog" style="display: none;">
 				<h2>Information</h2>
 				<div class="dialog-close-btn"></div>
-				<button id="goto-compound-card" class="info-card-tab">Compound card</button>
-				<button id="goto-rcsb-card" class="info-card-tab">Biomolecule card</button>
-				<button id="goto-cod-card" class="info-card-tab">Crystal card</button>
 				<div id="properties-wrapper">
 					<div id="general-properties">
 						<div id="molecule-image-wrapper" class="properties-block">
@@ -854,43 +836,8 @@ else if(isset($codid))
 							<tr><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
 							<tr><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
 							<tr><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></th></tr>
+							<tr><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
 							<tr><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
-				</div>
-			</div>
-			<div class="dialo properties-dialogg" id="properties-rcsb-dialog" style="display: none;">
-				<h2>Information</h2>
-				<div class="dialog-close-btn"></div>
-				<div id="properties-wrapper">
-					<div id="general-properties">
-						<div id="rcsb-image-wrapper" class="properties-block">
-							<img id="rcsb-image" class="chemprop" src="src/img/empty.png" alt=""/>
-						</div>
-						<div class="properties-block">
-							<div id="rcsb-info">
-								<h3 id="rcsb-title"></h3>
-								<p id="rcsb-description"></p>
-							</div>
-							<a></a>
-						</div>
-					</div>
-				</div>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
-				</div>
-			</div>
-			<div class="dialog properties-dialog" id="properties-cod-dialog" style="display: none;">
-				<h2>Information</h2>
-				<div class="dialog-close-btn"></div>
-				<div id="properties-wrapper">
-					<table class="light-table">
-						<tbody>
-							<tr id="prop-wrapper-"><td>Formula</td><td id="prop-" class="chemprop"></td></tr>
 						</tbody>
 					</table>
 				</div>

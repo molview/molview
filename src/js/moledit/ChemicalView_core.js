@@ -229,16 +229,14 @@ ChemicalView.prototype.updateKfc = function (chem, margin)
 	this.updateZoom = false;
 }
 
-ChemicalView.prototype.drawMol = function ()
+ChemicalView.prototype.drawMol = function()
 {
 	var fontSize = 14 * this.scaleFactor;
 
 	if(!this.chemIsReady) return;
 
 	this.ctx = this.canvas.getContext("2d");
-
-	this.ctx.fillStyle = "white";
-	this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	this.ctx.font = "bold " + fontSize + "px Arial";
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 	if(this.updateZoom)
@@ -454,7 +452,6 @@ ChemicalView.prototype.drawMol = function ()
 	}
 
 	/* chain length number */
-	this.ctx.font = "bold " + fontSize + "px Arial";
 	if(this.mode == MODE_CHAIN && this.chem.atoms[this.connectToAtom] != null && this.chem.atoms[this.connectToAtom].bo[0] >= 0)
 	{
 		//var lastToM = vector(this.wtos(this.chem.atoms[this.connectToAtom]),this.lastPos);

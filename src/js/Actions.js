@@ -95,7 +95,7 @@ var Actions = {
 
 	png_current_spectrum: function()
 	{
-		if(!Specstrocopy.data[$("#spectrum-select").val()])
+		if(!Spectroscopy.data[$("#spectrum-select").val()])
 		{
 			alert("No spectrum selected!");
 			return;

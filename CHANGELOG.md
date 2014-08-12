@@ -7,8 +7,9 @@ Bugfixes:
   - Added `Loader.Crystals.loadCODID` CIF validation
   - Catch `ucfirst()` and `humanize()` undefined input
   - Test if translation is necessary
+  > Spectrum loading error handling
 
-Revisions:
+Backend:
 
   - Added `min-width: 550px;` for `#edit-tools > .inner`
   - Removed model onload layout for CODID
@@ -21,22 +22,15 @@ Revisions:
   - Renamed `Loader.Crystals` to `Loader.COD`
   - Moved message SVG images to CSS
   - SVG minification
-  - Light sketcher toolbars
   - Replace '/' with '%5C' for Chemical Identifier Resolver lookup
-  - Sketcher selection restyling
   - Splitted `ChemicalData` into `ChemProps` and `Spectroscopy`
   - Added two `ChemProps` dialogs; biomolecule and crystal
   - Migrate CSS to LESS
-  > Property loading; PubChem > ChemSpider > Chemical Identifier Resolver
-  > CSID via ChemSpider webservice//http://www.chemspider.com/Search.asmx/SimpleSearch?query={smiles}&token=eb952f07-9d2e-4831-9c90-8b3b7eccec8a
-  > SMILES 2D depiction; PubChem > Chemical Identifier Resolver
-  > SMILES 3D conformation; PubChem > Chemical Identifier Resolver > CHEMBIOGRID
-  > SMILES 3D conformation URL key; CIS > InChiKey (CIR only) > SMILES
-  > Sketcher.InChiKey from Chemical Identifier Resolver search
-  > Mirror AJAX request via mirror.php if necessary
-  > Progress message in small bar
+  > Information loading; PubChem > ChemSpider > Chemical Identifier Resolver
+  > SMILES 2D/3D conversion; PubChem > Chemical Identifier Resolver
+  > Save Sketcher.InChiKey from Chemical Identifier Resolver search
 
-Features:
+Frontend:
 
   - Direct PDBID search
   - Custom GLmol menu for WebGL devices
@@ -46,11 +40,17 @@ Features:
   - Fast search auto-complete to CID, PDBID or CODID
   - Model background switch
   - Export images with alpha channel
+  - Light sketcher toolbars
   - Dialog close buttons
-  - UI restyle with smaller UI components
+  - Sketcher selection restyling
+  - UI restyle with flat design
+  > New search results layout
+  > New welcome message
+  > Progress message in small bar
+  > Information card external references (Chemicalize, Google, PDB, COD)
   > Switch to Desktop or Touch theme via MolView menu
+  > SMILES 3D conformation URL key; CID > InChiKey (CIR only) > SMILES
   > Save user preferences using HTML5 Web Storage
-  > SMILES 3D conformation URL key; CIS > InChiKey (CIR only) > SMILES
   > Functional groups in Sketcher
   > COD image archive
 

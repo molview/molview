@@ -7,7 +7,7 @@
     Robert Hanson for parseXYZ, deferred instantiation
 
   This program uses
-      Three.js 
+      Three.js
          https://github.com/mrdoob/three.js
          Copyright (c) 2010-2012 three.js Authors. All rights reserved.
       jQuery
@@ -162,7 +162,7 @@ var GLmol = (function ()
 		this.isMultiDragging = false;
 		this.mouseStartX = 0;
 		this.mouseStartY = 0;
-		
+
 		/* INSERTED */
 		this.multiTouchD = 0;
 		this.zoom2D = 30;
@@ -170,7 +170,7 @@ var GLmol = (function ()
 		this.canvasBondWidth = 0.3;
 		this.canvasVDW = false;
 		this.multic = { x: 0, y: 0 };
-		
+
 		this.currentModelPos = 0;
 		this.cz = 0;
 		this.enableMouse();
@@ -178,7 +178,7 @@ var GLmol = (function ()
 		if(suppressAutoload) return;
 		this.loadMolecule();
 	};
-	
+
 	GLmol.prototype.resize = function (scene)
 	{
 		this.WIDTH = this.container.width() * this.aaScale;
@@ -353,7 +353,7 @@ var GLmol = (function ()
 			}
 			else if(recordName == 'CONECT')
 			{
-				// MEMO: We don't have to parse SSBOND, LINK because both are also 
+				// MEMO: We don't have to parse SSBOND, LINK because both are also
 				// described in CONECT. But what about 2JYT???
 				var from = parseInt(line.substr(6, 5));
 				for(var j = 0; j < 4; j++)
@@ -434,7 +434,7 @@ var GLmol = (function ()
 			}
 		}
 
-		// Assign secondary structures 
+		// Assign secondary structures
 		for(i = 0; i < atoms.length; i++)
 		{
 			atom = atoms[i];
@@ -1936,15 +1936,15 @@ var GLmol = (function ()
 	GLmol.prototype.setBackground = function (hex, a)
 	{
 		if(!this.scene) return;
-		
+
 		var r = hex >> 16; r /= 255;
 		var g = hex >> 8 & 0xFF; g /= 255;
 		var b = hex & 0xFF; b /= 255;
 		if(a === undefined) a = 1.0;
-		
+
 		this.bgColor = hex;
 		this.bgAlpha = a;
-		
+
 		if(this.renderer) this.renderer.setClearColor({r:r,g:g,b:b}, a);
 		this.scene.fog.color = new TCo(hex);
 	};
@@ -2074,16 +2074,16 @@ var GLmol = (function ()
 		{
 			ev.preventDefault();
 			if(!me.scene) return;
-			
+
 			var x = ev.pageX,
 				y = ev.pageY;
-			
+
 			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches[0])
 			{
 				x = ev.originalEvent.targetTouches[0].pageX;
 				y = ev.originalEvent.targetTouches[0].pageY;
 			}
-			
+
 			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
 			{
 				var t = ev.originalEvent.targetTouches;
@@ -2091,7 +2091,7 @@ var GLmol = (function ()
 				var dy = t[0].pageY - t[1].pageY;
 				me.multiTouchD = Math.sqrt(dx * dx + dy * dy);
 			}
-			
+
 			if(x == undefined) return;
 			me.isDragging = true;
 			me.mouseButton = ev.which;
@@ -2108,19 +2108,25 @@ var GLmol = (function ()
 		{
 			ev.preventDefault();
 			if(!me.scene) return;
-			
+
 			var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
 			if(scaleFactor > 2000) scaleFactor = 2000;
-			
-			if(ev.originalEvent.detail) { // Webkit
-			me.rotationGroup.position.z += scaleFactor * ev.originalEvent.detail / 10;
-			} else if (ev.originalEvent.wheelDelta) { // Firefox
-			me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
+
+			if(ev.originalEvent.detail)
+			{
+				me.rotationGroup.position.z += scaleFactor * ev.originalEvent.detail / 10;
+				me.zoom2D += scaleFactor * ev.originalEvent.detail / 10;
 			}
-			
+			else if (ev.originalEvent.wheelDelta)
+			{
+				me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
+				me.zoom2D -= scaleFactor * ev.originalEvent.wheelDelta / 400;
+			}
+
 			if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
 			if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
-			
+			if(me.zoom2D < 2) me.zoom2D = 2;
+
 			console.log(me.rotationGroup.position.z, scaleFactor);
 			me.show();
 		});
@@ -2139,46 +2145,46 @@ var GLmol = (function ()
 		{ // touchmove
 			if(!me.scene) return;
 			if(!me.isDragging) return;
-			
+
 			ev.preventDefault();
-			
+
 			var mode = 0;
 			var x = ev.pageX,
 				y = ev.pageY;
-				
+
 			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches[0])
 			{
 				x = ev.originalEvent.targetTouches[0].pageX;
 				y = ev.originalEvent.targetTouches[0].pageY;
 			}
-			
+
 			/* INSERTED: multi touch zoom */
 			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
 			{
 				var t = ev.originalEvent.targetTouches;
 				var dx = t[0].pageX - t[1].pageX;
 				var dy = t[0].pageY - t[1].pageY;
-				
+
 				/* var x = t[0].pageX < t[1].pageX ? t[0].pageX : t[1].pageX;
 				var y = t[0].pageY < t[1].pageY ? t[0].pageY : t[1].pageY;
-				
+
 				if(!me.isMultiDragging)
 				{
 					me.multic.x = x + dx / 2;
 					me.multic.y = y + dy / 2;
 				} */
-				
+
 				me.isMultiDragging = true;
-				
+
 				var d = Math.sqrt(dx * dx + dy * dy);
 				var ratio = d / me.multiTouchD;
 				me.multiTouchD = d;
-				
+
 				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				me.rotationGroup.position.z += scaleFactor * -(ratio - 1);
+				me.rotationGroup.position.z += scaleFactor * - (ratio - 1);
 				me.zoom2D *= ratio;
 				if(me.zoom2D < 2) me.zoom2D = 2;
-				
+
 				/* var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 20) scaleFactor = 20;
 				var translationByScreen = new TV3(((x + dx / 2) - me.multic.x) / me.WIDTH * scaleFactor, ((y + dy / 2) - me.multic.y) / me.HEIGHT * scaleFactor, 0);
@@ -2188,12 +2194,12 @@ var GLmol = (function ()
 				me.modelGroup.position.x = me.currentModelPos.x + translation.x;
 				me.modelGroup.position.y = me.currentModelPos.y + translation.y;
 				me.modelGroup.position.z = me.currentModelPos.z + translation.z; */
-				
+
 				me.show();
 			}
-			
+
 			if(me.isMultiDragging) return;
-			
+
 			if(x == undefined) return;
 			var dx = (x - me.mouseStartX) / me.WIDTH;
 			var dy = (y - me.mouseStartY) / me.HEIGHT;
@@ -2237,7 +2243,7 @@ var GLmol = (function ()
 				me.rotationGroup.quaternion.multiplySelf(me.dq);
 				me.rotationGroup.quaternion.multiplySelf(me.cq);
 			}
-			
+
 			me.show();
 		});
 	};

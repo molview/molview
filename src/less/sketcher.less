@@ -1,4 +1,4 @@
-@import "vars";
+@import (reference) "vars";
 
 .sketcher
 {
@@ -62,7 +62,7 @@
 .tool-button-selected
 {
 	opacity: 1.0;
-	background-color: #f50;
+	background-color: @highlight;
 }
 
 .tool-button-disabled

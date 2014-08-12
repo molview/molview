@@ -1,27 +1,22 @@
-@import "autocomplete";
+@import (reference) "form";
+@import (reference) "autocomplete";
 
 /*
 form
 */
+input[type="text"]:hover
+{
+	background: @light;
+}
+
 select:hover
 {
-	border-bottom-color: #f50;
+	.form-box-hover;
 }
 
-.btn:not(.btn-primary):hover
+.btn:hover
 {
-	background: #fff;
-	border-color: #aaa;
-}
-
-.btn-primary:hover
-{
-	background: #f50;
-}
-
-.btn-search:hover
-{
-	border-color: #f50 !important;
+	.form-box-hover;
 }
 
 .close-btn:hover, .dialog-close-btn:hover
@@ -34,12 +29,12 @@ menu
 */
 .dropdown-toggle:hover
 {
-	background-color: #eee !important;
+	background-color: @light2 !important;
 }
 
 .dropdown-menu > li > a:not(.disabled):hover
 {
-	background: #eee;
+	background: @light2;
 }
 
 /*
@@ -48,7 +43,7 @@ sketcher
 .tool-button:not(.tool-button-selected):not(.tool-button-disabled):hover
 {
 	opacity: 1.0;
-	background-color: #ddd;
+	background-color: @light3;
 }
 
 /*
@@ -56,7 +51,7 @@ periodictable
 */
 .pt-element:hover
 {
-	background: #ddd;
+	background: @light2;
 }
 
 /*
@@ -64,7 +59,7 @@ help
 */
 .expandable-title:hover
 {
-	background: #fff;
+	.form-box-hover;
 }
 
 /*
@@ -91,5 +86,5 @@ autocomplete
 */
 .autocomplete-item:hover
 {
-	.autocomplete-item-hover
+	.autocomplete-item-hover;
 }

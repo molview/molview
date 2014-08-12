@@ -15,6 +15,12 @@
 }
 
 /* swipe trick: display menu on top of page */
+.menu:not(.open)
+{
+	overflow-x: auto !important;
+	overflow-y: hidden !important;
+}
+
 .menu.open
 {
 	height: auto;
@@ -79,7 +85,7 @@
 
 .dropdown-menu
 {
-	display: none;
+	visibility: hidden;
 	position: absolute;
 	margin: 0 0 0 -1px;
 	padding: 5px 0;
@@ -109,7 +115,7 @@ li.menu-header
 
 .dropdown.open > .dropdown-menu
 {
-	display: block;
+	visibility: visible;
 }
 
 /* custom layout menu */

@@ -1,4 +1,4 @@
-@import "vars";
+@import (reference) "vars";
 
 .menu > .inner
 {
@@ -29,7 +29,6 @@
 {
 	background: #fff;
 	border: 1px solid @contrast;
-	border-radius: 0 @small-border-radius @small-border-radius @small-border-radius;
 }
 
 li.menu-header
@@ -50,11 +49,6 @@ li.menu-header
 	margin-right: -30px;
 	font-family: FontAwesome;
 	content: '\f00c';
-}
-
-.dropdown-menu > li > a:not(.disabled).checked:active:after
-{
-	color: #fff;
 }
 
 .dropdown-menu > li > a.disabled

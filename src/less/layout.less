@@ -1,4 +1,4 @@
-@import "vars";
+@import (reference) "vars";
 
 html
 {
@@ -105,13 +105,25 @@ body.no-menu #content
 #window-layer
 {
 	z-index: 3;
-	background: rgba(0, 0, 0, 0.5);
+}
+
+#about-links
+{
+	margin-top: 50px;
+	text-align: center;
 }
 
 #disclaimer
 {
-	margin: 10px 30px;
-	font-style: italic;
-	font-weight: bold;
-	color: #333;
+	margin: 20px 30px 0 30px;
+	padding: 20px;
+	text-transform: uppercase;
+	text-decoration: underline;
+	border-top: 1px solid @contrast3;
+	border-bottom: 1px solid @contrast3;
+}
+
+#share-dialog-social
+{
+	margin: 0 0 5px -5px;
 }

@@ -1,8 +1,13 @@
+@import (reference) "vars";
+@import (reference) "global";
+
 .message-box
 {
+	.full-cover;
+
 	display: none;
-	
-	color: #eee;
+	background: #fff;
+	background: rgba(255, 255, 255, 0.5);
 	overflow: auto;
 }
 
@@ -29,14 +34,13 @@
 	background-position: center;
 }
 
-.process-img { background-image: url(../img/gears-white.svg); }
-.alert-img { background-image: url(../img/alert-white.svg); }
+.process-img { background-image: url(../img/gears-black.svg); }
+.alert-img { background-image: url(../img/alert-black.svg); }
 
 .message-text
 {
 	margin: 10px 0;
 	font-size: 14pt;
-	color: #fff;
 }
 
 @media all and (min-width: 400px)
@@ -69,7 +73,7 @@
 	right: 0;
 	bottom: 0;
 	min-width: 300px;/* should be larger than .message */
-	
+
 	text-align: center;
 	font-size: 0;
 	white-space: nowrap;
@@ -101,8 +105,6 @@ Layout types
 .model-messages
 .content-messages
 */
-.start-messages #start-messages { display: block; }
-.start-messages #start-messages-close { display: block; }
 .sketcher-messages #sketcher-messages { display: block; }
 .model-messages #model-messages { display: block; }
 .content-messages #content-messages { display: block; }

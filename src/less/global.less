@@ -1,3 +1,30 @@
+@import (reference) "vars";
+
+h3
+{
+	margin: 25px 0 5px 0;
+}
+
+h4
+{
+	margin: 20px 0 0 0;
+}
+
+p
+{
+	margin: 5px 0;
+}
+
+h4 + p
+{
+	margin: 0 0 5px 0;
+}
+
+li
+{
+	margin: 10px 0;
+}
+
 img
 {
 	display: block;
@@ -22,24 +49,24 @@ a
 
 a.link
 {
-	color: inherit;
+	color: #06c;
 	cursor: pointer;
-	font-weight: bold;
-	text-decoration: none;
-	border-bottom: 1px dashed #f50;
-	transition: text-shadow .1s linear;
+	border-bottom: 0px solid @highlight;
+	transition: border .1s linear;
 }
 
 a.link:hover
 {
-	text-shadow: 1px 1px 0 #f50, 2px 2px 0 #f50;
-	border-bottom: 1px solid #f50;
+	text-decoration: none;
+	color: @highlight;
+	border-bottom: 2px solid @highlight;
 }
 
 a.link:active
 {
-	text-shadow: 1px 1px 0 #f10, 2px 2px 0 #f10;
-	border-bottom: 1px solid #f10;
+	text-decoration: none;
+	color: @active;
+	border-bottom: 2px solid @active;
 }
 
 a.a
@@ -111,17 +138,11 @@ a.a:active
 	bottom: 0;
 }
 
-.dark-glass
-{
-	background: #000;
-	background: rgba(0, 0, 0, 0.5);
-}
-
 .clearfix:after
-{ 
+{
 	content: " ";
-	display: block; 
-	height: 0; 
+	display: block;
+	height: 0;
 	clear: both;
 }
 

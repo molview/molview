@@ -69,20 +69,17 @@ var MolView = {
 		$(".dropdown-toggle").on(this.trigger, function(e)
 		{
 			e.stopPropagation();
+			Autocomplete.hide();
 			$(".dropdown-toggle").not(this).parent().removeClass("open");
 
-			var scope = this;
 			if($(this).parent().hasClass("open"))
 			{
-				window.setTimeout(function()
-				{
-					$(scope).parent().removeClass("open");
-					$("#menu").removeClass("open");
-				}, 100);
+				$(this).parent().removeClass("open");
+				$("#menu").removeClass("open");
 			}
 			else
 			{
-				$(scope).parent().addClass("open");
+				$(this).parent().addClass("open");
 				$("#menu").addClass("open");
 			}
 		});
@@ -93,12 +90,8 @@ var MolView = {
 				e.stopImmediatePropagation();
 			else
 			{
-				var scope = this;
-				window.setTimeout(function()
-				{
-					$(".dropdown-toggle").not(scope).parent().removeClass("open");
-					$("#menu").removeClass("open");
-				}, 100);
+				$(".dropdown-toggle").not(this).parent().removeClass("open");
+				$("#menu").removeClass("open");
 			}
 		});
 

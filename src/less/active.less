@@ -1,23 +1,16 @@
+@import (reference) "form";
+
 /*
 form
 */
+select:active
+{
+	.form-box-active;
+}
+
 .btn:active
 {
-	background: #ddd !important;
-	background: linear-gradient(#fff, #ddd) !important;
-}
-
-.btn-primary:active
-{
-	background: #f00 !important;
-	background: linear-gradient(#f50, #f30) !important;
-}
-
-.btn-search:active
-{
-	color: #fff !important;
-	background: #f00 !important;
-	border-color: #f00 !important;
+	.form-box-active;
 }
 
 .close-btn:active, .dialog-close-btn:active
@@ -30,13 +23,13 @@ menu
 */
 .dropdown-toggle:not(.tool-button-disabled):active
 {
-	background-color: #fff !important;
+	background-color: @light !important;
 }
 
 .dropdown-menu > li > a:not(.disabled):active
 {
-	color: #fff;
-	background: #f00;
+	background: @light3;
+	box-shadow: inset 0 0 10px @light-shadow;
 }
 
 /*
@@ -45,13 +38,15 @@ sketcher
 .tool-button:not(.tool-button-disabled):active
 {
 	opacity: 1.0 !important;
-	background-color: #f00 !important;
+	background-color: @light3 !important;
+	box-shadow: inset 0 0 10px @light-shadow;
 }
 
 /* periodictable */
 .pt-element:active
 {
-	background: #f00;
+	background-color: @light2;
+	box-shadow: inset 0 0 10px @light-shadow;
 }
 
 /*
@@ -59,5 +54,5 @@ help
 */
 .expandable-title:active
 {
-	color: #f00;
+	.form-box-active;
 }

@@ -73,11 +73,16 @@ var Autocomplete = {
 		{
 			var target = $(".autocomplete-item").eq(i);
 			$(".autocomplete-item").removeClass("autocomplete-item-hover");
-			if(i != -1) target.addClass("autocomplete-item-hover");
-			if(i != -1 &&
-				(target.position().top + target.height() > $("#search-autocomplete").height()
-				|| target.position().top < 0))
-				$("#search-autocomplete").scrollTop(target.position().top);
+			if(i != -1)
+			{
+				target.addClass("autocomplete-item-hover");
+				var position = target.position();
+				if(position.top + target.outerHeight() > $("#search-autocomplete").outerHeight())
+					$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop()
+				  - $("#search-autocomplete").outerHeight() + position.top + target.outerHeight());
+				else if(position.top < 0)
+					$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop() + position.top);
+			}
 		}
 
 		var key = e.keyCode || e.which;
@@ -142,7 +147,7 @@ var Autocomplete = {
 			if(records[i].pdbids)//macromolecule
 			{
 				li.addClass("autocomplete-macromolecule");
-				$('<span class="autocomplete-type"></span>').html("Macromolecule [" + commonMacromolecules.types[records[i].type] + "]").appendTo(li);
+				$('<span class="autocomplete-type"></span>').html(commonMacromolecules.types[records[i].type]).appendTo(li);
 			}
 			else if(records[i].codid)//mineral
 			{
