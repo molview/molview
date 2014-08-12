@@ -195,7 +195,7 @@ src/js/MolView.Embed.js\n\
 					cleancss: true
 				},
 				src: [
-					'src/less/var.less',
+					'src/less/vars.less',
 					'src/less/form.less',
 					'src/less/global.less',
 					'src/less/layout.less',
@@ -212,7 +212,8 @@ src/js/MolView.Embed.js\n\
 					'src/less/share.less',
 					'src/less/periodictable.less',
 					'src/less/chemicaldata.less',
-					'src/less/autocomplete.less'
+					'src/less/autocomplete.less',
+					'src/less/welcome.less'
 				],
 				dest: 'build/<%= pkg.name %>.min.css'
 			},

@@ -45,8 +45,8 @@ Frontend:
   - Sketcher selection restyling
   - UI restyle with flat design
   - New search results layout
-  > New welcome message
-  > Progress message in small bar
+  - New welcome dialog
+  - Progress message in small bar
   > Information card external references (Chemicalize, Google, PDB, COD)
   > Switch to Desktop or Touch theme via MolView menu
   > SMILES 3D conformation URL key; CID > InChiKey (CIR only) > SMILES

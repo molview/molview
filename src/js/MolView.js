@@ -118,7 +118,7 @@ var MolView = {
 		});
 
 		//window events
-		$("#window-layer").on("mousedown", function(e)
+		$("#dialog-wrapper").on("mousedown", function(e)
 		{
 			var target = e.target || e.srcElement;
 			if(window.getSelection().type != "Range" && !$(document.activeElement).is("input"))
@@ -262,7 +262,7 @@ var MolView = {
 
 			if(!Request.ChemicalIdentifierResolver.available)
 				Messages.alert("cir_down");
-		}.bind(this), Detector.webgl ? "GLmol" : "JSmol");
+		}.bind(this), "GLmol");
 	},
 
 	executeQuery: function()

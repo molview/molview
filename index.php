@@ -364,7 +364,7 @@ else if(isset($codid))
 							placeholder="Name, InChiKey, SMILES &hellip;"
 							autocomplete="off" spellcheck="false" />
 					</div>
-					<div id="search-buttons" class="btn-group">
+					<div id="search-buttons">
 						<button id="fast-search" class="btn btn-search" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
 						<button id="pubchem-search" class="btn btn-search" type="button" title="Find compounds via PubChem">Compounds</button>
 						<button id="rcsb-search" class="btn btn-search" type="button" title="Find macromolecules via RCSB">Macromolecules</button>
@@ -511,361 +511,364 @@ else if(isset($codid))
 		</div>
 		<div id="search-autocomplete"></div>
 		<div id="window-layer" class="window-layer">
-			<div class="dialog" id="start-dialog">
-				<h1>WELCOME!</h1>
-				<p>
-					Keep updated!<br/>
-					<a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>,
-					<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>,
-					<a class="link" target="_blank" title="+MolView" href="https://plus.google.com/102377643104393981977" rel="publisher">Google+</a>,
-					<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
-				</p>
-				<button id="start-help" class="btn btn-large">Getting started</button>
-				<p>We need your help to keep this up!<br/>If you think MolView is useful, please support development and maintenance of MolView.</p>
-				<a class="btn btn-large" style="font-weight: bold;" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">DONATE&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></a>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Continue</button>
-				</div>
-			</div>
-			<div class="dialog" id="about-dialog" style="display: none;">
-				<h2>About</h2>
-				<div class="dialog-close-btn"></div>
-				<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
-				This web application is built upon the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
-				<ul>
-					<li>JavaScript libraries
-						<ul>
-							<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4:</a> sketcher (modified with permission from <a class="link" href="https://www.molsoft.com" target="_blank" title="MolSoft">MolSoft</a>)</li>
-							<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher:</a> SMILES conversion (modified under GNU Affero GPL)</li>
-							<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47:</a> primary 3D render engine (modified under MIT licence)</li>
-							<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol:</a> 3D rendering (Jmol v14.0.11)</li>
-							<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1:</a> 3D rendering and spectrum display</li>
-						</ul>
-					</li>
-					<li>Databases/REST API's
-						<ul>
-							<li><a class="link" href="http://cactus.nci.nih.gov/chemical/structure" target="_blank" title="NCI/CADD Chemical Identifier Resolver API">NCI/CADD Chemical Identifier Resolver</a></li>
-							<li><a class="link" href="http://www.rcsb.org/pdb/software/rest.do" target="_blank" title="RCSB Protein Databank API">RCSB Protein Data Bank</a></li>
-							<li><a class="link" href="https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html" target="_blank" title="The PubChem Project API">The PubChem Project</a></li>
-							<li><a class="link" href="http://www.crystallography.net/" target="_blank" title="COD">Crystallography Open Database</a></li>
-							<li><a class="link" href="http://www.nmrdb.org/" target="_blank" title="NMRdb.org">NMR Database</a></li>
-							<li><a class="link" href="http://webbook.nist.gov/chemistry" target="_blank" title="NIST Chemistry WebBook Reference">NIST Chemistry WebBook</a></li>
-							<li><a class="link" href="http://mymemory.translated.net/doc/spec.php" target="_blank" title="MyMemory API">MyMemory translation API</a></li>
-						</ul>
-					</li>
-				</ul>
-				<p id="about-links">
-					MolView v2.2.0
-					&nbsp;|&nbsp;
-					&copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
-					&nbsp;|&nbsp;
-					<a class="link" href="CHANGELOG.md" target="_blank">Changelog</a>
-					<br/>
-					<a class="link" target="_blank" title="Chrome App" href="https://chrome.google.com/webstore/detail/molview/nogcacamdkipgkfpfiakaoamdnihinnm">Chrome Web Store</a>
-					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
-					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview" rel="publisher">Facebook</a>
-					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="+MolView" href="https://plus.google.com/102377643104393981977" rel="publisher">Google+</a>
-					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
-					&nbsp;|&nbsp;
-					<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
-				</p>
-				<div id="disclaimer">DISCLAIMER: MolView does not warrant that the data contained in its website is complete and correct and shall not be liable whatsoever for any damages incurred as a result of its use.</div>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Continue</button>
-				</div>
-			</div>
-			<div class="dialog" id="help-dialog" style="display: none;">
-				<h2>Help</h2>
-				<div class="dialog-close-btn"></div>
-				<script type="text/javascript">
-					if(isTouchDevice())
-					{
-						document.write('<div class="alert-bar alert-danger"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
-						document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
-					}
-				</script>
-				<p><a class="link" href="docs/MolView-v2.2-manual.pdf" target="_blank">Download PDF version</a></p>
-				<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="Youtube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
-				<h3>Subjects</h3>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>Drawing structural formulas</b></div>
-					<div class="expandable-content">
-						<p>You can draw structural formulas using the sketching component.</p>
-						<h4>Top toolbar</h4>
-						<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule displayed in the model window.</p>
-						<h4>Left toolbar</h4>
-						<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. In order to draw a carbon chain using the chain tool, you have to click a start point or atom and drag a chain.</p>
-						<h4>Right toolbar</h4>
-						<p>The right toolbar contains some common elements and a periodic table tool in case you want to use another element. Note that you can only replace existing atoms. So in order to add an atom, you frist have to add a new bond using the tools from the left toolbar.</p>
+			<div id="dialog-wrapper">
+				<div class="dialog" id="start-dialog">
+					<h1>Welcome to MolView</h1>
+					<p>MolView is a modern webapp for chemistry education around the world!</p>
+					<div class="btn-group">
+						<button id="start-help" class="btn btn-large">Getting started</button>
+						<button class="btn close btn-large btn-primary">Continue</button>
 					</div>
-				</div>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
-					<div class="expandable-content">
-						<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type what you are looking for and enter or click one of the search categories listed below.</p>
-						<ul>
-							<li><b>Compounds:</b> small molecules from the PubChem database</li>
-							<li><b>Macromolecules:</b> biological macromolecules from the RCSB database</li>
-							<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
-						</ul>
-						<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
-						<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. You can also directly enter a SMILES, InChi or InChiKey string in the search field (don't use the <i>Compounds</i> button)</p>
-						<p>You can show or hide search results using the leftmost button. Note that <i>Macromolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display macromolecules anyway.</p>
+					<p>Oh, by the way, MolView is also on YouTube, Twitter, Facebook and Google Plus to keep you updated about the latest stuff!</p>
+					<div class="btn-group">
+						<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
+						<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
+						<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
+						<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolviewOrganization/about" rel="publisher">Google+</a>
 					</div>
+					<p id="donate-msg">We believe MolView should be accessible for free to everyone. Since MolView is non-profit and there is no budget behind its development and maintenance we need your support!<br/>This way we can continue to add more awesome features to MolView.</p>
+					<a class="btn" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">Donate</a>
 				</div>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>3D model</b></div>
-					<div class="expandable-content">
-						<p>You can find the general 3D <i>Model</i> menu in the menubar.</p>
-						<h4>Reset</h4>
-						<p>This function sets the model position, zoom and rotation back to default.</p>
-						<h4>Representation</h4>
-						<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. /less/ are automatically drawn using ribbons.</p>
-						<h4>Background</h4>
-						<p>You can switch between a black and a white model background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
-						<h4>Engines</h4>
-						<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
-						<ol>
-							<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
-							<li><b>ChemDoodle</b> if you load a crystal structure <i>(Glmol cannot render crystal structures)</i></li>
-						</ol>
-						<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
-						<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
-						<h4>Model transformation</h4>
-						<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
-						<h4>Crystallography</h4>
-						<p>You can load an array of crystal cells (2x2x2 or 1x3x3) or a single unit cell when viewing crystal structures.</p>
-					</div>
-				</div>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>Advanced tools</b></div>
-					<div class="expandable-content">
-						<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
-						<h4>Link</h4>
-						<p>You can embed or share a specific compound, biomolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the adress bar in order to link to the current structure.</p>
-						<h4>Export</h4>
-						<p>Export options in the Export menu:</p>
-						<ul>
-							<li><b>Structural formula image:</b> PNG snapshot from sketcher <i>(transparent background)</i></li>
-							<li><b>3D model image:</b> PNG snapshot from model window<br/><i>(transparent background in GLmol and ChemDoodle)</i></li>
-							<li><b>MOL file:</b> exports a MDL Molfile from the 3D model<br/><i>(displayed if the 3D model is a common molecule)</i></li>
-							<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a biomolecule)</i></li>
-							<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model<br/><i>(displayed if the 3D model is a crystal structure)</i></li>
-						</ul>
-						<h4>Information card</h4>
-						<p>This function collects and displays information about the structural formula.</p>
-						<h4>Spectroscopy</h4>
-						<p>This method shows a dialog where you can view spectra related to the structural formula from the sketcher. More details are covered in chapter 5.</p>
-						<h4>Advanced search</h4>
-						<p>You can perform three types of advanced search based on the structural formula from the sketcher.</p>
-						<ol>
-							<li><b>Similarity search:</b> search for compounds with a similar structural formula</li>
-							<li><b>Substructure search:</b> search for compounds with the current structure as subset</li>
-							<li><b>Superstructure search:</b> search for compounds with the current structure as superset</li>
-						</ol>
-					</div>
-				</div>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
-					<div class="expandable-content">
-						<p>The Spectroscopy menu item is located under <i>Model > Chemical</i> data in the menubar. This menuitem shows the spectroscopy dialog where you can choose from a number of spectra (if available)</p>
-						<ol>
-							<li>H1-NMR prediction</li>
-							<li>Mass spectrum</li>
-							<li>IR spectrum</li>
-						</ol>
-						<h4>Export data</h4>
-						<p>The spectroscopy dialog allows you to export two kind of files from the current spectrum:</p>
-						<ul>
-							<li><b>PNG image:</b> snapshot from interactive spectrum</li>
-							<li><b>JCAMP file:</b> JCAMP-DX file of the current spectrum</li>
-						</ul>
-					</div>
-				</div>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
-					<div class="expandable-content">
-						<p>The GLmol render engine contains some custom display functions for macromolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
-						<h4>Biological assemlby</h4>
-						<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
-						<h4>Chain representation</h4>
-						<p>GLmol offers five different chain representations.</p>
-						<ol>
-							<li><b>Ribbon:</b> draws ribbon diagram <i>(default representation)</i></li>
-							<li><b>Cylinder and plate:</b> solid cylinders for α-helices and solid plates for β-sheets</li>
-							<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
-							<li><b>B-factor tube:</b> tube were thickness is calculated from the B-factor <i>(thermal motion)</i></li>
-							<li><b>Bonds:</b> all bonds are displayed as lines
-						</ol>
-						<h4>Chain coloring</h4>
-						<p>You can choose from five chain coloring methods.</p>
-						<ol>
-							<li><b>Secondary structures:</b> different colors for α-helices, β-sheets, etc.</li>
-							<li><b>Spectrum:</b> chain colored with full color spectrum <i>(blue-green-red)</i></li>
-							<li><b>Chain:</b> each chains gets a different color</li>
-							<li><b>B-factor:</b> blue for low B-factor and red for high B-factor <i>(if provided)</i></li>
-							<li><b>Polarity:</b> colors polar amino-acids red and non polar amino-acids white</li>
-						</ol>
-						<h4>Fog and clipping</h4>
-						<p>When you are viewing large structures, like proteins, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
-						<ol>
-							<li><b>Fog:</b> you can move the fog forward by dragging the mouse up while holding the right mousebutton and vice versa.</li>
-							<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the left while holding the right mousebutton and vice versa.</li>
-						</ol>
-					</div>
-				</div>
-				<div class="expandable">
-					<div class="expandable-title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
-					<div class="expandable-content">
-						<p>Jmol offers some advanced functions. You can find them in the Jmol menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
-						<h4>Clear</h4>
-						<p>Clears all executed calculations and measurements.</p>
-						<h4>Calculations</h4>
-						<p>You can perform the following Jmol calculations in Jmol:</p>
-						<ul>
-							<li><b>MEP surface lucent/opaque:</b> calculates and projects molecular electrostatic potential on a translucent or opaque van der Waals surface</li>
-							<li><b>Charge:</b> calculates and projects atomic charge as text label and white to atom color gradient</li>
-							<li><b>Bond dipoles:</b> calculates and draws individual bond dipoles</li>
-							<li><b>Overall dipole:</b> calculates and draws netto bond dipole</li>
-							<li><b>Energy minimization:</b> executes an MMFF94 energy minimization calculation<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
-						</ul>
-						<h4>Measurement</h4>
-						<p>You can execute distance, angle and torsion measurements using Jmol. You can select one of these measurement modes via the Jmol menu <i>(click selected mode again to deselect)</i></p>
-						<ul>
-							<li><b>Distance</b> distance between two atoms in <b>nm</b> <i>(select two atoms)</i></li>
-							<li><b>Angle</b> angle between two bonds in <b>deg</b> <i>(select three atoms)</i></li>
-							<li><b>Torsion</b> torsion between four atoms in <b>deg</b> <i>(select four atoms)</i></li>
-						</ul>
-						<p>Note that the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
-						<h4>Render mode</h4>
-						<p>In Jmol, you can switch between different render modes in order to speed up performance or to increase quality.<br/>There are three render modes:</p>
-						<ol>
-							<li><b>Everything:</b> slowest but best quality</li>
-							<li><b>Normal:</b> average speed and quality</li>
-							<li><b>Minimal:</b> fastest but least quality</li>
-						</ol>
-					</div>
-				</div>
-				<p>
-					If you still have questions, found bugs or want to request new features. You can discuss them with me via social media or send me an email.
+				<div class="dialog" id="about-dialog" style="display: none;">
+					<h2>About</h2>
+					<div class="dialog-close-btn"></div>
+					<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
+					This web application is built upon the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
 					<ul>
-						<li>Twitter: <a class="link" target="_blank" title="Twitter page" href="https://twitter.com/molview">@molview</a></li>
-						<li>Facebook: <a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview" rel="publisher">MolView</a></li>
-						<li>Google Plus: <a class="link" target="_blank" title="Google+ page" href="https://plus.google.com/102377643104393981977" rel="publisher">+MolView</a></li>
-						<li>Mail: <a class="link" target="_blank" title="Mail adress" href="mailto:support@molview.org">support@molview.org</a></li>
+						<li>JavaScript libraries
+							<ul>
+								<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4:</a> sketcher (modified with permission from <a class="link" href="https://www.molsoft.com" target="_blank" title="MolSoft">MolSoft</a>)</li>
+								<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher:</a> SMILES conversion (modified under GNU Affero GPL)</li>
+								<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47:</a> primary 3D render engine (modified under MIT licence)</li>
+								<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol:</a> 3D rendering (Jmol v14.0.11)</li>
+								<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1:</a> 3D rendering and spectrum display</li>
+							</ul>
+						</li>
+						<li>Databases/REST API's
+							<ul>
+								<li><a class="link" href="http://cactus.nci.nih.gov/chemical/structure" target="_blank" title="NCI/CADD Chemical Identifier Resolver API">NCI/CADD Chemical Identifier Resolver</a></li>
+								<li><a class="link" href="http://www.rcsb.org/pdb/software/rest.do" target="_blank" title="RCSB Protein Databank API">RCSB Protein Data Bank</a></li>
+								<li><a class="link" href="https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html" target="_blank" title="The PubChem Project API">The PubChem Project</a></li>
+								<li><a class="link" href="http://www.crystallography.net/" target="_blank" title="COD">Crystallography Open Database</a></li>
+								<li><a class="link" href="http://www.nmrdb.org/" target="_blank" title="NMRdb.org">NMR Database</a></li>
+								<li><a class="link" href="http://webbook.nist.gov/chemistry" target="_blank" title="NIST Chemistry WebBook Reference">NIST Chemistry WebBook</a></li>
+								<li><a class="link" href="http://mymemory.translated.net/doc/spec.php" target="_blank" title="MyMemory API">MyMemory translation API</a></li>
+							</ul>
+						</li>
 					</ul>
-				</p>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
+					<p id="about-links">
+						MolView v2.2.0
+						&nbsp;|&nbsp;
+						Copyright &copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
+						&nbsp;|&nbsp;
+						<a class="link" href="CHANGELOG.md" target="_blank">Changelog</a>
+						<br/>
+						<a class="link" target="_blank" title="Chrome App" href="https://chrome.google.com/webstore/detail/molview/nogcacamdkipgkfpfiakaoamdnihinnm">Chrome Web Store</a>
+						&nbsp;|&nbsp;
+						<a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
+						&nbsp;|&nbsp;
+						<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
+						&nbsp;|&nbsp;
+						<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
+						&nbsp;|&nbsp;
+						<a class="link" target="_blank" title="+MolView" href="https://google.com/+MolviewOrganization" rel="publisher">Google+</a>
+						&nbsp;|&nbsp;
+						<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
+					</p>
+					<div id="disclaimer">DISCLAIMER: MolView does not warrant that the data contained in its website is complete and correct and shall not be liable whatsoever for any damages incurred as a result of its use.</div>
+					<div class="footer">
+						<button class="btn close btn-primary pull-right">Continue</button>
+					</div>
 				</div>
-			</div>
-			<div class="dialog" id="share-dialog" style="display: none;">
-				<h2>Share</h2>
-				<div class="dialog-close-btn"></div>
-				<ul>
-					<li id="share-2d-not-3d">Make sure to convert the strutural formula into a 3D model if you want to share the molecule from the sketcher</li>
-				</ul>
-				<div id="share-dialog-social" class="social no-select">
-					<div class="share share-facebook"></div>
-					<div class="share share-twitter"></div>
-					<div class="share share-googleplus"></div>
-				</div>
-				<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
-				</div>
-			</div>
-			<div class="dialog" id="embed-dialog" style="display: none;">
-				<h2>Embed</h2>
-				<div class="dialog-close-btn"></div>
-				<ul>
-					<li id="embed-2d-not-3d">Make sure to resolve the strutural formula if you want to embed the molecule from the sketcher</li>
-					<li>Embedded macromolecules cannot be viewed on smartphones without WebGL</li>
-				</ul>
-				<h4>Width</h3>
-				<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
-				<h4>Height</h4>
-				<input id="embed-height" class="contrast expand" type="text" value="300px" autocomplete="off" spellcheck="false" />
-				<h4>HTML code</h4>
-				<input id="embed-code" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
-				</div>
-			</div>
-			<div class="dialog properties-dialog" id="properties-compound-dialog" style="display: none;">
-				<h2>Information</h2>
-				<div class="dialog-close-btn"></div>
-				<div id="properties-wrapper">
-					<div id="general-properties">
-						<div id="molecule-image-wrapper" class="properties-block">
-							<img id="molecule-image" class="chemprop" src="src/img/empty.png" alt=""/>
+				<div class="dialog" id="help-dialog" style="display: none;">
+					<h2>Help</h2>
+					<div class="dialog-close-btn"></div>
+					<script type="text/javascript">
+						if(isTouchDevice())
+						{
+							document.write('<div class="alert-bar alert-danger"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
+							document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
+						}
+					</script>
+					<p><a class="link" href="docs/MolView-v2.2-manual.pdf" target="_blank">Download PDF version</a></p>
+					<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
+					<h3>Subjects</h3>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>Drawing structural formulas</b></div>
+						<div class="expandable-content">
+							<p>You can draw structural formulas using the sketching component.</p>
+							<h4>Top toolbar</h4>
+							<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule displayed in the model window.</p>
+							<h4>Left toolbar</h4>
+							<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. In order to draw a carbon chain using the chain tool, you have to click a start point or atom and drag a chain.</p>
+							<h4>Right toolbar</h4>
+							<p>The right toolbar contains some common elements and a periodic table tool in case you want to use another element. Note that you can only replace existing atoms. So in order to add an atom, you frist have to add a new bond using the tools from the left toolbar.</p>
 						</div>
-						<div class="properties-block">
-							<div id="molecule-info">
-								<h3 id="molecule-title"></h3>
-								<p id="molecule-description"></p>
+					</div>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
+						<div class="expandable-content">
+							<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type what you are looking for and enter or click one of the search categories listed below.</p>
+							<ul>
+								<li><b>Compounds:</b> small molecules from the PubChem database</li>
+								<li><b>Macromolecules:</b> biological macromolecules from the RCSB database</li>
+								<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
+							</ul>
+							<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
+							<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. You can also directly enter a SMILES, InChi or InChiKey string in the search field (don't use the <i>Compounds</i> button)</p>
+							<p>You can show or hide search results using the leftmost button. Note that <i>Macromolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display macromolecules anyway.</p>
+						</div>
+					</div>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>3D model</b></div>
+						<div class="expandable-content">
+							<p>You can find the general 3D <i>Model</i> menu in the menubar.</p>
+							<h4>Reset</h4>
+							<p>This function sets the model position, zoom and rotation back to default.</p>
+							<h4>Representation</h4>
+							<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. /less/ are automatically drawn using ribbons.</p>
+							<h4>Background</h4>
+							<p>You can switch between a black and a white model background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
+							<h4>Engines</h4>
+							<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
+							<ol>
+								<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
+								<li><b>ChemDoodle</b> if you load a crystal structure <i>(Glmol cannot render crystal structures)</i></li>
+							</ol>
+							<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
+							<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
+							<h4>Model transformation</h4>
+							<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
+							<h4>Crystallography</h4>
+							<p>You can load an array of crystal cells (2x2x2 or 1x3x3) or a single unit cell when viewing crystal structures.</p>
+						</div>
+					</div>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>Advanced tools</b></div>
+						<div class="expandable-content">
+							<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
+							<h4>Link</h4>
+							<p>You can embed or share a specific compound, biomolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the adress bar in order to link to the current structure.</p>
+							<h4>Export</h4>
+							<p>Export options in the Export menu:</p>
+							<ul>
+								<li><b>Structural formula image:</b> PNG snapshot from sketcher <i>(transparent background)</i></li>
+								<li><b>3D model image:</b> PNG snapshot from model window<br/><i>(transparent background in GLmol and ChemDoodle)</i></li>
+								<li><b>MOL file:</b> exports a MDL Molfile from the 3D model<br/><i>(displayed if the 3D model is a common molecule)</i></li>
+								<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a biomolecule)</i></li>
+								<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model<br/><i>(displayed if the 3D model is a crystal structure)</i></li>
+							</ul>
+							<h4>Information card</h4>
+							<p>This function collects and displays information about the structural formula.</p>
+							<h4>Spectroscopy</h4>
+							<p>This method shows a dialog where you can view spectra related to the structural formula from the sketcher. More details are covered in chapter 5.</p>
+							<h4>Advanced search</h4>
+							<p>You can perform three types of advanced search based on the structural formula from the sketcher.</p>
+							<ol>
+								<li><b>Similarity search:</b> search for compounds with a similar structural formula</li>
+								<li><b>Substructure search:</b> search for compounds with the current structure as subset</li>
+								<li><b>Superstructure search:</b> search for compounds with the current structure as superset</li>
+							</ol>
+						</div>
+					</div>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
+						<div class="expandable-content">
+							<p>The Spectroscopy menu item is located under <i>Model > Chemical</i> data in the menubar. This menuitem shows the spectroscopy dialog where you can choose from a number of spectra (if available)</p>
+							<ol>
+								<li>H1-NMR prediction</li>
+								<li>Mass spectrum</li>
+								<li>IR spectrum</li>
+							</ol>
+							<h4>Export data</h4>
+							<p>The spectroscopy dialog allows you to export two kind of files from the current spectrum:</p>
+							<ul>
+								<li><b>PNG image:</b> snapshot from interactive spectrum</li>
+								<li><b>JCAMP file:</b> JCAMP-DX file of the current spectrum</li>
+							</ul>
+						</div>
+					</div>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
+						<div class="expandable-content">
+							<p>The GLmol render engine contains some custom display functions for macromolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
+							<h4>Biological assemlby</h4>
+							<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
+							<h4>Chain representation</h4>
+							<p>GLmol offers five different chain representations.</p>
+							<ol>
+								<li><b>Ribbon:</b> draws ribbon diagram <i>(default representation)</i></li>
+								<li><b>Cylinder and plate:</b> solid cylinders for α-helices and solid plates for β-sheets</li>
+								<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
+								<li><b>B-factor tube:</b> tube were thickness is calculated from the B-factor <i>(thermal motion)</i></li>
+								<li><b>Bonds:</b> all bonds are displayed as lines
+							</ol>
+							<h4>Chain coloring</h4>
+							<p>You can choose from five chain coloring methods.</p>
+							<ol>
+								<li><b>Secondary structures:</b> different colors for α-helices, β-sheets, etc.</li>
+								<li><b>Spectrum:</b> chain colored with full color spectrum <i>(blue-green-red)</i></li>
+								<li><b>Chain:</b> each chains gets a different color</li>
+								<li><b>B-factor:</b> blue for low B-factor and red for high B-factor <i>(if provided)</i></li>
+								<li><b>Polarity:</b> colors polar amino-acids red and non polar amino-acids white</li>
+							</ol>
+							<h4>Fog and clipping</h4>
+							<p>When you are viewing large structures, like proteins, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
+							<ol>
+								<li><b>Fog:</b> you can move the fog forward by dragging the mouse up while holding the right mousebutton and vice versa.</li>
+								<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the left while holding the right mousebutton and vice versa.</li>
+							</ol>
+						</div>
+					</div>
+					<div class="expandable">
+						<div class="expandable-title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
+						<div class="expandable-content">
+							<p>Jmol offers some advanced functions. You can find them in the Jmol menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
+							<h4>Clear</h4>
+							<p>Clears all executed calculations and measurements.</p>
+							<h4>Calculations</h4>
+							<p>You can perform the following Jmol calculations in Jmol:</p>
+							<ul>
+								<li><b>MEP surface lucent/opaque:</b> calculates and projects molecular electrostatic potential on a translucent or opaque van der Waals surface</li>
+								<li><b>Charge:</b> calculates and projects atomic charge as text label and white to atom color gradient</li>
+								<li><b>Bond dipoles:</b> calculates and draws individual bond dipoles</li>
+								<li><b>Overall dipole:</b> calculates and draws netto bond dipole</li>
+								<li><b>Energy minimization:</b> executes an MMFF94 energy minimization calculation<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
+							</ul>
+							<h4>Measurement</h4>
+							<p>You can execute distance, angle and torsion measurements using Jmol. You can select one of these measurement modes via the Jmol menu <i>(click selected mode again to deselect)</i></p>
+							<ul>
+								<li><b>Distance</b> distance between two atoms in <b>nm</b> <i>(select two atoms)</i></li>
+								<li><b>Angle</b> angle between two bonds in <b>deg</b> <i>(select three atoms)</i></li>
+								<li><b>Torsion</b> torsion between four atoms in <b>deg</b> <i>(select four atoms)</i></li>
+							</ul>
+							<p>Note that the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
+							<h4>Render mode</h4>
+							<p>In Jmol, you can switch between different render modes in order to speed up performance or to increase quality.<br/>There are three render modes:</p>
+							<ol>
+								<li><b>Everything:</b> slowest but best quality</li>
+								<li><b>Normal:</b> average speed and quality</li>
+								<li><b>Minimal:</b> fastest but least quality</li>
+							</ol>
+						</div>
+					</div>
+					<p>
+						If you still have questions, found bugs or want to request new features. You can discuss them with me via social media or send me an email.
+						<ul>
+							<li>Twitter: <a class="link" target="_blank" title="Twitter page" href="https://twitter.com/molview">@molview</a></li>
+							<li>Facebook: <a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">MolView</a></li>
+							<li>Google Plus: <a class="link" target="_blank" title="Google+ page" href="https://google.com/+MolviewOrganization" rel="publisher">+MolView</a></li>
+							<li>Mail: <a class="link" target="_blank" title="Mail adress" href="mailto:support@molview.org">support@molview.org</a></li>
+						</ul>
+					</p>
+					<div class="footer">
+						<button class="btn close btn-primary pull-right">Close</button>
+					</div>
+				</div>
+				<div class="dialog" id="share-dialog" style="display: none;">
+					<h2>Share</h2>
+					<div class="dialog-close-btn"></div>
+					<ul>
+						<li id="share-2d-not-3d">Make sure to convert the strutural formula into a 3D model if you want to share the molecule from the sketcher</li>
+					</ul>
+					<div id="share-dialog-social" class="social no-select">
+						<div class="share share-facebook"></div>
+						<div class="share share-twitter"></div>
+						<div class="share share-googleplus"></div>
+					</div>
+					<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
+					<div class="footer">
+						<button class="btn close btn-primary pull-right">Close</button>
+					</div>
+				</div>
+				<div class="dialog" id="embed-dialog" style="display: none;">
+					<h2>Embed</h2>
+					<div class="dialog-close-btn"></div>
+					<ul>
+						<li id="embed-2d-not-3d">Make sure to resolve the strutural formula if you want to embed the molecule from the sketcher</li>
+						<li>Embedded macromolecules cannot be viewed on smartphones without WebGL</li>
+					</ul>
+					<h4>Width</h3>
+					<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
+					<h4>Height</h4>
+					<input id="embed-height" class="contrast expand" type="text" value="300px" autocomplete="off" spellcheck="false" />
+					<h4>HTML code</h4>
+					<input id="embed-code" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
+					<div class="footer">
+						<button class="btn close btn-primary pull-right">Close</button>
+					</div>
+				</div>
+				<div class="dialog properties-dialog" id="properties-compound-dialog" style="display: none;">
+					<h2>Information</h2>
+					<div class="dialog-close-btn"></div>
+					<div id="properties-wrapper">
+						<div id="general-properties">
+							<div id="molecule-image-wrapper" class="properties-block">
+								<img id="molecule-image" class="chemprop" src="src/img/empty.png" alt=""/>
 							</div>
-							<table class="light-table">
-								<tbody>
-									<tr id="prop-wrapper-formula"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
-									<tr id="prop-wrapper-weight"><td>Molecular weight</td><td id="prop-weight" class="chemprop"></td></tr>
-									<tr id="prop-wrapper-donors"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
-									<tr id="prop-wrapper-acceptors"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
-								</tbody>
-							</table>
+							<div class="properties-block">
+								<div id="molecule-info">
+									<h3 id="molecule-title"></h3>
+									<p id="molecule-description"></p>
+								</div>
+								<table class="light-table">
+									<tbody>
+										<tr id="prop-wrapper-formula"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
+										<tr id="prop-wrapper-weight"><td>Molecular weight</td><td id="prop-weight" class="chemprop"></td></tr>
+										<tr id="prop-wrapper-donors"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
+										<tr id="prop-wrapper-acceptors"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<table id="chem-identifiers" class="input-table">
+							<thead>
+								<tr><th>Identifiers</th></tr>
+							</thead>
+							<tbody>
+								<tr><th>Systematic name</th></tr>
+								<tr><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr><th>SMILES</th></tr>
+								<tr><td><input type="text" id="prop-smiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr><th>InChiKey</th></tr>
+								<tr><td><input type="text" id="prop-stdinchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr><th>InChi</th></tr>
+								<tr><td><input type="text" id="prop-stdinchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr><th>CAS Number</th></tr>
+								<tr><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
+								<tr><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
+								<tr><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="footer">
+						<button class="btn close btn-primary pull-right">Close</button>
+					</div>
+				</div>
+				<div class="dialog" id="spectra-dialog" style="display: none;">
+					<h2>Spectroscopy</h2>
+					<div class="dialog-close-btn"></div>
+					<div id="spectrum">
+						<select id="spectrum-select"></select>
+						<div id="spectrum-wrapper">
+							<canvas id="spectrum-canvas"></canvas>
 						</div>
 					</div>
-					<table id="chem-identifiers" class="input-table">
-						<thead>
-							<tr><th>Identifiers</th></tr>
-						</thead>
-						<tbody>
-							<tr><th>Systematic name</th></tr>
-							<tr><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>SMILES</th></tr>
-							<tr><td><input type="text" id="prop-smiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>InChiKey</th></tr>
-							<tr><td><input type="text" id="prop-stdinchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>InChi</th></tr>
-							<tr><td><input type="text" id="prop-stdinchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>CAS Number</th></tr>
-							<tr><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							<tr><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
-				</div>
-			</div>
-			<div class="dialog" id="spectra-dialog" style="display: none;">
-				<h2>Spectroscopy</h2>
-				<div class="dialog-close-btn"></div>
-				<div id="spectrum">
-					<select id="spectrum-select"></select>
-					<div id="spectrum-wrapper">
-						<canvas id="spectrum-canvas"></canvas>
+					<div class="footer">
+						<button id="png-current-spectrum" class="btn">Download PNG image</button>
+						<button id="jcamp-current-spectrum" class="btn">Download JCAMP data</button>
+						<button class="btn close btn-primary ">Close</button>
 					</div>
 				</div>
-				<div class="footer">
-					<button id="png-current-spectrum" class="btn">Download PNG image</button>
-					<button id="jcamp-current-spectrum" class="btn">Download JCAMP data</button>
-					<button class="btn close btn-primary ">Close</button>
-				</div>
-			</div>
-			<div class="dialog" id="elements-dialog" style="display: none;">
-				<h2>Periodic Table</h2>
-				<div class="dialog-close-btn"></div>
-				<div id="periodictable" class="no-select"></div>
-				<div class="footer">
-					<button class="btn close btn-primary pull-right">Close</button>
+				<div class="dialog" id="elements-dialog" style="display: none;">
+					<h2>Periodic Table</h2>
+					<div class="dialog-close-btn"></div>
+					<div id="periodictable" class="no-select"></div>
+					<div class="footer">
+						<button class="btn close btn-primary pull-right">Close</button>
+					</div>
 				</div>
 			</div>
 		</div>
