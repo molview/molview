@@ -17,6 +17,7 @@ var Messages = {
 	search: "Searching&hellip;",
 	clean: "Cleaning&hellip;",
 	resolve: "Updating&hellip;",
+	glmol_update: "Updating&hellip;",
 
 	no_glmol_crystals: "You cannot view crystals using GLmol",
 
@@ -39,9 +40,7 @@ var Messages = {
 
 	init: function()
 	{
-		$("#sketcher-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
-		$("#model-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
-		$("#content-messages .message-btn").on("click", function(){ Progress.complete(); Messages.hide(); });
+		$(".message-close-btn").on(MolView.trigger, Messages.hide);
 	},
 
 	process: function(cb, what)
@@ -60,40 +59,21 @@ var Messages = {
 
 		- init_jmol
 		- jmol_calculation
-		- misc
+		- glmol_update
 		*/
 
-		$("body").addClass("progress-cursor");
-		$(".message-box").hide();
+		if(what && what != "" && Messages[what] && Messages[what] != "")
+		{
+			$("body").addClass("progress-cursor");
 
-		$(".message-btn").hide();
-		$(".process-img, .alert-img").hide();
-		$(".process-img").show();
-
-		if(what == "clean")
-		{
-			$("#sketcher-messages .message-text").html(Messages[what]);
-			$("#content").addClass("sketcher-messages");
-			$("#sketcher-messages").show();
-		}
-		else if(what == "switch_engine" || what == "macromolecule" || what == "resolve"
-			 || what == "init_jmol" || what == "jmol_calculation" || what == "crystal_structure")
-		{
-			$("#model-messages .message-text").html(Messages[what]);
-			$("#model-messages").show();
-		}
-		else if(what == "compound" || what == "crystal" || what == "search")
-		{
-			$("#content-messages .message-text").html(Messages[what]);
-			$("#content-messages").show();
-		}
-		else if(what == "misc")
-		{
-			$("#content-messages .message-text").html("");
-			$("#content-messages").show();
+			var msg =  $("<div/>").addClass("message");
+			$("<div/>").addClass("message-text")
+				.html(Messages[what])
+				.appendTo(msg);
+			msg.appendTo($("#messages"));
 		}
 
-		window.setTimeout(cb, 300);
+		window.setTimeout(cb, 300);//delay in order to update screen
 	},
 
 	alert: function(cause, error)
@@ -119,45 +99,31 @@ var Messages = {
 		- crystal_2d_fail
 		*/
 
-		$("#-close").hide();
+		//ignored causes
+		if(cause == "sketcher_no_macromolecules") return
+
 		$("body").removeClass("progress-cursor");
-		if(cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail")
-			$("#content-messages").hide();
-		else $(".message-box").hide();
 
-		$(".message-btn").show();
-		$(".process-img, .alert-img").hide();
-		$(".alert-img").show();
-
-		if(cause == "sketcher_no_macromolecules" || cause == "crystal_2d_fail")
+		if(error)
 		{
-			$("#sketcher-messages .message-text").html(Messages[cause]);
-			$("#sketcher-messages").show();
+			var msg =  $("<div/>").addClass("message alert-message");
+			$("<div/>").addClass("message-text")
+				.html(Messages[cause])
+				.append('<span class="error-message">' + (error.message || error.detailMessage || error) + "</span>")
+				.appendTo(msg);
+			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
+				function(){ Progress.complete(); Messages.hide(); }).appendTo(msg);
+			msg.appendTo($("#messages"));
 		}
-		else if(cause == "no_webgl_support" || cause == "no_glmol_crystals")
+		else
 		{
-			$("#model-messages .message-text").html(Messages[cause]);
-			$("#model-messages").show();
-		}
-		else if(cause == "cir_down" || cause == "cir_func_down" || cause == "no_canvas_support"
-			|| cause == "search_fail" || cause == "load_fail"  || cause == "mobile_old_no_macromolecules")
-		{
-			$("#content-messages .message-text").html(Messages[cause]);
-			$("#content-messages").show();
-
-			if(cause == "no_canvas_support") $(".message-btn").hide();
-		}
-		else if(cause == "smiles_load_error" || cause == "clean_fail" || cause == "resolve_fail")
-		{
-			if(error) $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text")
-				.html(Messages[cause] + " <small>" + (error.message || error.detailMessage || error) + "</small>");
-			else $("#sketcher-messages .message-text, #model-messages .message-text, #content-messages .message-text").html(Messages[cause]);
-		}
-		else if(cause == "smiles_load_error_force")
-		{
-			if(error) $("#content-messages .message-text").html(Messages[cause]
-				+ " <small>" + (error.message || error.detailMessage || error) + "</small>");
-			$("#content-messages").show();
+			var msg =  $("<div/>").addClass("message alert-message");
+			$("<div/>").addClass("message-text")
+				.html(Messages[cause])
+				.appendTo(msg);
+			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
+				function(){ Progress.complete(); Messages.hide(); }).appendTo(msg);
+			msg.appendTo($("#messages"));
 		}
 
 		Progress.alert();
@@ -165,7 +131,7 @@ var Messages = {
 
 	hide: function()
 	{
+		$("#messages").empty();
 		$("body").removeClass("progress-cursor");
-		$(".message-box").hide();
 	},
 };

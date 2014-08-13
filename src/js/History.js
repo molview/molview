@@ -18,10 +18,12 @@ var History = {
 			}
 		});
 	},
-	
+
 	push: function(id, value)
 	{
 		value = "" + value;
+		MolView.query = {};
+		MolView.query[id] = value;
 		var query = id + "=" + specialEncodeURIComponent(value.replace(/^ /, ""));
 		if(history && history.pushState && location.search.indexOf(query) == -1)
 			history.pushState(null, document.title, "?" + query);

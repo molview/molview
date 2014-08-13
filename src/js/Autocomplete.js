@@ -117,7 +117,8 @@ var Autocomplete = {
 
 			this.getPubChemAutocomplete(text, function(array)
 			{
-				Autocomplete.display(new AutocompleteBuilder(mix.concat(array), "name").sort(text));
+				if($("#search-input").val() != "")
+					Autocomplete.display(new AutocompleteBuilder(mix.concat(array), "name").sort(text));
 			});
 		}
 	},

@@ -1,3 +1,5 @@
+@import (reference) "vars";
+
 #properties-wrapper
 {
 	margin: -10px;
@@ -112,8 +114,9 @@
 
 input.chemprop-unavailable
 {
-	border-bottom: 3px solid #f00;
-	background: #fcb3bc !important;
+	border-color: @error;
+	background-color: @error-light;
+	pointer-events: none;
 }
 
 #spectrum

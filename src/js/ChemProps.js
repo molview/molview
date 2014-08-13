@@ -13,7 +13,7 @@ var ChemProps = {
 		{
 			$(".chemprop").removeClass("chemprop-unavailable").addClass("chemprop-loading");
 			$(".chemprop:not(.chem-spectrum)").html("").val("");
-			$("#molecule-image").attr("src", "src/img/empty.png");
+			$("#molecule-image").attr("src", "img/empty.png");
 			$("#molecule-info").hide();
 			$("#molecule-title").text("");
 			$("#molecule-description").text("");
@@ -133,7 +133,7 @@ var ChemProps = {
 		img.onerror = function()
 		{
 			$("#molecule-image-wrapper").hide();
-			$("#molecule-image").attr("src", "src/img/empty.png").removeClass("chemprop-loading");
+			$("#molecule-image").attr("src", "img/empty.png").removeClass("chemprop-loading");
 		}
 
 		if(Sketcher.CID)

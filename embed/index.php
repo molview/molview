@@ -161,24 +161,7 @@ else if(isset($codid))
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
 		<link type="text/css" rel="stylesheet" href="../build/molview.embed.min.css" media="screen" />
 
-		<!-- JS
-		<script type="text/javascript" src="../src/js/lib/JSmol.min.js"></script>
-		<script type="text/javascript" src="../src/js/lib/jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src="../src/js/lib/Detector.js"></script>
-		<script type="text/javascript" src="../src/js/lib/jMouseWheel.js"></script>
-		<script type="text/javascript" src="../src/js/lib/Polyfill.js"></script>
-		<script type="text/javascript" src="../src/js/lib/Three49custom.js"></script>
-		<script type="text/javascript" src="../src/js/lib/GLmol.js"></script>
-		<script type="text/javascript" src="../src/js/lib/ChemDoodleWeb.js"></script>
-		<script type="text/javascript" src="../src/js/Utility.js"></script>
-		<script type="text/javascript" src="../src/js/Progress.js"></script>
-		<script type="text/javascript" src="../src/js/Messages.Embed.js"></script>
-		<script type="text/javascript" src="../src/js/Model.js"></script>
-		<script type="text/javascript" src="../src/js/Request.js"></script>
-		<script type="text/javascript" src="../src/js/Loader.Embed.js"></script>
-		<script type="text/javascript" src="../src/js/MolView.Embed.js"></script>
-		-->
-
+		<!-- JS -->
 		<script type="text/javascript" src="../build/molview.embed.min.js"></script>
 
 		<!-- Google Analytics -->
@@ -210,21 +193,9 @@ else if(isset($codid))
 	</head>
 	<body id="model">
 		<input id="search-input" style="display: none" />
-
-		<div id="chemdoodle" class="render-engine full-cover" style="display: none;">
-			<canvas id="chemdoodle-canvas"></canvas>
-		</div>
+		<div id="chemdoodle" class="render-engine full-cover" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 		<div id="glmol" class="render-engine full-cover" style="display: none;"></div>
-
-		<div id="model-messages" class="message-box full-cover dark-glass">
-			<div class="message-wrapper">
-				<div class="message">
-					<div class="process-img"></div>
-					<div class="alert-img"></div>
-					<p class="message-text"></p>
-				</div>
-			</div>
-		</div>
+		<div id="messages"></div>
 	</body>
 </html>

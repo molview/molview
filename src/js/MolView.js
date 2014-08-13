@@ -95,6 +95,7 @@ var MolView = {
 			{
 				$(".dropdown-toggle").not(this).parent().removeClass("open");
 				$("#menu").removeClass("open");
+				$("#menu").scrollTop(0);
 			}
 		});
 
@@ -276,15 +277,15 @@ var MolView = {
 				if(MolView.query.search)
 				{
 					if(MolView.query.search == "fast")
-						Actions.fast_search();
+						Messages.process(Loader.CIRsearch, "search");
 					else if(MolView.query.search == "pubchem")
-						Actions.pubchem_search();
+						Messages.process(Loader.PubChem.search, "search");
 					else if(MolView.query.search == "rcsb")
-						Actions.rcsb_search();
+						Messages.process(Loader.RCSB.search, "search");
 					else if(MolView.query.search == "cod")
-						Actions.cod_search();
+						Messages.process(Loader.COD.search, "search");
 				}
-				else Actions.fast_search();
+				else Messages.process(Loader.CIRsearch, "search");
 			}
 			else if(key == "smiles")
 			{

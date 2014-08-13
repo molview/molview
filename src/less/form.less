@@ -39,20 +39,20 @@ input[type="text"]
 	min-width: 200px;
 
 	font-family: 'Open Sans', sans-serif;
-	background: @light2;
+	background-color: @light2;
 	border: 1px solid @contrast;
 }
 
 input[type="text"]:focus
 {
-	background: @light;
+	background-color: @light;
 	border: 1px solid @highlight;
 }
 
 input[type="text"].alert
 {
-	border-color: @error;
-	background: @error-light;
+	border-color: @error !important;
+	background-color: @error-light !important;
 }
 
 input[type="text"].expand

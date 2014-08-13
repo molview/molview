@@ -242,6 +242,10 @@ else if(isset($codid))
 			{
 				document.write('<link type="text/css" rel="stylesheet" href="build/molview.full.min.css" media="screen" />');
 			}
+			if(isMobile())
+			{
+				document.write('<link type="text/css" rel="stylesheet" href="build/molview.mobile.min.css" media="screen" />');
+			}
 		</script>
 
 		<!-- Google Analytics -->
@@ -402,7 +406,6 @@ else if(isset($codid))
 					&& !MolView.query.layout
 					&& MolView.layout != "model") Actions.window_hsplit();
 			</script>
-
 			<div id="sketcher">
 				<div id="moledit" class="sketcher">
 					<div id="chem-tools" class="toolbar swipeable">
@@ -464,33 +467,11 @@ else if(isset($codid))
 						<canvas id="moledit-canvas"></canvas>
 					</div>
 				</div>
-				<div id="sketcher-messages" class="message-box">
-					<div class="message-wrapper">
-						<div class="message">
-							<div class="process-img"></div>
-							<div class="alert-img"></div>
-							<p class="message-text"></p>
-							<button class="message-btn btn btn-large btn-primary">OK</button>
-						</div>
-					</div>
-				</div>
 			</div>
 			<div id="model">
-				<div id="chemdoodle" class="render-engine" style="display: none;">
-					<canvas id="chemdoodle-canvas"></canvas>
-				</div>
+				<div id="chemdoodle" class="render-engine" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 				<div id="jsmol" class="render-engine" style="display: none;"></div>
 				<div id="glmol" class="render-engine" style="display: none;"></div>
-				<div id="model-messages" class="message-box">
-					<div class="message-wrapper">
-						<div class="message">
-							<div class="process-img"></div>
-							<div class="alert-img"></div>
-							<p class="message-text"></p>
-							<button class="message-btn btn btn-large btn-primary">OK</button>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 		<div id="search-results" class="content search-results" style="display: none;">
@@ -498,16 +479,6 @@ else if(isset($codid))
 			<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
 			<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
 			<div id="load-more-cod" class="load-more" style="display: none;"></div>
-		</div>
-		<div id="content-messages" class="content message-box">
-			<div class="message-wrapper">
-				<div class="message">
-						<div class="process-img"></div>
-						<div class="alert-img"></div>
-					<p class="message-text"></p>
-					<button class="message-btn btn btn-large btn-primary">OK</button>
-				</div>
-			</div>
 		</div>
 		<div id="search-autocomplete"></div>
 		<div id="window-layer" class="window-layer">
@@ -872,5 +843,6 @@ else if(isset($codid))
 				</div>
 			</div>
 		</div>
+		<div id="messages"></div>
 	</body>
 </html>

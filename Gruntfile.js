@@ -157,7 +157,7 @@ src/js/lib/GLmol.js\n\
 src/js/lib/ChemDoodleWeb.js\n\
 src/js/Utility.js\n\
 src/js/Progress.js\n\
-src/js/Messages.Embed.js\n\
+src/js/Messages.js\n\
 src/js/Model.js\n\
 src/js/Request.js\n\
 src/js/Loader.Embed.js\n\
@@ -176,7 +176,7 @@ src/js/MolView.Embed.js\n\
 					'src/js/lib/ChemDoodleWeb.js',
 					'src/js/Utility.js',
 					'src/js/Progress.js',
-					'src/js/Messages.Embed.js',
+					'src/js/Messages.js',
 					'src/js/Model.js',
 					'src/js/Request.js',
 					'src/js/Loader.Embed.js',
@@ -234,20 +234,6 @@ src/js/MolView.Embed.js\n\
 				],
 				dest: 'build\/<%= pkg.name %>.embed.min.css'
 			},
-			touch:
-			{
-				options:
-				{
-					compress: true,
-					cleancss: true
-				},
-				src: [
-					'src/less/var.less',
-					'src/less/menu-touch.less',
-					'src/less/active.less'
-				],
-				dest: 'build\/<%= pkg.name %>.touch.min.css'
-			},
 			full:
 			{
 				options:
@@ -263,6 +249,32 @@ src/js/MolView.Embed.js\n\
 					'src/less/active.less'
 				],
 				dest: 'build\/<%= pkg.name %>.full.min.css'
+			},
+			touch:
+			{
+				options:
+				{
+					compress: true,
+					cleancss: true
+				},
+				src: [
+					'src/less/var.less',
+					'src/less/menu-touch.less',
+					'src/less/active.less'
+				],
+				dest: 'build\/<%= pkg.name %>.touch.min.css'
+			},
+			mobile:
+			{
+				options:
+				{
+					compress: true,
+					cleancss: true
+				},
+				src: [
+					'src/less/mobile.less'
+				],
+				dest: 'build\/<%= pkg.name %>.mobile.min.css'
 			}
 		},
 		svgmin:

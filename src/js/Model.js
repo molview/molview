@@ -483,7 +483,7 @@ var Model = {
 					else Model.GLmol.view.loadMoleculeStr(false, Model.data.pdb);//in order to center macromolecule
 
 					Messages.hide();
-				}, "misc");
+				}, "glmol_update");
 			}
 		},
 
@@ -497,7 +497,7 @@ var Model = {
 			{
 				Model.GLmol.setRepresentation.call(Model.GLmol);
 				Messages.hide();
-			}, "misc");
+			}, "glmol_update");
 		},
 
 		setChainColoring: function(coloring)
@@ -510,7 +510,7 @@ var Model = {
 			{
 				Model.GLmol.setRepresentation.call(Model.GLmol);
 				Messages.hide();
-			}, "misc");
+			}, "glmol_update");
 		},
 
 		toDataURL: function()

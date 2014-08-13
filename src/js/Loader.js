@@ -57,23 +57,23 @@ var Loader = {
 		{
 			/*
 			Search output:
-			<div class="result">
-				<div class="result-title"><span>Name</span></div>
-				<div class="result-img-wrap><div class="result-img" style="background-image: url(image.png)"/></div>
+			<div class="search-result">
+				<div class="search-result-title"><span>Name</span></div>
+				<div class="search-result-img-wrap><div class="search-result-img" style="background-image: url(image.png)"/></div>
 			</div>
 			*/
 
-			var result = $('<div class="result result-notext"></div>');
+			var result = $('<div class="search-result search-result-notext"></div>');
 
-			$("<div class='result-img'></div>").css("background-image",
+			$("<div class='search-result-img'></div>").css("background-image",
 				"url(" + Request.PubChem.image(data.CID) + ")")
-				.appendTo($('<div class="result-img-wrap"></div>').appendTo(result));
+				.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
 
 			result.appendTo("#search-results .container");
 
 			if(data.Title)
 			{
-				var title = $('<div class="result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
+				var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
 				result.append(title);
 				title.textfill({ maxFontPixels: 30 });
 			}
@@ -340,26 +340,26 @@ var Loader = {
 		{
 			/*
 			Search output:
-			<div class="result result-imgdesc">
-				<div class="result-description">structureTitle</div>
-				<div class="result-title"><span>structureId</span></div>
-				<div class="result-img-wrap><div class="result-img" style="background-image: url(image.png)"/></div>
+			<div class="search-result search-result-imgdesc">
+				<div class="search-result-description">structureTitle</div>
+				<div class="search-result-title"><span>structureId</span></div>
+				<div class="search-result-img-wrap><div class="search-result-img" style="background-image: url(image.png)"/></div>
 			</div>
 			*/
 
-			var result = $("<div class='result result-imgdesc'></div>");
+			var result = $('<div class="search-result search-result-imgdesc"></div>');
 
-			var img = $('<div class="result-img"></div>').css("background-image",
+			var img = $('<div class="search-result-img"></div>').css("background-image",
 				"url(" + Request.RCSB.image(data.structureId) + ")");
-			img.appendTo($('<div class="result-img-wrap"></div>').appendTo(result));
+			img.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
 
 			result.appendTo("#search-results .container");
 
-			var title = $('<div class="result-title"><span>' + data.structureId + "</span></div>");
+			var title = $('<div class="search-result-title"><span>' + data.structureId + "</span></div>");
 			result.append(title);
 			title.textfill({ maxFontPixels: 30 });
 
-			var desc = $('<div class="result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
+			var desc = $('<div class="search-result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
 			result.append(desc);
 
 			var clickable = title;
@@ -470,11 +470,27 @@ var Loader = {
 						}
 						else
 						{
-							Messages.process(function()
+							if(Model.engine == "JSmol")
 							{
-								if(Model.engine == "JSmol")
+								Model.loadPDB(pdb);
+								Sketcher.markOutdated();
+
+								document.title = name || pdbid.toUpperCase();
+
+								Progress.complete();
+								Messages.hide();
+
+								Messages.alert("sketcher_no_macromolecules");
+								Loader.lastQuery.type = "pdbid";
+								Loader.lastQuery.content = "" + pdbid;
+								History.push("pdbid", pdbid);
+							}
+							else//switch to JSmol
+							{
+								Model.loadPDB(pdb, true);
+								Model.JSmol.setPlatformSpeed(1);
+								Model.setRenderEngine("JSmol", function()
 								{
-									Model.loadPDB(pdb);
 									Sketcher.markOutdated();
 
 									document.title = name || pdbid.toUpperCase();
@@ -486,27 +502,8 @@ var Loader = {
 									Loader.lastQuery.type = "pdbid";
 									Loader.lastQuery.content = "" + pdbid;
 									History.push("pdbid", pdbid);
-								}
-								else//switch to JSmol
-								{
-									Model.loadPDB(pdb, true);
-									Model.JSmol.setPlatformSpeed(1);
-									Model.setRenderEngine("JSmol", function()
-									{
-										Sketcher.markOutdated();
-
-										document.title = name || pdbid.toUpperCase();
-
-										Progress.complete();
-										Messages.hide();
-
-										Messages.alert("sketcher_no_macromolecules");
-										Loader.lastQuery.type = "pdbid";
-										Loader.lastQuery.content = "" + pdbid;
-										History.push("pdbid", pdbid);
-									});
-								}
-							}, "macromolecule");
+								});
+							}
 						}
 					}
 					else
@@ -543,18 +540,18 @@ var Loader = {
 		{
 			/*
 			Search output:
-			<div class="result">
-				<div class="result-title"><span>title</span></div>
-				<div class="result-description">description</div>
+			<div class="search-result">
+				<div class="search-result-title"><span>title</span></div>
+				<div class="search-result-description">description</div>
 			</div>
 			*/
 
-			var result = $('<div class="result"></div>').appendTo("#search-results .container");
+			var result = $('<div class="search-result"></div>').appendTo("#search-results .container");
 
 			data.formula = chemFormulaFormat(data.formula);
 			var title_str = (data.mineral || data.commonname || data.chemname || data.formula || "?");
 
-			var title = $('<div class="result-title"><span>' + title_str + "</span></div>");
+			var title = $('<div class="search-result-title"><span>' + title_str + "</span></div>");
 			result.append(title);
 			title.textfill({ maxFontPixels: 30 });
 
@@ -563,11 +560,10 @@ var Loader = {
 			if(data.commonname && data.commonname != title_str) description += "<b>Common name:</b> " + data.commonname + "<br/>";
 			if(data.chemname && data.chemname != title_str) description += "<b>Chemical name:</b> " + data.chemname + "<br/>";
 			if(data.formula && data.formula != title_str) description += "<b>Formula:</b> " + data.formula + "<br/>";
-			if(description != "") description += "<hr/>";
 
 			description += data.title;
 
-			var desc = $('<div class="result-description">' + description + "</div>");
+			var desc = $('<div class="search-result-description">' + description + "</div>");
 			result.append(desc);
 
 			var clickable = title;
