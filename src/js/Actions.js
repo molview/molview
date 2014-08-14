@@ -13,6 +13,16 @@ var Actions = {
 	window_vsplit: function() { MolView.setLayout("vsplit"); },
 	window_hsplit: function() { MolView.setLayout("hsplit"); },
 
+	theme_desktop: function()
+	{
+		MolView.setTheme("desktop");
+	},
+
+	theme_touch: function()
+	{
+		MolView.setTheme("touch");
+	},
+
 	help: function()
 	{
 		MolView.showDialog("help");

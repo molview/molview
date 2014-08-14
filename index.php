@@ -101,16 +101,16 @@ else if(isset($codid))
 	ALL RIGHTS RESERVED
 
 	Query parameters:
-	- q = search query
-	- search = fast || pubchem || rcsb || cod
-	- smiles = resolve SMILES string
-	- cid = load CID
-	- pdbid = load PDBID
-	- codid = load CIF from COD
-	- layout = model || sketcher || hsplit || vsplit
-	- menu = on || off
-	- dialog = about || help || share || embed
-	- mode = balls || stick || vdw || wireframe || line
+	 - q = search query
+	 - search = fast || pubchem || rcsb || cod
+	 - smiles = resolve SMILES string
+	 - cid = load CID
+	 - pdbid = load PDBID
+	 - codid = load CIF from COD
+ 	 - layout = model || sketcher || hsplit || vsplit
+	 - menu = on || off
+	 - dialog = about || help || share || embed
+	 - mode = balls || stick || vdw || wireframe || line
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -234,15 +234,17 @@ else if(isset($codid))
 
 		<!-- Custom styling -->
 		<script type="text/javascript">
-			if(isTouchDevice())
+			MolView.touch = isTouchDevice();
+			MolView.mobile = isMobile();
+			if(MolView.touch)
 			{
-				document.write('<link type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />');
+				document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />');
 			}
 			else
 			{
-				document.write('<link type="text/css" rel="stylesheet" href="build/molview.full.min.css" media="screen" />');
+				document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />');
 			}
-			if(isMobile())
+			if(MolView.mobile)
 			{
 				document.write('<link type="text/css" rel="stylesheet" href="build/molview.mobile.min.css" media="screen" />');
 			}
@@ -275,6 +277,9 @@ else if(isset($codid))
 								<a id="window-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
 								<a id="window-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
+							<li class="menu-header">Theme</li>
+							<li><a id="theme-desktop">Desktop</a></li>
+							<li><a id="theme-touch">Touch</a></li>
 							<li class="menu-header">Information</li>
 							<li><a id="mv-help">Help</a></li>
 							<li><a id="mv-about">About</a></li>
@@ -405,6 +410,9 @@ else if(isset($codid))
 				if($(window).height() > $(window).width()
 					&& !MolView.query.layout
 					&& MolView.layout != "model") Actions.window_hsplit();
+
+				if(MolView.touch) $("#theme-touch").addClass("checked");
+				else $("#theme-desktop").addClass("checked");
 			</script>
 			<div id="sketcher">
 				<div id="moledit" class="sketcher">
@@ -775,7 +783,7 @@ else if(isset($codid))
 					<div id="properties-wrapper">
 						<div id="general-properties">
 							<div id="molecule-image-wrapper" class="properties-block">
-								<img id="molecule-image" class="chemprop" src="src/img/empty.png" alt=""/>
+								<img id="molecule-image" class="chemprop" src="img/empty.png" alt=""/>
 							</div>
 							<div class="properties-block">
 								<div id="molecule-info">

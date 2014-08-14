@@ -234,7 +234,7 @@ src/js/MolView.Embed.js\n\
 				],
 				dest: 'build\/<%= pkg.name %>.embed.min.css'
 			},
-			full:
+			desktop:
 			{
 				options:
 				{
@@ -248,7 +248,7 @@ src/js/MolView.Embed.js\n\
 					'src/less/hover.less',
 					'src/less/active.less'
 				],
-				dest: 'build\/<%= pkg.name %>.full.min.css'
+				dest: 'build\/<%= pkg.name %>.desktop.min.css'
 			},
 			touch:
 			{

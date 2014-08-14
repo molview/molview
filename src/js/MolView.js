@@ -19,8 +19,6 @@ var MolView = {
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
 			this.loadDefault = false;
 
-		this.touch = isTouchDevice();
-		this.mobile = isMobile();
 		this.height = window.innerHeight;
 
 		if(this.mobile && !Detector.webgl)
@@ -166,6 +164,9 @@ var MolView = {
 			$("#window-model").on(this.trigger, Actions.window_model);
 			$("#window-vsplit").on(this.trigger, Actions.window_vsplit);
 			$("#window-hsplit").on(this.trigger, Actions.window_hsplit);
+
+			$("#theme-desktop").on(this.trigger, Actions.theme_desktop);
+			$("#theme-touch").on(this.trigger, Actions.theme_touch);
 
 			$("#mv-help").on(this.trigger, Actions.help);
 			$("#mv-about").on(this.trigger, Actions.about);
@@ -351,6 +352,13 @@ var MolView = {
 		this.layout = layout;
 
 		Actions.hide_search_results();
+	},
+
+	setTheme: function(theme)
+	{
+		$("#theme-desktop,#theme-touch").removeClass("checked");
+		$("#theme-" + theme).addClass("checked");
+		$("#theme-stylesheet").attr("href", "build/molview." + theme + ".min.css");
 	},
 
 	makeModelVisible: function()

@@ -207,7 +207,6 @@ var Autocomplete = {
 			else
 			{
 				$("#search-input").val(ucfirst(humanize(this.records[this.i].name)));
-				$("#search-autocomplete").empty();
 
 				if(this.records[this.i].pdbids)//macromolecule
 				{
@@ -223,6 +222,8 @@ var Autocomplete = {
 				{
 					Loader.PubChem.loadName(this.records[this.i].name);
 				}
+				
+				this.refresh();
 			}
 		}
 	},

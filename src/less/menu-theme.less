@@ -16,18 +16,17 @@
 
 .dropdown.open > .dropdown-toggle
 {
-	color: #111;
-	background-color: #fff !important;
+	background-color: @light !important;
 }
 
 .caret
 {
-	border-top-color: #111;
+	border-top-color: @foreground;
 }
 
 .dropdown-menu
 {
-	background: #fff;
+	background: @light;
 	border: 1px solid @contrast;
 }
 
@@ -36,11 +35,6 @@ li.menu-header
 	font-weight: bold;
 	text-transform: uppercase;
 	border-bottom: 1px solid @contrast;
-}
-
-.dropdown-menu > li > a
-{
-	color: #111;
 }
 
 .dropdown-menu > li > a.checked:after
