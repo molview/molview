@@ -53,7 +53,7 @@ var ChemProps = {
     		this.CIRproperty("prop-csid", "chemspider_id", function()
     		{
     			$("#chemspider-external-link").attr("href", "http://www.chemspider.com/Chemical-Structure."
-    				+ ChemProps.data.chemspider_id + ".html").show();
+    				+ ChemProps.data.csid + ".html").show();
     		});
 
     		//load data from PubChem

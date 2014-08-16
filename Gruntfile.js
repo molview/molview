@@ -243,7 +243,7 @@ src/js/MolView.Embed.js\n\
 				},
 				src: [
 					'src/less/var.less',
-					'src/less/menu-nice.less',
+					'src/less/menu-desktop.less',
 					'src/less/smooth.less',
 					'src/less/hover.less',
 					'src/less/active.less'
