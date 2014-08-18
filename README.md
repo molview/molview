@@ -20,3 +20,8 @@ This web application is built upon the JavaScript libraries and online services 
   - NMR Database
   - NIST Chemistry WebBook
   - MyMemory translation API
+
+Build
+-----
+Install and run grunt in order to build MolView.
+Note: the JSmol j2s files are not included in this git package, you have to copy j2s to /jmol/j2s

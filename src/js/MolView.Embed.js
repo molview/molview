@@ -10,6 +10,8 @@ var MolView = {
 	trigger: "click",
 	query: {},
 	loadDefault: true,
+	JMOL_J2S_PATH: "../jmol/j2s",
+
 	
 	init: function()
 	{

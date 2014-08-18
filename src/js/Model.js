@@ -562,7 +562,7 @@ var Model = {
 						disableJ2SLoadMonitor: true,
 						disableInitialConsole: true,
 						use: "HTML5",
-						j2sPath: window.location.origin + window.location.pathname + "src/js/lib/jmol/j2s",
+						j2sPath: MolView.JMOL_J2S_PATH,
 						script: 'frank off; background ' + Model.background + '; unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate"; set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false; set hoverDelay 0.001; hover off; font measure 18; set MessageCallback "Model.JSmol.onMessage";',
 						readyFunction: Model.JSmol.onReady.bind(Model.JSmol),
 						console: "none"

@@ -13,6 +13,7 @@ var MolView = {
 	query: {},
 	loadDefault: true,
 	macromolecules: true,
+	JMOL_J2S_PATH: "jmol/j2s",
 
 	init: function()
 	{

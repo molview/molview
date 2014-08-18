@@ -48,7 +48,7 @@ Frontend:
   - New welcome dialog
   - New messages bar design
   - Switch to Desktop or Touch theme via MolView menu
-  > Information card external references (Chemicalize, Google, PDB, COD)
+  - Information card external references (Chemicalize, Google, PDB, COD)
   > SMILES 3D conformation URL key; CID > InChiKey (CIR only) > SMILES
   > Save user preferences using HTML5 Web Storage
   > Functional groups in Sketcher
