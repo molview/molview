@@ -24,7 +24,7 @@ var Loader = {
 
 		var query = $("#search-input").val();
 
-		Request.CIRsearch(query, true, function(mol2d, mol3d, text)
+		Request.CIRsearch(query, function(mol2d, mol3d, text)
 		{
 			Sketcher.loadMOL(mol2d);
 			Sketcher.markUpdated();

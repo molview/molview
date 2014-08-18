@@ -12,7 +12,7 @@ module.exports = function(grunt)
 MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
 Copyright (c) 2014, Herman Bergwerf\n\
 ALL RIGHTS RESERVED\n\
-Included files (can be found under http://molview.org/{path})\n\
+External libraries: (see http://molview.org/{path})\n\
 src/js/lib/JSmol.min.js\n\
 src/js/lib/jquery-1.11.0.min.js\n\
 src/js/lib/jquery.hotkeys.js\n\
@@ -48,22 +48,6 @@ src/js/lib/ChemDoodleWeb.js\n\
 src/js/lib/Blob.js\n\
 src/js/lib/FileSaver.js\n\
 src/js/lib/PeriodicTable.js\n\
-src/js/Utility.js\n\
-src/js/Data.js\n\
-src/js/History.js\n\
-src/js/Progress.js\n\
-src/js/Messages.js\n\
-src/js/Sketcher.js\n\
-src/js/Model.js\n\
-src/js/Request.js\n\
-src/js/Loader.js\n\
-src/js/Actions.js\n\
-src/js/Share.js\n\
-src/js/Link.js\n\
-src/js/ChemProps.js\n\
-src/js/Spectroscopy.js\n\
-src/js/Autocomplete.js\n\
-src/js/MolView.js\n\
 */\n',
 					compress: { drop_console: true }
 				},
@@ -131,7 +115,7 @@ src/js/MolView.js\n\
 					'src/js/Actions.js',
 					'src/js/Share.js',
 					'src/js/Link.js',
-					'src/js/ChemProps.js',
+					'src/js/InfoCard.js',
 					'src/js/Spectroscopy.js',
 					'src/js/Autocomplete.js',
 					'src/js/MolView.js'
@@ -146,7 +130,7 @@ src/js/MolView.js\n\
 MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
 Copyright (c) 2014, Herman Bergwerf\n\
 ALL RIGHTS RESERVED\n\
-Included files (can be found under http://molview.org/{path})\n\
+External libraries: (see http://molview.org/{path})\n\
 src/js/lib/JSmol.min.js\n\
 src/js/lib/jquery-1.11.0.min.js\n\
 src/js/lib/Detector.js\n\
@@ -155,13 +139,6 @@ src/js/lib/Polyfill.js\n\
 src/js/lib/Three49custom.js\n\
 src/js/lib/GLmol.js\n\
 src/js/lib/ChemDoodleWeb.js\n\
-src/js/Utility.js\n\
-src/js/Progress.js\n\
-src/js/Messages.js\n\
-src/js/Model.js\n\
-src/js/Request.js\n\
-src/js/Loader.Embed.js\n\
-src/js/MolView.Embed.js\n\
 */\n',
 					compress: { drop_console: true }
 				},

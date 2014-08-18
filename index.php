@@ -225,7 +225,7 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/Actions.js"></script>
 		<script type="text/javascript" src="src/js/Share.js"></script>
 		<script type="text/javascript" src="src/js/Link.js"></script>
-		<script type="text/javascript" src="src/js/ChemProps.js"></script>
+		<script type="text/javascript" src="src/js/InfoCard.js"></script>
 		<script type="text/javascript" src="src/js/Spectroscopy.js"></script>
 		<script type="text/javascript" src="src/js/Autocomplete.js"></script>
 		<script type="text/javascript" src="src/js/MolView.js"></script>
@@ -296,7 +296,7 @@ else if(isset($codid))
 							<li><a id="export-3d">3D model image</a></li>
 							<li><a id="save-local-3d">MOL file</a></li>
 							<li class="menu-header">Chemical data</li>
-							<li><a id="data-properties">Information card</a></li>
+							<li><a id="data-infocard">Information card</a></li>
 							<li><a id="data-spectra">Spectroscopy</a></li>
 							<li class="menu-header">Advanced search</li>
 							<li><a id="search-similarity">Similarity</a></li>
@@ -489,7 +489,7 @@ else if(isset($codid))
 			<div id="load-more-cod" class="load-more" style="display: none;"></div>
 		</div>
 		<div id="search-autocomplete"></div>
-		<div id="window-layer" class="window-layer">
+		<div id="dialog-layer" class="dialog-layer">
 			<div id="dialog-wrapper">
 				<div class="dialog" id="start-dialog">
 					<h1>Welcome to MolView</h1>
@@ -777,25 +777,25 @@ else if(isset($codid))
 						<button class="btn close btn-primary pull-right">Close</button>
 					</div>
 				</div>
-				<div class="dialog properties-dialog" id="properties-compound-dialog" style="display: none;">
+				<div class="dialog" id="properties-dialog" style="display: none;">
 					<h2>Information</h2>
 					<div class="dialog-close-btn"></div>
 					<div id="properties-wrapper">
 						<div id="general-properties">
 							<div id="molecule-image-wrapper" class="properties-block">
-								<img id="molecule-image" class="chemprop" src="img/empty.png" alt=""/>
+								<img id="molecule-image" src="img/empty.png" alt=""/>
 							</div>
 							<div class="properties-block">
 								<div id="molecule-info">
 									<h3 id="molecule-title"></h3>
 									<p id="molecule-description"></p>
 								</div>
-								<table class="light-table">
+								<table id="common-chem-props" class="light-table">
 									<tbody>
-										<tr id="prop-wrapper-formula"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
-										<tr id="prop-wrapper-weight"><td>Molecular weight</td><td id="prop-weight" class="chemprop"></td></tr>
-										<tr id="prop-wrapper-donors"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
-										<tr id="prop-wrapper-acceptors"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
+										<tr id="prop-formula-wrapper"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
+										<tr id="prop-mw-wrapper"><td>Molecular weight</td><td id="prop-mw" class="chemprop"></td></tr>
+										<tr id="prop-donors-wrapper"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
+										<tr id="prop-acceptors-wrapper"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -805,20 +805,20 @@ else if(isset($codid))
 								<tr><th>Identifiers</th></tr>
 							</thead>
 							<tbody>
-								<tr><th>Systematic name</th></tr>
-								<tr><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr><th>SMILES</th></tr>
-								<tr><td><input type="text" id="prop-smiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr><th>InChiKey</th></tr>
-								<tr><td><input type="text" id="prop-stdinchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr><th>InChi</th></tr>
-								<tr><td><input type="text" id="prop-stdinchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr><th>CAS Number</th></tr>
-								<tr><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-								<tr><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-								<tr><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-sysname-title"><th>Systematic name</th></tr>
+								<tr id="prop-sysname-wrapper"><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-smiles-title"><th>SMILES</th></tr>
+								<tr id="prop-smiles-wrapper"><td><input type="text" id="prop-smiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-inchikey-title"><th>InChiKey</th></tr>
+								<tr id="prop-inchikey-wrapper"><td><input type="text" id="prop-inchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-inchi-title"><th>InChi</th></tr>
+								<tr id="prop-inchi-wrapper"><td><input type="text" id="prop-inchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-cas-title"><th>CAS Number</th></tr>
+								<tr id="prop-cas-wrapper"><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-csid-title"><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
+								<tr id="prop-csid-wrapper"><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-cid-title"><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
+								<tr id="prop-cid-wrapper"><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
 							</tbody>
 						</table>
 					</div>

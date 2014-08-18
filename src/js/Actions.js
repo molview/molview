@@ -68,19 +68,14 @@ var Actions = {
 		saveAs(blob, (name || document.title) + "." + (Model.getDataExstension().toLowerCase()));
 	},
 
-	data_properties: function()
+	data_infocard: function()
 	{
 		var smiles;
 		try { smiles = Sketcher.getSMILES(); }
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
-		ChemProps.update(smiles);
-		MolView.showDialog("properties-compound");
-
-		window.setTimeout(function()
-		{
-			ChemProps.updateImage();
-		}, 100);
+		InfoCard.update(smiles, Sketcher.CID, Sketcher.InChiKey);
+		MolView.showDialog("properties");
 	},
 
 	data_spectra: function()
@@ -89,13 +84,15 @@ var Actions = {
 		try { smiles = Sketcher.getSMILES(); }
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
-		if(ChemProps.smiles != smiles)
-			Spectroscopy.print("No spectrum selected");
-
-		if(Spectroscopy.update(smiles))
-			Spectroscopy.print("Loading\u2026");
-
-		MolView.showDialog("spectra");
+		if(Spectroscopy.data["smiles"] && Spectroscopy.data["smiles"] == smiles)
+		{
+			MolView.showDialog("spectra");
+		}
+		else
+		{
+			Spectroscopy.update(smiles);
+			MolView.showDialog("spectra");
+		}
 
 		window.setTimeout(function()
 		{
@@ -131,7 +128,7 @@ var Actions = {
 
 	search_substructure: function()
 	{
-		MolView.hideWindows();
+		MolView.hideDialogs();
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
@@ -148,7 +145,7 @@ var Actions = {
 
 	search_superstructure: function()
 	{
-		MolView.hideWindows();
+		MolView.hideDialogs();
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
@@ -165,7 +162,7 @@ var Actions = {
 
 	search_similarity: function()
 	{
-		MolView.hideWindows();
+		MolView.hideDialogs();
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
@@ -340,7 +337,7 @@ var Actions = {
 		else
 		{
 			$("#search-input").blur();
-			MolView.hideWindows();
+			MolView.hideDialogs();
 			Messages.process(Loader.CIRsearch, "search");
 		}
 	},
@@ -355,7 +352,7 @@ var Actions = {
 		else
 		{
 			$("#search-input").blur();
-			MolView.hideWindows();
+			MolView.hideDialogs();
 			Messages.process(Loader.PubChem.search, "search");
 		}
 	},
@@ -370,7 +367,7 @@ var Actions = {
 		else
 		{
 			$("#search-input").blur();
-			MolView.hideWindows();
+			MolView.hideDialogs();
 			Messages.process(Loader.RCSB.search, "search");
 		}
 	},
@@ -385,7 +382,7 @@ var Actions = {
 		else
 		{
 			$("#search-input").blur();
-			MolView.hideWindows();
+			MolView.hideDialogs();
 			Messages.process(Loader.COD.search, "search");
 		}
 	},

@@ -7,9 +7,13 @@ ALL RIGHTS RESERVED
 //xhr to abort large AJAX calls
 var xhr;
 
+/**
+ * Extract simple ISO language code from string
+ * @param {String} str Input string
+ */
 function getISOLanguageCode(str)
 {
-	//cut off from '-' / '_' / ';'
+	//cut from '-' / '_' / ';'
 	if(str.indexOf(";") != -1) str = str.substr(0, str.indexOf(";"));
 	if(str.indexOf("-") != -1) str = str.substr(0, str.indexOf("-"));
 	if(str.indexOf("_") != -1) str = str.substr(0, str.indexOf("_"));
@@ -17,13 +21,27 @@ function getISOLanguageCode(str)
 }
 
 var Request = {
+	/**
+	 * Server Environment variables passed to JavaScript using PHP
+	 * (see index.php)
+	 * Used for translation usign myMemory
+	 */
 	HTTP_CLIENT_IP: "",
 	HTTP_ACCEPT_LANGUAGE: "",
+
+	/**
+	 * Alternative languages specified by the clients browser and retrieved
+	 * using PHP (see index.php)
+	 * This array is used to translate search queries using myMemory
+	 */
 	alternativeLanguages: [],
 
+	/**
+	 * Initializes Request object
+	 * Generates alternativeLanguages from HTTP_ACCEPT_LANGUAGE
+	 */
 	init: function()
 	{
-		//find first non English language specified by browser
 		var languages = this.HTTP_ACCEPT_LANGUAGE.split(",");
 		for(var i = 0; i < languages.length; i++)
 		{
@@ -32,6 +50,12 @@ var Request = {
 		}
 	},
 
+	/**
+	 * Retrieves translation of input text using the first language in
+	 * alternativeLanguages. Returns translation or same text when request fails
+	 * @param  {String}   text    Input text string
+	 * @param  {Function} success Called when AJAX is finished
+	 */
 	translation: function(text, success)
 	{
 		if(Request.alternativeLanguages.length > 0 && text.length > 0)
@@ -61,7 +85,13 @@ var Request = {
 		else success(text);
 	},
 
-	CIRsearch: function(text, both, success, error)//success(2d, 3d, tranlated_text)
+	/**
+	 * Retrieve 2D and 3D molfile using a text string (CIR identifier)
+	 * @param {String}   text    Input text string
+	 * @param {Function} success Called as (2D, 3D, tranlated_text) when AJAX is finished
+	 * @param {Function} error   Called when request has failed
+	 */
+	CIRsearch: function(text, success, error)//success(2d, 3d, tranlated_text)
 	{
 		if(text === "")
 		{
@@ -73,10 +103,10 @@ var Request = {
 		Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
 		{
 			Progress.increment();
-
-			if(both) Request.ChemicalIdentifierResolver.search(text, true, function(mol2d)
-				{ success(mol2d, mol3d, text); }, error);
-			else success(mol3d, text);
+			Request.ChemicalIdentifierResolver.search(text, true, function(mol2d)
+			{
+				success(mol2d, mol3d, text);
+			}, error);
 
 		},
 		function()
@@ -90,21 +120,23 @@ var Request = {
 
 				text = translated;
 
-				//try CIR
+				//try CIR with translated input
 				Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
 				{
 					Progress.increment();
 
-					if(both) Request.ChemicalIdentifierResolver.search(text, true, function(mol2d)
-						{ success(mol2d, mol3d, text); }, error);
-					else success(mol3d, text);
+					Request.ChemicalIdentifierResolver.search(text, true, function(mol2d)
+					{
+						success(mol2d, mol3d, text);
+					}, error);
 				}, error);
 			});
 
 		}, error);
 	},
 
-	ChemicalIdentifierResolver: {
+	ChemicalIdentifierResolver:
+	{
 		search: function(text, flat, success, error)
 		{
 			if(!Request.ChemicalIdentifierResolver.available)
@@ -184,20 +216,14 @@ var Request = {
 			});
 		},
 
-		/*
-		Properties:
-		- formula
-		- mw (molecular weight)
-		- h_bond_donor_count
-		- h_bond_acceptor_count
-		- rule_of_5_violation_count
-		- rotor_count
-		- effective_rotor_count
-		- ring_count
-		- ringsys_count
-		- cas
-		*/
-		getProperty: function(smiles, property, success, error, unavailable)
+		/**
+		 * Load property using Chemical Identifier Resolver
+		 * @param {String}   smiles   Input SMILES string
+		 * @param {String}   property Property id
+		 * @param {Function} success
+		 * @param {Function} error
+		 */
+		property: function(smiles, property, success, error)
 		{
 			if(!Request.ChemicalIdentifierResolver.available)
 			{
@@ -212,25 +238,40 @@ var Request = {
 				success: function(response)
 				{
 					if(response === "<h1>Page not found (404)</h1>\n" || response === undefined)
-						{ if(error) error(); }
-					else success(response);
+					{
+						if(error) error();
+					}
+					else
+					{
+						var array = response.split("\n");
+						var value = array[0];
+
+						if(property == "cas")
+						{
+							array.sort(function(a, b){ return a.length > b.length; });
+							value = array[0];
+						}
+						else if(property == "stdinchikey")
+						{
+							value = value.substr(9);
+						}
+
+						success(value);
+					}
 				},
 				error: function(jqXHR, textStatus)
 				{
-					if(jqXHR.status == 404)
+					if(textStatus == "error")
 					{
-						if(unavailable) unavailable();
-						return;
+						if(error) error();
 					}
-
-					if(textStatus != "error") return;
-					if(error) error();
 				}
 			});
 		}
 	},
 
-	PubChem: {
+	PubChem:
+	{
 		data: [],
 		maxRecords: 50,
 		MaxSeconds: 10,
@@ -320,6 +361,36 @@ var Request = {
 			});
 		},
 
+		/**
+		 * Retrives CID for given SMILES
+		 * @param {String}   smiles  Input SMILES string
+		 * @param {Function} success
+		 * @param {Function} error
+		 */
+		smilesToCID: function(smiles, success, error)
+		{
+			AJAX({
+				dataType: "json",
+				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/" + smiles + "/cids/json",
+				success: function(data)
+				{
+					if(data.IdentifierList) success(data.IdentifierList.CID[0]);
+					else error();
+				},
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
+			});
+		},
+
+		/**
+		* Retrives first CID for given Name
+		* @param {String}   smiles  Input Name string
+		* @param {Function} success
+		* @param {Function} error
+		*/
 		nameToCID: function(name, success, error)
 		{
 			AJAX({
@@ -327,8 +398,7 @@ var Request = {
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + name + "/cids/json",
 				success: function(data)
 				{
-					if(data.IdentifierList)
-						success(data.IdentifierList.CID[0]);
+					if(data.IdentifierList) success(data.IdentifierList.CID[0]);
 					else error();
 				},
 				error: function(jqXHR, textStatus)
@@ -387,35 +457,8 @@ var Request = {
 			});
 		},
 
-		SMILES: {
-			description: function(smiles, success, error)
-			{
-				AJAX({
-					dataType: "json",
-					url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/description/json?smiles=" + encodeURIComponent(smiles),
-					success: success,
-					error: function(jqXHR, textStatus)
-					{
-						if(textStatus != "error") return;
-						if(error) error();
-					}
-				});
-			},
-
-			properties: function(smiles, properties, success, error)//cids as array
-			{
-				AJAX({
-					dataType: "json",
-					url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/property/" + properties + "/json?smiles=" + encodeURIComponent(smiles),
-					success: success,
-					error: function(jqXHR, textStatus)
-					{
-						if(textStatus != "error") return;
-						if(error) error();
-					}
-				});
-			},
-
+		SMILES:
+		{
 			image: function(smiles)
 			{
 				return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles=" + encodeURIComponent(smiles);
@@ -423,7 +466,8 @@ var Request = {
 		}
 	},
 
-	RCSB: {
+	RCSB:
+	{
 		data: [],
 
 		search: function(text, success, error)
@@ -562,7 +606,8 @@ var Request = {
 		}
 	},
 
-	NMRdb: {
+	NMRdb:
+	{
 		prediction: function(smiles, success, error)
 		{
 			AJAX({
@@ -581,7 +626,8 @@ var Request = {
 		}
 	},
 
-	NIST: {
+	NIST:
+	{
 		lookup: function(cas, success, error)
 		{
 			AJAX({
@@ -645,7 +691,8 @@ var Request = {
 		}
 	},
 
-	COD: {
+	COD:
+	{
 		data: [],
 
 		search: function(text, success, error)

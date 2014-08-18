@@ -197,7 +197,7 @@ var Autocomplete = {
 		{
 			this.hide();
 			$("#search-input").blur();
-			MolView.hideWindows();
+			MolView.hideDialogs();
 			Actions.hide_search_results();
 
 			if(this.i == -1)
@@ -222,7 +222,7 @@ var Autocomplete = {
 				{
 					Loader.PubChem.loadName(this.records[this.i].name);
 				}
-				
+
 				this.refresh();
 			}
 		}

@@ -25,8 +25,8 @@ Backend:
   - Replace '/' with '%5C' for Chemical Identifier Resolver lookup
   - Splitted `ChemicalData` into `ChemProps` and `Spectroscopy`
   - Added two `ChemProps` dialogs; biomolecule and crystal
-  - Migrate CSS to LESS
-  > Information loading; PubChem > ChemSpider > Chemical Identifier Resolver
+  - Migrated CSS to LESS
+  - Revised Information loading sequence
   > SMILES 2D/3D conversion; PubChem > Chemical Identifier Resolver
   > Save Sketcher.InChiKey from Chemical Identifier Resolver search
 

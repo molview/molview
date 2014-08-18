@@ -124,7 +124,7 @@ var MolView = {
 			{
 				if($(target).is(this))
 				{
-					MolView.hideWindows();
+					MolView.hideDialogs();
 					window.getSelection().removeAllRanges();
 				}
 			}
@@ -132,7 +132,7 @@ var MolView = {
 
 		$(".dialog .btn.close, .dialog-close-btn").on(this.trigger, function(e)
 		{
-			MolView.hideWindows();
+			MolView.hideDialogs();
 		});
 
 		//enable expandable expanding
@@ -178,7 +178,7 @@ var MolView = {
 			$("#export-3d").on(this.trigger, Actions.export_3D);
 			$("#save-local-3d").on(this.trigger, function(){ Actions.save_local_3D(Loader.lastQuery.name); });
 
-			$("#data-properties").on(this.trigger, Actions.data_properties);
+			$("#data-infocard").on(this.trigger, Actions.data_infocard);
 			$("#data-spectra").on(this.trigger, Actions.data_spectra);
 
 			$("#search-substructure").on(this.trigger, Actions.search_substructure);
@@ -324,16 +324,16 @@ var MolView = {
 
 	showDialog: function(name)
 	{
-		$("#window-layer .dialog").hide();
-		$("#window-layer").show();
-		$("#window-layer").scrollTop(0);
+		$("#dialog-layer .dialog").hide();
+		$("#dialog-layer").show();
+		$("#dialog-layer").scrollTop(0);
 		$("#" + name + "-dialog").show();
 	},
 
-	hideWindows: function()
+	hideDialogs: function()
 	{
-		$("#window-layer .dialog").hide();
-		$("#window-layer").hide();
+		$("#dialog-layer .dialog").hide();
+		$("#dialog-layer").hide();
 	},
 
 	setLayout: function(layout)

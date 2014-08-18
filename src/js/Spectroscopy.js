@@ -6,9 +6,13 @@ ALL RIGHTS RESERVED
 
 var Spectroscopy = {
     data: {},
+    smiles: undefined,
     spectrum: undefined,
     spectrum_ratio: 1 / .3,
 
+    /**
+     * Initializes Spectoscopy DOM
+     */
     init: function()
     {
         $(window).on("resize", function()
@@ -44,66 +48,72 @@ var Spectroscopy = {
         this.spectrum.emptyMessage = "No spectrum selected";
     },
 
+    /**
+     * Resets Spectroscopy dialog and updates spectra dropdown using SMILES
+     * @param {String} smiles SMILES string
+     */
     update: function(smiles)
     {
-        if(this.smiles != smiles && smiles != "")
+        this.data = {};
+        this.data["smiles"] = smiles;
+
+        $("#spectrum").addClass("loading");
+        $("#spectrum-select").html('<option value="loading" disabled selected style="display:none;">Loading&hellip;</option>').val("loading");
+        this.print("No spectrum selected");
+
+        //update available spectra
+        function noSpectra()
         {
-            this.data = {};
-
-            $("#spectrum").addClass("loading");
-            $("#spectrum-select").html('<option value="loading" disabled selected style="display:none;">Loading&hellip;</option>').val("loading");
-            this.print("No spectrum selected");
-
-            //update available spectra
-            function no_spectra()
-            {
-                $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">No spectra</option>');
-                $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
-                $("#spectrum").removeClass("loading");
-            }
-
-            ChemProps.getProperty("cas", function(cas)
-            {
-                Request.NIST.lookup(cas, function(data)
-                {
-                    $("#spectrum-select").empty();
-                    $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">Choose a spectrum</option>');
-
-                    if(data.mass) $("#spectrum-select").append('<option value="nist-mass">Mass spectrum</option>');
-
-                    if(data.ir !== undefined)
-                    {
-                        for(var i = 0; i < data.ir.length; i++)
-                        {
-                            $("#spectrum-select").append('<option value="nist-ir-'
-                                + data.ir[i].i + '">IR spectrum [' + data.ir[i].state + ']</option>');
-                        }
-                    }
-
-                    //if(data.uvvis) $("#spectrum-select").append('<option value="nist-uvvis">UV-Visible spectrum</option>');
-                    $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
-
-                    $("#spectrum-select").val("default");
-                    $("#spectrum").removeClass("loading");
-                }, no_spectra);
-            }, no_spectra);
+            $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">No spectra</option>');
+            $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
+            $("#spectrum").removeClass("loading");
         }
+
+        Request.ChemicalIdentifierResolver.property(this.data["smiles"], "cas",
+        function(cas)
+        {
+            Spectroscopy.data["cas"] = cas;
+            Request.NIST.lookup(Spectroscopy.data["cas"], function(data)
+            {
+                $("#spectrum-select").empty();
+                $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">Choose a spectrum</option>');
+
+                if(data.mass) $("#spectrum-select").append('<option value="nist-mass">Mass spectrum</option>');
+
+                if(data.ir !== undefined)
+                {
+                    for(var i = 0; i < data.ir.length; i++)
+                    {
+                        $("#spectrum-select").append('<option value="nist-ir-'
+                            + data.ir[i].i + '">IR spectrum [' + data.ir[i].state + ']</option>');
+                    }
+                }
+
+                //if(data.uvvis) $("#spectrum-select").append('<option value="nist-uvvis">UV-Visible spectrum</option>');
+                $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
+
+                $("#spectrum-select").val("default");
+                $("#spectrum").removeClass("loading");
+            }, noSpectra);
+        }, noSpectra);
     },
 
+    /**
+     * Loads spectrum into spectrum canvas using the specified spectrum type.
+     * Spectrum types:
+     *  - nmrdb
+     *  - nist-mass
+     *  - nist-ir-{i}
+     *  - nist-uvvis (not supported yet)
+     *
+     * @param  {String} type Spectrum type
+     */
     load: function(type)
     {
-        /*
-        Accepted types:
-        - nmrdb
-        - nist-mass
-        - nist-ir-{i}
-        - nist-uvvis (not supported yet)
-        */
-
         this.print("Loading\u2026");
         $("#spectrum").addClass("loading");
 
-        function display_nmrdb()
+        function displayNMRDB()
         {
             var spectrum = ChemDoodle.readJCAMP(Spectroscopy.data.nmrdb);
             spectrum.title = ucfirst(humanize(spectrum.title));
@@ -113,10 +123,10 @@ var Spectroscopy = {
             $("#spectrum").removeClass("loading");
         }
 
-        function display_nist_spectrum()
+        function displayNISTSpectrum()
         {
             /*
-            For UV-Vis support (using js/lib/jcamp-dx.js):
+            For UV-Vis support (using js/lib/jcamp-dx.js from NIST)
             var spectrum = new jdx_parse();
             spectrum.load(Spectroscopy.data[type], 0, true);
             */
@@ -136,37 +146,31 @@ var Spectroscopy = {
         {
             if(!this.data["nmrdb"])
             {
-                ChemProps.getProperty("smiles", function(smiles)
+                Request.NMRdb.prediction(this.data["smiles"], function(jcamp)
                 {
-                    Request.NMRdb.prediction(smiles, function(jcamp)
-                    {
-                        Spectroscopy.data.nmrdb = jcamp;
-                        display_nmrdb();
-                    }, function()
-                    {
-                        Spectroscopy.print("Spectrum unavailable");
-                    });
+                    Spectroscopy.data.nmrdb = jcamp;
+                    displayNMRDB();
+                }, function()
+                {
+                    Spectroscopy.print("Spectrum unavailable");
                 });
             }
-            else display_nmrdb();
+            else displayNMRDB();
         }
         else if(type.indexOf("nist" != -1))
         {
-            ChemProps.getProperty("cas", function(cas)
+            if(!Spectroscopy.data[type])
             {
-                if(!Spectroscopy.data[type])
+                Request.NIST.spectrum(this.data["cas"], type.substr(5), function(jcamp)
                 {
-                    Request.NIST.spectrum(cas, type.substr(5), function(jcamp)
-                    {
-                        Spectroscopy.data[type] = jcamp;
-                        display_nist_spectrum();
-                    }, function()
-                    {
-                        Spectroscopy.print("Spectrum unavailable");
-                    });
-                }
-                else display_nist_spectrum();
-            });
+                    Spectroscopy.data[type] = jcamp;
+                    displayNISTSpectrum();
+                }, function()
+                {
+                    Spectroscopy.print("Spectrum unavailable");
+                });
+            }
+            else displayNISTSpectrum();
         }
     },
 

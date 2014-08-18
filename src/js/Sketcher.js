@@ -67,7 +67,7 @@ var Sketcher = {
 						$("#me-elements").addClass("tool-button-selected");
 
 						Sketcher.moledit.setElement.call(Sketcher.moledit, $(this).data("nr"));
-						window.setTimeout(MolView.hideWindows, 0);
+						window.setTimeout(MolView.hideDialogs, 0);
 					})
 					.appendTo("#periodictable");
 				position = element.position;
