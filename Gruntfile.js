@@ -17,7 +17,6 @@ src/js/lib/JSmol.min.js\n\
 src/js/lib/jquery-1.11.0.min.js\n\
 src/js/lib/jquery.hotkeys.js\n\
 src/js/lib/Detector.js\n\
-src/js/lib/jMouseWheel.js\n\
 src/js/lib/Polyfill.js\n\
 src/js/m2s/prototype.js\n\
 src/js/m2s/util/common.js\n\
@@ -58,7 +57,6 @@ src/js/lib/PeriodicTable.js\n\
 					'src/js/lib/jquery-1.11.0.min.js',
 					'src/js/lib/jquery.hotkeys.js',
 					'src/js/lib/Detector.js',
-					'src/js/lib/jMouseWheel.js',
 					'src/js/lib/Polyfill.js',
 
 					//Ketcher
@@ -134,7 +132,6 @@ External libraries: (see http://molview.org/{path})\n\
 src/js/lib/JSmol.min.js\n\
 src/js/lib/jquery-1.11.0.min.js\n\
 src/js/lib/Detector.js\n\
-src/js/lib/jMouseWheel.js\n\
 src/js/lib/Polyfill.js\n\
 src/js/lib/Three49custom.js\n\
 src/js/lib/GLmol.js\n\
@@ -146,7 +143,6 @@ src/js/lib/ChemDoodleWeb.js\n\
 					'src/js/lib/JSmol.min.js',
 					'src/js/lib/jquery-1.11.0.min.js',
 					'src/js/lib/Detector.js',
-					'src/js/lib/jMouseWheel.js',
 					'src/js/lib/Polyfill.js',
 					'src/js/lib/Three49custom.js',
 					'src/js/lib/GLmol.js',

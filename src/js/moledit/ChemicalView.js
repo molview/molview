@@ -247,11 +247,22 @@ function ChemicalView(parent, canvas)
 	//zooming with mousewheel
 	this.zoomSpeed = 0.08;
 	this.minKFC = 5;
-	this.parent.jMouseWheel((function(ev)
+	this.parent.on("DOMMouseScroll mousewheel", (function(ev)
 	{
 		ev.preventDefault();
 
-		var mult = 1 + (ev.deltaY / 3) * this.zoomSpeed;
+		var deltaY = 0;
+
+		if(ev.originalEvent.detail)
+		{
+			deltaY = ev.originalEvent.detail;
+		}
+		else if (ev.originalEvent.wheelDelta)
+		{
+			deltaY = ev.originalEvent.wheelDelta / 40;
+		}
+
+		var mult = 1 + (deltaY / 3) * this.zoomSpeed;
 
 		var cx = this.canvas.width / 2;
 		var cy = this.canvas.height / 2;

@@ -7,6 +7,7 @@ Bugfixes:
   - Added `Loader.Crystals.loadCODID` CIF validation
   - Catch `ucfirst()` and `humanize()` undefined input
   - Test if translation is necessary
+  - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
   > Spectrum loading error handling
 
 Backend:

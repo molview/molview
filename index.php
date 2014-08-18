@@ -182,7 +182,6 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/lib/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
 		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
-		<script type="text/javascript" src="src/js/lib/jMouseWheel.js"></script>
 		<script type="text/javascript" src="src/js/lib/Polyfill.js"></script>
         <script type="text/javascript" src="src/js/m2s/prototype.js"></script>
         <script type="text/javascript" src="src/js/m2s/util/common.js"></script>
