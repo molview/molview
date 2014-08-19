@@ -277,7 +277,8 @@ var Model = {
 		return Model.data.current;
 	},
 
-	GLmol: {
+	GLmol:
+	{
 		ready: false,
 		view: undefined,
 		canvas: undefined,
@@ -534,7 +535,8 @@ var Model = {
 		}
 	},
 
-	JSmol: {
+	JSmol:
+	{
 		ready: false,
 		readyCB: undefined,//only used in constructor
 		platformSpeed: 4,
@@ -880,7 +882,8 @@ var Model = {
 		}
 	},
 
-	CDW: {
+	CDW:
+	{
 		ready: false,
 		view: undefined,
 		molecule: undefined,

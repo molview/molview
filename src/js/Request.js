@@ -91,7 +91,7 @@ var Request = {
 	 * @param {Function} success Called as (2D, 3D, tranlated_text) when AJAX is finished
 	 * @param {Function} error   Called when request has failed
 	 */
-	CIRsearch: function(text, success, error)//success(2d, 3d, tranlated_text)
+	CIRsearch: function(text, success, error)
 	{
 		if(text === "")
 		{
@@ -129,6 +129,49 @@ var Request = {
 					{
 						success(mol2d, mol3d, text);
 					}, error);
+				}, error);
+			});
+
+		}, error);
+	},
+
+	/**
+	* Retrieve 3D molfile using a text string (CIR identifier)
+	* @param {String}   text    Input text string
+	* @param {Function} success Called as (3D, tranlated_text) when AJAX is finished
+	* @param {Function} error   Called when request has failed
+	*/
+	CIRsearch3D: function(text, success, error)
+	{
+		if(text === "")
+		{
+			error();
+			return;
+		}
+
+		//try CIR
+		Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
+		{
+			Progress.increment();
+			success(mol3d, text);
+
+		},
+		function()
+		{
+			Progress.increment();
+
+			//translate
+			Request.translation(text, function(translated)
+			{
+				Progress.increment();
+
+				text = translated;
+
+				//try CIR with translated input
+				Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
+				{
+					Progress.increment();
+					success(mol3d, text);
 				}, error);
 			});
 

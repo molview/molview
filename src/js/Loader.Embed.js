@@ -18,7 +18,7 @@ var Loader = {
 
 		var name = $("#search-input").val();
 
-		Request.CIRsearch(name, false, function(mol3d, text)
+		Request.CIRsearch3D(name, function(mol3d, text)
 		{
 			Model.loadMOL(mol3d);
 
@@ -111,7 +111,7 @@ var Loader = {
 								Model.loadPDB(pdb);
 
 								document.title = name || pdbid.toUpperCase();
-								
+
 								Progress.complete();
 								Messages.hide();
 							}
