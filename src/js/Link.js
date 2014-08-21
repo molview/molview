@@ -36,8 +36,11 @@ var Link = {
 
 	updateEmbedDialog: function()
 	{
-		if(!$("#resolve").hasClass("updated-updated") && MolView.layout != "model") $("#embed-2d-not-3d").show();
+		if(!$("#resolve").hasClass("resolve-updated") && MolView.layout != "model") $("#embed-2d-not-3d").show();
 		else $("#embed-2d-not-3d").hide();
+
+		if(Loader.lastQuery.type == "pdbid") $("#embed-macromolecule").show();
+		else $("#embed-macromolecule").hide();
 
 		var url = window.location.origin + window.location.pathname + "embed/?mode=" + Model.representation;
 

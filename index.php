@@ -746,9 +746,9 @@ else if(isset($codid))
 				<div class="dialog" id="share-dialog" style="display: none;">
 					<h2>Share</h2>
 					<div class="dialog-close-btn"></div>
-					<ul>
-						<li id="share-2d-not-3d">Make sure to convert the strutural formula into a 3D model if you want to share the molecule from the sketcher</li>
-					</ul>
+					<div class="alert-box">
+						<span id="share-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model will be shared)</span>
+					</div>
 					<div id="share-dialog-social" class="social no-select">
 						<div class="share share-facebook"></div>
 						<div class="share share-twitter"></div>
@@ -762,10 +762,10 @@ else if(isset($codid))
 				<div class="dialog" id="embed-dialog" style="display: none;">
 					<h2>Embed</h2>
 					<div class="dialog-close-btn"></div>
-					<ul>
-						<li id="embed-2d-not-3d">Make sure to resolve the strutural formula if you want to embed the molecule from the sketcher</li>
-						<li>Embedded macromolecules cannot be viewed on smartphones without WebGL</li>
-					</ul>
+					<div class="alert-box">
+						<span id="embed-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model will be embedded)</span>
+						<span id="embed-macromolecule" class="alert-bar">Embedded macromolecules cannot be viewed on smartphones without WebGL</span>
+					</div>
 					<h4>Width</h3>
 					<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
 					<h4>Height</h4>

@@ -18,9 +18,7 @@ Backend:
   - Minified JS and CSS
   - Renamed protein to biomolecule
   - Changed search query to search = fast || pubchem || rcsb || cod
-  - Renamed `Loader.Compounds` to `Loader.PubChem`
-  - Renamed `Loader.Biomolecules` to `Loader.RCSB`
-  - Renamed `Loader.Crystals` to `Loader.COD`
+  - Renamed Loader modules
   - Moved message SVG images to CSS
   - Minified SVG
   - Replaced '/' with '%5C' for Chemical Identifier Resolver lookup
@@ -48,6 +46,7 @@ Frontend:
   - Redesigned messages style
   - Added option to switch between MolView themes (desktop and touch)
   - Added external references to Information card (Chemicalize, Google, PDB, COD)
+  - Added scientific reference to the NIST Webbook for spectra
   > SMILES 3D conformation URL key; CID > InChiKey (CIR only) > SMILES
   > Save user preferences using HTML5 Web Storage
   > Functional groups in Sketcher
