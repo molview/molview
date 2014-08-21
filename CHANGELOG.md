@@ -6,7 +6,7 @@ Bugfixes:
   - Direct CODID search boundary
   - Added `Loader.Crystals.loadCODID` CIF validation
   - Catch `ucfirst()` and `humanize()` undefined input
-  - Test if translation is necessary
+  - Added test if translation is necessary
   - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
   > Spectrum loading error handling
 
@@ -14,16 +14,16 @@ Backend:
 
   - Added `min-width: 550px;` for `#edit-tools > .inner`
   - Removed model onload layout for CODID
-  - CSS efficiency review
-  - JS and CSS minification
+  - Revised CSS efficiency
+  - Minified JS and CSS
   - Renamed protein to biomolecule
   - Changed search query to search = fast || pubchem || rcsb || cod
   - Renamed `Loader.Compounds` to `Loader.PubChem`
   - Renamed `Loader.Biomolecules` to `Loader.RCSB`
   - Renamed `Loader.Crystals` to `Loader.COD`
   - Moved message SVG images to CSS
-  - SVG minification
-  - Replace '/' with '%5C' for Chemical Identifier Resolver lookup
+  - Minified SVG
+  - Replaced '/' with '%5C' for Chemical Identifier Resolver lookup
   - Splitted `ChemicalData` into `ChemProps` and `Spectroscopy`
   - Added two `ChemProps` dialogs; biomolecule and crystal
   - Migrated CSS to LESS
@@ -33,23 +33,21 @@ Backend:
 
 Frontend:
 
-  - Direct PDBID search
-  - Custom GLmol menu for WebGL devices
-  - Chain representation/coloring and biological assembly in GLmol menu
+  - Added PDBID search
+  - Added GLmol menu for WebGL devices
   - Updated logo
-  - JSmol middle mouse button dragging
-  - Fast search auto-complete to CID, PDBID or CODID
-  - Model background switch
-  - Export images with alpha channel
-  - Light sketcher toolbars
-  - Dialog close buttons
-  - Sketcher selection restyling
-  - UI restyle with flat design
-  - New search results layout
-  - New welcome dialog
-  - New messages bar design
-  - Switch to Desktop or Touch theme via MolView menu
-  - Information card external references (Chemicalize, Google, PDB, COD)
+  - Added JSmol middle mouse button dragging
+  - Added autocomplete for compounds, minerals and proteins
+  - Added option to alter the Model background color
+  - Added transparency support for exported images
+  - Added dialog close buttons
+  - Redesigned sketcher selection style
+  - Redesigned UI (flat and light)
+  - Redesigned search results style
+  - Added welcome dialog
+  - Redesigned messages style
+  - Added option to switch between MolView themes (desktop and touch)
+  - Added external references to Information card (Chemicalize, Google, PDB, COD)
   > SMILES 3D conformation URL key; CID > InChiKey (CIR only) > SMILES
   > Save user preferences using HTML5 Web Storage
   > Functional groups in Sketcher
