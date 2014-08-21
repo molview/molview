@@ -487,7 +487,7 @@ else if(isset($codid))
 			<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
 			<div id="load-more-cod" class="load-more" style="display: none;"></div>
 		</div>
-		<div id="search-autocomplete"></div>
+		<div id="autocomplete-dropdown"></div>
 		<div id="dialog-layer" class="dialog-layer">
 			<div id="dialog-wrapper">
 				<div class="dialog" id="start-dialog">

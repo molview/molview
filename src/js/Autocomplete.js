@@ -29,7 +29,7 @@ AutocompleteBuilder.prototype.sort = function(str, minsim, length)
 }
 
 var Autocomplete = {
-	//fuzzy-search algorithm parameters
+	//autocomplete algorithm parameters
 	MIN_SIM: 40,//minimal similarity of records
 	MAX_NUMBER: 10,//maximum number of records per category
 
@@ -44,6 +44,9 @@ var Autocomplete = {
 	records: [],
 	i: -1,
 
+	/**
+	 * Initializes autocomplete component
+	 */
 	init: function()
 	{
 		this.macromolecules = new AutocompleteBuilder(commonMacromolecules.macromolecules, "name");
@@ -67,41 +70,78 @@ var Autocomplete = {
 		});
 	},
 
-	keydown: function(e)
+	/**
+	 * Selects the specified record in the autocomplete dropdown
+	 * @param {Integer} i Record index
+	 */
+	focusRecord: function(i)
 	{
-		function focus_item(i)
+		if(i > -1 && i < Autocomplete.records.length)
 		{
-			var target = $(".autocomplete-item").eq(i);
-			$(".autocomplete-item").removeClass("autocomplete-item-hover");
-			if(i != -1)
-			{
-				target.addClass("autocomplete-item-hover");
-				var position = target.position();
-				if(position.top + target.outerHeight() > $("#search-autocomplete").outerHeight())
-					$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop()
-				  - $("#search-autocomplete").outerHeight() + position.top + target.outerHeight());
-				else if(position.top < 0)
-					$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop() + position.top);
-			}
+			$("#search-input").val(Autocomplete.records[i].label);
 		}
 
+		$(".autocomplete-item").removeClass("autocomplete-item-hover");
+
+		var target = $(".autocomplete-item").eq(i);
+		if(i != -1)
+		{
+			target.addClass("autocomplete-item-hover");
+			var position = target.position();
+			if(position.top + target.outerHeight() > $("#search-autocomplete").outerHeight())
+				$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop()
+			- $("#search-autocomplete").outerHeight() + position.top + target.outerHeight());
+			else if(position.top < 0)
+				$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop() + position.top);
+		}
+	},
+
+	/**
+	 * Handles keyboard events
+	 * @param  {Event} e
+	 */
+	keydown: function(e)
+	{
 		var key = e.keyCode || e.which;
 		switch(key)
 		{
 			case 38://up
 				this.i--;
 				if(this.i < -1) this.i = this.records.length - 1;
-				focus_item(this.i);
+				this.focusRecord(this.i);
 				return false;
 
 			case 40://down
 				this.i++;
 				if(this.i >= this.records.length) this.i = 0;
-				focus_item(this.i);
+				this.focusRecord(this.i);
 				return false;
+
+			case 39://right
+
+				/* complete input with first record which starts with the input
+				text if you press the right arrow after the end of the input text */
+				if(document.getElementById("search-input").selectionStart == $("#search-input").val().length)
+				{
+					var matches = this.records.filter(function(record)
+					{
+						return record.name.toLowerCase().indexOf(
+							$("#search-input").val().toLowerCase()) == 0;
+					});
+					
+					if(matches.length > 0)
+					{
+						$("#search-input").val(matches[0].label);
+					}
+
+					return false;
+				}
 		}
 	},
 
+	/**
+	 * Updates autocomplete dropdown records
+	 */
 	refresh: function()
 	{
 		var text = $("#search-input").val();
@@ -118,15 +158,27 @@ var Autocomplete = {
 			this.getPubChemAutocomplete(text, function(array)
 			{
 				if($("#search-input").val() != "")
-					Autocomplete.display(new AutocompleteBuilder(mix.concat(array), "name").sort(text));
+				{
+					mix = mix.concat(array);
+					for(var i = 0; i < mix.length; i++)
+					{
+						mix[i].label = ucfirst(humanize(mix[i].name));
+					}
+
+					Autocomplete.display(new AutocompleteBuilder(mix, "name").sort(text));
+				}
 			});
 		}
 	},
 
+	/**
+	 * Updates autocomplete dropdown using passed records
+	 * @param  {Array} records Autocomplete content records
+	 */
 	display: function(records)
 	{
 		/*
-		Record structure:
+		Record HTML structure:
 		<ul>
 			<li class="clearfix autocomplete-item autocomplete-macromolecule">
 				<span class="autocomplete-label">DNA</span>
@@ -138,13 +190,13 @@ var Autocomplete = {
 		Autocomplete.records = records;
 		Autocomplete.i = -1;
 
-		$("#search-autocomplete").empty();
+		$("#autocomplete-dropdown").empty();
 		var ul = $("<ul></ul>");
 
 		for(var i = 0; i < records.length; i++)
 		{
 			var li = $('<li class="clearfix autocomplete-item"></li>');
-			$('<span class="autocomplete-label"></span>').html(ucfirst(humanize(records[i].name))).appendTo(li);
+			$('<span class="autocomplete-label"></span>').html(records[i].label).appendTo(li);
 			if(records[i].pdbids)//macromolecule
 			{
 				li.addClass("autocomplete-macromolecule");
@@ -171,21 +223,30 @@ var Autocomplete = {
 			ul.append(li);
 		}
 
-		$("#search-autocomplete").append(ul);
+		$("#autocomplete-dropdown").append(ul);
 	},
 
+	/**
+	 * Shows autocomplete dropdown
+	 */
 	show: function()
 	{
 		Autocomplete.i = -1;
 		$(".autocomplete-item").removeClass("autocomplete-item-hover");
-		$("#search-autocomplete").show();
+		$("#autocomplete-dropdown").show();
 	},
 
+	/**
+	* Hides autocomplete dropdown
+	*/
 	hide: function()
 	{
-		$("#search-autocomplete").hide();
+		$("#autocomplete-dropdown").hide();
 	},
 
+	/**
+	* Submits autocomplete selection
+	*/
 	submit: function()
 	{
 		if($("#search-input").val() === "")
@@ -200,34 +261,53 @@ var Autocomplete = {
 			MolView.hideDialogs();
 			Actions.hide_search_results();
 
-			if(this.i == -1)
+			if(this.i == -1)//try to find a record match
+			{
+				for(var i = 0; i < this.records.length; i++)
+				{
+					if(this.records[i].name.toLowerCase() ==
+						$("#search-input").val().toLowerCase())
+					{
+						this.i = i;
+						break;
+					}
+				}
+			}
+
+			if(this.i == -1)//fast search using CIR
 			{
 				Messages.process(Loader.CIRsearch, "search");
 			}
 			else
 			{
-				$("#search-input").val(ucfirst(humanize(this.records[this.i].name)));
+				$("#search-input").val(this.records[this.i].label);
+				this.refresh();
 
-				if(this.records[this.i].pdbids)//macromolecule
+				if(this.records[this.i].pdbids)//RCSB macromolecule
 				{
 					Loader.RCSB.loadPDBID(this.records[this.i].pdbids[0],
-						ucfirst(humanize(this.records[this.i].name)));
+						this.records[this.i].label);
 				}
-				else if(this.records[this.i].codid)//mineral
+				else if(this.records[this.i].codid)//COD mineral
 				{
 					Loader.COD.loadCODID(this.records[this.i].codid,
-						ucfirst(humanize(this.records[this.i].name)));
+						this.records[this.i].label);
 				}
-				else//pubchem
+				else//PubChem compound
 				{
 					Loader.PubChem.loadName(this.records[this.i].name);
 				}
-
-				this.refresh();
 			}
 		}
 	},
 
+	/**
+	 * Retrieves PubChem compounds matching $text using an unofficial
+	 * PubChem autocomplete API
+	 * All requests are cached
+	 * @param {String}   text Input text
+	 * @param {Function} cb   Called when compound list is available
+	 */
 	getPubChemAutocomplete: function(text, cb)
 	{
 		if(this.PubChem_cache[text]) cb(this.PubChem_cache[text]);
@@ -241,7 +321,9 @@ var Autocomplete = {
 				{
 					var array = [];
 					for(var i = 0; i < data.autocp_array.length; i++)
-						array.push({ "name": data.autocp_array[i] });
+					{
+						array.push({ name: data.autocp_array[i] });
+					}
 
 					Autocomplete.PubChem_cache[text] = array;
 
