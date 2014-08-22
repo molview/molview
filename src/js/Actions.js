@@ -74,7 +74,7 @@ var Actions = {
 		try { smiles = Sketcher.getSMILES(); }
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
-		InfoCard.update(smiles, Sketcher.CID, Sketcher.InChiKey);
+		InfoCard.update(smiles, Sketcher.CID, Sketcher.InChiKey, Sketcher.InChi);
 		MolView.showDialog("properties");
 	},
 
@@ -115,13 +115,13 @@ var Actions = {
 
 	jcamp_current_spectrum: function()
 	{
-		if(!Specstrocopy.data[$("#spectrum-select").val()])
+		if(!Spectroscopy.data[$("#spectrum-select").val()])
 		{
 			alert("No spectrum selected!");
 			return;
 		}
 
-		var blob = new Blob([ Specstrocopy.data[$("#spectrum-select").val()] ],
+		var blob = new Blob([ Spectroscopy.data[$("#spectrum-select").val()] ],
 			{ type: "chemical/x-jcamp-dx;charset=utf-8" });
 		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".jdx");
 	},
@@ -331,7 +331,6 @@ var Actions = {
 	{
 		if($("#search-input").val() === "")
 		{
-			$("#search-input").focus();
 			MolView.alertEmptyInput();
 		}
 		else
@@ -346,7 +345,6 @@ var Actions = {
 	{
 		if($("#search-input").val() === "")
 		{
-			$("#search-input").focus();
 			MolView.alertEmptyInput();
 		}
 		else
@@ -361,7 +359,6 @@ var Actions = {
 	{
 		if($("#search-input").val() === "")
 		{
-			$("#search-input").focus();
 			MolView.alertEmptyInput();
 		}
 		else
@@ -376,7 +373,6 @@ var Actions = {
 	{
 		if($("#search-input").val() === "")
 		{
-			$("#search-input").focus();
 			MolView.alertEmptyInput();
 		}
 		else

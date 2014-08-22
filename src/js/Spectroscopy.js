@@ -64,7 +64,7 @@ var Spectroscopy = {
         //update available spectra
         function noSpectra()
         {
-            $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">No spectra</option>');
+            $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">Choose a spectrum</option>');
             $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
             $("#spectrum").removeClass("loading");
         }

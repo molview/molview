@@ -1,7 +1,6 @@
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
- * @author hermanbergwerf / http://hermanbergwerf.com/
  */
 
 var Detector = {
@@ -22,7 +21,6 @@ var Detector = {
 				'Your browser does not seem to support <a class="link" href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</a>. Find out how to get it <a class="link" href="http://get.webgl.org/">here</a>.';
 
 		}
-
 		return msg;
 	},
 };

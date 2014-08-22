@@ -27,6 +27,11 @@ var Model = {
 	representation: "balls",//balls || stick || vdw || wireframe || line
 	background: "black",
 
+	/**
+	 * Initializes 3D model view
+	 * @param  {Function} cb  Called when intialization is ready
+	 * @param  {String}   rnd Initail render engine
+	 */
 	init: function(cb, rnd)
 	{
 		if(MolView.loadDefault)
@@ -35,6 +40,9 @@ var Model = {
 		this.setRenderEngine(rnd || "GLmol", cb);
 	},
 
+	/**
+	 * Resizes 3D canvas in order to fit the current #model area
+	 */
 	resize: function()
 	{
 		if(this.engine == "GLmol") this.GLmol.resize();
@@ -42,6 +50,9 @@ var Model = {
 		else if(this.engine == "CDW") this.CDW.resize();
 	},
 
+	/**
+	 * Resets model position, rotation and scaling back to default
+	 */
 	reset: function()
 	{
 		if(this.engine == "GLmol") this.GLmol.reset();
@@ -49,7 +60,37 @@ var Model = {
 		else if(this.engine == "CDW") this.CDW.reset();
 	},
 
-	//returns false if engine == this.engine
+	/**
+	 * @return {Boolean} True if current render engine is GLmol
+	 */
+	isGLmol: function()
+	{
+		return Model.engine == "GLmol";
+	},
+
+	/**
+	* @return {Boolean} True if current render engine is JSmol
+	*/
+	isJSmol: function()
+	{
+		return Model.engine == "JSmol";
+	},
+
+	/**
+	* @return {Boolean} True if current render engine is ChemDoodle Web
+	*/
+	isCDW: function()
+	{
+		return Model.engine == "CDW";
+	},
+
+	/**
+	 * Sets the current 3D render engine
+	 * Initializes the engine if not initialized already
+	 * @param  {String}   engine Render engine id
+	 * @param  {Function} cb     Called when new render engine is loaded
+	 * @return {Boolean}         False if $engine == Model.engine
+	 */
 	setRenderEngine: function(engine, cb)
 	{
 		if(this.engine == engine)
@@ -100,7 +141,13 @@ var Model = {
 					"cdw" : "")))).addClass("checked");
 	},
 
-	_setRenderEngine: function(engine)//unsafe
+	/**
+	 * Inside function to set the render engine
+	 * You should never call this function directly since it assumes the
+	 * target engine is already initialized
+	 * @param {String} engine Render engine id
+	 */
+	_setRenderEngine: function(engine)
 	{
 		$("#glmol").css("display", (engine == "GLmol") ? "block" : "none");
 		$("#jsmol").css("display", (engine == "JSmol") ? "block" : "none");
@@ -109,39 +156,47 @@ var Model = {
 		this.engine = engine;
 		this.resize();
 
-		if(this.engine == "GLmol") this.GLmol.setBackground(this.background);
-		else if(this.engine == "JSmol") this.JSmol.setBackground(this.background);
-		else if(this.engine == "CDW") this.CDW.setBackground(this.background);
+		if(this.isGLmol()) this.GLmol.setBackground(this.background);
+		else if(this.isJSmol()) this.JSmol.setBackground(this.background);
+		else if(this.isCDW()) this.CDW.setBackground(this.background);
 
 		/* if loadContent returns true, the render engine
 		has updated the representation already */
 		if(!this.loadContent())
 		{
-			if(this.engine == "GLmol") this.GLmol.setRepresentation();
-			else if(this.engine == "JSmol") this.JSmol.setRepresentation(this.representation);
-			else if(this.engine == "CDW") this.CDW.setRepresentation(this.representation);
+			if(this.isGLmol()) this.GLmol.setRepresentation();
+			else if(this.isJSmol()) this.JSmol.setRepresentation(this.representation);
+			else if(this.isCDW()) this.CDW.setRepresentation(this.representation);
 		}
 	},
 
-	setRepresentation: function(res)
+	/**
+	 * Sets the 3D model molecular representation
+	 * @param {String} mode Representation mode
+	 */
+	setRepresentation: function(mode)
 	{
 		$(".r-mode").removeClass("checked");
-		if(res == "balls") $("#model-balls").addClass("checked");
-		else if(res == "stick") $("#model-stick").addClass("checked");
-		else if(res == "vdw") $("#model-vdw").addClass("checked");
-		else if(res == "wireframe") $("#model-wireframe").addClass("checked");
-		else if(res == "line") $("#model-line").addClass("checked");
+		if(mode == "balls") $("#model-balls").addClass("checked");
+		else if(mode == "stick") $("#model-stick").addClass("checked");
+		else if(mode == "vdw") $("#model-vdw").addClass("checked");
+		else if(mode == "wireframe") $("#model-wireframe").addClass("checked");
+		else if(mode == "line") $("#model-line").addClass("checked");
 
-		this.representation = res;
+		this.representation = mode;
 
 		window.setTimeout((function()
 		{
-			if(this.engine == "GLmol") this.GLmol.setRepresentation();
-			else if(this.engine == "JSmol") this.JSmol.setRepresentation(this.representation);
-			else if(this.engine == "CDW") this.CDW.setRepresentation(this.representation);
+			if(this.isGLmol()) this.GLmol.setRepresentation();
+			else if(this.isJSmol()) this.JSmol.setRepresentation(this.representation);
+			else if(this.isCDW()) this.CDW.setRepresentation(this.representation);
 		}).bind(this), 300);
 	},
 
+	/**
+	 * Sets the 3D model background color
+	 * @param {String} color Color name
+	 */
 	setBackground: function(color)
 	{
 		$(".model-bg").removeClass("checked");
@@ -150,11 +205,14 @@ var Model = {
 
 		this.background = color;
 
-		if(this.engine == "GLmol") return this.GLmol.setBackground(this.background);
-		else if(this.engine == "JSmol") return this.JSmol.setBackground(this.background);
-		else if(this.engine == "CDW") return this.CDW.setBackground(this.background);
+		if(this.isGLmol()) return this.GLmol.setBackground(this.background);
+		else if(this.isJSmol()) return this.JSmol.setBackground(this.background);
+		else if(this.isCDW()) return this.CDW.setBackground(this.background);
 	},
 
+	/**
+	 * Loads the current 3D data into the current render engine
+	 */
 	loadContent: function()
 	{
 		     if(this.data.current == "MOL") return this._loadMOL(this.data.mol);
@@ -163,62 +221,91 @@ var Model = {
 		else return false;
 	},
 
+	/**
+	 * Loads a Molfile into the 3D engine
+	 * Updates Model metadata and UI
+	 * @param {String} mol Molfile
+	 */
 	loadMOL: function(mol)
 	{
 		this.data.current = "MOL";
 		this.data.mol = mol;
 		$("#save-local-3d").text("MOL file");
-
-		//show some Jmol menu options
 		$(".jmol-script").removeClass("disabled");
 
 		this._loadMOL(mol);
 	},
 
+	/**
+	 * Loads a Molfile into the 3D engine
+	 * This method does not update the UI or the Model metadata
+	 * @param {String} mol Molfile
+	 */
 	_loadMOL: function(mol)
 	{
-		if(this.engine == "GLmol") return this.GLmol.loadMOL(mol);
-		else if(this.engine == "JSmol") return this.JSmol.loadMOL(mol);
-		else if(this.engine == "CDW") return this.CDW.loadMOL(mol);
+		if(this.isGLmol()) return this.GLmol.loadMOL(mol);
+		else if(this.isJSmol()) return this.JSmol.loadMOL(mol);
+		else if(this.isCDW()) return this.CDW.loadMOL(mol);
 	},
 
-	loadPDB: function(pdb, exitload)
+	/**
+	* Loads a PDB file into the 3D engine
+	* Updates Model metadata and UI
+	* @param {String}  pdb       PDB file
+	* @param {Boolean} noDisplay If True, the PDB file is NOT displayed
+	*/
+	loadPDB: function(pdb, noDisplay)
 	{
 		this.data.current = "PDB";
 		this.data.pdb = pdb;
 		$("#save-local-3d").text("PDB file");
-
-		if(exitload) return;
-
-		//hide some Jmol menu options
 		$(".jmol-script").addClass("disabled");
+
+		if(noDisplay) return;
 
 		this._loadPDB(pdb);
 	},
 
-	_loadPDB: function(pdb, exitload)
+	/**
+	* Loads a PDB file into the 3D engine
+	* This method does not update the UI or the Model metadata
+	* @param {String} pdb PDB file
+	*/
+	_loadPDB: function(pdb)
 	{
-		if(this.engine == "GLmol") return this.GLmol.loadPDB(pdb);
-		else if(this.engine == "JSmol") return this.JSmol.loadPDB(pdb);
-		else if(this.engine == "CDW") return this.CDW.loadPDB(pdb);
+		if(this.isGLmol()) return this.GLmol.loadPDB(pdb);
+		else if(this.isJSmol()) return this.JSmol.loadPDB(pdb);
+		else if(this.isCDW()) return this.CDW.loadPDB(pdb);
 	},
 
+	/**
+	* Loads a CID file into the 3D engine
+	* Updates Model metadata and UI
+	* @param {String} cif  CIF file
+	* @param {Array}  cell Crystal cell dimensions
+	*/
 	loadCIF: function(cif, cell)
 	{
 		this.data.current = "CIF";
 		this.data.cif = cif;
 		$("#save-local-3d").text("CIF file");
-
-		//show some Jmol menu options
 		$(".jmol-script").removeClass("disabled");
 
 		this._loadCIF(cif, cell);
 	},
 
+	/**
+	* Loads a CIF file into the 3D engine
+	* This method does not update the UI or the Model metadata
+	* This method picks the most suitable crystal render engine
+	* (CDW if WebGL is available, else JSmol)
+	* @param {String} cif  CIF file
+	* @param {Array}  cell Crystal cell dimensions
+	*/
 	_loadCIF: function(cif, cell)
 	{
 		cell = cell || [1, 1, 1];
-		if(this.engine == "GLmol")
+		if(this.isGLmol())
 		{
 			if(Detector.webgl)//use ChemDoodle
 			{
@@ -235,34 +322,43 @@ var Model = {
 				});
 			}
 		}
-		else if(this.engine == "JSmol")
+		else if(this.isJSmol())
 		{
-			return this.JSmol.loadCIF(cif, cell);
+			this.JSmol.loadCIF(cif, cell);
 		}
-		else if(this.engine == "CDW")
+		else if(this.isCDW())
 		{
-			if(Detector.webgl) this.CDW.loadCIF(cif, cell);
+			if(Detector.webgl)
+			{
+				this.CDW.loadCIF(cif, cell);
+			}
 			else//use Jmol
 			{
 				this.setRenderEngine("JSmol", function()
 				{
-					return Model.JSmol.loadCIF(Model.data.cif, cell);
+					Model.JSmol.loadCIF(Model.data.cif, cell);
 				});
 			}
 		}
 	},
 
+	/**
+	 * @return {String} DataURL containing an image of the current 3D model
+	 */
 	toDataURL: function()
 	{
 		var dataURL = "";
 
-		if(this.engine == "CDW") dataURL = this.CDW.toDataURL();
-		else if(this.engine == "JSmol") dataURL = this.JSmol.toDataURL();
-		else if(this.engine == "GLmol") dataURL = this.GLmol.toDataURL();
+		if(this.isGLmol()) dataURL = this.GLmol.toDataURL();
+		else if(this.isJSmol()) dataURL = this.JSmol.toDataURL();
+		else if(this.isCDW()) dataURL = this.CDW.toDataURL();
 
 		return dataURL;
 	},
 
+	/**
+	 * @return {Blob} Blob containing the current 3D model data
+	 */
 	getDataBlob: function()
 	{
 		var blob;
@@ -272,6 +368,9 @@ var Model = {
 		return blob;
 	},
 
+	/**
+	 * @return {String} Uppercase file extension for the current 3D model
+	 */
 	getDataExstension: function()
 	{
 		return Model.data.current;
@@ -288,6 +387,11 @@ var Model = {
 			representation: "ribbon",//ribbon || cylinders || trace || tube || bonds
 			coloring: "ss",//ss || spectrum || chain || bfactor || polarity
 		},
+
+		/*
+		Saves current containing model data in order to prevent loading the
+		same structure multiple times while switching between render engines
+		*/
 		currentModel: "",
 
 		init: function(cb)
@@ -465,6 +569,10 @@ var Model = {
 			}
 		},
 
+		/**
+		 * Toggles the current bio-assembly switch and updates the
+		 * assosiated render output
+		 */
 		toggleBioAssembly: function()
 		{
 			if(Model.engine == "GLmol" && Model.data.current == "PDB")
@@ -488,6 +596,10 @@ var Model = {
 			}
 		},
 
+		/**
+		 * Sets the current chain representation
+		 * @param {String} representation Chain representation type
+		 */
 		setChainRepresentation: function(representation)
 		{
 			$(".glmol-chain").removeClass("checked");
@@ -501,6 +613,10 @@ var Model = {
 			}, "glmol_update");
 		},
 
+		/**
+		* Sets the current chain coloring
+		* @param {String} coloring Chain coloring type
+		*/
 		setChainColoring: function(coloring)
 		{
 			$(".glmol-color").removeClass("checked");
@@ -541,6 +657,11 @@ var Model = {
 		readyCB: undefined,//only used in constructor
 		platformSpeed: 4,
 		picking: "OFF",
+
+		/*
+		Saves current containing model data in order to prevent loading the
+		same structure multiple times while switching between render engines
+		*/
 		currentModel: "",
 
 		init: function(cb)
@@ -581,6 +702,9 @@ var Model = {
 			}
 		},
 
+		/**
+		 * Called by JSmol when initialization is ready
+		 */
 		onReady: function()
 		{
 			this.ready = true;
@@ -592,6 +716,9 @@ var Model = {
 			if(scope.readyCB) scope.readyCB();
 		},
 
+		/**
+		 * JSmol message callback
+		 */
 		onMessage: function(a, b, c)
 		{
 			if(b.toLowerCase().indexOf("initial mmff e") > -1 && b.toLowerCase().indexOf("max steps = 0") > -1)
@@ -602,34 +729,58 @@ var Model = {
 			return null;
 		},
 
+		/**
+		 * Executes Jmol script
+		 * Updates render output live
+		 * @param  {String} script Jmol commands
+		 */
 		script: function(script)
 		{
 			if(this.ready)
+			{
 				Jmol.script(JSmol, script);
+			}
 		},
 
+		/**
+		* Executes Jmol script
+		* Updates render output once scrit is ready
+		* @param  {String} script Jmol commands
+		*/
 		scriptWaitOutput: function(script)
 		{
 			if(this.ready)
+			{
 				Jmol.scriptWaitOutput(JSmol, script);
+			}
 		},
 
+		/**
+		 * Prints $msg to the top-left corner of the render output
+		 * @param  {String} msg Message
+		 */
 		print: function(msg)
 		{
 			if(this.ready)
+			{
 				Model.JSmol.script('set echo top left; background echo black; font echo 18 serif bold; color echo white; echo "' + msg + '";');
+			}
 		},
 
 		resize: function()
 		{
 			if(this.ready)
+			{
 				Jmol.resizeApplet(JSmol, [ $("#model").width(), $("#model").height() ]);
+			}
 		},
 
 		reset: function()
 		{
 			if(this.ready)
+			{
 				Model.JSmol.script("reset;");
+			}
 		},
 
 		setRepresentation: function(res)
@@ -722,6 +873,11 @@ var Model = {
 			}
 		},
 
+		/**
+		 * Set JSmol render quality (called platform speed by Jmol)
+		 * Updates Model metadata and UI
+		 * @param {Integer} i Platform speed (1-8)
+		 */
 		setPlatformSpeed: function(i)
 		{
 			$(".jmol-rnd").removeClass("checked");
@@ -731,12 +887,24 @@ var Model = {
 			this._setPlatformSpeed(i);
 		},
 
+		/**
+		 * Inside method to apply the specified Jmol platformSpeed
+		 * @param {Integer} i Platform speed (1-8)
+		 */
 		_setPlatformSpeed: function(i)
 		{
 			this.scriptWaitOutput("set antialiasDisplay " + (i <= 2 ? "false" : "true") + "; set platformSpeed " + i + ";");
 			this.scriptWaitOutput(JmolScripts.resetLabels);
 		},
 
+		/**
+		 * Wrapper method for executing Jmol scripts from the menu
+		 * This method makes sure JSmol is initialized before executing
+		 * the script
+		 * @param {Function} cb   Called when JSmol is ready
+		 * @param {String}   what Message id
+		 * @param {Boolean}  show Indicates if a message should be displayed
+		 */
 		safeCallback: function(cb, what, show)
 		{
 			Model.setRenderEngine("JSmol", function()
@@ -753,6 +921,9 @@ var Model = {
 			});
 		},
 
+		/**
+		 * Restores the initial 3D model
+		 */
 		clean: function()
 		{
 			this.script(JmolScripts.clearChargeDisplay);
@@ -853,7 +1024,12 @@ var Model = {
 			}, "jmol_calculation", false);
 		},
 
-		setPicking: function(type)//distance || angle || torsion
+		/**
+		 * Enables or disables JSmol picking
+		 * @param {String} type Picking type (distance || angle || torsion)
+		 *                      or OFF to disable picking
+		 */
+		setPicking: function(type)
 		{
 			this.picking = type;
 			Model.JSmol.safeCallback(function()
@@ -887,6 +1063,11 @@ var Model = {
 		ready: false,
 		view: undefined,
 		molecule: undefined,
+
+		/*
+		Saves current containing model data in order to prevent loading the
+		same structure multiple times while switching between render engines
+		*/
 		currentModel: "",
 
 		init: function(cb)

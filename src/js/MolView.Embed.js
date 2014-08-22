@@ -83,6 +83,10 @@ var MolView = {
 					if(value == "wireframe") Model.setRepresentation("wireframe");
 					if(value == "line") Model.setRepresentation("lines");
 				}
+				else if(key == "bg")
+				{
+					Model.setBackground(value);
+				}
 			});
 		}).bind(this), Detector.webgl ? "GLmol" : "JSmol");
 	},

@@ -12,8 +12,9 @@ var InfoCard = {
 	 * @param {String} smiles   SMILES string
 	 * @param {String} cid      CID string
 	 * @param {String} inchikey InChiKey string
+	 * @param {String} inchi    InChi string
 	 */
-	update: function(smiles, cid, inchikey)
+	update: function(smiles, cid, inchikey, inchi)
 	{
 		if(this.data["smiles"] != smiles && smiles != "")
 		{
@@ -28,7 +29,8 @@ var InfoCard = {
 			this.data = {};
 			this.data["smiles"] = smiles;
 			this.data["cid"] = cid;
-			this.data["inchikey"] = inchikey
+			this.data["inchikey"] = inchikey;
+			this.data["inchi"] = inchi;
 
 			this.updateImage();
 
@@ -102,7 +104,7 @@ var InfoCard = {
 		}
 
 		if(Sketcher.CID) img.src = Request.PubChem.image(Sketcher.CID);
-		else img.src = Request.PubChem.SMILES.image(InfoCard.data["smiles"]);
+		else img.src = Request.PubChem.smilesToImage(InfoCard.data["smiles"]);
 	},
 
 	/**

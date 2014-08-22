@@ -111,6 +111,7 @@ else if(isset($codid))
 	 - menu = on || off
 	 - dialog = about || help || share || embed
 	 - mode = balls || stick || vdw || wireframe || line
+	 - bg = black || white
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -322,8 +323,8 @@ else if(isset($codid))
 							<li><a id="engine-cdw">ChemDoodle</a></li>
 							<li class="menu-header">Crystallography</li>
 							<li><a id="cif-unit-cell">Load unit cell</a></li>
-							<li><a id="cif-2x2x2-cell">Load 2x2x2 supercell</a></li>
-							<li><a id="cif-1x3x3-cell">Load 1x3x3 supercell</a></li>
+							<li><a id="cif-2x2x2-cell">Load 2&times;2&times;2 supercell</a></li>
+							<li><a id="cif-1x3x3-cell">Load 1&times;3&times;3 supercell</a></li>
 						</ul>
 					</li>
 					<li id="glmol-menu" class="dropdown" style="display: none;">
@@ -366,7 +367,7 @@ else if(isset($codid))
 						</ul>
 					</li>
 				</ul>
-				<form id="search" class="brick input-append" action="javascript:void(0)">
+				<form id="search" class="brick form-bar" action="javascript:void(0)">
 					<div id="search-input-wrap">
 						<input id="search-input" name="q" type="text"
 							placeholder="Name, InChiKey, SMILES &hellip;"
@@ -475,7 +476,7 @@ else if(isset($codid))
 					</div>
 				</div>
 			</div>
-			<div id="model">
+			<div id="model" <?php if(isset($bg)) echo 'style="background:'.$bg.'"'; ?>>
 				<div id="chemdoodle" class="render-engine" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 				<div id="jsmol" class="render-engine" style="display: none;"></div>
 				<div id="glmol" class="render-engine" style="display: none;"></div>
@@ -487,7 +488,9 @@ else if(isset($codid))
 			<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
 			<div id="load-more-cod" class="load-more" style="display: none;"></div>
 		</div>
-		<div id="autocomplete-dropdown"></div>
+		<div id="autocomplete-dropdown-wrapper" style="display: none;">
+			<div id="autocomplete-dropdown"></div>
+		</div>
 		<div id="dialog-layer" class="dialog-layer">
 			<div id="dialog-wrapper">
 				<div class="dialog" id="start-dialog">
@@ -555,7 +558,7 @@ else if(isset($codid))
 					</p>
 					<div id="disclaimer">DISCLAIMER: MolView does not warrant that the data contained in its website is complete and correct and shall not be liable whatsoever for any damages incurred as a result of its use.</div>
 					<div class="footer">
-						<button class="btn close btn-primary pull-right">Continue</button>
+						<button class="btn close btn-primary">Continue</button>
 					</div>
 				</div>
 				<div class="dialog" id="help-dialog" style="display: none;">
@@ -611,6 +614,7 @@ else if(isset($codid))
 							<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
 							<ol>
 								<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
+								<li><b>GLmol</b> if you load macromolecules <i>(due to significant higher performance)</i></li>
 								<li><b>ChemDoodle</b> if you load a crystal structure <i>(Glmol cannot render crystal structures)</i></li>
 							</ol>
 							<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
@@ -740,7 +744,7 @@ else if(isset($codid))
 						</ul>
 					</p>
 					<div class="footer">
-						<button class="btn close btn-primary pull-right">Close</button>
+						<button class="btn close btn-primary">Close</button>
 					</div>
 				</div>
 				<div class="dialog" id="share-dialog" style="display: none;">
@@ -756,7 +760,7 @@ else if(isset($codid))
 					</div>
 					<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
 					<div class="footer">
-						<button class="btn close btn-primary pull-right">Close</button>
+						<button class="btn close btn-primary">Close</button>
 					</div>
 				</div>
 				<div class="dialog" id="embed-dialog" style="display: none;">
@@ -773,7 +777,7 @@ else if(isset($codid))
 					<h4>HTML code</h4>
 					<input id="embed-code" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
 					<div class="footer">
-						<button class="btn close btn-primary pull-right">Close</button>
+						<button class="btn close btn-primary">Close</button>
 					</div>
 				</div>
 				<div class="dialog" id="properties-dialog" style="display: none;">
@@ -822,7 +826,7 @@ else if(isset($codid))
 						</table>
 					</div>
 					<div class="footer">
-						<button class="btn close btn-primary pull-right">Close</button>
+						<button class="btn close btn-primary">Close</button>
 					</div>
 				</div>
 				<div class="dialog" id="spectra-dialog" style="display: none;">
@@ -845,7 +849,7 @@ else if(isset($codid))
 					<div class="dialog-close-btn"></div>
 					<div id="periodictable" class="no-select"></div>
 					<div class="footer">
-						<button class="btn close btn-primary pull-right">Close</button>
+						<button class="btn close btn-primary">Close</button>
 					</div>
 				</div>
 			</div>

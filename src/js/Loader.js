@@ -462,53 +462,8 @@ var Loader = {
 
 				Request.RCSB.PDB(pdbid, function(pdb)
 				{
-					if(!Detector.webgl)
+					function finish()
 					{
-						if(MolView.mobile)
-						{
-							Messages.alert("mobile_old_no_macromolecules");
-						}
-						else
-						{
-							if(Model.engine == "JSmol")
-							{
-								Model.loadPDB(pdb);
-								Sketcher.markOutdated();
-
-								document.title = name || pdbid.toUpperCase();
-
-								Progress.complete();
-								Messages.hide();
-
-								Messages.alert("sketcher_no_macromolecules");
-								Loader.lastQuery.type = "pdbid";
-								Loader.lastQuery.content = "" + pdbid;
-								History.push("pdbid", pdbid);
-							}
-							else//switch to JSmol
-							{
-								Model.loadPDB(pdb, true);
-								Model.JSmol.setPlatformSpeed(1);
-								Model.setRenderEngine("JSmol", function()
-								{
-									Sketcher.markOutdated();
-
-									document.title = name || pdbid.toUpperCase();
-
-									Progress.complete();
-									Messages.hide();
-
-									Messages.alert("sketcher_no_macromolecules");
-									Loader.lastQuery.type = "pdbid";
-									Loader.lastQuery.content = "" + pdbid;
-									History.push("pdbid", pdbid);
-								});
-							}
-						}
-					}
-					else
-					{
-						Model.loadPDB(pdb);
 						Sketcher.markOutdated();
 
 						document.title = name || pdbid.toUpperCase();
@@ -520,6 +475,41 @@ var Loader = {
 						Loader.lastQuery.type = "pdbid";
 						Loader.lastQuery.content = "" + pdbid;
 						History.push("pdbid", pdbid);
+					}
+
+					if(!Detector.webgl)
+					{
+						if(MolView.mobile)
+						{
+							Messages.alert("mobile_old_no_macromolecules");
+						}
+						else
+						{
+							if(Model.isJSmol())
+							{
+								Model.loadPDB(pdb);
+								finish();
+							}
+							else//switch to JSmol
+							{
+								Model.loadPDB(pdb, true);
+								Model.JSmol.setPlatformSpeed(1);
+								Model.setRenderEngine("JSmol", finish);
+							}
+						}
+					}
+					else
+					{
+						if(Model.isGLmol())
+						{
+							Model.loadPDB(pdb);
+							finish();
+						}
+						else//switch to JSmol
+						{
+							Model.loadPDB(pdb, true);
+							Model.setRenderEngine("GLmol", finish);
+						}
 					}
 				},
 				function()

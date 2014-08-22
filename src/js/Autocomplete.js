@@ -25,7 +25,16 @@ AutocompleteBuilder.prototype.sort = function(str, minsim, length)
 	}
 
 	return cpy.sort(function(a, b)
-		{ return b.similarity - a.similarity; }).slice(0, length ? length : cpy.length);
+	{
+		if(b.similarity == a.similarity)
+		{
+			//give minerals precedence over compounds
+			if(a.codid != undefined) return -1;
+			else if(b.codid != undefined) return 1;
+			else return b.similarity - a.similarity;
+		}
+		else return b.similarity - a.similarity;
+	}).slice(0, length ? length : cpy.length);
 }
 
 var Autocomplete = {
@@ -61,7 +70,7 @@ var Autocomplete = {
 		//hide autocomplete when clicked outside input and autocomplete
 		$(window).on(MolView.trigger, function(e)
 		{
-			var container = $("#search-input, #search-autocomplete");
+			var container = $("#search-input, #autocomplete-dropdown");
 
 			if(!container.is(e.target) && container.has(e.target).length === 0)
 			{
@@ -88,11 +97,11 @@ var Autocomplete = {
 		{
 			target.addClass("autocomplete-item-hover");
 			var position = target.position();
-			if(position.top + target.outerHeight() > $("#search-autocomplete").outerHeight())
-				$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop()
-			- $("#search-autocomplete").outerHeight() + position.top + target.outerHeight());
+			if(position.top + target.outerHeight() > $("#autocomplete-dropdown").outerHeight())
+				$("#autocomplete-dropdown").scrollTop($("#autocomplete-dropdown").scrollTop()
+			  - $("#autocomplete-dropdown").outerHeight() + position.top + target.outerHeight());
 			else if(position.top < 0)
-				$("#search-autocomplete").scrollTop($("#search-autocomplete").scrollTop() + position.top);
+				$("#autocomplete-dropdown").scrollTop($("#autocomplete-dropdown").scrollTop() + position.top);
 		}
 	},
 
@@ -128,7 +137,7 @@ var Autocomplete = {
 						return record.name.toLowerCase().indexOf(
 							$("#search-input").val().toLowerCase()) == 0;
 					});
-					
+
 					if(matches.length > 0)
 					{
 						$("#search-input").val(matches[0].label);
@@ -150,9 +159,11 @@ var Autocomplete = {
 		else
 		{
 			var mix = [];
-			if(MolView.macromolecules)
+			if(MolView.macromolecules && !(!Detector.webgl && MolView.mobile))
+			{
 				mix = this.macromolecules.sort(text, this.MIN_SIM, this.MAX_NUMBER)
-			  .concat(this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER));
+					.concat(this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER));
+			}
 			else mix = this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER);
 
 			this.getPubChemAutocomplete(text, function(array)
@@ -165,7 +176,7 @@ var Autocomplete = {
 						mix[i].label = ucfirst(humanize(mix[i].name));
 					}
 
-					Autocomplete.display(new AutocompleteBuilder(mix, "name").sort(text));
+					Autocomplete.display(new AutocompleteBuilder(mix, "label").sort(text));
 				}
 			});
 		}
@@ -233,7 +244,7 @@ var Autocomplete = {
 	{
 		Autocomplete.i = -1;
 		$(".autocomplete-item").removeClass("autocomplete-item-hover");
-		$("#autocomplete-dropdown").show();
+		$("#autocomplete-dropdown-wrapper").show();
 	},
 
 	/**
@@ -241,7 +252,7 @@ var Autocomplete = {
 	*/
 	hide: function()
 	{
-		$("#autocomplete-dropdown").hide();
+		$("#autocomplete-dropdown-wrapper").hide();
 	},
 
 	/**
@@ -281,7 +292,6 @@ var Autocomplete = {
 			else
 			{
 				$("#search-input").val(this.records[this.i].label);
-				this.refresh();
 
 				if(this.records[this.i].pdbids)//RCSB macromolecule
 				{
@@ -295,8 +305,10 @@ var Autocomplete = {
 				}
 				else//PubChem compound
 				{
-					Loader.PubChem.loadName(this.records[this.i].name);
+					Loader.PubChem.loadName(this.records[this.i].label);
 				}
+
+				this.refresh();
 			}
 		}
 	},

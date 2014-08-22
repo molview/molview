@@ -414,7 +414,7 @@ var Request = {
 		{
 			AJAX({
 				dataType: "json",
-				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/" + smiles + "/cids/json",
+				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/cids/json?smiles=" + smiles,
 				success: function(data)
 				{
 					if(data.IdentifierList) success(data.IdentifierList.CID[0]);
@@ -485,6 +485,11 @@ var Request = {
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid + "/png?record_type=2d";
 		},
 
+		smilesToImage: function(smiles)
+		{
+			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles=" + encodeURIComponent(smiles);
+		},
+
 		mol: function(cid, flat, success, error)
 		{
 			if(xhr !== undefined) xhr.abort();
@@ -499,14 +504,6 @@ var Request = {
 				}
 			});
 		},
-
-		SMILES:
-		{
-			image: function(smiles)
-			{
-				return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles=" + encodeURIComponent(smiles);
-			}
-		}
 	},
 
 	RCSB:

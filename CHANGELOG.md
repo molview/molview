@@ -7,27 +7,26 @@ Bugfixes:
   - Added `Loader.Crystals.loadCODID` CIF validation
   - Catch `ucfirst()` and `humanize()` undefined input
   - Added test if translation is necessary
+  - Replaced '/' with '%5C' for Chemical Identifier Resolver lookup
   - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
   > Spectrum loading error handling
 
 Backend:
 
-  - Added `min-width: 550px;` for `#edit-tools > .inner`
   - Removed model onload layout for CODID
   - Revised CSS efficiency
   - Minified JS and CSS
-  - Renamed protein to biomolecule
   - Changed search query to search = fast || pubchem || rcsb || cod
+  - Renamed protein to biomolecule
   - Renamed Loader modules
   - Moved message SVG images to CSS
   - Minified SVG
-  - Replaced '/' with '%5C' for Chemical Identifier Resolver lookup
-  - Splitted `ChemicalData` into `ChemProps` and `Spectroscopy`
-  - Added two `ChemProps` dialogs; biomolecule and crystal
+  - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
   - Migrated CSS to LESS
   - Revised Information loading sequence
-  > SMILES 2D/3D conversion; PubChem > Chemical Identifier Resolver
-  > Save Sketcher.InChiKey from Chemical Identifier Resolver search
+  > Added CAS lookup fallback using PubChem
+  > Revised SMILES 2D/3D conversion sequence (PubChem > CIR)
+  > Added InChiKey and InChi to Sketcher metadata
 
 Frontend:
 
@@ -43,14 +42,14 @@ Frontend:
   - Redesigned UI (flat and light)
   - Redesigned search results style
   - Added welcome dialog
-  - Redesigned messages style
   - Added option to switch between MolView themes (desktop and touch)
-  - Added external references to Information card (Chemicalize, Google, PDB, COD)
-  - Added scientific reference to the NIST Webbook for spectra
-  > SMILES 3D conformation URL key; CID > InChiKey (CIR only) > SMILES
-  > Save user preferences using HTML5 Web Storage
-  > Functional groups in Sketcher
-  > COD image archive
+  > Added external references to Information card (Chemicalize, Google, PDB, COD)
+  > Added scientific reference to the NIST Chemistry WebBook for spectra
+  > Added percent composition table to Information card
+  > Revised SMILES 3D conformation URL key (CID > InChiKey > SMILES)
+  > Added user preferences using HTML5 Web Storage
+  > Added functional groups support in Sketcher
+  > Integrated COD image archive
 
 ## 2.1.3 (2014-07-07)
 
@@ -65,7 +64,7 @@ Revisions:
 
   - Hide molecule-image when unavailable
   - Improved small screen messages layout
-  - Removed unnecessary `Messages.progress` calls for CID, PDBID and CODID loading
+  - Removed double `Messages.progress` calls for CID, PDBID and CODID loading
 
 Features:
 
@@ -76,11 +75,11 @@ Features:
 Bugfixes:
 
   - Removed `jMouseWheel` from GLmol (firefox bug)
-  - Search results long formula overflow
+  - Fixed crystal search results formula overflow
 
 Revisions:
 
-  - ChemicalData image loading appearance
+  - Revised ChemicalData image loading appearance
 
 ## 2.1.0 (2014-07-04)
 
@@ -88,8 +87,8 @@ Bugfixes:
 
   - No auto hsplit when loaded as `MolView.layout == model`
   - Jmol CIF no full unitcell after initialisation (scriptWaitOutput fix)
-  - Jmol load structure + setRepresentation flashing (scriptWaitOutput fix)
-  - Jmol measurement after structure is resolved
+  - Jmol load structure + setRepresentation flash (scriptWaitOutput fix)
+  - Jmol re-enable measurement after Model is updated
   - Removed alerts in m2s (Ketcher MOL2SMILES port)
 
 Revisions:
@@ -98,7 +97,7 @@ Revisions:
   - Replaced /data/CSID2CODID.txt with COD chemspider_x_cod database
   - Implemented Jmol scriptWaitOutput
   - Improved `ChemicalView.removeImplicitHydrogen`
-  - Changed search result title appereance
+  - Revised search result title appereance
   - Removed forced model view for CIF files (except for onload view)
   - ChemicalData PubChem integration redesign
   - ChemicalData CanonicalSMILES from PubChem

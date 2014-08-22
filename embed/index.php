@@ -107,6 +107,7 @@ else if(isset($codid))
 	- pdbid = load PDBID
 	- codid = load CIF from COD
 	- mode = balls || stick || vdw || wireframe || line
+	- bg = black || white
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -191,7 +192,7 @@ else if(isset($codid))
 			?>;*/
 		</script>
 	</head>
-	<body id="model">
+	<body id="model" <?php if(isset($bg)) echo 'style="background:'.$bg.'"'; ?>>
 		<input id="search-input" style="display: none" />
 		<div id="chemdoodle" class="render-engine full-cover" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>

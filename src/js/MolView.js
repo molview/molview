@@ -320,6 +320,10 @@ var MolView = {
 				if(value == "wireframe") Actions.model_wireframe();
 				if(value == "line") Actions.model_line();
 			}
+			else if(key == "bg")
+			{
+				Model.setBackground(value);
+			}
 		});
 	},
 
@@ -372,9 +376,15 @@ var MolView = {
 	alertEmptyInput: function()
 	{
 		if(MolView.search_input_timeout != null)
+		{
 			window.clearTimeout(MolView.search_input_timeout);
+		}
 
-		$("#search-input").addClass("alert");
+		window.setTimeout(function()
+		{
+			$("#search-input").addClass("alert").focus();
+		}, 0);
+		
 		MolView.search_input_timeout = window.setTimeout(function()
 		{
 			$("#search-input").removeClass("alert");

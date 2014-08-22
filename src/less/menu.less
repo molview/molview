@@ -1,3 +1,5 @@
+@import (reference) "vars";
+
 .menu
 {
 	display: block;
@@ -6,12 +8,12 @@
 	padding: 0;
 
 	/* swipe trick */
-	height: 41px;
+	height: @menubar-height + 1;
 }
 
 .menu > .inner
 {
-	height: 40px;
+	height: @menubar-height;
 }
 
 /* swipe trick: display menu on top of page */
@@ -77,6 +79,8 @@
 
 .dropdown-toggle
 {
+	z-index: 1;
+	position: relative;
 	display: block;
 	margin: 0;
 	padding: 0;
@@ -92,7 +96,7 @@
 {
 	visibility: hidden;
 	position: absolute;
-	margin: 0 0 0 -1px;
+	margin: -1px 0 0 0;
 	padding: 5px 0;
 	min-width: 200px;
 
@@ -177,6 +181,8 @@ li.menu-header
 {
 	float: right;
 	overflow: hidden;
+	margin-top: -1px;
+	padding-right: 1px;
 }
 
 #search-input-wrap
@@ -186,24 +192,24 @@ li.menu-header
 
 #search-input
 {
-	height: 40px;
+	height: 42px;
 }
 
-#search-buttons > button
+.btn-search
 {
-	float: left;
+	height: 42px;
 	padding: 5px 10px;
+
 	line-height: 1;
-	min-width: 40px;
+	border-color: @light3;
 	border-radius: 0;
-	box-sizing: border-box;
 }
 
 /* absolute dimensions in order to make equal on all browsers */
 #search-input { width: 300px; }
-#fast-search { width: 40px; }
+#fast-search { width: 42px; }
 #pubchem-search { width: 113px; }
 #rcsb-search { width: 145px; }
 #cod-search { width: 80px; }
-#show-search-results { width: 40px; }
-#hide-search-results { width: 40px; }
+#show-search-results { width: 42px; }
+#hide-search-results { width: 42px; }
