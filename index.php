@@ -491,6 +491,7 @@ else if(isset($codid))
 		<div id="autocomplete-dropdown-wrapper" style="display: none;">
 			<div id="autocomplete-dropdown"></div>
 		</div>
+		<div id="messages"></div>
 		<div id="dialog-layer" class="dialog-layer">
 			<div id="dialog-wrapper">
 				<div class="dialog" id="start-dialog">
@@ -810,8 +811,10 @@ else if(isset($codid))
 							<tbody>
 								<tr id="prop-sysname-title"><th>Systematic name</th></tr>
 								<tr id="prop-sysname-wrapper"><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-smiles-title"><th>SMILES</th></tr>
-								<tr id="prop-smiles-wrapper"><td><input type="text" id="prop-smiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-canonicalsmiles-title"><th>Canonical SMILES</th></tr>
+								<tr id="prop-canonicalsmiles-wrapper"><td><input type="text" id="prop-canonicalsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+								<tr id="prop-isomericsmiles-title"><th>Isomeric SMILES</th></tr>
+								<tr id="prop-isomericsmiles-wrapper"><td><input type="text" id="prop-isomericsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
 								<tr id="prop-inchikey-title"><th>InChiKey</th></tr>
 								<tr id="prop-inchikey-wrapper"><td><input type="text" id="prop-inchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
 								<tr id="prop-inchi-title"><th>InChi</th></tr>
@@ -854,6 +857,5 @@ else if(isset($codid))
 				</div>
 			</div>
 		</div>
-		<div id="messages"></div>
 	</body>
 </html>

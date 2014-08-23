@@ -279,19 +279,20 @@ var Model = {
 	},
 
 	/**
-	* Loads a CID file into the 3D engine
+	* Loads a CIF file into the 3D engine
 	* Updates Model metadata and UI
-	* @param {String} cif  CIF file
-	* @param {Array}  cell Crystal cell dimensions
+	* @param {String}   cif  CIF file
+	* @param {Array}    cell Crystal cell dimensions
+	* @param {Function} cb   Called when CIF is loaded (used to handle mobile JSmol delay)
 	*/
-	loadCIF: function(cif, cell)
+	loadCIF: function(cif, cell, cb)
 	{
 		this.data.current = "CIF";
 		this.data.cif = cif;
 		$("#save-local-3d").text("CIF file");
 		$(".jmol-script").removeClass("disabled");
 
-		this._loadCIF(cif, cell);
+		this._loadCIF(cif, cell, cb);
 	},
 
 	/**
@@ -299,10 +300,11 @@ var Model = {
 	* This method does not update the UI or the Model metadata
 	* This method picks the most suitable crystal render engine
 	* (CDW if WebGL is available, else JSmol)
-	* @param {String} cif  CIF file
-	* @param {Array}  cell Crystal cell dimensions
+	* @param {String}   cif  CIF file
+	* @param {Array}    cell Crystal cell dimensions
+	* @param {Function} cb   Called when CIF is loaded (used to handle mobile JSmol delay)
 	*/
-	_loadCIF: function(cif, cell)
+	_loadCIF: function(cif, cell, cb)
 	{
 		cell = cell || [1, 1, 1];
 		if(this.isGLmol())
@@ -312,6 +314,7 @@ var Model = {
 				this.setRenderEngine("CDW", function()
 				{
 					Model.CDW.loadCIF(Model.data.cif, cell);
+					if(cb) cb();
 				});
 			}
 			else//use Jmol
@@ -319,24 +322,28 @@ var Model = {
 				this.setRenderEngine("JSmol", function()
 				{
 					Model.JSmol.loadCIF(Model.data.cif, cell);
+					if(cb) cb();
 				});
 			}
 		}
 		else if(this.isJSmol())
 		{
 			this.JSmol.loadCIF(cif, cell);
+			if(cb) cb();
 		}
 		else if(this.isCDW())
 		{
 			if(Detector.webgl)
 			{
 				this.CDW.loadCIF(cif, cell);
+				if(cb) cb();
 			}
 			else//use Jmol
 			{
 				this.setRenderEngine("JSmol", function()
 				{
 					Model.JSmol.loadCIF(Model.data.cif, cell);
+					if(cb) cb();
 				});
 			}
 		}
@@ -591,7 +598,7 @@ var Model = {
 					}
 					else Model.GLmol.view.loadMoleculeStr(false, Model.data.pdb);//in order to center macromolecule
 
-					Messages.hide();
+					Messages.clear();
 				}, "glmol_update");
 			}
 		},
@@ -609,7 +616,7 @@ var Model = {
 			if(Model.engine == "GLmol") Messages.process(function()
 			{
 				Model.GLmol.setRepresentation.call(Model.GLmol);
-				Messages.hide();
+				Messages.clear();
 			}, "glmol_update");
 		},
 
@@ -626,7 +633,7 @@ var Model = {
 			if(Model.engine == "GLmol") Messages.process(function()
 			{
 				Model.GLmol.setRepresentation.call(Model.GLmol);
-				Messages.hide();
+				Messages.clear();
 			}, "glmol_update");
 		},
 
@@ -712,7 +719,7 @@ var Model = {
 			var scope = this;
 
 			Model._setRenderEngine("JSmol");
-			Messages.hide();
+			Messages.clear();
 			if(scope.readyCB) scope.readyCB();
 		},
 
@@ -815,7 +822,7 @@ var Model = {
 
 		loadMOL: function(mol)
 		{
-			if(this.currentModel == mol) return;
+			if(this.currentModel == mol) return false;
 
 			if(this.ready)
 			{
@@ -832,7 +839,7 @@ var Model = {
 
 		loadPDB: function(pdb)
 		{
-			if(this.currentModel == pdb) return;
+			if(this.currentModel == pdb) return false;
 
 			if(this.ready)
 			{
@@ -853,7 +860,7 @@ var Model = {
 
 		loadCIF: function(cif, cell)
 		{
-			if(this.currentModel == cif + cell) return;
+			if(this.currentModel == cif + cell) return false;
 
 			if(this.ready)
 			{
@@ -914,7 +921,7 @@ var Model = {
 					Messages.process(function()
 					{
 						cb();
-						Messages.hide();
+						Messages.clear();
 					}, what);
 				}
 				else window.setTimeout(cb, 100);

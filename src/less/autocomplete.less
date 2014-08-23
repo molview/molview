@@ -29,7 +29,7 @@
 {
 	#autocomplete-dropdown
 	{
-		width: 723px;
+		width: 722px;
 	}
 }
 
@@ -60,8 +60,15 @@
 .autocomplete-item-hover
 {
 	color: #fff;
-	background: #f50;
-	border-color: #f50 !important;
+	background: @highlight;
+	border-color: @highlight !important;
+}
+
+.autocomplete-item-active
+{
+	color: #fff;
+	background: @active;
+	border-color: @active !important;
 }
 
 .autocomplete-type

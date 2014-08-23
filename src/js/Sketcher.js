@@ -7,7 +7,14 @@ ALL RIGHTS RESERVED
 var Sketcher = {
 	moledit: undefined,
 	title_lock: false,//prevent title switching while Loading compound
-	CID: undefined,
+
+	//data passed by Loader
+	metadata: {
+		cid: undefined,
+		inchi: undefined,
+		inchikey: undefined,
+		smiles: undefined,
+	},
 
 	//init and load defaults
 	init: function()
@@ -25,7 +32,7 @@ var Sketcher = {
 
 			this.moledit.onChanged = function()
 			{
-				Sketcher.CID = undefined;
+				Sketcher.metadata = {};
 				$("#resolve").removeClass("resolve-updated");
 				if(!Sketcher.title_lock) document.title = "MolView";
 			};
@@ -35,8 +42,10 @@ var Sketcher = {
 
 	resize: function()
 	{
-		if(this.moledit !== undefined)
+		if(this.moledit)
+		{
 			this.moledit.resize();
+		}
 	},
 
 	initPeriodicTable: function()
@@ -85,7 +94,7 @@ var Sketcher = {
 	loadMOL: function(mol)
 	{
 		//load molecule
-		if(this.moledit !== undefined)
+		if(this.moledit)
 		{
 			this.title_lock = true;
 			this.moledit.loadMOL(mol);
@@ -96,20 +105,31 @@ var Sketcher = {
 
 	getMOL: function()
 	{
-		if(this.moledit !== undefined)
+		if(this.moledit)
+		{
 			return this.moledit.getMOL();
+		}
 		else return "";
 	},
 
 	getSMILES: function()
 	{
-		if(this.moledit !== undefined)
+		if(this.smiles)
+		{
+
+		}
+		else if(this.moledit)
 		{
 			if(this.moledit.chem.atoms.length == 0) throw new Error("No atoms found");
 			var molecule = chem.Molfile.parseCTFile(this.getMOL().split("\n"));
 			return (new chem.SmilesSaver()).saveMolecule(molecule);
 		}
 		else return "";
+	},
+
+	removeAllHydrogen: function()
+	{
+		this.moledit.removeAllHydrogen();
 	},
 
 	markOutdated: function()
@@ -124,7 +144,10 @@ var Sketcher = {
 
 	toDataURL: function()
 	{
-		if(this.moledit !== undefined)
+		if(this.moledit)
+		{
 			return document.getElementById("moledit-canvas").toDataURL("image/png");
+		}
+		else return "";
 	}
 };

@@ -35,7 +35,7 @@ var Loader = {
 			document.title = text;
 
 			Progress.complete();
-			Messages.hide();
+			Messages.clear();
 
 			Loader.lastQuery.type = "q";
 			Loader.lastQuery.content = text;
@@ -46,7 +46,6 @@ var Loader = {
 		});
 	},
 
-	//PubChem wrapper
 	PubChem: {
 		i: 0,
 		step: 10,
@@ -145,7 +144,7 @@ var Loader = {
 
 				Request.PubChem.search(text, function()
 				{
-					Messages.hide();
+					Messages.clear();
 
 					$("#load-more-pubchem").css("display", "block");
 					$("#load-more-rcsb").css("display", "none");
@@ -169,7 +168,7 @@ var Loader = {
 			Progress.clear();
 			Progress.setSteps(3);
 
-			Request.PubChem.listkey(query, value, type, function(listkey)
+			Request.PubChem.structureSearch(query, value, type, function(listkey)
 			{
 				Progress.increment();
 
@@ -180,7 +179,7 @@ var Loader = {
 					{
 						Progress.increment();
 
-						Messages.hide();
+						Messages.clear();
 
 						$("#load-more-pubchem").css("display", "block");
 						$("#load-more-rcsb").css("display", "none");
@@ -198,7 +197,7 @@ var Loader = {
 					},
 					function()//error
 					{
-						Messages.alert("search_fail");
+						Messages.alert("structure_search_fail");
 					});
 				}
 
@@ -206,7 +205,7 @@ var Loader = {
 			},
 			function()
 			{
-				Messages.alert("search_fail");
+				Messages.alert("structure_search_fail");
 			});
 		},
 
@@ -243,16 +242,17 @@ var Loader = {
 
 		_loadCID: function(cid, name)
 		{
-			Request.PubChem.mol(cid, true, function(mol2d)
+			//request 2D molecule
+			Request.PubChem.sdf(cid, true, function(mol2d)
 			{
 				Sketcher.loadMOL(mol2d);
-				Sketcher.CID = cid;
+				Sketcher.metadata.cid = cid;
 				Sketcher.markUpdated();
 
 				Progress.increment();
 
 				//request 3D molecule
-				Request.PubChem.mol(cid, false, function(mol3d)
+				Request.PubChem.sdf(cid, false, function(mol3d)
 				{
 					Model.loadMOL(mol3d);
 
@@ -263,7 +263,7 @@ var Loader = {
 					History.push("cid", cid);
 
 					Progress.complete();
-					Messages.hide();
+					Messages.clear();
 				},
 				function()//error: resolve using NCI
 				{
@@ -286,7 +286,7 @@ var Loader = {
 						History.push("cid", cid);
 
 						Progress.complete();
-						Messages.hide();
+						Messages.clear();
 
 						return;
 					}
@@ -305,7 +305,7 @@ var Loader = {
 						History.push("cid", cid);
 
 						Progress.complete();
-						Messages.hide();
+						Messages.clear();
 					},
 					function()
 					{
@@ -319,7 +319,7 @@ var Loader = {
 						History.push("cid", cid);
 
 						Progress.complete();
-						Messages.hide();
+						Messages.clear();
 					});
 				});
 			},
@@ -330,7 +330,6 @@ var Loader = {
 		}
 	},
 
-	//RCSB wrapper
 	RCSB: {
 		i: 0,
 		step: 10,
@@ -431,7 +430,7 @@ var Loader = {
 
 				Request.RCSB.search(text, function()
 				{
-					Messages.hide();
+					Messages.clear();
 
 					$("#load-more-pubchem").css("display", "none");
 					$("#load-more-rcsb").css("display", "block");
@@ -455,6 +454,21 @@ var Loader = {
 			Progress.clear();
 			Progress.setSteps(2);
 
+			function finish()
+			{
+				Sketcher.markOutdated();
+
+				document.title = name || pdbid.toUpperCase();
+
+				Progress.complete();
+				Messages.clear();
+				Messages.alert("sketcher_no_macromolecules");
+
+				Loader.lastQuery.type = "pdbid";
+				Loader.lastQuery.content = "" + pdbid;
+				History.push("pdbid", pdbid);
+			}
+
 			MolView.setLayout("model");
 			Messages.process(function()
 			{
@@ -462,21 +476,6 @@ var Loader = {
 
 				Request.RCSB.PDB(pdbid, function(pdb)
 				{
-					function finish()
-					{
-						Sketcher.markOutdated();
-
-						document.title = name || pdbid.toUpperCase();
-
-						Progress.complete();
-						Messages.hide();
-
-						Messages.alert("sketcher_no_macromolecules");
-						Loader.lastQuery.type = "pdbid";
-						Loader.lastQuery.content = "" + pdbid;
-						History.push("pdbid", pdbid);
-					}
-
 					if(!Detector.webgl)
 					{
 						if(MolView.mobile)
@@ -520,7 +519,6 @@ var Loader = {
 		}
 	},
 
-	//COD wrapper
 	COD: {
 		i: 0,
 		step: 10,
@@ -624,7 +622,7 @@ var Loader = {
 
 				Request.COD.search(text, function()
 				{
-					Messages.hide();
+					Messages.clear();
 
 					$("#load-more-pubchem").css("display", "none");
 					$("#load-more-rcsb").css("display", "none");
@@ -643,49 +641,49 @@ var Loader = {
 			}
 		},
 
-		loadCODID: function(codid, name)
+		/**
+		 * Load a Crystal model using a COD ID
+		 * @param {String} codid        COD ID
+		 * @param {String} name         Crystal name
+		 * @param {String} cid          PubChem Compound ID for 2D depiction
+		 * @param {String} PubChem_name PubChem Compound Name for 2D depiction
+		 */
+		loadCODID: function(codid, name, cid, PubChem_name)
 		{
 			Progress.clear();
 			Progress.setSteps(2);
+
+			MolView.makeModelVisible();
 
 			function finish()
 			{
 				document.title = name || "COD: " + codid;
 
 				Progress.complete();
-				Messages.hide();
+				Messages.clear();
 
 				Loader.lastQuery.type = "codid";
 				Loader.lastQuery.content = "" + codid;
 				History.push("codid", codid);
 			}
 
-			MolView.makeModelVisible();
-
-			Messages.process(function()
+			function load()
 			{
-				Progress.increment();
-
 				Request.COD.CIF(codid, function(cif)
 				{
 					if(cif.length > 1)
 					{
-						Model.loadCIF(cif);
-						Request.COD.SMILES(codid, function(data)
+						Model.loadCIF(cif, [1, 1, 1], function()
 						{
-							if(data.records[0].smiles == "")
+							if(cid)
 							{
-								finish();
-								Messages.alert("crystal_2d_fail");
-							}
-							else
-							{
-								Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
-								function(mol2d)
+								Request.PubChem.sdf(cid, true, function(mol2d)
 								{
+									Sketcher.metadata.cid = cid;
 									Sketcher.loadMOL(mol2d);
 									Sketcher.markUpdated();
 									finish();
+									Messages.alert("crystal_2d_unreliable");
 								},
 								function()
 								{
@@ -693,11 +691,40 @@ var Loader = {
 									Messages.alert("crystal_2d_fail");
 								});
 							}
-						},
-						function()
-						{
-							finish();
-							Messages.alert("crystal_2d_fail");
+							else
+							{
+								Request.COD.SMILES(codid, function(data)
+								{
+									if(data.records[0].smiles == "")
+									{
+										finish();
+										Messages.alert("crystal_2d_fail");
+									}
+									else
+									{
+										Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
+										function(mol2d)
+										{
+											Sketcher.metadata.smiles = data.records[0].smiles;
+											Sketcher.loadMOL(mol2d);
+											Sketcher.removeAllHydrogen();
+											Sketcher.markUpdated();
+											finish();
+											Messages.alert("crystal_2d_unreliable");
+										},
+										function()
+										{
+											finish();
+											Messages.alert("crystal_2d_fail");
+										});
+									}
+								},
+								function()
+								{
+									finish();
+									Messages.alert("crystal_2d_fail");
+								});
+							}
 						});
 					}
 					else
@@ -709,10 +736,42 @@ var Loader = {
 				{
 					Messages.alert("load_fail");
 				});
+			}
+
+			Messages.process(function()
+			{
+				Progress.increment();
+
+				if(PubChem_name)
+				{
+					//only use PubChem_name if it's the compounds primary name
+					Request.PubChem.primaryName(PubChem_name, function(name)
+					{
+						if(name.toLowerCase() == PubChem_name.toLowerCase())
+						{
+							Request.PubChem.nameToCID(PubChem_name, function(_cid)
+							{
+								cid = _cid;
+								load();
+							}, load);
+						}
+						else
+						{
+							load();
+						}
+					}, load);
+				}
+				else
+				{
+					load();
+				}
 			}, "crystal");
 		}
 	},
 
+	/**
+	 * Cleans current structural formula using CIR depictionq
+	 */
 	clean: function()
 	{
 		if(!Request.ChemicalIdentifierResolver.available)
@@ -745,7 +804,7 @@ var Loader = {
 			if(updated) Sketcher.markUpdated();
 
 			Progress.complete();
-			Messages.hide();
+			Messages.clear();
 		},
 		function()
 		{
@@ -753,6 +812,9 @@ var Loader = {
 		});
 	},
 
+	/**
+	 * Converts the current structural formula into a 3D model
+	 */
 	resolve: function()
 	{
 		if(!Request.ChemicalIdentifierResolver.available)
@@ -783,7 +845,7 @@ var Loader = {
 			Sketcher.markUpdated();
 
 			Progress.complete();
-			Messages.hide();
+			Messages.clear();
 
 			Loader.lastQuery.type = "smiles";
 			Loader.lastQuery.content = smiles;
@@ -795,6 +857,11 @@ var Loader = {
 		});
 	},
 
+	/**
+	 * Loads 2D and 3D molecule for a given SMILES string
+	 * @param {String} smiles SMILES
+	 * @param {String} title  New document title
+	 */
 	loadSMILES: function(smiles, title)
 	{
 		if(!Request.ChemicalIdentifierResolver.available)
@@ -824,7 +891,7 @@ var Loader = {
 				History.push("smiles", smiles);
 
 				Progress.complete();
-				Messages.hide();
+				Messages.clear();
 			},
 			function()
 			{

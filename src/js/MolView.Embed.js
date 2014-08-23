@@ -33,7 +33,6 @@ var MolView = {
 		}
 
 		//initialize
-		Messages.init();
 		Request.init();
 
 		$(window).on("resize", function()
@@ -88,7 +87,7 @@ var MolView = {
 					Model.setBackground(value);
 				}
 			});
-		}).bind(this), Detector.webgl ? "GLmol" : "JSmol");
+		}).bind(this), Detector.webgl ? "GLmol" : ((this.query.pdbid || this.query.codid) ? "JSmol" : "GLmol"));
 	},
 
 	//do not remove: called from Loader

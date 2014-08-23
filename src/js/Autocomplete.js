@@ -17,6 +17,13 @@ AutocompleteBuilder.prototype.sort = function(str, minsim, length)
 	for(var i = 0; i < cpy.length; i++)
 	{
 		cpy[i].similarity = similar_text(str, cpy[i][this.key].toLowerCase(), true);
+
+		//add 100 to similarity if first characters are the same
+		if(cpy[i][this.key].toLowerCase().indexOf(str) == 0)
+		{
+			cpy[i].similarity += 100;
+		}
+
 		if(minsim && cpy[i].similarity < minsim)
 		{
 			cpy.splice(i, 1);
@@ -26,14 +33,7 @@ AutocompleteBuilder.prototype.sort = function(str, minsim, length)
 
 	return cpy.sort(function(a, b)
 	{
-		if(b.similarity == a.similarity)
-		{
-			//give minerals precedence over compounds
-			if(a.codid != undefined) return -1;
-			else if(b.codid != undefined) return 1;
-			else return b.similarity - a.similarity;
-		}
-		else return b.similarity - a.similarity;
+		return b.similarity - a.similarity;
 	}).slice(0, length ? length : cpy.length);
 }
 
@@ -49,7 +49,7 @@ var Autocomplete = {
 	minerals: undefined,
 
 	oldText: "",
-	PubChem_cache: {},
+	cache: {},
 	records: [],
 	i: -1,
 
@@ -111,18 +111,38 @@ var Autocomplete = {
 	 */
 	keydown: function(e)
 	{
+		if(this.i == -1)
+		{
+			this.oldText = $("#search-input").val();
+		}
+
 		var key = e.keyCode || e.which;
 		switch(key)
 		{
 			case 38://up
 				this.i--;
-				if(this.i < -1) this.i = this.records.length - 1;
+
+				if(this.i == -1)
+				{
+					$("#search-input").val(this.oldText)
+				}
+				else if(this.i < -1)
+				{
+					this.i = this.records.length - 1;
+				}
+
 				this.focusRecord(this.i);
 				return false;
 
 			case 40://down
 				this.i++;
-				if(this.i >= this.records.length) this.i = 0;
+
+				if(this.i >= this.records.length)
+				{
+					this.i = -1;
+					$("#search-input").val(this.oldText)
+				}
+
 				this.focusRecord(this.i);
 				return false;
 
@@ -154,11 +174,24 @@ var Autocomplete = {
 	refresh: function()
 	{
 		var text = $("#search-input").val();
-		if(text.length > Autocomplete.maxLength) return;
-		else if(text.length < Autocomplete.minLength) Autocomplete.display([]);
+
+		if(Autocomplete.cache[text])
+		{
+			Autocomplete.display(Autocomplete.cache[text]);
+		}
+		else if(text.length > Autocomplete.maxLength)
+		{
+			return;
+		}
+		else if(text.length < Autocomplete.minLength)
+		{
+			Autocomplete.display([]);
+		}
 		else
 		{
 			var mix = [];
+
+			//exclude macromolecules if not supported by device
 			if(MolView.macromolecules && !(!Detector.webgl && MolView.mobile))
 			{
 				mix = this.macromolecules.sort(text, this.MIN_SIM, this.MAX_NUMBER)
@@ -168,15 +201,41 @@ var Autocomplete = {
 
 			this.getPubChemAutocomplete(text, function(array)
 			{
-				if($("#search-input").val() != "")
+				mix = mix.concat(array);
+				for(var i = 0; i < mix.length; i++)
 				{
-					mix = mix.concat(array);
-					for(var i = 0; i < mix.length; i++)
-					{
-						mix[i].label = ucfirst(humanize(mix[i].name));
-					}
+					mix[i].label = ucfirst(humanize(mix[i].name));
+				}
 
-					Autocomplete.display(new AutocompleteBuilder(mix, "label").sort(text));
+				//autocomplete sort mix
+				mix = new AutocompleteBuilder(mix, "label").sort(text);
+
+				/* remove duplicate mineral/compound entries
+				(use compound CID for 2D molecule later) */
+				for(var i = 0; i < mix.length; i++)
+				{
+					if(i < mix.length - 1)
+					{
+						if(mix[i].label == mix[i + 1].label)
+						{
+							//merge into each other
+							mix[i].codid = mix[i].codid || mix[i + 1].codid;
+							mix[i].PubChem_name = mix[i + 1].PubChem_name =
+								mix[i].PubChem_name || mix[i + 1].PubChem_name;
+
+							//mineral has precedence: remove codid from second entry
+							mix[i + 1].codid = undefined;
+
+							//remove one duplicate
+							mix.splice(i + 1, 1);
+						}
+					}
+				}
+
+				Autocomplete.cache[text] = mix;
+				if(text == $("#search-input").val())
+				{
+					Autocomplete.display(Autocomplete.cache[text]);
 				}
 			});
 		}
@@ -206,7 +265,7 @@ var Autocomplete = {
 
 		for(var i = 0; i < records.length; i++)
 		{
-			var li = $('<li class="clearfix autocomplete-item"></li>');
+			var li = $('<li class="autocomplete-item"></li>');
 			$('<span class="autocomplete-label"></span>').html(records[i].label).appendTo(li);
 			if(records[i].pdbids)//macromolecule
 			{
@@ -301,7 +360,7 @@ var Autocomplete = {
 				else if(this.records[this.i].codid)//COD mineral
 				{
 					Loader.COD.loadCODID(this.records[this.i].codid,
-						this.records[this.i].label);
+						this.records[this.i].label, undefined, this.records[this.i].PubChem_name);
 				}
 				else//PubChem compound
 				{
@@ -322,26 +381,23 @@ var Autocomplete = {
 	 */
 	getPubChemAutocomplete: function(text, cb)
 	{
-		if(this.PubChem_cache[text]) cb(this.PubChem_cache[text]);
-		else
-		{
-			AJAX({
-				dataType: "json",
-				url: "https://pubchem.ncbi.nlm.nih.gov/pcautocp/pcautocp.cgi?dict=pc_compoundnames&n="
-					+ this.MAX_NUMBER + "&q=" + text,
-				success: function(data)
+		AJAX({
+			dataType: "json",
+			url: "https://pubchem.ncbi.nlm.nih.gov/pcautocp/pcautocp.cgi?dict=pc_compoundnames&n="
+				+ this.MAX_NUMBER + "&q=" + text,
+			success: function(data)
+			{
+				var array = [];
+				for(var i = 0; i < data.autocp_array.length; i++)
 				{
-					var array = [];
-					for(var i = 0; i < data.autocp_array.length; i++)
-					{
-						array.push({ name: data.autocp_array[i] });
-					}
-
-					Autocomplete.PubChem_cache[text] = array;
-
-					cb(array);
+					array.push({
+						name: data.autocp_array[i],
+						PubChem_name: data.autocp_array[i]//trick to recognize PubChem items
+					});
 				}
-			});
-		}
+
+				cb(array);
+			}
+		});
 	}
 }

@@ -26,7 +26,7 @@ var Loader = {
 			document.title = text;
 
 			Progress.complete();
-			Messages.hide();
+			Messages.clear();
 		}, function()
 		{
 			Messages.alert("search_fail");
@@ -45,14 +45,14 @@ var Loader = {
 			Messages.process(function()
 			{
 				//request 3D molecule
-				Request.PubChem.mol(cid, false, function(mol3d)
+				Request.PubChem.sdf(cid, false, function(mol3d)
 				{
 					Model.loadMOL(mol3d);
 
 					document.title = name || "MolView";
 
 					Progress.complete();
-					Messages.hide();
+					Messages.clear();
 				},
 				function()//error: resolve using NCI
 				{
@@ -70,7 +70,7 @@ var Loader = {
 							document.title = name || "MolView";
 
 							Progress.complete();
-							Messages.hide();
+							Messages.clear();
 						},
 						function()
 						{
@@ -113,7 +113,7 @@ var Loader = {
 								document.title = name || pdbid.toUpperCase();
 
 								Progress.complete();
-								Messages.hide();
+								Messages.clear();
 							}
 							else//switch to JSmol
 							{
@@ -124,7 +124,7 @@ var Loader = {
 									document.title = name || pdbid.toUpperCase();
 
 									Progress.complete();
-									Messages.hide();
+									Messages.clear();
 								});
 							}
 						}
@@ -136,7 +136,7 @@ var Loader = {
 						document.title = name || pdbid.toUpperCase();
 
 						Progress.complete();
-						Messages.hide();
+						Messages.clear();
 					}
 				},
 				function()
@@ -164,7 +164,7 @@ var Loader = {
 					document.title = name || "COD: " + codid;
 
 					Progress.complete();
-					Messages.hide();
+					Messages.clear();
 				},
 				function()
 				{
@@ -191,7 +191,7 @@ var Loader = {
 		{
 			Model.loadMOL(mol);
 			Progress.complete();
-			Messages.hide();
+			Messages.clear();
 		},
 		function()
 		{

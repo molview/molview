@@ -513,6 +513,27 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 	this.drawMol();
 }
 
+ChemicalView.prototype.removeAllHydrogen = function()
+{
+	var hydrogen = [];
+
+	for(var i = 0; i < this.chem.atoms.length; i++)
+	{
+		if(this.chem.atoms[i].cd == 1)
+		{
+			hydrogen.push(i);
+		}
+	}
+
+	this.undoPush();
+
+	this.chem.removeAtoms(hydrogen);
+
+	this.h_bond = this.h_atom = -1;
+	this.updateZoom = true;
+	this.drawMol();
+}
+
 ChemicalView.prototype.deselectAll = function()
 {
 	for(var i = 0; i < this.chem.atoms.length; i++)

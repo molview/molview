@@ -9,13 +9,13 @@ var Progress = {
 	steps: 0,
 	bar: undefined,
 	part: undefined,
-	
+
 	init: function()
 	{
 		this.bar = $("#progress");
 		this.part = $("#progress > .progress-part");
 	},
-	
+
 	setValue: function(val)
 	{
 		if(this.steps == 0) return;
@@ -24,18 +24,18 @@ var Progress = {
 		this.value = val;
 		this.part.stop().animate({"width": "" + (this.value * 100) + "%"}, 800, "swing");
 	},
-	
+
 	clear: function()
 	{
 		this.value = 0;
 		this.part.stop().css({ "width": 0, "opacity": 1 });
 	},
-	
+
 	add: function(val)
 	{
 		this.setValue(this.value + val);
 	},
-	
+
 	setSteps: function(s)
 	{
 		this.steps = s + 1;
@@ -43,12 +43,12 @@ var Progress = {
 		document.title = document.title.replace(/ \[loading\]/g, "");
 		document.title += " [loading]";
 	},
-	
+
 	increment: function()
 	{
 		this.add(1.0 / this.steps);
 	},
-	
+
 	hide: function()
 	{
 		Progress.part.animate({
@@ -58,12 +58,12 @@ var Progress = {
 			Progress.part.css("width", 0);
 		});
 	},
-	
+
 	alert: function()
 	{
 		document.title = document.title.replace(/ \[loading\]/g, "");
 	},
-	
+
 	complete: function()
 	{
 		this.setValue(1);

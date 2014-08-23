@@ -2333,15 +2333,16 @@ var GLmol = (function ()
 		{
 			var atom = atoms[drawStack[i].atom.i];
 
-			//draw black body
-			ctx.fillStyle = "#000000";
+			//draw atom black body
+			ctx.strokeStyle = "#000000";
+			ctx.lineWidth = lineWidth * 2;
 			ctx.beginPath();
 			ctx.arc(atom.screen.x, atom.screen.y,
 				(this.canvasVDW ? drawStack[i].atom.r * this.canvasAtomRadius
-					: this.canvasAtomRadius) + lineWidth,
+					: this.canvasAtomRadius),
 				0, PI2, true);
 			ctx.closePath();
-			ctx.fill();
+			ctx.stroke();
 
 			//draw bonds black body
 			for(var j = 0; j < drawStack[i].bonds.length; j++)
@@ -2420,4 +2421,3 @@ var GLmol = (function ()
 
 	return GLmol;
 }());
-

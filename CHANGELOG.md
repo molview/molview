@@ -9,6 +9,8 @@ Bugfixes:
   - Added test if translation is necessary
   - Replaced '/' with '%5C' for Chemical Identifier Resolver lookup
   - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
+  - Reduced crystal 2D depiction failure
+  - Added CIF validation
   > Spectrum loading error handling
 
 Backend:
@@ -43,10 +45,12 @@ Frontend:
   - Redesigned search results style
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
+  > Move InfoCard and Spectra to separate layer (like search)
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
   > Added percent composition table to Information card
   > Revised SMILES 3D conformation URL key (CID > InChiKey > SMILES)
+  > Added *Don't show me again* option to Messages alerts
   > Added user preferences using HTML5 Web Storage
   > Added functional groups support in Sketcher
   > Integrated COD image archive

@@ -74,7 +74,7 @@ var Actions = {
 		try { smiles = Sketcher.getSMILES(); }
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
-		InfoCard.update(smiles, Sketcher.CID, Sketcher.InChiKey, Sketcher.InChi);
+		InfoCard.update(smiles);
 		MolView.showDialog("properties");
 	},
 
@@ -132,7 +132,10 @@ var Actions = {
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
-			if(Sketcher.CID) Loader.PubChem.structureSearch("cid", Sketcher.CID, "substructure");
+			if(Sketcher.metadata.cid)
+			{
+				Loader.PubChem.structureSearch("cid", Sketcher.metadata.cid, "substructure");
+			}
 			else
 			{
 				var smiles;
@@ -149,7 +152,10 @@ var Actions = {
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
-			if(Sketcher.CID) Loader.PubChem.structureSearch("cid", Sketcher.CID, "superstructure");
+			if(Sketcher.metadata.cid)
+			{
+				Loader.PubChem.structureSearch("cid", Sketcher.metadata.cid, "superstructure");
+			}
 			else
 			{
 				var smiles;
@@ -166,7 +172,10 @@ var Actions = {
 		Actions.hide_search_results();
 		Messages.process(function()
 		{
-			if(Sketcher.CID) Loader.PubChem.structureSearch("cid", Sketcher.CID, "similarity");
+			if(Sketcher.metadata.cid)
+			{
+				Loader.PubChem.structureSearch("cid", Sketcher.metadata.cid, "similarity");
+			}
 			else
 			{
 				var smiles;
@@ -193,33 +202,33 @@ var Actions = {
 	engine_glmol: function()
 	{
 		//clear Model window
-		Messages.hide();
+		Messages.clear();
 
 		Messages.process(function()
 		{
-			Model.setRenderEngine("GLmol", Messages.hide);
+			Model.setRenderEngine("GLmol", Messages.clear);
 		}, "switch_engine");
 	},
 
 	engine_jmol: function()
 	{
 		//clear Model window
-		Messages.hide();
+		Messages.clear();
 
 		Messages.process(function()
 		{
-			Model.setRenderEngine("JSmol", Messages.hide);
+			Model.setRenderEngine("JSmol", Messages.clear);
 		}, "switch_engine");
 	},
 
 	engine_cdw: function()
 	{
 		//clear Model window
-		Messages.hide();
+		Messages.clear();
 
 		Messages.process(function()
 		{
-			Model.setRenderEngine("CDW", Messages.hide);
+			Model.setRenderEngine("CDW", Messages.clear);
 		}, "switch_engine");
 	},
 
@@ -230,7 +239,7 @@ var Actions = {
 			Messages.process(function()
 			{
 				Model.loadCIF(Model.data.cif, [1, 1, 1]);
-				Messages.hide();
+				Messages.clear();
 			}, "crystal_structure");
 		}
 	},
@@ -242,7 +251,7 @@ var Actions = {
 			Messages.process(function()
 			{
 				Model.loadCIF(Model.data.cif, [2, 2, 2]);
-				Messages.hide();
+				Messages.clear();
 			}, "crystal_structure");
 		}
 	},
@@ -254,7 +263,7 @@ var Actions = {
 			Messages.process(function()
 			{
 				Model.loadCIF(Model.data.cif, [1, 3, 3]);
-				Messages.hide();
+				Messages.clear();
 			}, "crystal_structure");
 		}
 	},
@@ -427,7 +436,6 @@ var Actions = {
 
 	resolve: function()
 	{
-		$("#search-results").css("display", "none");
 		Messages.process(Loader.resolve, "resolve");
 	},
 

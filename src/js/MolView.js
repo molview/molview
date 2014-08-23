@@ -118,7 +118,7 @@ var MolView = {
 		});
 
 		//window events
-		$("#dialog-wrapper").on("mousedown", function(e)
+		$("#dialog-layer, #dialog-wrapper").on("mousedown", function(e)
 		{
 			var target = e.target || e.srcElement;
 			if(window.getSelection().type != "Range" && !$(document.activeElement).is("input"))
@@ -149,10 +149,9 @@ var MolView = {
 		});
 
 		//initialize
-		Messages.init();
 		Request.init();
-
 		Sketcher.init();
+
 		if(this.loadDefault) Progress.increment();
 
 		if(this.touch && !Detector.webgl)
@@ -384,7 +383,7 @@ var MolView = {
 		{
 			$("#search-input").addClass("alert").focus();
 		}, 0);
-		
+
 		MolView.search_input_timeout = window.setTimeout(function()
 		{
 			$("#search-input").removeClass("alert");

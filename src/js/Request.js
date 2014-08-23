@@ -352,15 +352,29 @@ var Request = {
 			});
 		},
 
-		//request PubChem compound list
-		listkey: function(query, value, type, success, error)
+		/**
+		 * Executes advances PubChem search query and returns listkey.
+		 * @param  {String} query   Input data type (cid, smiles, ...)
+		 * @param  {String} value   Input data
+		 * @param  {String} type    Search query type (superstructure, ...)
+		 * @param  {String} success Called when search query has beed queued
+		 *                          with current listkey as first argument
+		 * @param  {String} error   Called when search query has failed
+		 */
+		structureSearch: function(query, value, type, success, error)
 		{
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "json",
-				url: type == "smiles" ?
-					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/" + type + "/smiles/json?smiles=" + value :
-					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/" + type + "/" + query + "/" + value + "/json?MaxRecords=" + Request.PubChem.maxRecords + "&MaxSeconds=" + Request.PubChem.MaxSeconds,
+				url: query == "smiles" ?//use URL parameter for SMILES
+					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
+						+ type + "/" + query + "/json?" + query + "=" + encodeURIComponent(value)
+						+ "&MaxRecords=" + Request.PubChem.maxRecords
+						+ "&MaxSeconds=" + Request.PubChem.MaxSeconds :
+					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
+						+ type + "/" + query + "/" + value
+						+ "/json?MaxRecords=" + Request.PubChem.maxRecords
+						+ "&MaxSeconds=" + Request.PubChem.MaxSeconds,
 				success: function(data)
 				{
 					success(data.Waiting.ListKey);
@@ -373,7 +387,14 @@ var Request = {
 			});
 		},
 
-		//retrieve PubChem compound list
+		/**
+		 * Retrieves listdata using a given listkey
+		 * @param  {[type]} listkey Listkey
+		 * @param  {[type]} success Called when listdata is loaded
+		 * @param  {[type]} wait    Called when listdata is not yet ready
+		 *                          with current listkey as first argument
+		 * @param  {[type]} error   Called when request has failed
+		 */
 		list: function(listkey, success, wait, error)
 		{
 			if(xhr !== undefined) xhr.abort();
@@ -414,11 +435,17 @@ var Request = {
 		{
 			AJAX({
 				dataType: "json",
-				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/cids/json?smiles=" + smiles,
+				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/cids/json?smiles=" + encodeURIComponent(smiles),
 				success: function(data)
 				{
-					if(data.IdentifierList) success(data.IdentifierList.CID[0]);
-					else error();
+					if(data.IdentifierList)
+					{
+						success(data.IdentifierList.CID[0]);
+					}
+					else
+					{
+						error();
+					}
 				},
 				error: function(jqXHR, textStatus)
 				{
@@ -441,8 +468,14 @@ var Request = {
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + name + "/cids/json",
 				success: function(data)
 				{
-					if(data.IdentifierList) success(data.IdentifierList.CID[0]);
-					else error();
+					if(data.IdentifierList)
+					{
+						success(data.IdentifierList.CID[0]);
+					}
+					else
+					{
+						error();
+					}
 				},
 				error: function(jqXHR, textStatus)
 				{
@@ -452,7 +485,31 @@ var Request = {
 			});
 		},
 
-		description: function(cids, success, error)//cids as array
+		primaryName: function(name, success, error)
+		{
+			AJAX({
+				dataType: "json",
+				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + name + "/description/json",
+				success: function(data)
+				{
+					if(data.InformationList)
+					{
+						success(data.InformationList.Information[0].Title);
+					}
+					else if(error)
+					{
+						error();
+					}
+				},
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
+			});
+		},
+
+		description: function(cids, success, error)
 		{
 			AJAX({
 				dataType: "json",
@@ -466,7 +523,7 @@ var Request = {
 			});
 		},
 
-		properties: function(cids, properties, success, error)//cids as array
+		properties: function(cids, properties, success, error)
 		{
 			AJAX({
 				dataType: "json",
@@ -490,7 +547,14 @@ var Request = {
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles=" + encodeURIComponent(smiles);
 		},
 
-		mol: function(cid, flat, success, error)
+		/**
+		 * Retrieves 2D or 3D SDF file from PubChem
+		 * @param  {String}   cid     Compound ID
+		 * @param  {Boolean}  flat    Load 2D SDF if True
+		 * @param  {Function} success Called when SDF is loaded
+		 * @param  {Function} error   Called when SDF request has failed
+		 */
+		sdf: function(cid, flat, success, error)
 		{
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({

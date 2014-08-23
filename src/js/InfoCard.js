@@ -8,11 +8,8 @@ var InfoCard = {
 	data: {},
 
 	/**
-	 * Updates content of InfoCard card using the passed identifiers
-	 * @param {String} smiles   SMILES string
-	 * @param {String} cid      CID string
-	 * @param {String} inchikey InChiKey string
-	 * @param {String} inchi    InChi string
+	 * Updates content of InfoCard card
+	 * @param {String} smiles SMILES string
 	 */
 	update: function(smiles, cid, inchikey, inchi)
 	{
@@ -28,9 +25,9 @@ var InfoCard = {
 
 			this.data = {};
 			this.data["smiles"] = smiles;
-			this.data["cid"] = cid;
-			this.data["inchikey"] = inchikey;
-			this.data["inchi"] = inchi;
+			this.data["cid"] = Sketcher.metadata.cid;
+			this.data["inchikey"] = Sketcher.metadata.inchikey;
+			this.data["inchi"] = Sketcher.metadata.inchi;
 
 			this.updateImage();
 
@@ -50,7 +47,8 @@ var InfoCard = {
 				InfoCard.loadProperty("donors");
 				InfoCard.loadProperty("acceptors");
 				InfoCard.loadProperty("sysname");
-				InfoCard.loadProperty("smiles");
+				InfoCard.loadProperty("canonicalsmiles");
+				InfoCard.loadProperty("isomericsmiles");
 				InfoCard.loadProperty("inchikey");
 				InfoCard.loadProperty("inchi");
 				InfoCard.loadProperty("cas");
@@ -91,11 +89,15 @@ var InfoCard = {
 
 		$("#molecule-image-wrapper").hide();
 
-		var imgw = $("#molecule-image").width() * (MolView.mobile ? 1.5 : 1);
 		var img = new Image();
 		img.onload = function()
 		{
 			$("#molecule-image").attr("src", img.src);
+			if(MolView.mobile)
+			{
+				$("#molecule-image").css("width", 200);
+			}
+
 			$("#molecule-image-wrapper").show();
 		}
 		img.onerror = function()
@@ -103,7 +105,7 @@ var InfoCard = {
 			$("#molecule-image").attr("src", "img/empty.png");
 		}
 
-		if(Sketcher.CID) img.src = Request.PubChem.image(Sketcher.CID);
+		if(Sketcher.metadata.cid) img.src = Request.PubChem.image(Sketcher.metadata.cid);
 		else img.src = Request.PubChem.smilesToImage(InfoCard.data["smiles"]);
 	},
 
@@ -156,6 +158,19 @@ var InfoCard = {
 	 */
 	getProperty: function(id, success, fail)
 	{
+		function _fail()
+		{
+			if(id == "isomericsmiles")
+			{
+				InfoCard.data["isomericsmiles"] = InfoCard.data["smiles"];
+				success(InfoCard.data["isomericsmiles"]);
+			}
+			else if(fail)
+			{
+				fail();
+			}
+		}
+
 		if(InfoCard.data[id])
 		{
 			success(InfoCard.data[id]);
@@ -164,12 +179,12 @@ var InfoCard = {
 		{
 			//array containing properties supported by PubChem using a CID
 			var PubChemProps = [ "formula", "mw", "donors", "acceptors",
-				"sysname", "smiles", "inchikey", "inchi" ];
+				"sysname", "canonicalsmiles", "isomericsmiles", "inchikey", "inchi" ];
 
 			//array containing PubChem names for the properties in PubChemProps
 			var PubChemPropNames = [ "MolecularFormula", "MolecularWeight",
 				"HBondDonorCount", "HBondAcceptorCount", "IUPACName",
-				"IsomericSMILES", "InChIKey", "InChI" ];
+				"CanonicalSMILES", "IsomericSMILES", "InChIKey", "InChI" ];
 
 			//array containing properties supported by the Chemical Identifier Resolver
 			var CIRProps = [ "formula", "mw", "donors", "acceptors",
@@ -187,17 +202,29 @@ var InfoCard = {
 					Request.PubChem.properties(InfoCard.data["cid"], propName,
 					function(data)
 					{
-						if(id == "formula")
+						if(data.PropertyTable.Properties[0][propName])
 						{
-							InfoCard.data[id] = chemFormulaFormat(
-								data.PropertyTable.Properties[0][propName]);
+							if(id == "formula")
+							{
+								InfoCard.data[id] = chemFormulaFormat(
+									data.PropertyTable.Properties[0][propName]);
+							}
+							else
+							{
+								InfoCard.data[id] = data.PropertyTable.Properties[0][propName];
+							}
+
+							if(id == "isomericsmiles")
+							{
+								InfoCard.data["smiles"] = InfoCard.data["isomericsmiles"];
+							}
+
+							success(InfoCard.data[id]);
 						}
 						else
 						{
-							InfoCard.data[id] = data.PropertyTable.Properties[0][propName];
+							tryCIR();
 						}
-
-						success(InfoCard.data[id]);
 					}, tryCIR);
 				}
 				else
@@ -224,11 +251,11 @@ var InfoCard = {
 						}
 
 						success(InfoCard.data[id]);
-					}, function(){ if(fail) fail(); });
+					}, _fail);
 				}
-				else if(fail)
+				else
 				{
-					fail();
+					_fail();
 				}
 			}
 
@@ -238,7 +265,7 @@ var InfoCard = {
 				{
 					InfoCard.data[id] = cid;
 					success(InfoCard.data[id]);
-				}, function(){ if(fail) fail(); });
+				}, _fail);
 			}
 			else
 			{
