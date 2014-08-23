@@ -1,19 +1,19 @@
 /*
- GLmol - Molecular Viewer on WebGL/Javascript (0.47)
-  (C) Copyright 2011-2012, biochem_fan
-      License: dual license of MIT or LGPL3
+GLmol - Molecular Viewer on WebGL/Javascript (0.47)
+(C) Copyright 2011-2012, biochem_fan
+	License: dual license of MIT or LGPL3
 
-  Contributors:
-    Robert Hanson for parseXYZ, deferred instantiation
+Contributors:
+	Robert Hanson for parseXYZ, deferred instantiation
 
-  This program uses
-      Three.js
-         https://github.com/mrdoob/three.js
-         Copyright (c) 2010-2012 three.js Authors. All rights reserved.
-      jQuery
-         http://jquery.org/
-         Copyright (c) 2011 John Resig
- */
+This program uses
+	Three.js
+		https://github.com/mrdoob/three.js
+		Copyright (c) 2010-2012 three.js Authors. All rights reserved.
+	jQuery
+		http://jquery.org/
+		Copyright (c) 2011 John Resig
+*/
 
 /*
 Modifications by Herman Bergwerf:
@@ -23,10 +23,10 @@ Modifications by Herman Bergwerf:
 - aaScale from scaleFactor in constructor (for mobile DPI)
 - mobile multi touch zoom (me.zoom2D for canvas zooming)
 - me.isMultiDragging
-- canvas representation control by adding
- - canvasAtomRadius
- - canvasBondWidth
- - canvasVDW (use vdw atom sizes)
+- canvas 2D params
+  - canvasAtomRadius
+  - canvasBondWidth
+  - canvasVDW (use vdw atom sizes)
 */
 
 //workaround for Intel GMA series (gl_FrontFacing causes compilation error)
@@ -2264,6 +2264,7 @@ var GLmol = (function ()
 	{
 		var ctx = this.canvas2d[0].getContext("2d");
 		this.scene.updateMatrixWorld();
+
 		ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
 		ctx.fillStyle = "rgba(" + 255 * (this.bgColor >> 16) + "," + 255 * (this.bgColor >> 8 & 0xFF)
 			+ "," + 255 * (this.bgColor & 0xFF) + "," + this.bgAlpha + ")";
@@ -2275,83 +2276,137 @@ var GLmol = (function ()
 		ctx.lineCap = "round";
 		var mvMat = new THREE.Matrix4();
 		mvMat.multiply(this.camera.matrixWorldInverse, this.modelGroup.matrixWorld);
-		//  var pmvMat = new THREE.Matrix4();
-		//  pmvMat.multiply(this.camera.projectionMatrix, mvMat);
 
 		var PI2 = Math.PI * 2;
-		var toDraw = [];
+		var drawStack = [];
 		var atoms = this.atoms;
-		for(var i = 0, ilim = this.atoms.length; i < ilim; i++)
+		var lineWidth = 0.03;
+
+		//transform coordinates
+		for(var i = 0; i < this.atoms.length; i++)
 		{
 			var atom = atoms[i];
 			if(atom == undefined) continue;
 
 			if(atom.screen == undefined) atom.screen = new THREE.Vector3;
 			atom.screen.set(atom.x, atom.y, atom.z);
+
 			/*p*/
 			mvMat.multiplyVector3(atom.screen);
-			if(!this.webglFailed) atom.screen.y *= -1; // plus direction of y-axis: up in OpenGL, down in Canvas
-
-			toDraw.push([false, atom.screen.z, i, (this.vdwRadii[atom.elem] * this.vdwRadii[atom.elem] || 4)]);
+			if(!this.webglFailed) atom.screen.y *= -1;//plus direction of y-axis: up in OpenGL, down in Canvas
 		}
 
-		// TODO: do it in 1-pass
-		for(var i = 0, ilim = this.atoms.length; i < ilim; i++)
+		//create draw stack
+		for(var i = 0; i < this.atoms.length; i++)
 		{
 			var atom = atoms[i];
 			if(atom == undefined) continue;
+
+			var part = {};
+
+			part.atom = {
+				i: i,
+				z: atom.screen.z,
+				r: this.vdwRadii[atom.elem] * this.vdwRadii[atom.elem] || 4
+			};
+			part.bonds =  [];
 
 			for(var j = 0, jlim = atom.bonds.length; j < jlim; j++)
 			{
 				var atom2 = atoms[atom.bonds[j]];
 				if(atom2 == undefined) continue;
-				if(atom.serial > atom2.serial) continue;
 
-				toDraw.push([true, (atom.screen.z + atom2.screen.z) / 2, i, atom.bonds[j]]);
+				part.bonds.push(atom.bonds[j]);
 			}
+
+			drawStack.push(part);
 		}
 
-		toDraw.sort(function (l, r)
+		//sort draw stack
+		drawStack.sort(function (a, b)
 		{
-			return l[1] - r[1];
+			return a.atom.z - b.atom.z;
 		});
 
-		for(var i = 0, ilim = toDraw.length; i < ilim; i++)
+		//draw
+		for(var i = 0; i < drawStack.length; i++)
 		{
-			var atom = atoms[toDraw[i][2]];
-			if(!toDraw[i][0])
+			var atom = atoms[drawStack[i].atom.i];
+
+			//draw black body
+			ctx.fillStyle = "#000000";
+			ctx.beginPath();
+			ctx.arc(atom.screen.x, atom.screen.y,
+				(this.canvasVDW ? drawStack[i].atom.r * this.canvasAtomRadius
+					: this.canvasAtomRadius) + lineWidth,
+				0, PI2, true);
+			ctx.closePath();
+			ctx.fill();
+
+			//draw bonds black body
+			for(var j = 0; j < drawStack[i].bonds.length; j++)
 			{
-				ctx.fillStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +
-					"," + (atom.color & 255) + ")";
-				ctx.lineWidth = 0.03;
-				ctx.beginPath();
-				ctx.arc(atom.screen.x, atom.screen.y, this.canvasVDW ? toDraw[i][3] * this.canvasAtomRadius : this.canvasAtomRadius, 0, PI2, true);
-				ctx.closePath();
-				ctx.fill();
-				ctx.strokeStyle = "#000000";
-				if(2 * this.canvasAtomRadius != this.canvasBondWidth) ctx.stroke();
+				var atom2 = atoms[drawStack[i].bonds[j]];
+
+				if(atom2.screen.z > atom.screen.z ||
+					(atom2.screen.z == atom.screen.z && atom2.serial > atom.serial))
+				{
+					ctx.lineWidth = this.canvasBondWidth + lineWidth * 2;
+					var cx = (atom.screen.x + atom2.screen.x) / 2;
+					var cy = (atom.screen.y + atom2.screen.y) / 2;
+					ctx.strokeStyle = "#000000";
+
+					ctx.beginPath();
+					ctx.moveTo(atom.screen.x, atom.screen.y);
+					ctx.lineTo(cx, cy);
+					ctx.closePath();
+					ctx.stroke();
+
+					ctx.beginPath();
+					ctx.moveTo(atom2.screen.x, atom2.screen.y);
+					ctx.lineTo(cx, cy);
+					ctx.closePath();
+					ctx.stroke();
+				}
 			}
-			else
+
+			//draw bonds
+			for(var j = 0; j < drawStack[i].bonds.length; j++)
 			{
-				var atom2 = atoms[toDraw[i][3]];
-				ctx.lineWidth = this.canvasBondWidth;
-				var cx = (atom.screen.x + atom2.screen.x) / 2;
-				var cy = (atom.screen.y + atom2.screen.y) / 2;
-				ctx.strokeStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +
-					"," + (atom.color & 255) + ")";
-				ctx.beginPath();
-				ctx.moveTo(atom.screen.x, atom.screen.y);
-				ctx.lineTo(cx, cy);
-				ctx.closePath();
-				ctx.stroke();
-				ctx.strokeStyle = "rgb(" + (atom2.color >> 16) + "," + (atom2.color >> 8 & 255) +
-					"," + (atom2.color & 255) + ")";
-				ctx.beginPath();
-				ctx.moveTo(atom2.screen.x, atom2.screen.y);
-				ctx.lineTo(cx, cy);
-				ctx.closePath();
-				ctx.stroke();
+				var atom2 = atoms[drawStack[i].bonds[j]];
+
+				if(atom2.screen.z > atom.screen.z ||
+					(atom2.screen.z == atom.screen.z && atom2.serial > atom.serial))
+				{
+					ctx.lineWidth = this.canvasBondWidth;
+					var cx = (atom.screen.x + atom2.screen.x) / 2;
+					var cy = (atom.screen.y + atom2.screen.y) / 2;
+
+					ctx.strokeStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +
+						"," + (atom.color & 255) + ")";
+					ctx.beginPath();
+					ctx.moveTo(atom.screen.x, atom.screen.y);
+					ctx.lineTo(cx, cy);
+					ctx.closePath();
+					ctx.stroke();
+
+					ctx.strokeStyle = "rgb(" + (atom2.color >> 16) + "," + (atom2.color >> 8 & 255) +
+						"," + (atom2.color & 255) + ")";
+					ctx.beginPath();
+					ctx.moveTo(atom2.screen.x, atom2.screen.y);
+					ctx.lineTo(cx, cy);
+					ctx.closePath();
+					ctx.stroke();
+				}
 			}
+
+			//draw atom
+			ctx.fillStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +
+				"," + (atom.color & 255) + ")";
+			ctx.beginPath();
+			ctx.arc(atom.screen.x, atom.screen.y, this.canvasVDW ? drawStack[i].atom.r * this.canvasAtomRadius : this.canvasAtomRadius, 0, PI2, true);
+			ctx.closePath();
+			ctx.fill();
 		}
 
 		ctx.restore();
@@ -2365,3 +2420,4 @@ var GLmol = (function ()
 
 	return GLmol;
 }());
+
