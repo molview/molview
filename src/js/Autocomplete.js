@@ -58,6 +58,18 @@ var Autocomplete = {
 	 */
 	init: function()
 	{
+		for(var i = 0; i < commonMacromolecules.macromolecules.length; i++)
+		{
+			commonMacromolecules.macromolecules[i].label =
+				commonMacromolecules.macromolecules[i].name;
+		}
+
+		for(var i = 0; i < mineralNames.minerals.length; i++)
+		{
+			mineralNames.minerals[i].label =
+				ucfirst(humanize(mineralNames.minerals[i].name));
+		}
+
 		this.macromolecules = new AutocompleteBuilder(commonMacromolecules.macromolecules, "name");
 		this.minerals = new AutocompleteBuilder(mineralNames.minerals, "name");
 
@@ -201,11 +213,12 @@ var Autocomplete = {
 
 			this.getPubChemAutocomplete(text, function(array)
 			{
-				mix = mix.concat(array);
-				for(var i = 0; i < mix.length; i++)
+				for(var i = 0; i < array.length; i++)
 				{
-					mix[i].label = ucfirst(humanize(mix[i].name));
+					array[i].label = ucfirst(humanize(array[i].name));
 				}
+
+				mix = mix.concat(array);
 
 				//autocomplete sort mix
 				mix = new AutocompleteBuilder(mix, "label").sort(text);
@@ -262,11 +275,23 @@ var Autocomplete = {
 
 		$("#autocomplete-dropdown").empty();
 		var ul = $("<ul></ul>");
+		var text = $("#search-input").val().toLowerCase();
 
 		for(var i = 0; i < records.length; i++)
 		{
 			var li = $('<li class="autocomplete-item"></li>');
-			$('<span class="autocomplete-label"></span>').html(records[i].label).appendTo(li);
+
+			if(records[i].label.toLowerCase().indexOf(text) == 0)
+			{
+				$('<span class="autocomplete-label"></span>').html("<b>"
+						+ records[i].label.substr(0, text.length) + "</b>"
+						+ records[i].label.substr(text.length)).appendTo(li);
+			}
+			else
+			{
+				$('<span class="autocomplete-label"></span>').html(records[i].label).appendTo(li);
+			}
+
 			if(records[i].pdbids)//macromolecule
 			{
 				li.addClass("autocomplete-macromolecule");

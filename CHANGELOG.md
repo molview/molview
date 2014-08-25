@@ -1,4 +1,13 @@
-## 2.2.0
+## 2.3.x
+
+Future improvements
+
+ - Add EDTSurf to MolView
+ - Protein solvents display
+ - Proteins and minerals library
+ - Language localisation
+
+## 2.2.x
 
 Bugfixes:
 
@@ -11,7 +20,7 @@ Bugfixes:
   - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
   - Reduced crystal 2D depiction failure
   - Added CIF validation
-  > Spectrum loading error handling
+  > Fix GLmol drawTube
 
 Backend:
 
@@ -45,6 +54,7 @@ Frontend:
   - Redesigned search results style
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
+  > Changed GLmol > Chain representation > bonds to extra switch
   > Move InfoCard and Spectra to separate layer (like search)
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
@@ -85,7 +95,7 @@ Revisions:
 
   - Revised ChemicalData image loading appearance
 
-## 2.1.0 (2014-07-04)
+## 2.1.x (2014-07-04)
 
 Bugfixes:
 
@@ -114,7 +124,7 @@ Features:
   - PubChem CID search by entering integer
   - Improved properties dialog layout on tablets
 
-## 2.0.0 (2014-07-01)
+## 2.0.x (2014-07-01)
 
 Features:
 

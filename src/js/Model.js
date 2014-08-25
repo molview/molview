@@ -12,7 +12,8 @@ var JmolScripts = {
 	Line: "select *; wireframe on; spacefill off;",
 	Macromolecules: "select protein or nucleic; ribbon only; color ribbons structure; display not solvent;",
 	resetLabels: "hover off; color measures magenta; font measure 18;",
-	clearChargeDisplay: 'measure off; measure delete; mo off; isosurface off; echo ""; label ""; select formalCharge <> 0; label %C; select *; dipole bond delete; dipole molecular delete; color cpk;'
+	clearMeasures: 'measure off; measure delete;',
+	clearMolecule: 'isosurface off; echo ""; label ""; select formalCharge <> 0; label %C; select *; dipole bond delete; dipole molecular delete; color cpk;'
 };
 
 var Model = {
@@ -419,6 +420,7 @@ var Model = {
 					var all_het = this.getHetatms(all);
 					var hetatm = this.removeSolvents(all_het);
 					var chain = Model.GLmol.chain;
+					var asu = new THREE.Object3D();
 
 					this.colorByAtom(all, {});
 					if(chain.coloring == "ss") this.colorByStructure(all, 0xcc00cc, 0x00cccc);
@@ -429,7 +431,6 @@ var Model = {
 
 					if(Model.data.current == "PDB")
 					{
-						var asu = new THREE.Object3D();
 						var do_not_smoothen = false;
 						if(chain.representation == "ribbon")
 						{
@@ -496,7 +497,7 @@ var Model = {
 					}
 
 					if(Model.GLmol.loadBioAssembly) this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
-					this.modelGroup.add(asu);
+					if(Model.data.current == "PDB") this.modelGroup.add(asu);
 				};
 
 				Model._setRenderEngine("GLmol");
@@ -693,7 +694,12 @@ var Model = {
 						disableInitialConsole: true,
 						use: "HTML5",
 						j2sPath: MolView.JMOL_J2S_PATH,
-						script: 'frank off; background ' + Model.background + '; unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate"; set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false; set hoverDelay 0.001; hover off; font measure 18; set MessageCallback "Model.JSmol.onMessage";',
+						script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
+						unbind "LEFT CLICK" "_pickMeasure"; bind "RIGHT CLICK" "_pickMeasure";\
+						unbind "LEFT CLICK" "_pickAtom"; bind "RIGHT CLICK" "_pickAtom";\
+						frank off; set specular off; background ' + Model.background + '; color label' + Model.background + ';\
+						set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false;\
+						set hoverDelay 0.001; hover off; font measure 18; set MessageCallback "Model.JSmol.onMessage";',
 						readyFunction: Model.JSmol.onReady.bind(Model.JSmol),
 						console: "none"
 					});
@@ -817,7 +823,9 @@ var Model = {
 		setBackground: function(color)
 		{
 			if(this.ready)
-				Model.JSmol.scriptWaitOutput("background " + color + "; refresh;");
+			{
+				Model.JSmol.scriptWaitOutput("background " + color + "; color label " + color + "; refresh;");
+			}
 		},
 
 		loadMOL: function(mol)
@@ -826,11 +834,12 @@ var Model = {
 
 			if(this.ready)
 			{
+
 				this.currentModel = mol;
 
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
-				this.setPicking(this.picking);
+				this.setPicking("OFF");
 				this.scriptWaitOutput("rotate best");
 
 				return true;
@@ -873,7 +882,7 @@ var Model = {
 				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
 
 				this.setRepresentation(Model.representation);
-				this.setPicking(this.picking);
+				this.setPicking("OFF");
 				this.scriptWaitOutput("rotate best");
 
 				return true;
@@ -933,8 +942,10 @@ var Model = {
 		 */
 		clean: function()
 		{
-			this.script(JmolScripts.clearChargeDisplay);
+			this.script(JmolScripts.clearMeasures);
+			this.script(JmolScripts.clearMolecule);
 			this.script(JmolScripts.resetLabels);
+			this.setPicking("OFF");
 		},
 
 		calculatePartialCharge: function()
@@ -982,7 +993,7 @@ var Model = {
 			Model.JSmol.safeCallback(function()
 			{
 				if(!charge_calculated) Model.JSmol.calculatePartialCharge();
-				Model.JSmol.script("color {*} partialCharge; color label black; background label white; label %-8.4[partialcharge]; hover off;");
+				Model.JSmol.script("label %-8.4[partialcharge]; hover off;");
 			}, "jmol_calculation", !charge_calculated);
 		},
 
@@ -1027,6 +1038,8 @@ var Model = {
 
 			Model.JSmol.safeCallback(function()
 			{
+				Model.JSmol.script(JmolScripts.clearMolecule);
+				Model.JSmol.script(JmolScripts.resetLabels);
 				Model.JSmol.script("minimize;");
 			}, "jmol_calculation", false);
 		},

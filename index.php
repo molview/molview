@@ -1,5 +1,5 @@
 <?php
-include("utility.php");
+include("php/utility.php");
 error_reporting(0);
 
 if(is_below_IE10())
@@ -125,13 +125,13 @@ else if(isset($codid))
 		<?php echo "<title>".$title."</title>"; ?>
 
 		<link rel="shortcut icon" href="img/icon/32.png" />
-		<link rel="icon" sizes="196x196" href="img/icon/196.png">
+
+		<!-- <link rel="icon" sizes="196x196" href="img/icon/196.png">
 		<link rel="icon" sizes="128x128" href="img/icon/128.png">
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/icon/57.png">
 		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/icon/72.png">
 		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/icon/114.png">
-		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
-		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/icon/144.png"> -->
 
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" content="molview,free,molecules,chemistry,compounds,macromolecules,proteins,biomolecules,crystals,smartphone,tablet,chrome,spectroscopy,sketch,draw,edit,view" />
@@ -180,7 +180,7 @@ else if(isset($codid))
 
 		<!-- JS -->
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
-		<script type="text/javascript" src="src/js/lib/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="src/js/lib/jquery-1.11.1.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
 		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
 		<script type="text/javascript" src="src/js/lib/Polyfill.js"></script>
@@ -207,7 +207,7 @@ else if(isset($codid))
 		<script type="text/javascript" src="src/js/moledit/ChemicalView_core.js"></script>
 		<script type="text/javascript" src="src/js/moledit/ChemicalView_events.js"></script>
 		<script type="text/javascript" src="src/js/moledit/Utility.js"></script>
-		<script type="text/javascript" src="src/js/lib/Three49custom.js"></script>
+		<script type="text/javascript" src="src/js/lib/three.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/GLmol.js"></script>
 		<script type="text/javascript" src="src/js/lib/ChemDoodleWeb.js"></script>
 		<script type="text/javascript" src="src/js/lib/Blob.js"></script>
@@ -477,7 +477,9 @@ else if(isset($codid))
 				</div>
 			</div>
 			<div id="model" <?php if(isset($bg)) echo 'style="background:'.$bg.'"'; ?>>
-				<div id="chemdoodle" class="render-engine" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
+				<div id="chemdoodle" class="render-engine" style="display: none;">
+					<canvas id="chemdoodle-canvas"></canvas>
+				</div>
 				<div id="jsmol" class="render-engine" style="display: none;"></div>
 				<div id="glmol" class="render-engine" style="display: none;"></div>
 			</div>
@@ -540,10 +542,12 @@ else if(isset($codid))
 					</ul>
 					<p id="about-links">
 						MolView v2.2.0
-						&nbsp;|&nbsp;
+						<br/>
 						Copyright &copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
 						&nbsp;|&nbsp;
 						<a class="link" href="CHANGELOG.md" target="_blank">Changelog</a>
+						&nbsp;|&nbsp;
+						<a class="link" href="THIRD.md" target="_blank">Third party licenses</a>
 						<br/>
 						<a class="link" target="_blank" title="Chrome App" href="https://chrome.google.com/webstore/detail/molview/nogcacamdkipgkfpfiakaoamdnihinnm">Chrome Web Store</a>
 						&nbsp;|&nbsp;
@@ -568,8 +572,7 @@ else if(isset($codid))
 					<script type="text/javascript">
 						if(isTouchDevice())
 						{
-							document.write('<div class="alert-bar alert-danger"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
-							document.write('<div class="alert-bar alert-info"><b>Hint:</b> on several mobile browsers including <b>Chrome</b> and <b>Safari</b>, you can add MolView to your homescreen.</div>');
+							document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
 						}
 					</script>
 					<p><a class="link" href="docs/MolView-v2.2-manual.pdf" target="_blank">Download PDF version</a></p>
@@ -578,27 +581,34 @@ else if(isset($codid))
 					<div class="expandable">
 						<div class="expandable-title"><i class="fa"></i><b>Drawing structural formulas</b></div>
 						<div class="expandable-content">
-							<p>You can draw structural formulas using the sketching component.</p>
+							<p>You can draw structural formulas using the Sketcher component.</p>
 							<h4>Top toolbar</h4>
-							<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule displayed in the model window.</p>
+							<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule which is displayed in the model window.</p>
+							<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/TopToolbar.jpg" alt="Top toolbar" /></p>
+							<p class="image-note"><i>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, clean structural formula, 2D to 3D conversion</i></p>
 							<h4>Left toolbar</h4>
-							<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. In order to draw a carbon chain using the chain tool, you have to click a start point or atom and drag a chain.</p>
+							<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. You can draw a carbon chain using the chain tool. Just click a start point or atom and drag a chain.</p>
+							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/LeftToolbar.jpg" alt="Left toolbar" /></p>
+							<p class="image-note"><i>Left toolbar (rotated), from left to right: single bond, double bond, triple bond, up/down bond, benzene, cyclopropane/butane/pentane/hexane/heptane, chain, charge+, charge-</i></p>
 							<h4>Right toolbar</h4>
-							<p>The right toolbar contains some common elements and a periodic table tool in case you want to use another element. Note that you can only replace existing atoms. So in order to add an atom, you frist have to add a new bond using the tools from the left toolbar.</p>
+							<p>The right toolbar contains some common elements and a periodic table tool in case you want to use another element. You can select an atom and click an existing atom in order to replace it with the selected atom. Note that you can only replace existing atoms. In order to add an atom, you will first have to add a new bond using the tools from the left toolbar.</p>
+							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/RightToolbar.jpg" alt="Right toolbar" /></p>
+							<p class="image-note"><i>Right toolbar (rotated), from left to right: hydrogen, carbon, nitrogen, oxygen, sulfur, phosphorus, fluorine, iodine, chlorine, bromine, table of elements, info (about dialog)</i></p>
 						</div>
 					</div>
 					<div class="expandable">
 						<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
 						<div class="expandable-content">
-							<p>You can load structures from large databases like PubChem via the search field located on the right side of the menubar. Just type what you are looking for and enter or click one of the search categories listed below.</p>
+							<p>You can load structures from large databases like PubChem via the search bar located on the right side of the menubar. Just type what you are looking for and find it in the autocomplete dropdown or click one of the search categories listed below to perform a more extensive search.</p>
 							<ul>
 								<li><b>Compounds:</b> small molecules from the PubChem database</li>
 								<li><b>Macromolecules:</b> biological macromolecules from the RCSB database</li>
 								<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
 							</ul>
-							<p>When you type something longer than one character, a list of suggestions will appear. You can click one or use the up/down arrow keys to select one and enter it.</p>
-							<p>In addition, you can load a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. You can also directly enter a SMILES, InChi or InChiKey string in the search field (don't use the <i>Compounds</i> button)</p>
+							<p>You can also enter a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. It is also possible to enter a SMILES, InChi or InChiKey string in the search field.</p>
 							<p>You can show or hide search results using the leftmost button. Note that <i>Macromolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display macromolecules anyway.</p>
+							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.jpg" alt="Search bar" /></p>
+							<p class="image-note"><i>Search bar, from left to right: input field, fast search, compounds search (PubChem), macromolecules search (RCSB) and crystals search (COD)</i></p>
 						</div>
 					</div>
 					<div class="expandable">
@@ -615,8 +625,8 @@ else if(isset($codid))
 							<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
 							<ol>
 								<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
-								<li><b>GLmol</b> if you load macromolecules <i>(due to significant higher performance)</i></li>
-								<li><b>ChemDoodle</b> if you load a crystal structure <i>(Glmol cannot render crystal structures)</i></li>
+								<li><b>GLmol</b> if you load macromolecules<br/><i>(due to significant higher performance)</i></li>
+								<li><b>ChemDoodle</b> if you load a crystal structure<br/><i>(GLmol cannot render crystal structures)</i></li>
 							</ol>
 							<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
 							<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
@@ -719,7 +729,7 @@ else if(isset($codid))
 								<li><b>Energy minimization:</b> executes an MMFF94 energy minimization calculation<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
 							</ul>
 							<h4>Measurement</h4>
-							<p>You can execute distance, angle and torsion measurements using Jmol. You can select one of these measurement modes via the Jmol menu <i>(click selected mode again to deselect)</i></p>
+							<p>You can execute distance, angle and torsion measurements using Jmol. You can select one of these measurement modes via the Jmol menu <i>(click selected mode again to deselect)</i> Select atoms using the right mouse button.</p>
 							<ul>
 								<li><b>Distance</b> distance between two atoms in <b>nm</b> <i>(select two atoms)</i></li>
 								<li><b>Angle</b> angle between two bonds in <b>deg</b> <i>(select three atoms)</i></li>

@@ -1,5 +1,5 @@
 /*
-GLmol - Molecular Viewer on WebGL/Javascript (0.47)
+GLmol - Molecular Viewer on WebGL/Javascript(0.47)
 (C) Copyright 2011-2012, biochem_fan
 	License: dual license of MIT or LGPL3
 
@@ -9,10 +9,10 @@ Contributors:
 This program uses
 	Three.js
 		https://github.com/mrdoob/three.js
-		Copyright (c) 2010-2012 three.js Authors. All rights reserved.
+		Copyright(c) 2010-2012 three.js Authors. All rights reserved.
 	jQuery
 		http://jquery.org/
-		Copyright (c) 2011 John Resig
+		Copyright(c) 2011 John Resig
 */
 
 /*
@@ -20,16 +20,16 @@ Modifications by Herman Bergwerf:
 - add Jmol coloring
 - add resize function
 - replace '$(' with 'jQuery('
-- aaScale from scaleFactor in constructor (for mobile DPI)
-- mobile multi touch zoom (me.zoom2D for canvas zooming)
+- aaScale from scaleFactor in constructor(for mobile DPI)
+- mobile multi touch zoom(me.zoom2D for canvas zooming)
 - me.isMultiDragging
 - canvas 2D params
   - canvasAtomRadius
   - canvasBondWidth
-  - canvasVDW (use vdw atom sizes)
+  - canvasVDW(use vdw atom sizes)
 */
 
-//workaround for Intel GMA series (gl_FrontFacing causes compilation error)
+//workaround for Intel GMA series(gl_FrontFacing causes compilation error)
 THREE.ShaderLib.lambert.fragmentShader = THREE.ShaderLib.lambert.fragmentShader.replace("gl_FrontFacing", "true");
 THREE.ShaderLib.lambert.vertexShader = THREE.ShaderLib.lambert.vertexShader.replace(/\}$/, "#ifdef DOUBLE_SIDED\n if(transformedNormal.z < 0.0) vLightFront = vLightBack;\n #endif\n }");
 
@@ -37,7 +37,7 @@ var TV3 = THREE.Vector3,
 	TF3 = THREE.Face3,
 	TCo = THREE.Color;
 
-THREE.Geometry.prototype.colorAll = function (color)
+THREE.Geometry.prototype.colorAll = function(color)
 {
 	for(var i = 0; i < this.faces.length; i++)
 	{
@@ -45,15 +45,15 @@ THREE.Geometry.prototype.colorAll = function (color)
 	}
 };
 
-THREE.Matrix4.prototype.isIdentity = function ()
+THREE.Matrix4.prototype.isIdentity = function()
 {
 	for(var i = 0; i < 4; i++)
 		for(var j = 0; j < 4; j++)
-			if(this.elements[i * 4 + j] != (i == j) ? 1 : 0) return false;
+			if(this.elements[i * 4 + j] !=(i == j) ? 1 : 0) return false;
 	return true;
 };
 
-var GLmol = (function ()
+var GLmol =(function()
 {
 	function GLmol(id, suppressAutoload, force2d, scaleFactor)
 	{
@@ -61,32 +61,60 @@ var GLmol = (function ()
 		return true;
 	}
 
-	GLmol.prototype.create = function (id, suppressAutoload, force2d, scaleFactor)
+	GLmol.prototype.create = function(id, suppressAutoload, force2d, scaleFactor)
 	{
 		this.Nucleotides = ['  G', '  A', '  T', '  C', '  U', ' DG', ' DA', ' DT', ' DC', ' DU'];
-		this.ElementColors = { "H": 0xFFFFFF,"He": 0xD9FFFF,"Li": 0xCC80FF,"Be": 0xC2FF00,"B": 0xFFB5B5,"C": 0x909090,"N": 0x3050F8,"O": 0xFF0D0D,"F": 0x90E050,"Ne": 0xB3E3F5,"Na": 0xAB5CF2,"Mg": 0x8AFF00,"Al": 0xBFA6A6,"Si": 0xF0C8A0,"P": 0xFF8000,"S": 0xFFFF30,"Cl": 0x1FF01F,"Ar": 0x80D1E3,"K": 0x8F40D4,"Ca": 0x3DFF00,"Sc": 0xE6E6E6,"Ti": 0xBFC2C7,"V": 0xA6A6AB,"Cr": 0x8A99C7,"Mn": 0x9C7AC7,"Fe": 0xE06633,"Co": 0xF090A0,"Ni": 0x50D050,"Cu": 0xC88033,"Zn": 0x7D80B0,"Ga": 0xC28F8F,"Ge": 0x668F8F,"As": 0xBD80E3,"Se": 0xFFA100,"Br": 0xA62929,"Kr": 0x5CB8D1,"Rb": 0x702EB0,"Sr": 0x00FF00,"Y": 0x94FFFF,"Zr": 0x94E0E0,"Nb": 0x73C2C9,"Mo": 0x54B5B5,"Tc": 0x3B9E9E,"Ru": 0x248F8F,"Rh": 0x0A7D8C,"Pd": 0x006985,"Ag": 0xC0C0C0,"Cd": 0xFFD98F,"In": 0xA67573,"Sn": 0x668080,"Sb": 0x9E63B5,"Te": 0xD47A00,"I": 0x940094,"Xe": 0x429EB0,"Cs": 0x57178F,"Ba": 0x00C900,"La": 0x70D4FF,"Ce": 0xFFFFC7,"Pr": 0xD9FFC7,"Nd": 0xC7FFC7,"Pm": 0xA3FFC7,"Sm": 0x8FFFC7,"Eu": 0x61FFC7,"Gd": 0x45FFC7,"Tb": 0x30FFC7,"Dy": 0x1FFFC7,"Ho": 0x00FF9C,"Er": 0x00E675,"Tm": 0x00D452,"Yb": 0x00BF38,"Lu": 0x00AB24,"Hf": 0x4DC2FF,"Ta": 0x4DA6FF,"W": 0x2194D6,"Re": 0x267DAB,"Os": 0x266696,"Ir": 0x175487,"Pt": 0xD0D0E0,"Au": 0xFFD123,"Hg": 0xB8B8D0,"Tl": 0xA6544D,"Pb": 0x575961,"Bi": 0x9E4FB5,"Po": 0xAB5C00,"At": 0x754F45,"Rn": 0x428296,"Fr": 0x420066,"Ra": 0x007D00,"Ac": 0x70ABFA,"Th": 0x00BAFF,"Pa": 0x00A1FF,"U": 0x008FFF,"Np": 0x0080FF,"Pu": 0x006BFF,"Am": 0x545CF2,"Cm": 0x785CE3,"Bk": 0x8A4FE3,"Cf": 0xA136D4,"Es": 0xB31FD4,"Fm": 0xB31FBA,"Md": 0xB30DA6,"No": 0xBD0D87,"Lr": 0xC70066,"Rf": 0xCC0059,"Db": 0xD1004F,"Sg": 0xD90045,"Bh": 0xE00038,"Hs": 0xE6002E,"Mt": 0xEB0026 };
-		// Reference: A. Bondi, J. Phys. Chem., 1964, 68, 441.
-		this.vdwRadii = {
-			"H": 1.2,
-			"Li": 1.82,
-			"Na": 2.27,
-			"K": 2.75,
-			"C": 1.7,
-			"N": 1.55,
-			"O": 1.52,
-			"F": 1.47,
-			"P": 1.80,
-			"S": 1.80,
-			"CL": 1.75,
-			"BR": 1.85,
-			"SE": 1.90,
-			"ZN": 1.39,
-			"CU": 1.4,
-			"NI": 1.63
+
+		this.ElementColors = {
+			"H": 0xFFFFFF,"He": 0xD9FFFF,"Li": 0xCC80FF,"Be": 0xC2FF00,
+			"B": 0xFFB5B5,"C": 0x909090,"N": 0x3050F8,"O": 0xFF0D0D,
+			"F": 0x90E050,"Ne": 0xB3E3F5,"Na": 0xAB5CF2,"Mg": 0x8AFF00,
+			"Al": 0xBFA6A6,"Si": 0xF0C8A0,"P": 0xFF8000,"S": 0xFFFF30,
+			"Cl": 0x1FF01F,"Ar": 0x80D1E3,"K": 0x8F40D4,"Ca": 0x3DFF00,
+			"Sc": 0xE6E6E6,"Ti": 0xBFC2C7,"V": 0xA6A6AB,"Cr": 0x8A99C7,
+			"Mn": 0x9C7AC7,"Fe": 0xE06633,"Co": 0xF090A0,"Ni": 0x50D050,
+			"Cu": 0xC88033,"Zn": 0x7D80B0,"Ga": 0xC28F8F,"Ge": 0x668F8F,
+			"As": 0xBD80E3,"Se": 0xFFA100,"Br": 0xA62929,"Kr": 0x5CB8D1,
+			"Rb": 0x702EB0,"Sr": 0x00FF00,"Y": 0x94FFFF,"Zr": 0x94E0E0,
+			"Nb": 0x73C2C9,"Mo": 0x54B5B5,"Tc": 0x3B9E9E,"Ru": 0x248F8F,
+			"Rh": 0x0A7D8C,"Pd": 0x006985,"Ag": 0xC0C0C0,"Cd": 0xFFD98F,
+			"In": 0xA67573,"Sn": 0x668080,"Sb": 0x9E63B5,"Te": 0xD47A00,
+			"I": 0x940094,"Xe": 0x429EB0,"Cs": 0x57178F,"Ba": 0x00C900,
+			"La": 0x70D4FF,"Ce": 0xFFFFC7,"Pr": 0xD9FFC7,"Nd": 0xC7FFC7,
+			"Pm": 0xA3FFC7,"Sm": 0x8FFFC7,"Eu": 0x61FFC7,"Gd": 0x45FFC7,
+			"Tb": 0x30FFC7,"Dy": 0x1FFFC7,"Ho": 0x00FF9C,"Er": 0x00E675,
+			"Tm": 0x00D452,"Yb": 0x00BF38,"Lu": 0x00AB24,"Hf": 0x4DC2FF,
+			"Ta": 0x4DA6FF,"W": 0x2194D6,"Re": 0x267DAB,"Os": 0x266696,
+			"Ir": 0x175487,"Pt": 0xD0D0E0,"Au": 0xFFD123,"Hg": 0xB8B8D0,
+			"Tl": 0xA6544D,"Pb": 0x575961,"Bi": 0x9E4FB5,"Po": 0xAB5C00,
+			"At": 0x754F45,"Rn": 0x428296,"Fr": 0x420066,"Ra": 0x007D00,
+			"Ac": 0x70ABFA,"Th": 0x00BAFF,"Pa": 0x00A1FF,"U": 0x008FFF,
+			"Np": 0x0080FF,"Pu": 0x006BFF,"Am": 0x545CF2,"Cm": 0x785CE3,
+			"Bk": 0x8A4FE3,"Cf": 0xA136D4,"Es": 0xB31FD4,"Fm": 0xB31FBA,
+			"Md": 0xB30DA6,"No": 0xBD0D87,"Lr": 0xC70066,"Rf": 0xCC0059,
+			"Db": 0xD1004F,"Sg": 0xD90045,"Bh": 0xE00038,"Hs": 0xE6002E,
+			"Mt": 0xEB0026
 		};
 
+		// Hu, S.Z.; Zhou, Z.H.; Tsai, K.R. Acta Phys.-Chim. Sin., 2003, 19:1073.
+		this.vdwRadii = {
+			"H":1.08,"HE":1.34,"LI":1.75,"BE":2.05,"B":1.47,"C":1.49,"N":1.41,"O":1.4,
+			"F":1.39,"NE":1.68,"NA":1.84,"MG":2.05,"AL":2.11,"SI":2.07,"P":1.92,"S":1.82,
+			"CL":1.83,"AR":1.93,"K":2.05,"CA":2.21,"SC":2.16,"TI":1.87,"V":1.79,"CR":1.89,
+			"MN":1.97,"FE":1.94,"CO":1.92,"NI":1.84,"CU":1.86,"ZN":2.1,"GA":2.08,"GE":2.15,
+			"AS":2.06,"SE":1.93,"BR":1.98,"KR":2.12,"RB":2.16,"SR":2.24,"Y":2.19,"ZR":1.86,
+			"NB":2.07,"MO":2.09,"TC":2.09,"RU":2.07,"RH":1.95,"PD":2.02,"AG":2.03,"CD":2.3,
+			"IN":2.36,"SN":2.33,"SB":2.25,"TE":2.23,"I":2.23,"XE":2.21,"CS":2.22,"BA":2.51,
+			"LA":2.4,"CE":2.35,"PR":2.39,"ND":2.29,"PM":2.36,"SM":2.29,"EU":2.33,"GD":2.37,
+			"TB":2.21,"DY":2.29,"HO":2.16,"ER":2.35,"TM":2.27,"YB":2.42,"LU":2.21,"HF":2.12,
+			"TA":2.17,"W":2.1,"RE":2.17,"OS":2.16,"IR":2.02,"PT":2.09,"AU":2.17,"HG":2.09,
+			"TL":2.35,"PB":2.32,"BI":2.43,"PO":2.29,"AT":2.36,"RN":2.43,"FR":2.56,"RA":2.43,
+			"AC":2.6,"TH":2.37,"PA":2.43,"U":2.4,"NP":2.21,"PU":2.56,"AM":2.56,
+			"CM":2.56,"BK":2.56,"CF":2.56,"ES":2.56,"FM":2.56
+		},
+
 		this.id = id;
-		this.aaScale = scaleFactor;//1 or 2
+		this.aaScale = scaleFactor;
 
 		this.container = jQuery('#' + this.id);
 		this.WIDTH = this.container.width() * this.aaScale, this.HEIGHT = this.container.height() * this.aaScale;
@@ -102,16 +130,14 @@ var GLmol = (function ()
 				antialias: true,
 				alpha: true
 			});
-			this.renderer.sortObjects = false; // hopefully improve performance
-			// 'antialias: true' now works in Firefox too!
-			// setting this.aaScale = 2 will enable antialias in older Firefox but GPU load increases.
+			this.renderer.sortObjects = false;//hopefully improve performance
 			this.renderer.domElement.style.width = "100%";
 			this.renderer.domElement.style.height = "100%";
 			this.container.append(this.renderer.domElement);
 			this.renderer.setSize(this.WIDTH, this.HEIGHT);
 			this.webglFailed = false;
 		}
-		catch (e)
+		catch(e)
 		{
 			this.canvas2d = jQuery('<canvas></canvas');
 			this.container.append(this.canvas2d);
@@ -179,7 +205,7 @@ var GLmol = (function ()
 		this.loadMolecule();
 	};
 
-	GLmol.prototype.resize = function (scene)
+	GLmol.prototype.resize = function(scene)
 	{
 		this.WIDTH = this.container.width() * this.aaScale;
 		this.HEIGHT = this.container.height() * this.aaScale;
@@ -198,7 +224,7 @@ var GLmol = (function ()
 		this.show();
 	};
 
-	GLmol.prototype.setupLights = function (scene)
+	GLmol.prototype.setupLights = function(scene)
 	{
 		var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
 		directionalLight.position = new TV3(0.2, 0.2, -1).normalize();
@@ -208,7 +234,7 @@ var GLmol = (function ()
 		scene.add(ambientLight);
 	};
 
-	GLmol.prototype.parseSDF = function (str)
+	GLmol.prototype.parseSDF = function(str)
 	{
 		var atoms = this.atoms;
 		var protein = this.protein;
@@ -252,7 +278,7 @@ var GLmol = (function ()
 		return true;
 	};
 
-	GLmol.prototype.parseXYZ = function (str)
+	GLmol.prototype.parseXYZ = function(str)
 	{
 		var atoms = this.atoms;
 		var protein = this.protein;
@@ -292,7 +318,7 @@ var GLmol = (function ()
 		return true;
 	};
 
-	GLmol.prototype.parsePDB2 = function (str)
+	GLmol.prototype.parsePDB2 = function(str)
 	{
 		var atoms = this.atoms;
 		var protein = this.protein;
@@ -466,7 +492,7 @@ var GLmol = (function ()
 	};
 
 	// Catmull-Rom subdivision
-	GLmol.prototype.subdivide = function (_points, DIV)
+	GLmol.prototype.subdivide = function(_points, DIV)
 	{ // points as Vector3
 		var ret = [];
 		var points = _points;
@@ -476,7 +502,7 @@ var GLmol = (function ()
 		{
 			var p1 = _points[i],
 				p2 = _points[i + 1];
-			if(p1.smoothen) points.push(new TV3((p1.x + p2.x) / 2, (p1.y + p2.y) / 2, (p1.z + p2.z) / 2));
+			if(p1.smoothen) points.push(new TV3((p1.x + p2.x) / 2,(p1.y + p2.y) / 2,(p1.z + p2.z) / 2));
 			else points.push(p1);
 		}
 		points.push(_points[_points.length - 1]);
@@ -492,9 +518,9 @@ var GLmol = (function ()
 			for(var j = 0; j < DIV; j++)
 			{
 				var t = 1.0 / DIV * j;
-				var x = p1.x + t * v0.x + t * t * (-3 * p1.x + 3 * p2.x - 2 * v0.x - v1.x) + t * t * t * (2 * p1.x - 2 * p2.x + v0.x + v1.x);
-				var y = p1.y + t * v0.y + t * t * (-3 * p1.y + 3 * p2.y - 2 * v0.y - v1.y) + t * t * t * (2 * p1.y - 2 * p2.y + v0.y + v1.y);
-				var z = p1.z + t * v0.z + t * t * (-3 * p1.z + 3 * p2.z - 2 * v0.z - v1.z) + t * t * t * (2 * p1.z - 2 * p2.z + v0.z + v1.z);
+				var x = p1.x + t * v0.x + t * t *(-3 * p1.x + 3 * p2.x - 2 * v0.x - v1.x) + t * t * t *(2 * p1.x - 2 * p2.x + v0.x + v1.x);
+				var y = p1.y + t * v0.y + t * t *(-3 * p1.y + 3 * p2.y - 2 * v0.y - v1.y) + t * t * t *(2 * p1.y - 2 * p2.y + v0.y + v1.y);
+				var z = p1.z + t * v0.z + t * t *(-3 * p1.z + 3 * p2.z - 2 * v0.z - v1.z) + t * t * t *(2 * p1.z - 2 * p2.z + v0.z + v1.z);
 				ret.push(new TV3(x, y, z));
 			}
 		}
@@ -502,7 +528,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.drawAtomsAsSphere = function (group, atomlist, defaultRadius, forceDefault, scale)
+	GLmol.prototype.drawAtomsAsSphere = function(group, atomlist, defaultRadius, forceDefault, scale)
 	{
 		var sphereGeometry = new THREE.SphereGeometry(1, this.sphereQuality, this.sphereQuality); // r, seg, ring
 		for(var i = 0; i < atomlist.length; i++)
@@ -516,7 +542,7 @@ var GLmol = (function ()
 			});
 			var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 			group.add(sphere);
-			var r = (!forceDefault && this.vdwRadii[atom.elem] != undefined) ? this.vdwRadii[atom.elem] : defaultRadius;
+			var r =(!forceDefault && this.vdwRadii[atom.elem] != undefined) ? this.vdwRadii[atom.elem] : defaultRadius;
 			if(!forceDefault && scale) r *= scale;
 			sphere.scale.x = sphere.scale.y = sphere.scale.z = r;
 			sphere.position.x = atom.x;
@@ -526,7 +552,7 @@ var GLmol = (function ()
 	};
 
 	// about two times faster than sphere when div = 2
-	GLmol.prototype.drawAtomsAsIcosahedron = function (group, atomlist, defaultRadius, forceDefault)
+	GLmol.prototype.drawAtomsAsIcosahedron = function(group, atomlist, defaultRadius, forceDefault)
 	{
 		var geo = this.IcosahedronGeometry();
 		for(var i = 0; i < atomlist.length; i++)
@@ -539,7 +565,7 @@ var GLmol = (function ()
 				color: atom.color
 			});
 			var sphere = new THREE.Mesh(geo, mat);
-			sphere.scale.x = sphere.scale.y = sphere.scale.z = (!forceDefault && this.vdwRadii[atom.elem] != undefined) ? this.vdwRadii[atom.elem] : defaultRadius;
+			sphere.scale.x = sphere.scale.y = sphere.scale.z =(!forceDefault && this.vdwRadii[atom.elem] != undefined) ? this.vdwRadii[atom.elem] : defaultRadius;
 			group.add(sphere);
 			sphere.position.x = atom.x;
 			sphere.position.y = atom.y;
@@ -547,28 +573,28 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.isConnected = function (atom1, atom2)
+	GLmol.prototype.isConnected = function(atom1, atom2)
 	{
 		var s = atom1.bonds.indexOf(atom2.serial);
 		if(s != -1) return atom1.bondOrder[s];
 
-		if(this.protein.smallMolecule && (atom1.hetflag || atom2.hetflag)) return 0; // CHECK: or should I ?
+		if(this.protein.smallMolecule &&(atom1.hetflag || atom2.hetflag)) return 0; // CHECK: or should I ?
 
-		var distSquared = (atom1.x - atom2.x) * (atom1.x - atom2.x) +
-			(atom1.y - atom2.y) * (atom1.y - atom2.y) +
-			(atom1.z - atom2.z) * (atom1.z - atom2.z);
+		var distSquared =(atom1.x - atom2.x) *(atom1.x - atom2.x) +
+			(atom1.y - atom2.y) *(atom1.y - atom2.y) +
+			(atom1.z - atom2.z) *(atom1.z - atom2.z);
 
 		//   if(atom1.altLoc != atom2.altLoc) return false;
 		if(isNaN(distSquared)) return 0;
 		if(distSquared < 0.5) return 0; // maybe duplicate position.
 
-		if(distSquared > 1.3 && (atom1.elem == 'H' || atom2.elem == 'H' || atom1.elem == 'D' || atom2.elem == 'D')) return 0;
-		if(distSquared < 3.42 && (atom1.elem == 'S' || atom2.elem == 'S')) return 1;
+		if(distSquared > 1.3 &&(atom1.elem == 'H' || atom2.elem == 'H' || atom1.elem == 'D' || atom2.elem == 'D')) return 0;
+		if(distSquared < 3.42 &&(atom1.elem == 'S' || atom2.elem == 'S')) return 1;
 		if(distSquared > 2.78) return 0;
 		return 1;
 	};
 
-	GLmol.prototype.drawBondAsStickSub = function (group, atom1, atom2, bondR, order)
+	GLmol.prototype.drawBondAsStickSub = function(group, atom1, atom2, bondR, order)
 	{
 		var delta, tmp;
 		if(order > 1) delta = this.calcBondDelta(atom1, atom2, bondR * 2.3);
@@ -594,7 +620,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.drawBondsAsStick = function (group, atomlist, bondR, atomR, ignoreNonbonded, multipleBonds, scale)
+	GLmol.prototype.drawBondsAsStick = function(group, atomlist, bondR, atomR, ignoreNonbonded, multipleBonds, scale)
 	{
 		var sphereGeometry = new THREE.SphereGeometry(1, this.sphereQuality, this.sphereQuality);
 		var nAtoms = atomlist.length,
@@ -614,7 +640,7 @@ var GLmol = (function ()
 				var order = this.isConnected(atom1, atom2);
 				if(order == 0) continue;
 				atom1.connected = atom2.connected = true;
-				this.drawBondAsStickSub(group, atom1, atom2, bondR, ( !! multipleBonds) ? order : 1);
+				this.drawBondAsStickSub(group, atom1, atom2, bondR,( !! multipleBonds) ? order : 1);
 			}
 			for(var _j = 0; _j < atom1.bonds.length; _j++)
 			{
@@ -624,14 +650,14 @@ var GLmol = (function ()
 				var atom2 = this.atoms[j];
 				if(atom2 == undefined) continue;
 				atom1.connected = atom2.connected = true;
-				this.drawBondAsStickSub(group, atom1, atom2, bondR, ( !! multipleBonds) ? atom1.bondOrder[_j] : 1);
+				this.drawBondAsStickSub(group, atom1, atom2, bondR,( !! multipleBonds) ? atom1.bondOrder[_j] : 1);
 			}
 			if(atom1.connected) forSpheres.push(i);
 		}
 		this.drawAtomsAsSphere(group, forSpheres, atomR, !scale, scale);
 	};
 
-	GLmol.prototype.defineCell = function ()
+	GLmol.prototype.defineCell = function()
 	{
 		var p = this.protein;
 		if(p.a == undefined) return;
@@ -643,12 +669,14 @@ var GLmol = (function ()
 		p.by = p.b * Math.sin(Math.PI / 180.0 * p.gamma);
 		p.bz = 0;
 		p.cx = p.c * Math.cos(Math.PI / 180.0 * p.beta);
-		p.cy = p.c * (Math.cos(Math.PI / 180.0 * p.alpha) -
-			Math.cos(Math.PI / 180.0 * p.gamma) * Math.cos(Math.PI / 180.0 * p.beta) / Math.sin(Math.PI / 180.0 * p.gamma));
-		p.cz = Math.sqrt(p.c * p.c * Math.sin(Math.PI / 180.0 * p.beta) * Math.sin(Math.PI / 180.0 * p.beta) - p.cy * p.cy);
+		p.cy = p.c * Math.cos(Math.PI / 180.0 * p.alpha
+					- Math.cos(Math.PI / 180.0 * p.gamma)
+					* Math.cos(Math.PI / 180.0 * p.beta)) / Math.sin(Math.PI / 180.0 * p.gamma);
+		p.cz = Math.sqrt(p.c * p.c * Math.sin(Math.PI / 180.0 * p.beta)
+				* Math.sin(Math.PI / 180.0 * p.beta) - p.cy * p.cy);
 	};
 
-	GLmol.prototype.drawUnitcell = function (group)
+	GLmol.prototype.drawUnitcell = function(group)
 	{
 		var p = this.protein;
 		if(p.a == undefined) return;
@@ -681,7 +709,7 @@ var GLmol = (function ()
 	};
 
 	// TODO: Find inner side of a ring
-	GLmol.prototype.calcBondDelta = function (atom1, atom2, sep)
+	GLmol.prototype.calcBondDelta = function(atom1, atom2, sep)
 	{
 		var dot;
 		var axis = new TV3(atom1.x - atom2.x, atom1.y - atom2.y, atom1.z - atom2.z).normalize();
@@ -719,7 +747,7 @@ var GLmol = (function ()
 		return delta;
 	};
 
-	GLmol.prototype.drawBondsAsLineSub = function (geo, atom1, atom2, order)
+	GLmol.prototype.drawBondsAsLineSub = function(geo, atom1, atom2, order)
 	{
 		var delta, tmp, vs = geo.vertices,
 			cs = geo.colors;
@@ -762,7 +790,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.drawBondsAsLine = function (group, atomlist, lineWidth)
+	GLmol.prototype.drawBondsAsLine = function(group, atomlist, lineWidth)
 	{
 		var geo = new THREE.Geometry();
 		var nAtoms = atomlist.length;
@@ -803,11 +831,11 @@ var GLmol = (function ()
 		group.add(line);
 	};
 
-	GLmol.prototype.drawSmoothCurve = function (group, _points, width, colors, div)
+	GLmol.prototype.drawSmoothCurve = function(group, _points, width, colors, div)
 	{
 		if(_points.length == 0) return;
 
-		div = (div == undefined) ? 5 : div;
+		div =(div == undefined) ? 5 : div;
 
 		var geo = new THREE.Geometry();
 		var points = this.subdivide(_points, div);
@@ -827,7 +855,7 @@ var GLmol = (function ()
 		group.add(line);
 	};
 
-	GLmol.prototype.drawAsCross = function (group, atomlist, delta)
+	GLmol.prototype.drawAsCross = function(group, atomlist, delta)
 	{
 		var geo = new THREE.Geometry();
 		var points = [
@@ -861,7 +889,7 @@ var GLmol = (function ()
 	};
 
 	// FIXME: Winkled...
-	GLmol.prototype.drawSmoothTube = function (group, _points, colors, radii)
+	GLmol.prototype.drawSmoothTube = function(group, _points, colors, radii)
 	{
 		if(_points.length < 2) return;
 
@@ -874,7 +902,7 @@ var GLmol = (function ()
 
 		for(var i = 0, lim = points.length; i < lim; i++)
 		{
-			var r, idx = (i - 1) / axisDiv;
+			var r, idx =(i - 1) / axisDiv;
 			if(i == 0) r = radii[0];
 			else
 			{
@@ -883,7 +911,7 @@ var GLmol = (function ()
 				{
 					var floored = Math.floor(idx);
 					var tmp = idx - floored;
-					r = radii[floored] * tmp + radii[floored + 1] * (1 - tmp);
+					r = radii[floored] * tmp + radii[floored + 1] *(1 - tmp);
 				}
 			}
 			var delta, axis1, axis2;
@@ -935,8 +963,8 @@ var GLmol = (function ()
 			};
 			for(var j = 0; j < circleDiv; j++)
 			{
-				geo.faces.push(new TF3(offset + j, offset + (j + reg) % circleDiv + circleDiv, offset + (j + 1) % circleDiv));
-				geo.faces.push(new TF3(offset + (j + 1) % circleDiv, offset + (j + reg) % circleDiv + circleDiv, offset + (j + reg + 1) % circleDiv + circleDiv));
+				geo.faces.push(new TF3(offset + j, offset +(j + reg) % circleDiv + circleDiv, offset +(j + 1) % circleDiv));
+				geo.faces.push(new TF3(offset +(j + 1) % circleDiv, offset +(j + reg) % circleDiv + circleDiv, offset +(j + reg + 1) % circleDiv + circleDiv));
 				geo.faces[geo.faces.length - 2].color = c;
 				geo.faces[geo.faces.length - 1].color = c;
 			}
@@ -952,7 +980,7 @@ var GLmol = (function ()
 	};
 
 
-	GLmol.prototype.drawMainchainCurve = function (group, atomlist, curveWidth, atomName, div)
+	GLmol.prototype.drawMainchainCurve = function(group, atomlist, curveWidth, atomName, div)
 	{
 		var points = [],
 			colors = [];
@@ -981,7 +1009,7 @@ var GLmol = (function ()
 		this.drawSmoothCurve(group, points, curveWidth, colors, div);
 	};
 
-	GLmol.prototype.drawMainchainTube = function (group, atomlist, atomName, radius)
+	GLmol.prototype.drawMainchainTube = function(group, atomlist, atomName, radius)
 	{
 		var points = [],
 			colors = [],
@@ -1018,7 +1046,7 @@ var GLmol = (function ()
 		this.drawSmoothTube(group, points, colors, radii);
 	};
 
-	GLmol.prototype.drawStrip = function (group, p1, p2, colors, div, thickness)
+	GLmol.prototype.drawStrip = function(group, p1, p2, colors, div, thickness)
 	{
 		if((p1.length) < 2) return;
 		div = div || this.axisDIV;
@@ -1082,7 +1110,7 @@ var GLmol = (function ()
 	};
 
 
-	GLmol.prototype.drawThinStrip = function (group, p1, p2, colors, div)
+	GLmol.prototype.drawThinStrip = function(group, p1, p2, colors, div)
 	{
 		var geo = new THREE.Geometry();
 		for(var i = 0, lim = p1.length; i < lim; i++)
@@ -1106,13 +1134,13 @@ var GLmol = (function ()
 	};
 
 
-	GLmol.prototype.IcosahedronGeometry = function ()
+	GLmol.prototype.IcosahedronGeometry = function()
 	{
 		if(!this.icosahedron) this.icosahedron = new THREE.IcosahedronGeometry(1);
 		return this.icosahedron;
 	};
 
-	GLmol.prototype.drawCylinder = function (group, from, to, radius, color, cap)
+	GLmol.prototype.drawCylinder = function(group, from, to, radius, color, cap)
 	{
 		if(!from || !to) return;
 
@@ -1141,7 +1169,7 @@ var GLmol = (function ()
 	};
 
 	// FIXME: transition!
-	GLmol.prototype.drawHelixAsCylinder = function (group, atomlist, radius)
+	GLmol.prototype.drawHelixAsCylinder = function(group, atomlist, radius)
 	{
 		var start = null;
 		var currentChain, currentResi;
@@ -1171,17 +1199,17 @@ var GLmol = (function ()
 		this.drawStrand(group, beta, undefined, undefined, true, 0, this.helixSheetWidth, false, this.thickness * 2);
 	};
 
-	GLmol.prototype.drawCartoon = function (group, atomlist, doNotSmoothen, thickness)
+	GLmol.prototype.drawCartoon = function(group, atomlist, doNotSmoothen, thickness)
 	{
 		this.drawStrand(group, atomlist, 2, undefined, true, undefined, undefined, doNotSmoothen, thickness);
 	};
 
-	GLmol.prototype.drawStrand = function (group, atomlist, num, div, fill, coilWidth, helixSheetWidth, doNotSmoothen, thickness)
+	GLmol.prototype.drawStrand = function(group, atomlist, num, div, fill, coilWidth, helixSheetWidth, doNotSmoothen, thickness)
 	{
 		num = num || this.strandDIV;
 		div = div || this.axisDIV;
 		coilWidth = coilWidth || this.coilWidth;
-		doNotSmoothen == (doNotSmoothen == undefined) ? false : doNotSmoothen;
+		doNotSmoothen ==(doNotSmoothen == undefined) ? false : doNotSmoothen;
 		helixSheetWidth = helixSheetWidth || this.helixSheetWidth;
 		var points = [];
 		for(var k = 0; k < num; k++) points[k] = [];
@@ -1229,7 +1257,7 @@ var GLmol = (function ()
 					prevCO = O;
 					for(var j = 0; j < num; j++)
 					{
-						var delta = -1 + 2 / (num - 1) * j;
+						var delta = -1 + 2 /(num - 1) * j;
 						var v = new TV3(currentCA.x + prevCO.x * delta,
 							currentCA.y + prevCO.y * delta, currentCA.z + prevCO.z * delta);
 						if(!doNotSmoothen && ss == 's') v.smoothen = true;
@@ -1243,7 +1271,7 @@ var GLmol = (function ()
 		if(fill) this.drawStrip(group, points[0], points[num - 1], colors, div, thickness);
 	};
 
-	GLmol.prototype.drawNucleicAcidLadderSub = function (geo, lineGeo, atoms, color)
+	GLmol.prototype.drawNucleicAcidLadderSub = function(geo, lineGeo, atoms, color)
 	{
 		//        color.r *= 0.9; color.g *= 0.9; color.b *= 0.9;
 		if(atoms[0] != undefined && atoms[1] != undefined && atoms[2] != undefined &&
@@ -1274,7 +1302,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.drawNucleicAcidLadder = function (group, atomlist)
+	GLmol.prototype.drawNucleicAcidLadder = function(group, atomlist)
 	{
 		var geo = new THREE.Geometry();
 		var lineGeo = new THREE.Geometry();
@@ -1307,7 +1335,7 @@ var GLmol = (function ()
 		group.add(mesh);
 	};
 
-	GLmol.prototype.drawNucleicAcidStick = function (group, atomlist)
+	GLmol.prototype.drawNucleicAcidStick = function(group, atomlist)
 	{
 		var currentChain, currentResi, start = null,
 			end = null;
@@ -1342,7 +1370,7 @@ var GLmol = (function ()
 				new TV3(end.x, end.y, end.z), 0.3, start.color, true);
 	};
 
-	GLmol.prototype.drawNucleicAcidLine = function (group, atomlist)
+	GLmol.prototype.drawNucleicAcidLine = function(group, atomlist)
 	{
 		var currentChain, currentResi, start = null,
 			end = null;
@@ -1395,12 +1423,12 @@ var GLmol = (function ()
 		group.add(line);
 	};
 
-	GLmol.prototype.drawCartoonNucleicAcid = function (group, atomlist, div, thickness)
+	GLmol.prototype.drawCartoonNucleicAcid = function(group, atomlist, div, thickness)
 	{
 		this.drawStrandNucleicAcid(group, atomlist, 2, div, true, undefined, thickness);
 	};
 
-	GLmol.prototype.drawStrandNucleicAcid = function (group, atomlist, num, div, fill, nucleicAcidWidth, thickness)
+	GLmol.prototype.drawStrandNucleicAcid = function(group, atomlist, num, div, fill, nucleicAcidWidth, thickness)
 	{
 		nucleicAcidWidth = nucleicAcidWidth || this.nucleicAcidWidth;
 		div = div || this.axisDIV;
@@ -1426,7 +1454,7 @@ var GLmol = (function ()
 						{
 							for(var j = 0; j < num; j++)
 							{
-								var delta = -1 + 2 / (num - 1) * j;
+								var delta = -1 + 2 /(num - 1) * j;
 								points[j].push(new TV3(currentO3.x + prevOO.x * delta,
 									currentO3.y + prevOO.y * delta, currentO3.z + prevOO.z * delta));
 							}
@@ -1450,7 +1478,7 @@ var GLmol = (function ()
 					{
 						prevOO = null;
 						continue;
-					} // for 5' phosphate (e.g. 3QX3)
+					} // for 5' phosphate(e.g. 3QX3)
 					var O = new TV3(atom.x, atom.y, atom.z);
 					O.subSelf(currentO3);
 					O.normalize().multiplyScalar(nucleicAcidWidth); // TODO: refactor
@@ -1461,7 +1489,7 @@ var GLmol = (function ()
 					prevOO = O;
 					for(var j = 0; j < num; j++)
 					{
-						var delta = -1 + 2 / (num - 1) * j;
+						var delta = -1 + 2 /(num - 1) * j;
 						points[j].push(new TV3(currentO3.x + prevOO.x * delta,
 							currentO3.y + prevOO.y * delta, currentO3.z + prevOO.z * delta));
 					}
@@ -1473,7 +1501,7 @@ var GLmol = (function ()
 		{
 			for(var j = 0; j < num; j++)
 			{
-				var delta = -1 + 2 / (num - 1) * j;
+				var delta = -1 + 2 /(num - 1) * j;
 				points[j].push(new TV3(currentO3.x + prevOO.x * delta,
 					currentO3.y + prevOO.y * delta, currentO3.z + prevOO.z * delta));
 			}
@@ -1483,7 +1511,7 @@ var GLmol = (function ()
 			this.drawSmoothCurve(group, points[j], 1, colors, div);
 	};
 
-	GLmol.prototype.drawDottedLines = function (group, points, color)
+	GLmol.prototype.drawDottedLines = function(group, points, color)
 	{
 		var geo = new THREE.Geometry();
 		var step = 0.3;
@@ -1513,7 +1541,7 @@ var GLmol = (function ()
 		group.add(line);
 	};
 
-	GLmol.prototype.getAllAtoms = function ()
+	GLmol.prototype.getAllAtoms = function()
 	{
 		var ret = [];
 		for(var i in this.atoms)
@@ -1524,7 +1552,7 @@ var GLmol = (function ()
 	};
 
 	// Probably I can refactor using higher-order functions.
-	GLmol.prototype.getHetatms = function (atomlist)
+	GLmol.prototype.getHetatms = function(atomlist)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1537,7 +1565,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.removeSolvents = function (atomlist)
+	GLmol.prototype.removeSolvents = function(atomlist)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1550,7 +1578,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.getProteins = function (atomlist)
+	GLmol.prototype.getProteins = function(atomlist)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1564,7 +1592,7 @@ var GLmol = (function ()
 	};
 
 	// TODO: Test
-	GLmol.prototype.excludeAtoms = function (atomlist, deleteList)
+	GLmol.prototype.excludeAtoms = function(atomlist, deleteList)
 	{
 		var ret = [];
 		var blackList = new Object();
@@ -1579,7 +1607,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.getSidechains = function (atomlist)
+	GLmol.prototype.getSidechains = function(atomlist)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1588,13 +1616,13 @@ var GLmol = (function ()
 			if(atom == undefined) continue;
 
 			if(atom.hetflag) continue;
-			if(atom.atom == 'C' || atom.atom == 'O' || (atom.atom == 'N' && atom.resn != "PRO")) continue;
+			if(atom.atom == 'C' || atom.atom == 'O' ||(atom.atom == 'N' && atom.resn != "PRO")) continue;
 			ret.push(atom.serial);
 		}
 		return ret;
 	};
 
-	GLmol.prototype.getAtomsWithin = function (atomlist, extent)
+	GLmol.prototype.getAtomsWithin = function(atomlist, extent)
 	{
 		var ret = [];
 
@@ -1611,7 +1639,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.getExtent = function (atomlist)
+	GLmol.prototype.getExtent = function(atomlist)
 	{
 		var xmin = ymin = zmin = 9999;
 		var xmax = ymax = zmax = -9999;
@@ -1626,17 +1654,17 @@ var GLmol = (function ()
 			ysum += atom.y;
 			zsum += atom.z;
 
-			xmin = (xmin < atom.x) ? xmin : atom.x;
-			ymin = (ymin < atom.y) ? ymin : atom.y;
-			zmin = (zmin < atom.z) ? zmin : atom.z;
-			xmax = (xmax > atom.x) ? xmax : atom.x;
-			ymax = (ymax > atom.y) ? ymax : atom.y;
-			zmax = (zmax > atom.z) ? zmax : atom.z;
+			xmin =(xmin < atom.x) ? xmin : atom.x;
+			ymin =(ymin < atom.y) ? ymin : atom.y;
+			zmin =(zmin < atom.z) ? zmin : atom.z;
+			xmax =(xmax > atom.x) ? xmax : atom.x;
+			ymax =(ymax > atom.y) ? ymax : atom.y;
+			zmax =(zmax > atom.z) ? zmax : atom.z;
 		}
 		return [[xmin, ymin, zmin], [xmax, ymax, zmax], [xsum / cnt, ysum / cnt, zsum / cnt]];
 	};
 
-	GLmol.prototype.getResiduesById = function (atomlist, resi)
+	GLmol.prototype.getResiduesById = function(atomlist, resi)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1649,7 +1677,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.getResidueBySS = function (atomlist, ss)
+	GLmol.prototype.getResidueBySS = function(atomlist, ss)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1662,7 +1690,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.getChain = function (atomlist, chain)
+	GLmol.prototype.getChain = function(atomlist, chain)
 	{
 		var ret = [],
 			chains = {};
@@ -1679,7 +1707,7 @@ var GLmol = (function ()
 	};
 
 	// for HETATM only
-	GLmol.prototype.getNonbonded = function (atomlist, chain)
+	GLmol.prototype.getNonbonded = function(atomlist, chain)
 	{
 		var ret = [];
 		for(var i in atomlist)
@@ -1692,7 +1720,7 @@ var GLmol = (function ()
 		return ret;
 	};
 
-	GLmol.prototype.colorByAtom = function (atomlist, colors)
+	GLmol.prototype.colorByAtom = function(atomlist, colors)
 	{
 		for(var i in atomlist)
 		{
@@ -1708,20 +1736,20 @@ var GLmol = (function ()
 
 
 	// MEMO: Color only CA. maybe I should add atom.cartoonColor.
-	GLmol.prototype.colorByStructure = function (atomlist, helixColor, sheetColor, colorSidechains)
+	GLmol.prototype.colorByStructure = function(atomlist, helixColor, sheetColor, colorSidechains)
 	{
 		for(var i in atomlist)
 		{
 			var atom = this.atoms[atomlist[i]];
 			if(atom == undefined) continue;
 
-			if(!colorSidechains && (atom.atom != 'CA' || atom.hetflag)) continue;
+			if(!colorSidechains &&(atom.atom != 'CA' || atom.hetflag)) continue;
 			if(atom.ss[0] == 's') atom.color = sheetColor;
 			else if(atom.ss[0] == 'h') atom.color = helixColor;
 		}
 	};
 
-	GLmol.prototype.colorByBFactor = function (atomlist, colorSidechains)
+	GLmol.prototype.colorByBFactor = function(atomlist, colorSidechains)
 	{
 		var minB = 1000,
 			maxB = -1000;
@@ -1739,9 +1767,9 @@ var GLmol = (function ()
 			}
 		}
 
-		var mid = (maxB + minB) / 2;
+		var mid =(maxB + minB) / 2;
 
-		var range = (maxB - minB) / 2;
+		var range =(maxB - minB) / 2;
 		if(range < 0.01 && range > -0.01) return;
 		for(var i in atomlist)
 		{
@@ -1753,15 +1781,15 @@ var GLmol = (function ()
 			{
 				var color = new TCo(0);
 				if(atom.b < mid)
-					color.setHSV(0.667, (mid - atom.b) / range, 1);
+					color.setHSV(0.667,(mid - atom.b) / range, 1);
 				else
-					color.setHSV(0, (atom.b - mid) / range, 1);
+					color.setHSV(0,(atom.b - mid) / range, 1);
 				atom.color = color.getHex();
 			}
 		}
 	};
 
-	GLmol.prototype.colorByChain = function (atomlist, colorSidechains)
+	GLmol.prototype.colorByChain = function(atomlist, colorSidechains)
 	{
 		for(var i in atomlist)
 		{
@@ -1778,7 +1806,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.colorByResidue = function (atomlist, residueColors)
+	GLmol.prototype.colorByResidue = function(atomlist, residueColors)
 	{
 		for(var i in atomlist)
 		{
@@ -1790,7 +1818,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.colorAtoms = function (atomlist, c)
+	GLmol.prototype.colorAtoms = function(atomlist, c)
 	{
 		for(var i in atomlist)
 		{
@@ -1801,7 +1829,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.colorByPolarity = function (atomlist, polar, nonpolar)
+	GLmol.prototype.colorByPolarity = function(atomlist, polar, nonpolar)
 	{
 		var polarResidues = ['ARG', 'HIS', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS'];
 		var nonPolarResidues = ['GLY', 'PRO', 'ALA', 'VAL', 'LEU', 'ILE', 'MET', 'PHE', 'TYR', 'TRP'];
@@ -1814,7 +1842,7 @@ var GLmol = (function ()
 	// TODO: Add near(atomlist, neighbor, distanceCutoff)
 	// TODO: Add expandToResidue(atomlist)
 
-	GLmol.prototype.colorChainbow = function (atomlist, colorSidechains)
+	GLmol.prototype.colorChainbow = function(atomlist, colorSidechains)
 	{
 		var cnt = 0;
 		var atom, i;
@@ -1837,14 +1865,14 @@ var GLmol = (function ()
 			if((colorSidechains || atom.atom != 'CA' || atom.atom != 'O3\'') && !atom.hetflag)
 			{
 				var color = new TCo(0);
-				color.setHSV(240.0 / 360 * (1 - cnt / total), 1, 0.9);
+				color.setHSV(240.0 / 360 *(1 - cnt / total), 1, 0.9);
 				atom.color = color.getHex();
 				cnt++;
 			}
 		}
 	};
 
-	GLmol.prototype.drawSymmetryMates2 = function (group, asu, matrices)
+	GLmol.prototype.drawSymmetryMates2 = function(group, asu, matrices)
 	{
 		if(matrices == undefined) return;
 		asu.matrixAutoUpdate = false;
@@ -1866,7 +1894,7 @@ var GLmol = (function ()
 	};
 
 
-	GLmol.prototype.drawSymmetryMatesWithTranslation2 = function (group, asu, matrices)
+	GLmol.prototype.drawSymmetryMatesWithTranslation2 = function(group, asu, matrices)
 	{
 		if(matrices == undefined) return;
 		var p = this.protein;
@@ -1898,7 +1926,7 @@ var GLmol = (function ()
 		}
 	};
 
-	GLmol.prototype.defineRepresentation = function ()
+	GLmol.prototype.defineRepresentation = function()
 	{
 		var all = this.getAllAtoms();
 		var hetatm = this.removeSolvents(this.getHetatms(all));
@@ -1911,7 +1939,7 @@ var GLmol = (function ()
 		this.drawCartoon(this.modelGroup, all, this.curveWidth);
 	};
 
-	GLmol.prototype.getView = function ()
+	GLmol.prototype.getView = function()
 	{
 		if(!this.modelGroup) return [0, 0, 0, 0, 0, 0, 0, 1];
 		var pos = this.modelGroup.position;
@@ -1919,7 +1947,7 @@ var GLmol = (function ()
 		return [pos.x, pos.y, pos.z, this.rotationGroup.position.z, q.x, q.y, q.z, q.w];
 	};
 
-	GLmol.prototype.setView = function (arg)
+	GLmol.prototype.setView = function(arg)
 	{
 		if(!this.modelGroup || !this.rotationGroup) return;
 		this.modelGroup.position.x = arg[0];
@@ -1933,7 +1961,7 @@ var GLmol = (function ()
 		this.show();
 	};
 
-	GLmol.prototype.setBackground = function (hex, a)
+	GLmol.prototype.setBackground = function(hex, a)
 	{
 		if(!this.scene) return;
 
@@ -1949,7 +1977,7 @@ var GLmol = (function ()
 		this.scene.fog.color = new TCo(hex);
 	};
 
-	GLmol.prototype.initializeScene = function ()
+	GLmol.prototype.initializeScene = function()
 	{
 		// CHECK: Should I explicitly call scene.deallocateObject?
 		this.scene = new THREE.Scene();
@@ -1965,10 +1993,10 @@ var GLmol = (function ()
 		this.setupLights(this.scene);
 	};
 
-	GLmol.prototype.zoomInto = function (atomlist, keepSlab)
+	GLmol.prototype.zoomInto = function(atomlist, keepSlab)
 	{
 		var tmp = this.getExtent(atomlist);
-		var center = new TV3(tmp[2][0], tmp[2][1], tmp[2][2]); //(tmp[0][0] + tmp[1][0]) / 2, (tmp[0][1] + tmp[1][1]) / 2, (tmp[0][2] + tmp[1][2]) / 2);
+		var center = new TV3(tmp[2][0], tmp[2][1], tmp[2][2]); //(tmp[0][0] + tmp[1][0]) / 2,(tmp[0][1] + tmp[1][1]) / 2,(tmp[0][2] + tmp[1][2]) / 2);
 		if(this.protein.appliedMatrix)
 		{
 			center = this.protein.appliedMatrix.multiplyVector3(center);
@@ -1991,7 +2019,7 @@ var GLmol = (function ()
 		this.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
 	};
 
-	GLmol.prototype.rebuildScene = function ()
+	GLmol.prototype.rebuildScene = function()
 	{
 		time = new Date();
 
@@ -2000,15 +2028,15 @@ var GLmol = (function ()
 		this.defineRepresentation();
 		this.setView(view);
 
-		//console.log("builded scene in " + (+new Date() - time) + "ms");
+		//console.log("builded scene in " +(+new Date() - time) + "ms");
 	};
 
-	GLmol.prototype.loadMolecule = function (repressZoom)
+	GLmol.prototype.loadMolecule = function(repressZoom)
 	{
 		this.loadMoleculeStr(repressZoom, jQuery('#' + this.id + '_src').val());
 	};
 
-	GLmol.prototype.loadMoleculeStr = function (repressZoom, source)
+	GLmol.prototype.loadMoleculeStr = function(repressZoom, source)
 	{
 		var time = new Date();
 
@@ -2025,7 +2053,7 @@ var GLmol = (function ()
 
 		this.parsePDB2(source);
 		if(!this.parseSDF(source)) this.parseXYZ(source);
-		//console.log("parsed in " + (+new Date() - time) + "ms");
+		//console.log("parsed in " +(+new Date() - time) + "ms");
 
 		var title = jQuery('#' + this.id + '_pdbTitle');
 		var titleStr = '';
@@ -2039,7 +2067,7 @@ var GLmol = (function ()
 		this.show();
 	};
 
-	GLmol.prototype.setSlabAndFog = function ()
+	GLmol.prototype.setSlabAndFog = function()
 	{
 		var center = this.rotationGroup.position.z - this.camera.position.z;
 		if(center < 1) center = 1;
@@ -2059,18 +2087,18 @@ var GLmol = (function ()
 			this.camera.bottom = -this.camera.top;
 		}
 		this.camera.updateProjectionMatrix();
-		this.scene.fog.near = this.camera.near + this.fogStart * (this.camera.far - this.camera.near);
+		this.scene.fog.near = this.camera.near + this.fogStart *(this.camera.far - this.camera.near);
 		//   if(this.scene.fog.near > center) this.scene.fog.near = center;
 		this.scene.fog.far = this.camera.far;
 	};
 
-	GLmol.prototype.enableMouse = function ()
+	GLmol.prototype.enableMouse = function()
 	{
 		var me = this,
 			glDOM = jQuery(this.container);
 
 		// Contribution is needed as I don't own any iOS or Android device with WebGL support.
-		glDOM.bind('mousedown touchstart', function (ev)
+		glDOM.bind('mousedown touchstart', function(ev)
 		{
 			ev.preventDefault();
 			if(!me.scene) return;
@@ -2109,7 +2137,7 @@ var GLmol = (function ()
 			ev.preventDefault();
 			if(!me.scene) return;
 
-			var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
+			var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
 			if(scaleFactor > 2000) scaleFactor = 2000;
 
 			if(ev.originalEvent.detail)
@@ -2117,7 +2145,7 @@ var GLmol = (function ()
 				me.rotationGroup.position.z += scaleFactor * ev.originalEvent.detail / 10;
 				me.zoom2D += scaleFactor * ev.originalEvent.detail / 10;
 			}
-			else if (ev.originalEvent.wheelDelta)
+			else if(ev.originalEvent.wheelDelta)
 			{
 				me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
 				me.zoom2D -= scaleFactor * ev.originalEvent.wheelDelta / 400;
@@ -2130,18 +2158,18 @@ var GLmol = (function ()
 			console.log(me.rotationGroup.position.z, scaleFactor);
 			me.show();
 		});
-		glDOM.bind("contextmenu", function (ev)
+		glDOM.bind("contextmenu", function(ev)
 		{
 			ev.preventDefault();
 		});
-		jQuery(window).bind('mouseup touchend', function (ev)
+		jQuery(window).bind('mouseup touchend', function(ev)
 		{
 			me.isDragging = false;
 			me.isMultiDragging = false;
 		});
 
 		/* MODIFIED */
-		jQuery(window).bind('mousemove touchmove', function (ev)
+		jQuery(window).bind('mousemove touchmove', function(ev)
 		{ // touchmove
 			if(!me.scene) return;
 			if(!me.isDragging) return;
@@ -2180,14 +2208,14 @@ var GLmol = (function ()
 				var ratio = d / me.multiTouchD;
 				me.multiTouchD = d;
 
-				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				me.rotationGroup.position.z += scaleFactor * - (ratio - 1);
+				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				me.rotationGroup.position.z += scaleFactor * -(ratio - 1);
 				me.zoom2D *= ratio;
 				if(me.zoom2D < 2) me.zoom2D = 2;
 
-				/* var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				/* var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 20) scaleFactor = 20;
-				var translationByScreen = new TV3(((x + dx / 2) - me.multic.x) / me.WIDTH * scaleFactor, ((y + dy / 2) - me.multic.y) / me.HEIGHT * scaleFactor, 0);
+				var translationByScreen = new TV3(((x + dx / 2) - me.multic.x) / me.WIDTH * scaleFactor,((y + dy / 2) - me.multic.y) / me.HEIGHT * scaleFactor, 0);
 				var q = me.rotationGroup.quaternion;
 				var qinv = new THREE.Quaternion(q.x, q.y, q.z, q.w).inverse().normalize();
 				var translation = qinv.multiplyVector3(translationByScreen);
@@ -2201,8 +2229,8 @@ var GLmol = (function ()
 			if(me.isMultiDragging) return;
 
 			if(x == undefined) return;
-			var dx = (x - me.mouseStartX) / me.WIDTH;
-			var dy = (y - me.mouseStartY) / me.HEIGHT;
+			var dx =(x - me.mouseStartX) / me.WIDTH;
+			var dy =(y - me.mouseStartY) / me.HEIGHT;
 			var r = Math.sqrt(dx * dx + dy * dy);
 			if(mode == 3 || me.mouseButton == 3)//(me.mouseButton == 3 && ev.ctrlKey))
 			{ // Slab
@@ -2211,13 +2239,13 @@ var GLmol = (function ()
 			}
 			else if(mode == 2)//|| me.mouseButton == 3 || ev.shiftKey)
 			{ // Zoom
-				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 80) scaleFactor = 80;
 				me.rotationGroup.position.z = me.cz - dy * scaleFactor;
 			}
 			else if(mode == 1 || me.mouseButton == 2)// || ev.ctrlKey)
 			{ // Translate
-				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 20) scaleFactor = 20;
 				if(me.webglFailed)
 				{
@@ -2249,7 +2277,7 @@ var GLmol = (function ()
 	};
 
 
-	GLmol.prototype.show = function ()
+	GLmol.prototype.show = function()
 	{
 		if(!this.scene) return;
 
@@ -2257,17 +2285,17 @@ var GLmol = (function ()
 		this.setSlabAndFog();
 		if(!this.webglFailed) this.renderer.render(this.scene, this.camera);
 		else this.render2d();
-		//console.log("rendered in " + (+new Date() - time) + "ms");
+		//console.log("rendered in " +(+new Date() - time) + "ms");
 	};
 
-	GLmol.prototype.render2d = function ()
+	GLmol.prototype.render2d = function()
 	{
 		var ctx = this.canvas2d[0].getContext("2d");
 		this.scene.updateMatrixWorld();
 
 		ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
-		ctx.fillStyle = "rgba(" + 255 * (this.bgColor >> 16) + "," + 255 * (this.bgColor >> 8 & 0xFF)
-			+ "," + 255 * (this.bgColor & 0xFF) + "," + this.bgAlpha + ")";
+		ctx.fillStyle = "rgba(" + 255 *(this.bgColor >> 16) + "," + 255 *(this.bgColor >> 8 & 0xFF)
+			+ "," + 255 *(this.bgColor & 0xFF) + "," + this.bgAlpha + ")";
 		ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
 		ctx.save();
 
@@ -2323,7 +2351,7 @@ var GLmol = (function ()
 		}
 
 		//sort draw stack
-		drawStack.sort(function (a, b)
+		drawStack.sort(function(a, b)
 		{
 			return a.atom.z - b.atom.z;
 		});
@@ -2353,8 +2381,8 @@ var GLmol = (function ()
 					(atom2.screen.z == atom.screen.z && atom2.serial > atom.serial))
 				{
 					ctx.lineWidth = this.canvasBondWidth + lineWidth * 2;
-					var cx = (atom.screen.x + atom2.screen.x) / 2;
-					var cy = (atom.screen.y + atom2.screen.y) / 2;
+					var cx =(atom.screen.x + atom2.screen.x) / 2;
+					var cy =(atom.screen.y + atom2.screen.y) / 2;
 					ctx.strokeStyle = "#000000";
 
 					ctx.beginPath();
@@ -2380,19 +2408,19 @@ var GLmol = (function ()
 					(atom2.screen.z == atom.screen.z && atom2.serial > atom.serial))
 				{
 					ctx.lineWidth = this.canvasBondWidth;
-					var cx = (atom.screen.x + atom2.screen.x) / 2;
-					var cy = (atom.screen.y + atom2.screen.y) / 2;
+					var cx =(atom.screen.x + atom2.screen.x) / 2;
+					var cy =(atom.screen.y + atom2.screen.y) / 2;
 
-					ctx.strokeStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +
-						"," + (atom.color & 255) + ")";
+					ctx.strokeStyle = "rgb(" +(atom.color >> 16) + "," +(atom.color >> 8 & 255) +
+						"," +(atom.color & 255) + ")";
 					ctx.beginPath();
 					ctx.moveTo(atom.screen.x, atom.screen.y);
 					ctx.lineTo(cx, cy);
 					ctx.closePath();
 					ctx.stroke();
 
-					ctx.strokeStyle = "rgb(" + (atom2.color >> 16) + "," + (atom2.color >> 8 & 255) +
-						"," + (atom2.color & 255) + ")";
+					ctx.strokeStyle = "rgb(" +(atom2.color >> 16) + "," +(atom2.color >> 8 & 255) +
+						"," +(atom2.color & 255) + ")";
 					ctx.beginPath();
 					ctx.moveTo(atom2.screen.x, atom2.screen.y);
 					ctx.lineTo(cx, cy);
@@ -2402,8 +2430,8 @@ var GLmol = (function ()
 			}
 
 			//draw atom
-			ctx.fillStyle = "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) +
-				"," + (atom.color & 255) + ")";
+			ctx.fillStyle = "rgb(" +(atom.color >> 16) + "," +(atom.color >> 8 & 255) +
+				"," +(atom.color & 255) + ")";
 			ctx.beginPath();
 			ctx.arc(atom.screen.x, atom.screen.y, this.canvasVDW ? drawStack[i].atom.r * this.canvasAtomRadius : this.canvasAtomRadius, 0, PI2, true);
 			ctx.closePath();
@@ -2414,7 +2442,7 @@ var GLmol = (function ()
 	};
 
 	// For scripting
-	GLmol.prototype.doFunc = function (func)
+	GLmol.prototype.doFunc = function(func)
 	{
 		func(this);
 	};

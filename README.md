@@ -1,7 +1,8 @@
 MolView
-=========
+=======
 MolView is a web application for drawing, searching and viewing chemical structures.
-This web application is built upon the JavaScript libraries and online services listed below. I also drew a lot of inspration from the Virtual Model Kit, a similar webapplication.
+This web application is built upon the JavaScript libraries and online services listed below.
+I also drew a lot of inspration from the Virtual Model Kit, a similar webapplication.
 
 **JavaScript libraries**
 
@@ -25,3 +26,4 @@ Build
 -----
 Install and run grunt in order to build MolView.
 Note: the JSmol j2s files are not included in this git package, you have to copy j2s to /jmol/j2s
+You can download JSmol here: http://sourceforge.net/projects/jsmol/

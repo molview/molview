@@ -8,14 +8,14 @@ ALL RIGHTS RESERVED
 $.fn.share = function(url, display_count, message)
 {
 	var default_msg = "View chemical structures using this free webapp!";
-	
+
 	this.children().each(function()
 	{
 		if($(this).hasClass("share-facebook"))
 		{
 			var self = $(this);
 			self.empty().unbind();
-			
+
 			if(display_count)
 			{
 				AJAX({
@@ -30,7 +30,7 @@ $.fn.share = function(url, display_count, message)
 				});
 			}
 			else $("<span></span>").html("Facebook").appendTo(self);
-			
+
 			self.on("click", function()
 			{
 				window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url.fb || url.all));
@@ -40,7 +40,7 @@ $.fn.share = function(url, display_count, message)
 		{
 			var self = $(this);
 			self.empty().unbind();
-				
+
 			if(display_count)
 			{
 				AJAX({
@@ -55,7 +55,7 @@ $.fn.share = function(url, display_count, message)
 				});
 			}
 			else $("<span></span>").html("Twitter").appendTo(self);
-			
+
 			self.on("click", function()
 			{
 				window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message || default_msg) + "&url=" + encodeURIComponent(url.twitter || url.all) + "&via=molview");
@@ -65,11 +65,11 @@ $.fn.share = function(url, display_count, message)
 		{
 			var self = $(this);
 			self.empty().unbind();
-				
+
 			if(display_count)
 			{
 				AJAX({
-					url: "gplus.php?url=" + encodeURIComponent(url.gplus || url.all),
+					url: "php/gplus.php?url=" + encodeURIComponent(url.gplus || url.all),
 					dataType: "json",
 					success: function(data)
 					{
@@ -80,7 +80,7 @@ $.fn.share = function(url, display_count, message)
 				});
 			}
 			else $("<span></span>").html("Google+").appendTo(self);
-			
+
 			self.on("click", function()
 			{
 				window.open("https://plus.google.com/share?hl=en-US&url=" + encodeURIComponent(url.gplus || url.all));
@@ -88,4 +88,3 @@ $.fn.share = function(url, display_count, message)
 		}
 	});
 };
-

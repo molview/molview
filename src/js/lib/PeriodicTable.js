@@ -1,7 +1,5 @@
 /*
 From: https://github.com/diniska/chemistry/blob/master/PeriodicalTable/periodicTable.json
-Part of MolView JavaScript source
-see: http://molview.org/
 */
 
 var PeriodicTable = {

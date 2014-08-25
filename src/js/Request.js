@@ -736,7 +736,7 @@ var Request = {
 		{
 			AJAX({
 				dataType: "json",
-				url: "nist.php?type=lookup&cas=" + cas,
+				url: "php/nist.php?type=lookup&cas=" + cas,
 				success: function(data)
 				{
 					//data postprocessing
@@ -784,7 +784,7 @@ var Request = {
 
 			AJAX({
 				dataType: "text",
-				url: "nist.php?type=" + type + "&cas=" + cas + "&i=" + i,
+				url: "php/nist.php?type=" + type + "&cas=" + cas + "&i=" + i,
 				success: success,
 				error: function(jqXHR, textStatus)
 				{
@@ -816,7 +816,7 @@ var Request = {
 				if(xhr !== undefined) xhr.abort();
 				xhr = AJAX({
 					dataType: "json",
-					url: "cod.php?type=search&q=" + encodeURIComponent(text),
+					url: "php/cod.php?type=search&q=" + encodeURIComponent(text),
 					success: function(data)
 					{
 						Progress.increment();
@@ -841,7 +841,7 @@ var Request = {
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "json",
-				url: "cod.php?type=information&codids=" + codids,
+				url: "php/cod.php?type=information&codids=" + codids,
 				success: success,
 				error: function(jqXHR, textStatus)
 				{
@@ -856,7 +856,7 @@ var Request = {
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "json",
-				url: "cod.php?type=smiles&codids=" + codids,
+				url: "php/cod.php?type=smiles&codids=" + codids,
 				success: success,
 				error: function(jqXHR, textStatus)
 				{
@@ -871,7 +871,7 @@ var Request = {
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "text",
-				url: "cif.php?codid=" + codid,
+				url: "php/cif.php?codid=" + codid,
 				success: success,
 				error: function(jqXHR, textStatus)
 				{

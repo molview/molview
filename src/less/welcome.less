@@ -2,17 +2,24 @@
 
 #start-dialog
 {
-    padding: 100px;
-    width: 800px;
+    max-width: 800px;
     text-align: center;
     background: @soft-light;
     background: radial-gradient(at top, @light, @contrast3);
     border-radius: 10px;
 }
 
+@media all and (min-width: 700px)
+{
+    #start-dialog
+    {
+        padding: 100px;
+    }
+}
+
 #start-dialog > h1
 {
-    text-shadow: 1px 1px 0 #aaa, 2px 2px 0 #aaa, 3px 3px 0 #aaa, 5px 4px 0 #ddd, 7px 5px 0 #ddd;
+    text-shadow: 1px 0px 0 #fff, 0px 1px 0 #fff, -1px 0px 0 #fff, 0px -1px 0 #fff, 2px 2px 0 #aaa, 3px 3px 0 #aaa;
     font-size: 40pt;
     font-weight: lighter;
 }

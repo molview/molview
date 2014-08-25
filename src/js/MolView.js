@@ -155,7 +155,9 @@ var MolView = {
 		if(this.loadDefault) Progress.increment();
 
 		if(this.touch && !Detector.webgl)
+		{
 			Actions.jmol_render_minimal();
+		}
 
 		Model.init(function()
 		{
@@ -264,7 +266,7 @@ var MolView = {
 
 			if(!Request.ChemicalIdentifierResolver.available)
 				Messages.alert("cir_down");
-		}.bind(this), "GLmol");
+		}.bind(this), (!Detector.webgl && !MolView.touch) ? "JSmol" : "GLmol");
 	},
 
 	executeQuery: function()
