@@ -296,26 +296,20 @@ var Actions = {
 
 	measure_distance: function()
 	{
-		var off = $("#measure-distance").hasClass("checked");
-		$(".jmol-picking").removeClass("checked");
-		if(!off) $("#measure-distance").addClass("checked");
-		Model.JSmol.setPicking(off ? "OFF" : "DISTANCE");
+		Model.JSmol.setPicking($("#measure-torsion").hasClass("checked")
+			? "OFF" : "DISTANCE");
 	},
 
 	measure_angle: function()
 	{
-		var off = $("#measure-angle").hasClass("checked");
-		$(".jmol-picking").removeClass("checked");
-		if(!off) $("#measure-angle").addClass("checked");
-		Model.JSmol.setPicking(off ? "OFF" : "ANGLE");
+		Model.JSmol.setPicking($("#measure-torsion").hasClass("checked")
+			? "OFF" : "ANGLE");
 	},
 
 	measure_torsion: function()
 	{
-		var off = $("#measure-torsion").hasClass("checked");
-		$(".jmol-picking").removeClass("checked");
-		if(!off) $("#measure-torsion").addClass("checked");
-		Model.JSmol.setPicking(off ? "OFF" : "TORSION");
+		Model.JSmol.setPicking($("#measure-torsion").hasClass("checked")
+			? "OFF" : "TORSION");
 	},
 
 	jmol_render_all: function()

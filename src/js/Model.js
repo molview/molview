@@ -1054,6 +1054,8 @@ var Model = {
 			this.picking = type;
 			Model.JSmol.safeCallback(function()
 			{
+				$(".jmol-picking").removeClass("checked");
+
 				if(type == "OFF")
 				{
 					Model.JSmol.scriptWaitOutput("set picking off;");
@@ -1061,6 +1063,8 @@ var Model = {
 				}
 				else
 				{
+					$("#measure-" + type.toLowerCase()).addClass("checked");
+
 					Model.JSmol._setPlatformSpeed(2);
 					Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");
 					Model.JSmol.scriptWaitOutput(JmolScripts.resetLabels);

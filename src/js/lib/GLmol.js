@@ -16,22 +16,22 @@ This program uses
 */
 
 /*
-Modifications by Herman Bergwerf:
+Modifications by Herman Bergwerf
 - add Jmol coloring
 - add resize function
 - replace '$(' with 'jQuery('
-- aaScale from scaleFactor in constructor(for mobile DPI)
-- mobile multi touch zoom(me.zoom2D for canvas zooming)
-- me.isMultiDragging
+- aaScale from scaleFactor in constructor (for dynamic mobile DPI setting)
+- mobile multi touch zoom
 - canvas 2D params
+  - zoom2D
   - canvasAtomRadius
   - canvasBondWidth
-  - canvasVDW(use vdw atom sizes)
+  - canvasVDW (indicates if vdwRadii should be used)
 */
 
 //workaround for Intel GMA series(gl_FrontFacing causes compilation error)
-THREE.ShaderLib.lambert.fragmentShader = THREE.ShaderLib.lambert.fragmentShader.replace("gl_FrontFacing", "true");
-THREE.ShaderLib.lambert.vertexShader = THREE.ShaderLib.lambert.vertexShader.replace(/\}$/, "#ifdef DOUBLE_SIDED\n if(transformedNormal.z < 0.0) vLightFront = vLightBack;\n #endif\n }");
+//THREE.ShaderLib.lambert.fragmentShader = THREE.ShaderLib.lambert.fragmentShader.replace("gl_FrontFacing", "true");
+//THREE.ShaderLib.lambert.vertexShader = THREE.ShaderLib.lambert.vertexShader.replace(/\}$/, "#ifdef DOUBLE_SIDED\n if(transformedNormal.z < 0.0) vLightFront = vLightBack;\n #endif\n }");
 
 var TV3 = THREE.Vector3,
 	TF3 = THREE.Face3,
@@ -1101,7 +1101,7 @@ var GLmol =(function()
 		fs.push(new THREE.Face4(vsize, vsize + 2, vsize + 6, vsize + 4, undefined, fs[0].color));
 		fs.push(new THREE.Face4(vsize + 1, vsize + 5, vsize + 7, vsize + 3, undefined, fs[fs.length - 3].color));
 		geo.computeFaceNormals();
-		geo.computeVertexNormals(false);
+		geo.computeVertexNormals();
 		var material = new THREE.MeshLambertMaterial();
 		material.vertexColors = THREE.FaceColors;
 		var mesh = new THREE.Mesh(geo, material);
@@ -1149,7 +1149,7 @@ var GLmol =(function()
 
 		if(!this.cylinderGeometry)
 		{
-			this.cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, this.cylinderQuality, 1, !cap);
+			this.cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, this.cylinderQuality, 1, cap == true);
 			this.cylinderGeometry.faceUvs = [];
 			this.faceVertexUvs = [];
 		}
@@ -1187,16 +1187,29 @@ var GLmol =(function()
 
 			if(atom.ss == 'h' && atom.ssend)
 			{
-				if(start != null) this.drawCylinder(group, new TV3(start.x, start.y, start.z), new TV3(atom.x, atom.y, atom.z), radius, atom.color, true);
+				if(start != null)
+				{
+					this.drawCylinder(group,
+						new TV3(start.x, start.y, start.z),
+						new TV3(atom.x, atom.y, atom.z),
+						radius, atom.color, true);
+				}
 				start = null;
 			}
 			currentChain = atom.chain;
 			currentResi = atom.resi;
 			if(start == null && atom.ss == 'h' && atom.ssbegin) start = atom;
 		}
-		if(start != null) this.drawCylinder(group, new TV3(start.x, start.y, start.z), new TV3(atom.x, atom.y, atom.z), radius, atom.color);
+		if(start != null)
+		{
+			this.drawCylinder(group,
+				new TV3(start.x, start.y, start.z),
+				new TV3(atom.x, atom.y, atom.z),
+				radius, atom.color, true);
+		}
+
 		this.drawMainchainTube(group, others, "CA", 0.3);
-		this.drawStrand(group, beta, undefined, undefined, true, 0, this.helixSheetWidth, false, this.thickness * 2);
+		this.drawStrand(group, beta, 2, undefined, true, undefined, this.helixSheetWidth, false, 2 * this.thickness);
 	};
 
 	GLmol.prototype.drawCartoon = function(group, atomlist, doNotSmoothen, thickness)
