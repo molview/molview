@@ -336,7 +336,8 @@ else if(isset($codid))
 							<li><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
 							<li><a id="glmol-chain-trace" class="glmol-chain">C-alpha trace</a></li>
 							<li><a id="glmol-chain-tube" class="glmol-chain">B-factor tube</a></li>
-							<li><a id="glmol-chain-bonds" class="glmol-chain">Bonds</a></li>
+							<li class="menu-divider"></li>
+							<li><a id="glmol-chain-bonds">Bonds</a></li>
 							<li class="menu-header">Chain coloring</li>
 							<li><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
 							<li><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
@@ -350,12 +351,12 @@ else if(isset($codid))
 						<ul class="dropdown-menu">
 							<li><a id="jmol-clean" class="jmol-script">Clean</a></li>
 							<li class="menu-header">Calculations</li>
-							<li><a id="mep-lucent" class="jmol-script">MEP surface lucent</a></li>
-							<li><a id="mep-opaque" class="jmol-script">MEP surface opaque</a></li>
-							<li><a id="jmol-charge" class="jmol-script">Charge</a></li>
-							<li><a id="bond-dipoles" class="jmol-script">Bond dipoles</a></li>
-							<li><a id="net-dipole" class="jmol-script">Overall dipole</a></li>
-							<li><a id="jmol-minimize" class="jmol-script">Energy minimization</a></li>
+							<li><a id="mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
+							<li><a id="mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
+							<li><a id="jmol-charge" class="jmol-script jmol-calc">Charge</a></li>
+							<li><a id="bond-dipoles" class="jmol-script jmol-calc">Bond dipoles</a></li>
+							<li><a id="net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
+							<li><a id="jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
 							<li class="menu-header">Measurement</li>
 							<li><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
 							<li><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
@@ -618,7 +619,7 @@ else if(isset($codid))
 							<h4>Reset</h4>
 							<p>This function sets the model position, zoom and rotation back to default.</p>
 							<h4>Representation</h4>
-							<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. /less/ are automatically drawn using ribbons.</p>
+							<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Macromolecules are automatically drawn using ribbons.</p>
 							<h4>Background</h4>
 							<p>You can switch between a black and a white model background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
 							<h4>Engines</h4>
@@ -667,7 +668,7 @@ else if(isset($codid))
 					<div class="expandable">
 						<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
 						<div class="expandable-content">
-							<p>The Spectroscopy menu item is located under <i>Model > Chemical</i> data in the menubar. This menuitem shows the spectroscopy dialog where you can choose from a number of spectra (if available)</p>
+							<p>The Spectroscopy menu item is located under <i>Model > Chemical</i> data in the menubar. This function shows the spectroscopy dialog where you can choose from a number of spectra (if available)</p>
 							<ol>
 								<li>H1-NMR prediction</li>
 								<li>Mass spectrum</li>
@@ -685,16 +686,15 @@ else if(isset($codid))
 						<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
 						<div class="expandable-content">
 							<p>The GLmol render engine contains some custom display functions for macromolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
-							<h4>Biological assemlby</h4>
+							<h4>Biological assembly</h4>
 							<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
 							<h4>Chain representation</h4>
-							<p>GLmol offers five different chain representations.</p>
+							<p>GLmol offers four different chain representations, you can select one of them. You can also view all bonds as lines by enabling the <i>Bonds</i> option.</p>
 							<ol>
 								<li><b>Ribbon:</b> draws ribbon diagram <i>(default representation)</i></li>
 								<li><b>Cylinder and plate:</b> solid cylinders for α-helices and solid plates for β-sheets</li>
 								<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
-								<li><b>B-factor tube:</b> tube were thickness is calculated from the B-factor <i>(thermal motion)</i></li>
-								<li><b>Bonds:</b> all bonds are displayed as lines
+								<li><b>B-factor tube:</b> tube with B-factor as  thickness <i>(thermal motion)</i></li>
 							</ol>
 							<h4>Chain coloring</h4>
 							<p>You can choose from five chain coloring methods.</p>
@@ -708,8 +708,8 @@ else if(isset($codid))
 							<h4>Fog and clipping</h4>
 							<p>When you are viewing large structures, like proteins, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
 							<ol>
-								<li><b>Fog:</b> you can move the fog forward by dragging the mouse up while holding the right mousebutton and vice versa.</li>
-								<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the left while holding the right mousebutton and vice versa.</li>
+								<li><b>Fog:</b> you can move the fog forward by dragging the mouse <b>up</b> while holding the <b>CTRL</b> and the <b>SHIFT</b> key (and vice versa)</li>
+								<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the <b>left</b> while holding the <b>CTRL</b> and the <b>SHIFT</b> key (and vice versa)</li>
 							</ol>
 						</div>
 					</div>

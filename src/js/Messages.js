@@ -21,7 +21,7 @@ var Messages = {
 	resolve: "Updating&hellip;",
 	glmol_update: "Updating&hellip;",
 	init_jmol: "Initializing Jmol&hellip;",
-	jmol_calculation: "",
+	jmol_calculation: "Calculation in progress&hellip;",
 
 	//support
 	no_webgl_support: Detector.getWebGLErrorMessage(),

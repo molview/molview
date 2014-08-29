@@ -17,21 +17,17 @@ This program uses
 
 /*
 Modifications by Herman Bergwerf
-- add Jmol coloring
-- add resize function
-- replace '$(' with 'jQuery('
+- Jmol coloring
+- vdwRadii from iView
 - aaScale from scaleFactor in constructor (for dynamic mobile DPI setting)
-- mobile multi touch zoom
-- canvas 2D params
-  - zoom2D
-  - canvasAtomRadius
-  - canvasBondWidth
-  - canvasVDW (indicates if vdwRadii should be used)
+- Mobile multi touch zoom
+- loadSDF, loadXYZ, loadPDB functions
+- Fallback
+  - zoom2D: 2D scale/zoom factor
+  - canvasAtomRadius: default fallback atom radius
+  - canvasBondWidth: fallback bond width
+  - canvasVDW: indicates if vdwRadii should be used rather than canvasAtomRadius
 */
-
-//workaround for Intel GMA series(gl_FrontFacing causes compilation error)
-//THREE.ShaderLib.lambert.fragmentShader = THREE.ShaderLib.lambert.fragmentShader.replace("gl_FrontFacing", "true");
-//THREE.ShaderLib.lambert.vertexShader = THREE.ShaderLib.lambert.vertexShader.replace(/\}$/, "#ifdef DOUBLE_SIDED\n if(transformedNormal.z < 0.0) vLightFront = vLightBack;\n #endif\n }");
 
 var TV3 = THREE.Vector3,
 	TF3 = THREE.Face3,
@@ -55,13 +51,13 @@ THREE.Matrix4.prototype.isIdentity = function()
 
 var GLmol =(function()
 {
-	function GLmol(id, suppressAutoload, force2d, scaleFactor)
+	function GLmol(id, force2d, scaleFactor)
 	{
-		if(id) this.create(id, suppressAutoload, force2d, scaleFactor);
+		if(id) this.create(id, force2d, scaleFactor);
 		return true;
 	}
 
-	GLmol.prototype.create = function(id, suppressAutoload, force2d, scaleFactor)
+	GLmol.prototype.create = function(id, force2d, scaleFactor)
 	{
 		this.Nucleotides = ['  G', '  A', '  T', '  C', '  U', ' DG', ' DA', ' DT', ' DC', ' DU'];
 
@@ -189,20 +185,183 @@ var GLmol =(function()
 		this.mouseStartX = 0;
 		this.mouseStartY = 0;
 
-		/* INSERTED */
-		this.multiTouchD = 0;
+		// 2D canvas fallback
 		this.zoom2D = 30;
 		this.canvasAtomRadius = 0.5;
 		this.canvasBondWidth = 0.3;
 		this.canvasVDW = false;
-		this.multic = { x: 0, y: 0 };
+
+		// Multi touch parameters
+		this.multiTouchD = 0;
+		this.isMultiDragging = false;
 
 		this.currentModelPos = 0;
 		this.cz = 0;
-		this.enableMouse();
 
-		if(suppressAutoload) return;
-		this.loadMolecule();
+		this.protein = {
+			sheet: [],
+			helix: [],
+			biomtChains: '',
+			biomtMatrices: [],
+			symMat: [],
+			pdbID: '',
+			title: ''
+		};
+		this.atoms = [];
+
+		this.bindEvents();
+	};
+
+	GLmol.prototype.bindEvents = function()
+	{
+		var me = this, glDOM = jQuery(this.container);
+
+		glDOM.bind('mousedown touchstart', function(ev)
+		{
+			ev.preventDefault();
+			if(!me.scene) return;
+
+			var x = ev.pageX,
+				y = ev.pageY;
+
+			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches[0])
+			{
+				x = ev.originalEvent.targetTouches[0].pageX;
+				y = ev.originalEvent.targetTouches[0].pageY;
+			}
+
+			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
+			{
+				var t = ev.originalEvent.targetTouches;
+				var dx = t[0].pageX - t[1].pageX;
+				var dy = t[0].pageY - t[1].pageY;
+				me.multiTouchD = Math.sqrt(dx * dx + dy * dy);
+			}
+
+			if(x == undefined) return;
+			me.isDragging = true;
+			me.mouseButton = ev.which || 1;
+			me.mouseStartX = x;
+			me.mouseStartY = y;
+			me.cq = me.rotationGroup.quaternion;
+			me.cz = me.rotationGroup.position.z;
+			me.currentModelPos = me.modelGroup.position.clone();
+			me.cslabNear = me.slabNear;
+			me.cslabFar = me.slabFar;
+		});
+
+		glDOM.bind('DOMMouseScroll mousewheel', function(ev)// Zoom
+		{
+			ev.preventDefault();
+			if(!me.scene) return;
+
+			var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
+			if(scaleFactor > 2000) scaleFactor = 2000;
+
+			if(ev.originalEvent.detail)
+			{
+				me.rotationGroup.position.z += scaleFactor * ev.originalEvent.detail / 10;
+				me.zoom2D += scaleFactor * ev.originalEvent.detail / 10;
+			}
+			else if(ev.originalEvent.wheelDelta)
+			{
+				me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
+				me.zoom2D -= scaleFactor * ev.originalEvent.wheelDelta / 400;
+			}
+
+			if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
+			if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
+			if(me.zoom2D < 2) me.zoom2D = 2;
+
+			me.show();
+		});
+
+		jQuery(window).bind('mouseup touchend', function(ev)
+		{
+			me.isDragging = false;
+			me.isMultiDragging = false;
+		});
+
+		jQuery(window).bind('mousemove touchmove', function(ev)
+		{
+			if(!me.scene) return;
+			if(!me.isDragging) return;
+
+			ev.preventDefault();
+
+			var x = ev.pageX,
+				y = ev.pageY;
+
+			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches[0])
+			{
+				x = ev.originalEvent.targetTouches[0].pageX;
+				y = ev.originalEvent.targetTouches[0].pageY;
+			}
+
+			// Multi touch zoom
+			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
+			{
+				var t = ev.originalEvent.targetTouches;
+				var dx = t[0].pageX - t[1].pageX;
+				var dy = t[0].pageY - t[1].pageY;
+
+				me.isMultiDragging = true;
+
+				var d = Math.sqrt(dx * dx + dy * dy);
+				var ratio = d / me.multiTouchD;
+				me.multiTouchD = d;
+
+				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				me.rotationGroup.position.z += scaleFactor * -(ratio - 1);
+				me.zoom2D *= ratio;
+				if(me.zoom2D < 2) me.zoom2D = 2;
+
+				me.show();
+			}
+
+			if(me.isMultiDragging) return;
+
+			if(x == undefined) return;
+			var dx =(x - me.mouseStartX) / me.WIDTH;
+			var dy =(y - me.mouseStartY) / me.HEIGHT;
+			var r = Math.sqrt(dx * dx + dy * dy);
+
+			if(me.mouseButton == 1 && ev.ctrlKey && ev.shiftKey)
+			{ // Slab
+				me.slabNear = me.cslabNear + dx * 100;
+				me.slabFar = me.cslabFar + dy * 100;
+			}
+			else if(me.mouseButton == 2)
+			{ // Translate
+				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				if(scaleFactor < 20) scaleFactor = 20;
+				if(me.webglFailed)
+				{
+					dx *= -1;
+					dy *= -1;
+				}
+				var translationByScreen = new TV3(-dx * scaleFactor, -dy * scaleFactor, 0);
+				var q = me.rotationGroup.quaternion;
+				var qinv = new THREE.Quaternion(q.x, q.y, q.z, q.w).inverse().normalize();
+				var translation = qinv.multiplyVector3(translationByScreen);
+				me.modelGroup.position.x = me.currentModelPos.x + translation.x;
+				me.modelGroup.position.y = me.currentModelPos.y + translation.y;
+				me.modelGroup.position.z = me.currentModelPos.z + translation.z;
+			}
+			else if(me.mouseButton == 1 && r != 0)
+			{ // Rotate
+				var rs = Math.sin(r * Math.PI) / r;
+				me.dq.x = Math.cos(r * Math.PI);
+				me.dq.y = 0;
+				me.dq.z = rs * dx;
+				me.dq.w = rs * dy;
+				me.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
+				me.rotationGroup.quaternion.multiplySelf(me.dq);
+				me.rotationGroup.quaternion.multiplySelf(me.cq);
+			}
+
+			me.show();
+		});
 	};
 
 	GLmol.prototype.resize = function(scene)
@@ -224,14 +383,28 @@ var GLmol =(function()
 		this.show();
 	};
 
-	GLmol.prototype.setupLights = function(scene)
+	GLmol.prototype.loadSDF = function(str){ this.loadMolecule(str, this.parseSDF); };
+	GLmol.prototype.loadXYZ = function(str){ this.loadMolecule(str, this.parseXYZ); };
+	GLmol.prototype.loadPDB = function(str){ this.loadMolecule(str, this.parsePDB2); };
+
+	GLmol.prototype.loadMolecule = function(str, parser)
 	{
-		var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
-		directionalLight.position = new TV3(0.2, 0.2, -1).normalize();
-		directionalLight.intensity = 1.2;
-		scene.add(directionalLight);
-		var ambientLight = new THREE.AmbientLight(0x202020);
-		scene.add(ambientLight);
+		this.protein = {
+			sheet: [],
+			helix: [],
+			biomtChains: '',
+			biomtMatrices: [],
+			symMat: [],
+			pdbID: '',
+			title: ''
+		};
+		this.atoms = [];
+
+		parser.call(this, str);
+
+		this.rebuildScene(true);
+		this.zoomInto(this.getAllAtoms());
+		this.show();
 	};
 
 	GLmol.prototype.parseSDF = function(str)
@@ -293,7 +466,6 @@ var GLmol =(function()
 		{
 			var line = lines[offset++];
 			var tokens = line.replace(/^\s+/, "").replace(/\s+/g, " ").split(" ");
-			//console.log(tokens);
 			var atom = {};
 			atom.serial = i;
 			atom.atom = atom.elem = tokens[0];
@@ -491,9 +663,12 @@ var GLmol =(function()
 		return true;
 	};
 
-	// Catmull-Rom subdivision
+	/**
+	 * Catmull-Rom subdivision
+	 * @param  {Array} _points contains Vector3
+	 */
 	GLmol.prototype.subdivide = function(_points, DIV)
-	{ // points as Vector3
+	{
 		var ret = [];
 		var points = _points;
 		points = new Array(); // Smoothing test
@@ -551,7 +726,9 @@ var GLmol =(function()
 		}
 	};
 
-	// about two times faster than sphere when div = 2
+	/**
+	 * About two times faster than sphere when div = 2
+	 */
 	GLmol.prototype.drawAtomsAsIcosahedron = function(group, atomlist, defaultRadius, forceDefault)
 	{
 		var geo = this.IcosahedronGeometry();
@@ -584,13 +761,14 @@ var GLmol =(function()
 			(atom1.y - atom2.y) *(atom1.y - atom2.y) +
 			(atom1.z - atom2.z) *(atom1.z - atom2.z);
 
-		//   if(atom1.altLoc != atom2.altLoc) return false;
+		//if(atom1.altLoc != atom2.altLoc) return false;
 		if(isNaN(distSquared)) return 0;
-		if(distSquared < 0.5) return 0; // maybe duplicate position.
+		if(distSquared < 0.5) return 0;//maybe duplicate position.
 
 		if(distSquared > 1.3 &&(atom1.elem == 'H' || atom2.elem == 'H' || atom1.elem == 'D' || atom2.elem == 'D')) return 0;
 		if(distSquared < 3.42 &&(atom1.elem == 'S' || atom2.elem == 'S')) return 1;
 		if(distSquared > 2.78) return 0;
+
 		return 1;
 	};
 
@@ -708,7 +886,9 @@ var GLmol =(function()
 		group.add(line);
 	};
 
-	// TODO: Find inner side of a ring
+	/**
+	 * TODO: Find inner side of a ring
+	 */
 	GLmol.prototype.calcBondDelta = function(atom1, atom2, sep)
 	{
 		var dot;
@@ -888,7 +1068,9 @@ var GLmol =(function()
 		group.add(line);
 	};
 
-	// FIXME: Winkled...
+	/**
+	 * FIXME: Winkled tube
+	 */
 	GLmol.prototype.drawSmoothTube = function(group, _points, colors, radii)
 	{
 		if(_points.length < 2) return;
@@ -978,7 +1160,6 @@ var GLmol =(function()
 		mesh.doubleSided = true;
 		group.add(mesh);
 	};
-
 
 	GLmol.prototype.drawMainchainCurve = function(group, atomlist, curveWidth, atomName, div)
 	{
@@ -1109,7 +1290,6 @@ var GLmol =(function()
 		group.add(mesh);
 	};
 
-
 	GLmol.prototype.drawThinStrip = function(group, p1, p2, colors, div)
 	{
 		var geo = new THREE.Geometry();
@@ -1133,7 +1313,6 @@ var GLmol =(function()
 		group.add(mesh);
 	};
 
-
 	GLmol.prototype.IcosahedronGeometry = function()
 	{
 		if(!this.icosahedron) this.icosahedron = new THREE.IcosahedronGeometry(1);
@@ -1147,17 +1326,25 @@ var GLmol =(function()
 		var midpoint = new TV3().add(from, to).multiplyScalar(0.5);
 		var color = new TCo(color);
 
-		if(!this.cylinderGeometry)
+		if(cap && !this.cylinderGeometryCap)
 		{
-			this.cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, this.cylinderQuality, 1, cap == true);
+			this.cylinderGeometryCap = new THREE.CylinderGeometry(1, 1, 1, this.cylinderQuality, 1, false);
+			this.cylinderGeometryCap.faceUvs = [];
+			this.faceVertexUvs = [];
+		}
+		if(!cap && !this.cylinderGeometry)
+		{
+			this.cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, this.cylinderQuality, 1, true);
 			this.cylinderGeometry.faceUvs = [];
 			this.faceVertexUvs = [];
 		}
+
 		var cylinderMaterial = new THREE.MeshLambertMaterial(
 		{
 			color: color.getHex()
 		});
-		var cylinder = new THREE.Mesh(this.cylinderGeometry, cylinderMaterial);
+
+		var cylinder = new THREE.Mesh(!cap ? this.cylinderGeometry : this.cylinderGeometryCap, cylinderMaterial);
 		cylinder.position = midpoint;
 		cylinder.lookAt(from);
 		cylinder.updateMatrix();
@@ -1168,7 +1355,9 @@ var GLmol =(function()
 		group.add(cylinder);
 	};
 
-	// FIXME: transition!
+	/**
+	 * FIXME: Tube to cylinder transition
+	 */
 	GLmol.prototype.drawHelixAsCylinder = function(group, atomlist, radius)
 	{
 		var start = null;
@@ -1286,7 +1475,8 @@ var GLmol =(function()
 
 	GLmol.prototype.drawNucleicAcidLadderSub = function(geo, lineGeo, atoms, color)
 	{
-		//        color.r *= 0.9; color.g *= 0.9; color.b *= 0.9;
+		//color.r *= 0.9; color.g *= 0.9; color.b *= 0.9;
+
 		if(atoms[0] != undefined && atoms[1] != undefined && atoms[2] != undefined &&
 			atoms[3] != undefined && atoms[4] != undefined && atoms[5] != undefined)
 		{
@@ -1564,7 +1754,9 @@ var GLmol =(function()
 		return ret;
 	};
 
-	// Probably I can refactor using higher-order functions.
+	/**
+	 * Probably you can refactor using higher-order functions.
+	 */
 	GLmol.prototype.getHetatms = function(atomlist)
 	{
 		var ret = [];
@@ -1604,7 +1796,9 @@ var GLmol =(function()
 		return ret;
 	};
 
-	// TODO: Test
+	/**
+	 * TODO: Testing
+	 */
 	GLmol.prototype.excludeAtoms = function(atomlist, deleteList)
 	{
 		var ret = [];
@@ -1719,7 +1913,9 @@ var GLmol =(function()
 		return ret;
 	};
 
-	// for HETATM only
+	/**
+	 * For HETATM only
+	 */
 	GLmol.prototype.getNonbonded = function(atomlist, chain)
 	{
 		var ret = [];
@@ -1747,8 +1943,9 @@ var GLmol =(function()
 		}
 	};
 
-
-	// MEMO: Color only CA. maybe I should add atom.cartoonColor.
+	/**
+	 * Note: Color only CA. maybe I should add atom.cartoonColor.
+	 */
 	GLmol.prototype.colorByStructure = function(atomlist, helixColor, sheetColor, colorSidechains)
 	{
 		for(var i in atomlist)
@@ -1852,9 +2049,10 @@ var GLmol =(function()
 		this.colorByResidue(atomlist, colorMap);
 	};
 
-	// TODO: Add near(atomlist, neighbor, distanceCutoff)
-	// TODO: Add expandToResidue(atomlist)
-
+	/**
+	 * TODO: Add near(atomlist, neighbor, distanceCutoff)
+	 * TODO: Add expandToResidue(atomlist)
+	 */
 	GLmol.prototype.colorChainbow = function(atomlist, colorSidechains)
 	{
 		var cnt = 0;
@@ -1896,7 +2094,6 @@ var GLmol =(function()
 		{
 			var mat = matrices[i];
 			if(mat == undefined || mat.isIdentity()) continue;
-			//console.log(mat);
 			var symmetryMate = THREE.SceneUtils.cloneObject(asu);
 			symmetryMate.matrix = mat;
 			group.add(symmetryMate);
@@ -1905,7 +2102,6 @@ var GLmol =(function()
 		}
 		this.protein.appliedMatrix.multiplyScalar(cnt);
 	};
-
 
 	GLmol.prototype.drawSymmetryMatesWithTranslation2 = function(group, asu, matrices)
 	{
@@ -1990,6 +2186,16 @@ var GLmol =(function()
 		this.scene.fog.color = new TCo(hex);
 	};
 
+	GLmol.prototype.setupLights = function(scene)
+	{
+		var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+		directionalLight.position = new TV3(0.2, 0.2, -1).normalize();
+		directionalLight.intensity = 1.2;
+		scene.add(directionalLight);
+		var ambientLight = new THREE.AmbientLight(0x202020);
+		scene.add(ambientLight);
+	};
+
 	GLmol.prototype.initializeScene = function()
 	{
 		// CHECK: Should I explicitly call scene.deallocateObject?
@@ -2034,50 +2240,10 @@ var GLmol =(function()
 
 	GLmol.prototype.rebuildScene = function()
 	{
-		time = new Date();
-
 		var view = this.getView();
 		this.initializeScene();
 		this.defineRepresentation();
 		this.setView(view);
-
-		//console.log("builded scene in " +(+new Date() - time) + "ms");
-	};
-
-	GLmol.prototype.loadMolecule = function(repressZoom)
-	{
-		this.loadMoleculeStr(repressZoom, jQuery('#' + this.id + '_src').val());
-	};
-
-	GLmol.prototype.loadMoleculeStr = function(repressZoom, source)
-	{
-		var time = new Date();
-
-		this.protein = {
-			sheet: [],
-			helix: [],
-			biomtChains: '',
-			biomtMatrices: [],
-			symMat: [],
-			pdbID: '',
-			title: ''
-		};
-		this.atoms = [];
-
-		this.parsePDB2(source);
-		if(!this.parseSDF(source)) this.parseXYZ(source);
-		//console.log("parsed in " +(+new Date() - time) + "ms");
-
-		var title = jQuery('#' + this.id + '_pdbTitle');
-		var titleStr = '';
-		if(this.protein.pdbID != '') titleStr += '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=' + this.protein.pdbID + '">' + this.protein.pdbID + '</a>';
-		if(this.protein.title != '') titleStr += '<br>' + this.protein.title;
-		title.html(titleStr);
-
-		this.rebuildScene(true);
-		if(repressZoom == undefined || !repressZoom) this.zoomInto(this.getAllAtoms());
-
-		this.show();
 	};
 
 	GLmol.prototype.setSlabAndFog = function()
@@ -2105,200 +2271,13 @@ var GLmol =(function()
 		this.scene.fog.far = this.camera.far;
 	};
 
-	GLmol.prototype.enableMouse = function()
-	{
-		var me = this,
-			glDOM = jQuery(this.container);
-
-		// Contribution is needed as I don't own any iOS or Android device with WebGL support.
-		glDOM.bind('mousedown touchstart', function(ev)
-		{
-			ev.preventDefault();
-			if(!me.scene) return;
-
-			var x = ev.pageX,
-				y = ev.pageY;
-
-			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches[0])
-			{
-				x = ev.originalEvent.targetTouches[0].pageX;
-				y = ev.originalEvent.targetTouches[0].pageY;
-			}
-
-			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
-			{
-				var t = ev.originalEvent.targetTouches;
-				var dx = t[0].pageX - t[1].pageX;
-				var dy = t[0].pageY - t[1].pageY;
-				me.multiTouchD = Math.sqrt(dx * dx + dy * dy);
-			}
-
-			if(x == undefined) return;
-			me.isDragging = true;
-			me.mouseButton = ev.which;
-			me.mouseStartX = x;
-			me.mouseStartY = y;
-			me.cq = me.rotationGroup.quaternion;
-			me.cz = me.rotationGroup.position.z;
-			me.currentModelPos = me.modelGroup.position.clone();
-			me.cslabNear = me.slabNear;
-			me.cslabFar = me.slabFar;
-		});
-
-		glDOM.bind('DOMMouseScroll mousewheel', function(ev)// Zoom
-		{
-			ev.preventDefault();
-			if(!me.scene) return;
-
-			var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
-			if(scaleFactor > 2000) scaleFactor = 2000;
-
-			if(ev.originalEvent.detail)
-			{
-				me.rotationGroup.position.z += scaleFactor * ev.originalEvent.detail / 10;
-				me.zoom2D += scaleFactor * ev.originalEvent.detail / 10;
-			}
-			else if(ev.originalEvent.wheelDelta)
-			{
-				me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
-				me.zoom2D -= scaleFactor * ev.originalEvent.wheelDelta / 400;
-			}
-
-			if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
-			if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
-			if(me.zoom2D < 2) me.zoom2D = 2;
-
-			console.log(me.rotationGroup.position.z, scaleFactor);
-			me.show();
-		});
-		glDOM.bind("contextmenu", function(ev)
-		{
-			ev.preventDefault();
-		});
-		jQuery(window).bind('mouseup touchend', function(ev)
-		{
-			me.isDragging = false;
-			me.isMultiDragging = false;
-		});
-
-		/* MODIFIED */
-		jQuery(window).bind('mousemove touchmove', function(ev)
-		{ // touchmove
-			if(!me.scene) return;
-			if(!me.isDragging) return;
-
-			ev.preventDefault();
-
-			var mode = 0;
-			var x = ev.pageX,
-				y = ev.pageY;
-
-			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches[0])
-			{
-				x = ev.originalEvent.targetTouches[0].pageX;
-				y = ev.originalEvent.targetTouches[0].pageY;
-			}
-
-			/* INSERTED: multi touch zoom */
-			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
-			{
-				var t = ev.originalEvent.targetTouches;
-				var dx = t[0].pageX - t[1].pageX;
-				var dy = t[0].pageY - t[1].pageY;
-
-				/* var x = t[0].pageX < t[1].pageX ? t[0].pageX : t[1].pageX;
-				var y = t[0].pageY < t[1].pageY ? t[0].pageY : t[1].pageY;
-
-				if(!me.isMultiDragging)
-				{
-					me.multic.x = x + dx / 2;
-					me.multic.y = y + dy / 2;
-				} */
-
-				me.isMultiDragging = true;
-
-				var d = Math.sqrt(dx * dx + dy * dy);
-				var ratio = d / me.multiTouchD;
-				me.multiTouchD = d;
-
-				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				me.rotationGroup.position.z += scaleFactor * -(ratio - 1);
-				me.zoom2D *= ratio;
-				if(me.zoom2D < 2) me.zoom2D = 2;
-
-				/* var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				if(scaleFactor < 20) scaleFactor = 20;
-				var translationByScreen = new TV3(((x + dx / 2) - me.multic.x) / me.WIDTH * scaleFactor,((y + dy / 2) - me.multic.y) / me.HEIGHT * scaleFactor, 0);
-				var q = me.rotationGroup.quaternion;
-				var qinv = new THREE.Quaternion(q.x, q.y, q.z, q.w).inverse().normalize();
-				var translation = qinv.multiplyVector3(translationByScreen);
-				me.modelGroup.position.x = me.currentModelPos.x + translation.x;
-				me.modelGroup.position.y = me.currentModelPos.y + translation.y;
-				me.modelGroup.position.z = me.currentModelPos.z + translation.z; */
-
-				me.show();
-			}
-
-			if(me.isMultiDragging) return;
-
-			if(x == undefined) return;
-			var dx =(x - me.mouseStartX) / me.WIDTH;
-			var dy =(y - me.mouseStartY) / me.HEIGHT;
-			var r = Math.sqrt(dx * dx + dy * dy);
-			if(mode == 3 || me.mouseButton == 3)//(me.mouseButton == 3 && ev.ctrlKey))
-			{ // Slab
-				me.slabNear = me.cslabNear + dx * 100;
-				me.slabFar = me.cslabFar + dy * 100;
-			}
-			else if(mode == 2)//|| me.mouseButton == 3 || ev.shiftKey)
-			{ // Zoom
-				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				if(scaleFactor < 80) scaleFactor = 80;
-				me.rotationGroup.position.z = me.cz - dy * scaleFactor;
-			}
-			else if(mode == 1 || me.mouseButton == 2)// || ev.ctrlKey)
-			{ // Translate
-				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				if(scaleFactor < 20) scaleFactor = 20;
-				if(me.webglFailed)
-				{
-					dx *= -1;
-					dy *= -1;
-				}
-				var translationByScreen = new TV3(-dx * scaleFactor, -dy * scaleFactor, 0);
-				var q = me.rotationGroup.quaternion;
-				var qinv = new THREE.Quaternion(q.x, q.y, q.z, q.w).inverse().normalize();
-				var translation = qinv.multiplyVector3(translationByScreen);
-				me.modelGroup.position.x = me.currentModelPos.x + translation.x;
-				me.modelGroup.position.y = me.currentModelPos.y + translation.y;
-				me.modelGroup.position.z = me.currentModelPos.z + translation.z;
-			}
-			else if((mode == 0 || me.mouseButton == 1) && r != 0)
-			{ // Rotate
-				var rs = Math.sin(r * Math.PI) / r;
-				me.dq.x = Math.cos(r * Math.PI);
-				me.dq.y = 0;
-				me.dq.z = rs * dx;
-				me.dq.w = rs * dy;
-				me.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
-				me.rotationGroup.quaternion.multiplySelf(me.dq);
-				me.rotationGroup.quaternion.multiplySelf(me.cq);
-			}
-
-			me.show();
-		});
-	};
-
-
 	GLmol.prototype.show = function()
 	{
 		if(!this.scene) return;
 
-		var time = new Date();
 		this.setSlabAndFog();
 		if(!this.webglFailed) this.renderer.render(this.scene, this.camera);
 		else this.render2d();
-		//console.log("rendered in " +(+new Date() - time) + "ms");
 	};
 
 	GLmol.prototype.render2d = function()
@@ -2452,12 +2431,6 @@ var GLmol =(function()
 		}
 
 		ctx.restore();
-	};
-
-	// For scripting
-	GLmol.prototype.doFunc = function(func)
-	{
-		func(this);
 	};
 
 	return GLmol;

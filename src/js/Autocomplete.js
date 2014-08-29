@@ -67,7 +67,7 @@ var Autocomplete = {
 		for(var i = 0; i < mineralNames.minerals.length; i++)
 		{
 			mineralNames.minerals[i].label =
-				ucfirst(humanize(mineralNames.minerals[i].name));
+				ucfirst(mineralNames.minerals[i].name);
 		}
 
 		this.macromolecules = new AutocompleteBuilder(commonMacromolecules.macromolecules, "name");
@@ -206,10 +206,13 @@ var Autocomplete = {
 			//exclude macromolecules if not supported by device
 			if(MolView.macromolecules && !(!Detector.webgl && MolView.mobile))
 			{
-				mix = this.macromolecules.sort(text, this.MIN_SIM, this.MAX_NUMBER)
-					.concat(this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER));
+				mix = this.macromolecules.sort(text, this.MIN_SIM, this.MAX_NUMBER).slice(0)
+					.concat(this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER).slice(0));
 			}
-			else mix = this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER);
+			else
+			{
+				mix = this.minerals.sort(text, this.MIN_SIM, this.MAX_NUMBER).slice(0);
+			}
 
 			this.getPubChemAutocomplete(text, function(array)
 			{
@@ -231,15 +234,11 @@ var Autocomplete = {
 					{
 						if(mix[i].label == mix[i + 1].label)
 						{
-							//merge into each other
+							//merge into first entry
 							mix[i].codid = mix[i].codid || mix[i + 1].codid;
-							mix[i].PubChem_name = mix[i + 1].PubChem_name =
-								mix[i].PubChem_name || mix[i + 1].PubChem_name;
+							mix[i].PubChem_name = mix[i].PubChem_name || mix[i + 1].PubChem_name;
 
-							//mineral has precedence: remove codid from second entry
-							mix[i + 1].codid = undefined;
-
-							//remove one duplicate
+							//remove second duplicate
 							mix.splice(i + 1, 1);
 						}
 					}

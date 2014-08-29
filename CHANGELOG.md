@@ -1,11 +1,14 @@
 ## 2.3.x
 
-Future improvements
+Future improvement plans
 
  - Add EDTSurf to MolView
  - Protein solvents display
- - Proteins and minerals library
+ - CIF loader for GLmol
+ - GLmol CanvasRenderer (update THREEjs)
+ - Client-Side 2D depiction
  - Language localisation
+ - Make MolView Open-Source
 
 ## 2.2.x
 
@@ -41,9 +44,9 @@ Backend:
 
 Frontend:
 
+  - Updated logo
   - Added PDBID search
   - Added GLmol menu for WebGL devices
-  - Updated logo
   - Added JSmol middle mouse button dragging
   - Added autocomplete for compounds, minerals and proteins
   - Added option to alter the Model background color
@@ -54,7 +57,7 @@ Frontend:
   - Redesigned search results style
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
-  > Changed GLmol > Chain representation > bonds to extra switch
+  > Changed menu open trigger to hover for mouse devices
   > Move InfoCard and Spectra to separate layer (like search)
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra

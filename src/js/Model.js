@@ -292,6 +292,7 @@ var Model = {
 		this.data.cif = cif;
 		$("#save-local-3d").text("CIF file");
 		$(".jmol-script").removeClass("disabled");
+		$(".jmol-calc").addClass("disabled");
 
 		this._loadCIF(cif, cell, cb);
 	},
@@ -392,7 +393,7 @@ var Model = {
 		container: undefined,
 		loadBioAssembly: false,
 		chain: {
-			representation: "ribbon",//ribbon || cylinders || trace || tube || bonds
+			representation: ["ribbon"],//ribbon || cylinders || trace || tube || bonds
 			coloring: "ss",//ss || spectrum || chain || bfactor || polarity
 		},
 
@@ -406,8 +407,7 @@ var Model = {
 		{
 			if(Detector.canvas)
 			{
-				this.view = new GLmol("glmol", true, !Detector.webgl, MolView.mobile ? 1.5 : 1.0);
-				this.view.loadMoleculeStr(false, "");
+				this.view = new GLmol("glmol", !Detector.webgl, MolView.mobile ? 1.5 : 1.0);
 
 				this.container = $("#glmol");
 				this.canvas = this.container.children("canvas").first();
@@ -432,27 +432,29 @@ var Model = {
 					if(Model.data.current == "PDB")
 					{
 						var do_not_smoothen = false;
-						if(chain.representation == "ribbon")
+
+						if(chain.representation.indexOf("ribbon") != -1)
 						{
 							this.drawCartoon(asu, all, do_not_smoothen);
 							this.drawCartoonNucleicAcid(asu, all);
 						}
-						else if(chain.representation == "cylinders")
+						else if(chain.representation.indexOf("cylinders") != -1)
 						{
 							this.drawHelixAsCylinder(asu, all, 1.6);
 							this.drawCartoonNucleicAcid(asu, all);
 						}
-						else if(chain.representation == "trace")
+						else if(chain.representation.indexOf("trace") != -1)
 						{
 							this.drawMainchainCurve(asu, all, this.curveWidth, "CA", 1);
 							this.drawMainchainCurve(asu, all, this.curveWidth, "O3'", 1);
 						}
-						else if(chain.representation == "tube")
+						else if(chain.representation.indexOf("tube") != -1)
 						{
 							this.drawMainchainTube(asu, all, "CA");
 							this.drawMainchainTube(asu, all, "O3'");
 						}
-						else if(chain.representation == "bonds")
+
+						if(chain.representation.indexOf("bonds") != -1)
 						{
 							this.drawBondsAsLine(asu, all, this.lineWidth);
 						}
@@ -559,7 +561,7 @@ var Model = {
 
 				this.loadBioAssembly = false;
 				$("#bio-assembly").removeClass("checked");
-				this.view.loadMoleculeStr(false, mol);
+				this.view.loadSDF(mol);
 			}
 		},
 
@@ -573,7 +575,7 @@ var Model = {
 
 				this.loadBioAssembly = false;
 				$("#bio-assembly").removeClass("checked");
-				this.view.loadMoleculeStr(false, pdb);
+				this.view.loadPDB(pdb);
 			}
 		},
 
@@ -610,15 +612,44 @@ var Model = {
 		 */
 		setChainRepresentation: function(representation)
 		{
-			$(".glmol-chain").removeClass("checked");
-			$("#glmol-chain-" + representation).addClass("checked");
+			this.chain.representation = [];
 
-			this.chain.representation = representation;
-			if(Model.engine == "GLmol") Messages.process(function()
+			if(representation != "bonds")
 			{
-				Model.GLmol.setRepresentation.call(Model.GLmol);
-				Messages.clear();
-			}, "glmol_update");
+				$(".glmol-chain").not("#glmol-chain-" + representation).removeClass("checked");
+			}
+			$("#glmol-chain-" + representation).toggleClass("checked")
+
+			if($("#glmol-chain-ribbon").hasClass("checked"))
+			{
+				this.chain.representation.push("ribbon");
+			}
+			else if($("#glmol-chain-cylinders").hasClass("checked"))
+			{
+				this.chain.representation.push("cylinders");
+			}
+			else if($("#glmol-chain-trace").hasClass("checked"))
+			{
+				this.chain.representation.push("trace");
+			}
+			else if($("#glmol-chain-tube").hasClass("checked"))
+			{
+				this.chain.representation.push("tube");
+			}
+
+			if($("#glmol-chain-bonds").hasClass("checked"))
+			{
+				this.chain.representation.push("bonds");
+			}
+
+			if(Model.engine == "GLmol")
+			{
+				Messages.process(function()
+				{
+					Model.GLmol.setRepresentation.call(Model.GLmol);
+					Messages.clear();
+				}, "glmol_update");
+			}
 		},
 
 		/**
@@ -697,9 +728,11 @@ var Model = {
 						script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
 						unbind "LEFT CLICK" "_pickMeasure"; bind "RIGHT CLICK" "_pickMeasure";\
 						unbind "LEFT CLICK" "_pickAtom"; bind "RIGHT CLICK" "_pickAtom";\
-						frank off; set specular off; background ' + Model.background + '; color label' + Model.background + ';\
+						frank off; set specular off; background ' + Model.background + '; color label ' + Model.background + ';\
 						set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false;\
-						set hoverDelay 0.001; hover off; font measure 18; set MessageCallback "Model.JSmol.onMessage";',
+						set hoverDelay 0.001; hover off; font measure 18;\
+						set MessageCallback "Model.JSmol.onMessage";\
+						set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 						readyFunction: Model.JSmol.onReady.bind(Model.JSmol),
 						console: "none"
 					});
@@ -732,14 +765,26 @@ var Model = {
 		/**
 		 * JSmol message callback
 		 */
-		onMessage: function(a, b, c)
+		MinimizationCallback: function(jsmolObject, message)
 		{
-			if(b.toLowerCase().indexOf("initial mmff e") > -1 && b.toLowerCase().indexOf("max steps = 0") > -1)
+			if(message == "done")
 			{
-				var array = b.split(/ +/);
+				Model.JSmol._setPlatformSpeed(Model.JSmol.platformSpeed);
+				Messages.clear();
+			}
+		},
+
+		/**
+		* JSmol minimization callback
+		*/
+		onMessage: function(jsmolObject, message)
+		{
+			if(message.toLowerCase().indexOf("initial mmff e") > -1
+			&& message.toLowerCase().indexOf("max steps = 0") > -1)
+			{
+				var array = message.split(/ +/);
 				Model.JSmol.print("Energy = " + array[5] + " kJ");
 			}
-			return null;
 		},
 
 		/**
@@ -834,12 +879,11 @@ var Model = {
 
 			if(this.ready)
 			{
-
 				this.currentModel = mol;
 
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
-				this.setPicking("OFF");
+				this._setPicking("OFF");
 				this.scriptWaitOutput("rotate best");
 
 				return true;
@@ -882,7 +926,7 @@ var Model = {
 				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
 
 				this.setRepresentation(Model.representation);
-				this.setPicking("OFF");
+				this._setPicking("OFF");
 				this.scriptWaitOutput("rotate best");
 
 				return true;
@@ -899,6 +943,7 @@ var Model = {
 			$(".jmol-rnd").removeClass("checked");
 			$("#jmol-render-" + (i == 1 ? "minimal" : i == 4 ? "normal" : "all")).addClass("checked");
 
+			this.setPicking("OFF");
 			this.platformSpeed = i;
 			this._setPlatformSpeed(i);
 		},
@@ -919,21 +964,20 @@ var Model = {
 		 * the script
 		 * @param {Function} cb   Called when JSmol is ready
 		 * @param {String}   what Message id
-		 * @param {Boolean}  show Indicates if a message should be displayed
+		 * @param {Boolean}  repressMessageClear
 		 */
-		safeCallback: function(cb, what, show)
+		safeCallback: function(cb, what, repressMessageClear)
 		{
 			Model.setRenderEngine("JSmol", function()
 			{
-				if(show)
+				Messages.process(function()
 				{
-					Messages.process(function()
+					cb();
+					if(!repressMessageClear)
 					{
-						cb();
 						Messages.clear();
-					}, what);
-				}
-				else window.setTimeout(cb, 100);
+					}
+				}, what);
 			});
 		},
 
@@ -952,17 +996,20 @@ var Model = {
 		{
 			if(this.ready)
 			{
-				var info = Jmol.getPropertyAsArray(JSmol, "moleculeInfo.mf")[0];
-				if(info.indexOf("H 1 F 1") > -1)
-					Jmol.script(JSmol, "{fluorine and connected(1,hydrogen)}.partialCharge = '-0.47';{hydrogen and connected(1,fluorine)}.partialCharge = '0.47';");
-				if(info.indexOf("H 1 Cl 1") > -1)
-					Jmol.script(JSmol, "{chlorine and connected(1,hydrogen)}.partialCharge = '-0.46';{hydrogen and connected(1,chlorine)}.partialCharge = '0.46';");
-				if (info.indexOf("H 1 Br 1") > -1)
-					Jmol.script(JSmol, "{bromine and connected(1,hydrogen)}.partialCharge = '-0.42';{hydrogen and connected(1,bromine)}.partialCharge = '0.42';");
-				if (info.indexOf("H 1 I 1") > -1)
-					Jmol.script(JSmol, "{iodine and connected(1,hydrogen)}.partialCharge = '-0.37';{hydrogen and connected(1,iodine)}.partialCharge = '0.37';");
+				if(!(parseFloat("" + Jmol.evaluate(JSmol, "{*}.partialcharge.max")) > 0))
+				{
+					var info = Jmol.getPropertyAsArray(JSmol, "moleculeInfo.mf")[0];
+					if(info.indexOf("H 1 F 1") > -1)
+						this.scriptWaitOutput("{fluorine and connected(1,hydrogen)}.partialCharge = '-0.47';{hydrogen and connected(1,fluorine)}.partialCharge = '0.47';");
+					if(info.indexOf("H 1 Cl 1") > -1)
+						this.scriptWaitOutput("{chlorine and connected(1,hydrogen)}.partialCharge = '-0.46';{hydrogen and connected(1,chlorine)}.partialCharge = '0.46';");
+					if (info.indexOf("H 1 Br 1") > -1)
+						this.scriptWaitOutput("{bromine and connected(1,hydrogen)}.partialCharge = '-0.42';{hydrogen and connected(1,bromine)}.partialCharge = '0.42';");
+					if (info.indexOf("H 1 I 1") > -1)
+						this.scriptWaitOutput("{iodine and connected(1,hydrogen)}.partialCharge = '-0.37';{hydrogen and connected(1,iodine)}.partialCharge = '0.37';");
 
-				Jmol.script(JSmol, "select *; calculate partialcharge;");
+					this.scriptWaitOutput("select *; calculate partialcharge;");
+				}
 			}
 		},
 
@@ -972,13 +1019,13 @@ var Model = {
 			if(Model.data.current == "PDB") return;
 
 			MolView.makeModelVisible();
-
 			Model.JSmol.safeCallback(function()
 			{
+				Model.JSmol._setPicking("OFF");
 				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("isosurface vdw resolution 0 color range -.07 .07 map mep " + (translucent ? "translucent" : "opaque") + ";");
 				Model.JSmol.script(JmolScripts.resetLabels);
-			}, "jmol_calculation", true);
+			}, "jmol_calculation");
 		},
 
 		displayCharge: function()
@@ -987,14 +1034,12 @@ var Model = {
 			if(Model.data.current == "PDB") return;
 
 			MolView.makeModelVisible();
-
-			var charge_calculated = Model.JSmol.ready ? parseFloat("" + Jmol.evaluate(JSmol, "{*}.partialcharge.max")) > 0 : false;
-
 			Model.JSmol.safeCallback(function()
 			{
-				if(!charge_calculated) Model.JSmol.calculatePartialCharge();
+				Model.JSmol._setPicking("OFF");
+				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("label %-8.4[partialcharge]; hover off;");
-			}, "jmol_calculation", !charge_calculated);
+			}, "jmol_calculation");
 		},
 
 		displayDipoles: function()
@@ -1003,14 +1048,12 @@ var Model = {
 			if(Model.data.current == "PDB") return;
 
 			MolView.makeModelVisible();
-
-			var charge_calculated = Model.JSmol.ready ? parseFloat("" + Jmol.evaluate(JSmol, "{*}.partialcharge.max")) > 0 : false;
-
 			Model.JSmol.safeCallback(function()
 			{
-				if(!charge_calculated) Model.JSmol.calculatePartialCharge();
+				Model.JSmol._setPicking("OFF");
+				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("dipole bonds on; dipole calculate bonds; hover off;");
-			}, "jmol_calculation", !charge_calculated);
+			}, "jmol_calculation");
 		},
 
 		displayNetDipole: function()
@@ -1019,14 +1062,12 @@ var Model = {
 			if(Model.data.current == "PDB") return;
 
 			MolView.makeModelVisible();
-
-			var charge_calculated = Model.JSmol.ready ? parseFloat("" + Jmol.evaluate(JSmol, "{*}.partialcharge.max")) > 0 : false;
-
 			Model.JSmol.safeCallback(function()
 			{
-				if(!charge_calculated) Model.JSmol.calculatePartialCharge();
+				Model.JSmol._setPicking("OFF");
+				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("dipole molecular on; dipole calculate molecular; hover off;");
-			}, "jmol_calculation", !charge_calculated);
+			}, "jmol_calculation");
 		},
 
 		calculateEnergyMinimization: function()
@@ -1035,41 +1076,56 @@ var Model = {
 			if(Model.data.current == "PDB") return;
 
 			MolView.makeModelVisible();
-
 			Model.JSmol.safeCallback(function()
 			{
+				Model.JSmol._setPicking("OFF", true);
+				Model.JSmol._setPlatformSpeed(2);
 				Model.JSmol.script(JmolScripts.clearMolecule);
 				Model.JSmol.script(JmolScripts.resetLabels);
 				Model.JSmol.script("minimize;");
-			}, "jmol_calculation", false);
+			}, "jmol_calculation", true);
 		},
 
 		/**
 		 * Enables or disables JSmol picking
-		 * @param {String} type Picking type (distance || angle || torsion)
-		 *                      or OFF to disable picking
+		 * @param {String}  type Picking type (distance || angle || torsion)
+		 *                       or OFF to disable picking
+		 * @param {Boolean} repressPlatformSpeedReset
 		 */
-		setPicking: function(type)
+		setPicking: function(type, repressPlatformSpeedReset)
 		{
-			this.picking = type;
 			Model.JSmol.safeCallback(function()
 			{
-				$(".jmol-picking").removeClass("checked");
+				Model.JSmol._setPicking(type, repressPlatformSpeedReset)
+			});
+		},
 
-				if(type == "OFF")
+		_setPicking: function(type, repressPlatformSpeedReset)
+		{
+			this.picking = type;
+			var measureButton = $("#measure-" + type.toLowerCase());
+			$(".jmol-picking").not(measureButton).removeClass("checked");
+			type = measureButton.toggleClass("checked").hasClass("checked") ? type : "OFF";
+
+			if(type == "OFF")
+			{
+				Model.JSmol.scriptWaitOutput("set picking off;");
+
+				if(!repressPlatformSpeedReset)
 				{
-					Model.JSmol.scriptWaitOutput("set picking off;");
 					Model.JSmol._setPlatformSpeed(Model.JSmol.platformSpeed);
 				}
-				else
+			}
+			else
+			{
+				if(!repressPlatformSpeedReset)
 				{
-					$("#measure-" + type.toLowerCase()).addClass("checked");
-
 					Model.JSmol._setPlatformSpeed(2);
-					Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");
-					Model.JSmol.scriptWaitOutput(JmolScripts.resetLabels);
 				}
-			}, "jmol_calculation", false);
+
+				Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");
+				Model.JSmol.scriptWaitOutput(JmolScripts.resetLabels);
+			}
 		},
 
 		toDataURL: function()

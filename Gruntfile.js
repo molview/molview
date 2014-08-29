@@ -11,7 +11,7 @@ module.exports = function(grunt)
 					banner: '/*!\n\
 MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
 Copyright (c) 2014, Herman Bergwerf\n\
-ALL RIGHTS RESERVED
+ALL RIGHTS RESERVED\n\
 */\n',
 					compress: { drop_console: true }
 				},
@@ -92,7 +92,7 @@ ALL RIGHTS RESERVED
 					banner: '/*!\n\
 MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
 Copyright (c) 2014, Herman Bergwerf\n\
-ALL RIGHTS RESERVED
+ALL RIGHTS RESERVED\n\
 */\n',
 					compress: { drop_console: true }
 				},
