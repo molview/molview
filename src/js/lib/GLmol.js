@@ -189,7 +189,10 @@ var GLmol =(function()
 		this.zoom2D = 30;
 		this.canvasAtomRadius = 0.5;
 		this.canvasBondWidth = 0.3;
-		this.canvasVDW = false;
+		this.canvasVDW = false;//draw using vdwRadii
+		this.canvasLine = false;//draw lines
+		this.canvasDrawStack = [];
+		this.canvasDetail = 30;//arc segments
 
 		// Multi touch parameters
 		this.multiTouchD = 0;
@@ -280,6 +283,7 @@ var GLmol =(function()
 		{
 			me.isDragging = false;
 			me.isMultiDragging = false;
+			me.show();
 		});
 
 		jQuery(window).bind('mousemove touchmove', function(ev)
@@ -2243,6 +2247,7 @@ var GLmol =(function()
 
 	GLmol.prototype.rebuildScene = function()
 	{
+		this.canvasDrawStack = [];
 		var view = this.getView();
 		this.initializeScene();
 		this.defineRepresentation();
@@ -2296,14 +2301,13 @@ var GLmol =(function()
 
 		ctx.translate(this.WIDTH / 2, this.HEIGHT / 2);
 		ctx.scale(this.zoom2D || 1, this.zoom2D || 1);
-		ctx.lineCap = "round";
+
+		var lineWidth = 0.02;
 		var mvMat = new THREE.Matrix4();
 		mvMat.multiply(this.camera.matrixWorldInverse, this.modelGroup.matrixWorld);
 
 		var PI2 = Math.PI * 2;
-		var drawStack = [];
 		var atoms = this.atoms;
-		var lineWidth = 0.03;
 
 		//transform coordinates
 		for(var i = 0; i < this.atoms.length; i++)
@@ -2320,117 +2324,168 @@ var GLmol =(function()
 		}
 
 		//create draw stack
-		for(var i = 0; i < this.atoms.length; i++)
+		if(this.canvasDrawStack.length == 0)
 		{
-			var atom = atoms[i];
-			if(atom == undefined) continue;
-
-			var part = {};
-
-			part.atom = {
-				i: i,
-				z: atom.screen.z,
-				r: this.vdwRadii[atom.elem] * this.vdwRadii[atom.elem] || 4
-			};
-			part.bonds =  [];
-
-			for(var j = 0, jlim = atom.bonds.length; j < jlim; j++)
+			for(var i = 0; i < atoms.length; i++)
 			{
-				var atom2 = atoms[atom.bonds[j]];
-				if(atom2 == undefined) continue;
+				var atom = atoms[i];
+				if(atom == undefined) continue;
 
-				part.bonds.push(atom.bonds[j]);
+				var part = {
+					i: i,
+					screen: atom.screen,
+					color: "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) + "," + (atom.color & 255) + ")",
+					r: this.canvasVDW ? this.vdwRadii[atom.elem] : this.canvasAtomRadius
+				};
+
+				//cache arc
+				part.arc = [];
+				if(part.r > 0)
+				{
+					var detail = this.canvasDetail;
+					for(var v = 0; v < detail; v++)
+					{
+						part.arc.push([ part.r * Math.cos(PI2 / detail * v),
+										part.r * Math.sin(PI2 / detail * v) ]);
+					}
+				}
+
+				//add bonds
+				part.bonds = [];
+				for(var j = 0; j < atom.bonds.length; j++)
+				{
+					var atom2 = atoms[atom.bonds[j]];
+					if(atom2 == undefined) continue;
+
+					part.bonds.push(atom.bonds[j]);
+				}
+
+				this.canvasDrawStack.push(part);
 			}
-
-			drawStack.push(part);
 		}
 
 		//sort draw stack
-		drawStack.sort(function(a, b)
+		this.canvasDrawStack.sort(function(a, b)
 		{
-			return a.atom.z - b.atom.z;
+			return a.screen.z - b.screen.z;
 		});
 
-		//draw
-		for(var i = 0; i < drawStack.length; i++)
+		//prepare
+		for(var i = 0; i < this.canvasDrawStack.length; i++)
 		{
-			var atom = atoms[drawStack[i].atom.i];
+			atoms[this.canvasDrawStack[i].i].zIndex = i;
+		}
+
+		//draw
+		for(var i = 0; i < this.canvasDrawStack.length; i++)
+		{
+			var part = this.canvasDrawStack[i];
 
 			//draw atom black body
-			ctx.strokeStyle = "#000000";
-			ctx.lineWidth = lineWidth * 2;
-			ctx.beginPath();
-			ctx.arc(atom.screen.x, atom.screen.y,
-				(this.canvasVDW ? drawStack[i].atom.r * this.canvasAtomRadius
-					: this.canvasAtomRadius),
-				0, PI2, true);
-			ctx.closePath();
-			ctx.stroke();
-
-			//draw bonds black body
-			for(var j = 0; j < drawStack[i].bonds.length; j++)
+			if(!this.isDragging && part.r > 0)
 			{
-				var atom2 = atoms[drawStack[i].bonds[j]];
-
-				if(atom2.screen.z > atom.screen.z ||
-					(atom2.screen.z == atom.screen.z && atom2.serial > atom.serial))
+				ctx.save();
+				ctx.translate(part.screen.x, part.screen.y);
+			
+				ctx.fillStyle = "#000000";
+				ctx.lineWidth = lineWidth;
+				ctx.beginPath();
+				var mult = (part.r + lineWidth) / part.r;
+				for(var v = 0; v < part.arc.length; v++)
 				{
-					ctx.lineWidth = this.canvasBondWidth + lineWidth * 2;
-					var cx =(atom.screen.x + atom2.screen.x) / 2;
-					var cy =(atom.screen.y + atom2.screen.y) / 2;
-					ctx.strokeStyle = "#000000";
+					if(v == 0) ctx.moveTo(mult * part.arc[v][0], mult * part.arc[v][1]);
+					else ctx.lineTo(mult * part.arc[v][0], mult * part.arc[v][1]);
+				}
+				ctx.closePath();
+				ctx.fill();
+			
+				ctx.restore();
+				
+				//draw bonds blackbody
+				if(!this.canvasVDW)
+				{
+					for(var j = 0; j < part.bonds.length; j++)
+					{
+						var atom = atoms[part.bonds[j]];
 
-					ctx.beginPath();
-					ctx.moveTo(atom.screen.x, atom.screen.y);
-					ctx.lineTo(cx, cy);
-					ctx.closePath();
-					ctx.stroke();
+						if(atom.screen.z > part.screen.z ||
+						  (atom.screen.z == part.screen.z && atom.zIndex > atoms[part.i].zIndex))
+						{
+							var cx = (part.screen.x + atom.screen.x) / 2;
+							var cy = (part.screen.y + atom.screen.y) / 2;
+					
+							ctx.lineWidth = ((this.isDragging || this.canvasLine) ?
+								1 / this.zoom2D : this.canvasBondWidth) + lineWidth * 2;
+							ctx.strokeStyle = "#000000";
 
-					ctx.beginPath();
-					ctx.moveTo(atom2.screen.x, atom2.screen.y);
-					ctx.lineTo(cx, cy);
-					ctx.closePath();
-					ctx.stroke();
+							ctx.beginPath();
+							ctx.moveTo(part.screen.x, part.screen.y);
+							ctx.lineTo(cx, cy);
+							ctx.closePath();
+							ctx.stroke();
+
+							ctx.beginPath();
+							ctx.moveTo(atom.screen.x, atom.screen.y);
+							ctx.lineTo(cx, cy);
+							ctx.closePath();
+							ctx.stroke();
+						}
+					}
 				}
 			}
-
-			//draw bonds
-			for(var j = 0; j < drawStack[i].bonds.length; j++)
+			
+			//draw colored bonds
+			if(!this.canvasVDW || this.isDragging)
 			{
-				var atom2 = atoms[drawStack[i].bonds[j]];
-
-				if(atom2.screen.z > atom.screen.z ||
-					(atom2.screen.z == atom.screen.z && atom2.serial > atom.serial))
+				for(var j = 0; j < part.bonds.length; j++)
 				{
-					ctx.lineWidth = this.canvasBondWidth;
-					var cx =(atom.screen.x + atom2.screen.x) / 2;
-					var cy =(atom.screen.y + atom2.screen.y) / 2;
+					var atom = atoms[part.bonds[j]];
+					var atomColor = this.canvasDrawStack[atoms[part.bonds[j]].zIndex].color;
 
-					ctx.strokeStyle = "rgb(" +(atom.color >> 16) + "," +(atom.color >> 8 & 255) +
-						"," +(atom.color & 255) + ")";
-					ctx.beginPath();
-					ctx.moveTo(atom.screen.x, atom.screen.y);
-					ctx.lineTo(cx, cy);
-					ctx.closePath();
-					ctx.stroke();
+					if(atom.screen.z > part.screen.z ||
+					  (atom.screen.z == part.screen.z && atom.zIndex > atoms[part.i].zIndex))
+					{
+						var cx = (part.screen.x + atom.screen.x) / 2;
+						var cy = (part.screen.y + atom.screen.y) / 2;
+					
+						ctx.lineWidth = (this.isDragging || this.canvasLine) ?
+							1 / this.zoom2D : this.canvasBondWidth;
 
-					ctx.strokeStyle = "rgb(" +(atom2.color >> 16) + "," +(atom2.color >> 8 & 255) +
-						"," +(atom2.color & 255) + ")";
-					ctx.beginPath();
-					ctx.moveTo(atom2.screen.x, atom2.screen.y);
-					ctx.lineTo(cx, cy);
-					ctx.closePath();
-					ctx.stroke();
+						ctx.strokeStyle = part.color;
+						ctx.beginPath();
+						ctx.moveTo(part.screen.x, part.screen.y);
+						ctx.lineTo(cx, cy);
+						ctx.closePath();
+						ctx.stroke();
+
+						ctx.strokeStyle = atomColor;
+						ctx.beginPath();
+						ctx.moveTo(atom.screen.x, atom.screen.y);
+						ctx.lineTo(cx, cy);
+						ctx.closePath();
+						ctx.stroke();
+					}
 				}
 			}
 
 			//draw atom
-			ctx.fillStyle = "rgb(" +(atom.color >> 16) + "," +(atom.color >> 8 & 255) +
-				"," +(atom.color & 255) + ")";
-			ctx.beginPath();
-			ctx.arc(atom.screen.x, atom.screen.y, this.canvasVDW ? drawStack[i].atom.r * this.canvasAtomRadius : this.canvasAtomRadius, 0, PI2, true);
-			ctx.closePath();
-			ctx.fill();
+			if(!this.isDragging && part.r > 0)
+			{
+				ctx.save();
+				ctx.translate(part.screen.x, part.screen.y);
+			
+				ctx.fillStyle = part.color;
+				ctx.beginPath();
+				for(var v = 0; v < part.arc.length; v++)
+				{
+					if(v == 0) ctx.moveTo(part.arc[v][0], part.arc[v][1]);
+					else ctx.lineTo(part.arc[v][0], part.arc[v][1]);
+				}
+				ctx.closePath();
+				ctx.fill();
+			
+				ctx.restore();
+			}
 		}
 
 		ctx.restore();

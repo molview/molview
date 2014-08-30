@@ -5,8 +5,8 @@ Future improvement plans
  - Add EDTSurf to MolView
  - Protein solvents display
  - CIF loader for GLmol
- - GLmol CanvasRenderer (update THREEjs)
  - Client-Side 2D depiction
+ - External pages (about, mission, manual)
  - Language localisation
  - Make MolView Open-Source
 

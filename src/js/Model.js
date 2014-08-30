@@ -472,6 +472,7 @@ var Model = {
 
 					var target = this.modelGroup;
 					this.canvasVDW = false;
+					this.canvasLine = false;
 
 					if(!Model.GLmol.loadBioAssembly)
 					{
@@ -497,13 +498,13 @@ var Model = {
 						else if(Model.representation == "wireframe")
 						{
 							this.canvasAtomRadius = 0.2;
-							this.canvasBondWidth = 0.1;
+							this.canvasLine = true;
 							this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, true, 0.05);
 						}
 						else if(Model.representation == "line")
 						{
-							this.canvasAtomRadius = 0.05;
-							this.canvasBondWidth = 0.1;
+							this.canvasAtomRadius = 0.0;
+							this.canvasLine = true;
 							this.drawBondsAsLine(target, hetatm, 1);
 						}
 					}
