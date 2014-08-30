@@ -1,5 +1,5 @@
 <?php
-include("../utility.php");
+include("../php/utility.php");
 error_reporting(0);
 
 if(is_below_IE10())
@@ -107,7 +107,7 @@ else if(isset($codid))
 	- pdbid = load PDBID
 	- codid = load CIF from COD
 	- mode = balls || stick || vdw || wireframe || line
-	- bg = black || white
+	- bg = black || gray || white
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -192,7 +192,13 @@ else if(isset($codid))
 			?>;*/
 		</script>
 	</head>
-	<body id="model" <?php if(isset($bg)) echo 'style="background:'.$bg.'"'; ?>>
+	<body id="model" <?php
+		if(isset($bg))
+		{
+			echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
+				"#000000" : "#cccccc" : "#ffffff").'"';
+		}
+	?>>
 		<input id="search-input" style="display: none" />
 		<div id="chemdoodle" class="render-engine full-cover" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>

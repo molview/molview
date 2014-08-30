@@ -196,6 +196,7 @@ var MolView = {
 			$("#model-line").on(this.trigger, Actions.model_line);
 
 			$("#model-bg-black").on(this.trigger, Actions.model_bg_black);
+			$("#model-bg-gray").on(this.trigger, Actions.model_bg_gray);
 			$("#model-bg-white").on(this.trigger, Actions.model_bg_white);
 
 			$("#cif-unit-cell").on(this.trigger, Actions.cif_unit_cell);

@@ -26,7 +26,13 @@ var Model = {
 
 	engine: null,//"GLmol", "JSmol", "CDW"
 	representation: "balls",//balls || stick || vdw || wireframe || line
-	background: "black",
+	bg: {
+		colorName: "black",
+		hex: 0x000000,
+		rgb: [0,0,0],//byte based
+		jmol: "[0,0,0]",
+		html: "rgb(0,0,0)"
+	},
 
 	/**
 	 * Initializes 3D model view
@@ -157,9 +163,9 @@ var Model = {
 		this.engine = engine;
 		this.resize();
 
-		if(this.isGLmol()) this.GLmol.setBackground(this.background);
-		else if(this.isJSmol()) this.JSmol.setBackground(this.background);
-		else if(this.isCDW()) this.CDW.setBackground(this.background);
+		if(this.isGLmol()) this.GLmol.setBackground(this.bg.hex);
+		else if(this.isJSmol()) this.JSmol.setBackground(this.bg.rgb);
+		else if(this.isCDW()) this.CDW.setBackground(this.bg.rgb, this.bg.html);
 
 		/* if loadContent returns true, the render engine
 		has updated the representation already */
@@ -200,15 +206,19 @@ var Model = {
 	 */
 	setBackground: function(color)
 	{
+		this.bg.colorName = color;
+		this.bg.hex = color != "white" ? color != "gray" ? 0x000000 : 0xcccccc : 0xffffff;
+		this.bg.rgb = [this.bg.hex >> 16, this.bg.hex >> 8 & 0xFF, this.bg.hex & 0xFF];
+		this.bg.jmol = "[" + this.bg.rgb.join() + "]";
+		this.bg.html = "rgb(" + this.bg.rgb.join() + ")";
+
 		$(".model-bg").removeClass("checked");
 		$("#model-bg-" + color).addClass("checked");
-		$("#model").css("background", color);
+		$("#model").css("background", this.bg.html);
 
-		this.background = color;
-
-		if(this.isGLmol()) return this.GLmol.setBackground(this.background);
-		else if(this.isJSmol()) return this.JSmol.setBackground(this.background);
-		else if(this.isCDW()) return this.CDW.setBackground(this.background);
+		if(this.isGLmol()) return this.GLmol.setBackground(this.bg.hex);
+		else if(this.isJSmol()) return this.JSmol.setBackground(this.bg.jmol);
+		else if(this.isCDW()) return this.CDW.setBackground(this.bg.rgb, this.bg.html);
 	},
 
 	/**
@@ -545,9 +555,9 @@ var Model = {
 			}
 		},
 
-		setBackground: function(color)
+		setBackground: function(hex)
 		{
-			this.view.setBackground(color == "white" ? 0xffffff : 0x000000);
+			this.view.setBackground(hex);
 			this.view.show();
 		},
 
@@ -681,7 +691,7 @@ var Model = {
 				if(!this.view.webglFailed) dataURL = this.view.renderer.domElement.toDataURL("image/png");
 				else dataURL = document.getElementById("glmol").firstChild.toDataURL("image/png");
 
-				this.view.setBackground(Model.background == "white" ? 0xffffff : 0x000000);
+				this.view.setBackground(Model.bg.hex);
 				this.view.show();
 
 				return dataURL;
@@ -728,7 +738,10 @@ var Model = {
 						script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
 						unbind "LEFT CLICK" "_pickMeasure"; bind "RIGHT CLICK" "_pickMeasure";\
 						unbind "LEFT CLICK" "_pickAtom"; bind "RIGHT CLICK" "_pickAtom";\
-						frank off; set specular off; background ' + Model.background + '; color label ' + Model.background + ';\
+						frank off; set specular off;\
+						background ' + Model.bg.jmol + '; color label ' + Model.bg.jmol + ';\
+						background echo ' + Model.bg.jmol + '; color echo ' + Model.bg.jmol + ';\
+						set echo top left; font echo 18 serif bold;\
 						set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false;\
 						set hoverDelay 0.001; hover off; font measure 18;\
 						set MessageCallback "Model.JSmol.onMessage";\
@@ -821,7 +834,7 @@ var Model = {
 		{
 			if(this.ready)
 			{
-				Model.JSmol.script('set echo top left; background echo black; font echo 18 serif bold; color echo white; echo "' + msg + '";');
+				Model.JSmol.script('echo "' + msg + '";');
 			}
 		},
 
@@ -869,7 +882,10 @@ var Model = {
 		{
 			if(this.ready)
 			{
-				Model.JSmol.scriptWaitOutput("background " + color + "; color label " + color + "; refresh;");
+				Model.JSmol.scriptWaitOutput("\
+					background " + color + "; color label " + color + ";\
+					background echo " + color + "; color echo " + color + ";\
+					set echo top left; font echo 18 serif bold; refresh;");
 			}
 		},
 
@@ -1157,8 +1173,8 @@ var Model = {
 			if(Detector.webgl)
 			{
 				this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width(), $("#model").height());
-				this.view.specs.backgroundColor = (Model.background == "white" ? "#ffffff" : "#000000");
-				this.view.specs.crystals_unitCellColor = (Model.background != "white" ? "#ffffff" : "#000000");
+				this.view.specs.backgroundColor = Model.bg.html;
+				this.view.specs.crystals_unitCellColor = Model.bg.html;
 				this.view.specs.macromolecules_ribbonCartoonize = true;
 				Model._setRenderEngine("CDW");
 				this.ready = true;
@@ -1199,20 +1215,19 @@ var Model = {
 			if(res == "line") res = "Line";
 
 			this.view.specs.set3DRepresentation(res);
-			this.view.specs.backgroundColor = (Model.background == "white" ? "#ffffff" : "#000000");
-			this.view.specs.crystals_unitCellColor = (Model.background != "white" ? "#ffffff" : "#000000");
+			this.view.specs.backgroundColor = Model.bg.html;
+			this.view.specs.crystals_unitCellColor = Model.bg.html;
 			this.view.specs.bonds_useJMOLColors = true;
 			if(res == "Ball and Stick") this.view.specs.bonds_cylinderDiameter_3D = 0.2;
 
 			this.view.repaint();
 		},
 
-		setBackground: function(color)
+		setBackground: function(rgb, htmlColor)
 		{
-			this.view.specs.backgroundColor = (color == "white" ? "#ffffff" : "#000000");
-			this.view.specs.crystals_unitCellColor = (Model.background != "white" ? "#ffffff" : "#000000");
-			if(color == "white") this.view.gl.clearColor(255, 255, 255, 255);
-			else this.view.gl.clearColor(0, 0, 0, 255);
+			this.view.specs.backgroundColor = htmlColor;
+			this.view.specs.crystals_unitCellColor = htmlColor;
+			this.view.gl.clearColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, 1);
 			this.view.repaint();
 		},
 
@@ -1270,10 +1285,7 @@ var Model = {
 				this.view.gl.clearColor(0, 0, 0, 0);
 				this.view.repaint();
 				var dataURL = this.view.gl.canvas.toDataURL("image/png");
-
-				if(Model.background == "white") this.view.gl.clearColor(255, 255, 255, 255);
-				else this.view.gl.clearColor(0, 0, 0, 255);
-
+				this.view.gl.clearColor(Model.bg.rgb[0] / 255, Model.bg.rgb[1] / 255, Model.bg.rgb[2] / 255, 1);
 				return dataURL;
 			}
 			else return "";

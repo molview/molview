@@ -111,7 +111,7 @@ else if(isset($codid))
 	 - menu = on || off
 	 - dialog = about || help || share || embed
 	 - mode = balls || stick || vdw || wireframe || line
-	 - bg = black || white
+	 - bg = black || gray || white
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -315,8 +315,9 @@ else if(isset($codid))
 							<li><a id="model-wireframe" class="r-mode">Wireframe</a></li>
 							<li><a id="model-line" class="r-mode">Line</a></li>
 							<li class="menu-header">Background</li>
-							<li><a id="model-bg-black" class="model-bg checked">Black</a></li>
-							<li><a id="model-bg-white" class="model-bg">White</a></li>
+							<li><a id="model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
+							<li><a id="model-bg-gray" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
+							<li><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
 							<li><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
 							<li><a id="engine-jmol">Jmol (extensive)</a></li>
@@ -477,7 +478,13 @@ else if(isset($codid))
 					</div>
 				</div>
 			</div>
-			<div id="model" <?php if(isset($bg)) echo 'style="background:'.$bg.'"'; ?>>
+			<div id="model" <?php
+				if(isset($bg))
+				{
+					echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
+						 "#000000" : "#cccccc" : "#ffffff").'"';
+				}
+			?>>
 				<div id="chemdoodle" class="render-engine" style="display: none;">
 					<canvas id="chemdoodle-canvas"></canvas>
 				</div>
@@ -779,7 +786,7 @@ else if(isset($codid))
 					<div class="dialog-close-btn"></div>
 					<div class="alert-box">
 						<span id="embed-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model will be embedded)</span>
-						<span id="embed-macromolecule" class="alert-bar">Embedded macromolecules cannot be viewed on smartphones without WebGL</span>
+						<span id="embed-macromolecule" class="alert-bar">Embedded macromolecules cannot be viewed on smartphones without WebGL support</span>
 					</div>
 					<h4>Width</h3>
 					<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>

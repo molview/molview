@@ -197,6 +197,7 @@ var Actions = {
 	model_line:      function() { Model.setRepresentation("line"); },
 
 	model_bg_black: function() { Model.setBackground("black"); },
+	model_bg_gray:  function() { Model.setBackground("gray"); },
 	model_bg_white: function() { Model.setBackground("white"); },
 
 	engine_glmol: function()

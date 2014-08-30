@@ -14,33 +14,25 @@ Future improvement plans
 
 Bugfixes:
 
-  - Added GLmol zoom boundary
-  - Direct CODID search boundary
-  - Added `Loader.Crystals.loadCODID` CIF validation
-  - Catch `ucfirst()` and `humanize()` undefined input
-  - Added test if translation is necessary
-  - Replaced '/' with '%5C' for Chemical Identifier Resolver lookup
+  - Patched Chemical Identifier Resolver lookup failure ('/' as '%5C')
   - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
-  - Reduced crystal 2D depiction failure
-  - Added CIF validation
-  > Fix GLmol drawTube
+  - Added empty CIF check (in PHP mirror)
+  - Added crystal 2D depiction fallbacks
+  - Fixed GLmol face culling issue
 
 Backend:
 
   - Removed model onload layout for CODID
   - Revised CSS efficiency
-  - Minified JS and CSS
-  - Changed search query to search = fast || pubchem || rcsb || cod
-  - Renamed protein to biomolecule
-  - Renamed Loader modules
-  - Moved message SVG images to CSS
-  - Minified SVG
-  - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
   - Migrated CSS to LESS
+  - Minified JS and CSS
+  - Minified SVG
+  - Renamed Loader modules
+  - Renamed protein to biomolecule
+  - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
   - Revised Information loading sequence
   > Added CAS lookup fallback using PubChem
   > Revised SMILES 2D/3D conversion sequence (PubChem > CIR)
-  > Added InChiKey and InChi to Sketcher metadata
 
 Frontend:
 
@@ -48,7 +40,7 @@ Frontend:
   - Added PDBID search
   - Added GLmol menu for WebGL devices
   - Added JSmol middle mouse button dragging
-  - Added autocomplete for compounds, minerals and proteins
+  - Added Autocomplete for compounds, minerals and proteins
   - Added option to alter the Model background color
   - Added transparency support for exported images
   - Added dialog close buttons
@@ -58,7 +50,7 @@ Frontend:
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
   > Changed menu open trigger to hover for mouse devices
-  > Move InfoCard and Spectra to separate layer (like search)
+  > Moved InfoCard and Spectra to separate layer
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
   > Added percent composition table to Information card

@@ -17,17 +17,13 @@ var Link = {
 		if(!$("#resolve").hasClass("resolve-updated") && MolView.layout != "model") $("#share-2d-not-3d").show();
 		else $("#share-2d-not-3d").hide();
 
-		var url = window.location.origin + window.location.pathname + "?mode=" + Model.representation;
+		var url = window.location.origin + window.location.pathname;
 		var msg = "";
 
 		if(Loader.lastQuery.type !== "")
 		{
 			msg = "Cool structure on MolView!";
-			url += "&" + Loader.lastQuery.type + "=" + specialEncodeURIComponent(Loader.lastQuery.content.replace(/^ /, ""));
-		}
-		if((MolView.layout == "sketcher" || MolView.layout == "model") && Model.data.current != "PDB")
-		{
-			url += "&layout=" + MolView.layout;
+			url += "?" + Loader.lastQuery.type + "=" + specialEncodeURIComponent(Loader.lastQuery.content.replace(/^ /, ""));
 		}
 
 		$("#share-link").val(url);
@@ -47,6 +43,11 @@ var Link = {
 		if(Loader.lastQuery.type !== "")
 		{
 			url += "&" + Loader.lastQuery.type + "=" + specialEncodeURIComponent(Loader.lastQuery.content.replace(/^ /, ""));
+		}
+
+		if(Model.bg.colorName != "black")
+		{
+			url += "&bg=" + Model.bg.colorName;
 		}
 
 		Link.embedHTML = '<iframe style="width: ' + $("#embed-width").val() + '; height: ' + $("#embed-height").val() + ';" frameborder="0" src="' + url + '"></iframe>';
