@@ -276,7 +276,7 @@ var GLmol =(function()
 			me.show();
 		});
 
-		jQuery(window).bind('mouseup touchend', function(ev)
+		jQuery(window).bind('mouseup touchend touchcancel', function(ev)
 		{
 			me.isDragging = false;
 			me.isMultiDragging = false;
@@ -312,8 +312,11 @@ var GLmol =(function()
 				me.multiTouchD = d;
 
 				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				me.rotationGroup.position.z += scaleFactor * -(ratio - 1);
+				me.rotationGroup.position.z += scaleFactor * - (ratio - 1);
 				me.zoom2D *= ratio;
+
+				if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
+				if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
 				if(me.zoom2D < 2) me.zoom2D = 2;
 
 				me.show();
@@ -2286,13 +2289,13 @@ var GLmol =(function()
 		this.scene.updateMatrixWorld();
 
 		ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
-		ctx.fillStyle = "rgba(" + 255 *(this.bgColor >> 16) + "," + 255 *(this.bgColor >> 8 & 0xFF)
-			+ "," + 255 *(this.bgColor & 0xFF) + "," + this.bgAlpha + ")";
+		ctx.fillStyle = "rgba(" + (this.bgColor >> 16) + "," + (this.bgColor >> 8 & 0xFF)
+			+ "," + (this.bgColor & 0xFF) + "," + this.bgAlpha + ")";
 		ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
 		ctx.save();
 
 		ctx.translate(this.WIDTH / 2, this.HEIGHT / 2);
-		ctx.scale(this.zoom2D, this.zoom2D);
+		ctx.scale(this.zoom2D || 1, this.zoom2D || 1);
 		ctx.lineCap = "round";
 		var mvMat = new THREE.Matrix4();
 		mvMat.multiply(this.camera.matrixWorldInverse, this.modelGroup.matrixWorld);

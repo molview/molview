@@ -1,9 +1,31 @@
 @import (reference) "vars";
 
-#properties-wrapper
+.data-layer
+{
+	margin: 0;
+	padding: 10px;
+	background: @light;
+	overflow: auto;
+}
+
+#infocard-layer
 {
 	margin: -10px;
 	margin-bottom: 0;
+	text-align: center;
+	background: @pubchem-pngbg;
+}
+
+#infocard-layer > .btn-group-bar
+{
+	text-align: left;
+}
+
+#properties-wrapper
+{
+	display: inline-block;
+	max-width: 600px;
+	width: 100%;
 }
 
 #general-properties
@@ -33,6 +55,8 @@
 	#properties-wrapper
 	{
 		margin: 0;
+		width: auto;
+		max-width: 1100px;
 	}
 
 	#general-properties
@@ -61,6 +85,11 @@
 
 @media all and (min-width: 1300px)
 {
+	#properties-wrapper
+	{
+		max-width: 1200px;
+	}
+
 	.properties-block
 	{
 		width: 589px;
@@ -72,6 +101,31 @@
 	margin: 0 auto;
 	background-size: 64px;
 }
+
+#molecule-info
+{
+	padding: 15px 10px;
+}
+
+#molecule-title
+{
+	margin: 0;
+}
+
+#chem-identifiers
+{
+	width: 100%;
+	margin: 10px 0;
+}
+
+#spectrum-wrapper
+{
+	overflow: auto;
+}
+
+/*
+Chemprops
+*/
 
 .chemprop-unavailable:after
 {
@@ -94,44 +148,9 @@
 	cursor: progress;
 }
 
-#molecule-info
-{
-	padding: 15px 10px;
-}
-
-#molecule-title
-{
-	margin: 0;
-}
-
-#chem-identifiers
-{
-	width: 100%;
-	margin: 10px 0;
-}
-
 input.chemprop-unavailable
 {
 	border-color: @error;
 	background-color: @error-light;
 	pointer-events: none;
-}
-
-#spectrum
-{
-	margin: -10px;
-	padding-bottom: 10px;
-}
-
-#spectrum-wrapper
-{
-	margin-top: 20px;
-	height: 0;
-	overflow: hidden;
-}
-
-#spectrum-canvas
-{
-	width: 100% !important;
-	height: 100% !important;
 }

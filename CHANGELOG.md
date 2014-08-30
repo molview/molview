@@ -49,8 +49,8 @@ Frontend:
   - Redesigned search results style
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
-  > Changed menu open trigger to hover for mouse devices
-  > Moved InfoCard and Spectra to separate layer
+  - Added menu-toggle hover event for non-touch devices
+  - Moved InfoCard and Spectra to separate layer
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
   > Added percent composition table to Information card

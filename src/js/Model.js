@@ -207,7 +207,7 @@ var Model = {
 	setBackground: function(color)
 	{
 		this.bg.colorName = color;
-		this.bg.hex = color != "white" ? color != "gray" ? 0x000000 : 0xcccccc : 0xffffff;
+		this.bg.hex = color != "white" ? color != "grey" ? 0x000000 : 0xcccccc : 0xffffff;
 		this.bg.rgb = [this.bg.hex >> 16, this.bg.hex >> 8 & 0xFF, this.bg.hex & 0xFF];
 		this.bg.jmol = "[" + this.bg.rgb.join() + "]";
 		this.bg.html = "rgb(" + this.bg.rgb.join() + ")";
@@ -736,16 +736,16 @@ var Model = {
 						use: "HTML5",
 						j2sPath: MolView.JMOL_J2S_PATH,
 						script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
-						unbind "LEFT CLICK" "_pickMeasure"; bind "RIGHT CLICK" "_pickMeasure";\
-						unbind "LEFT CLICK" "_pickAtom"; bind "RIGHT CLICK" "_pickAtom";\
-						frank off; set specular off;\
-						background ' + Model.bg.jmol + '; color label ' + Model.bg.jmol + ';\
-						background echo ' + Model.bg.jmol + '; color echo ' + Model.bg.jmol + ';\
-						set echo top left; font echo 18 serif bold;\
-						set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false;\
-						set hoverDelay 0.001; hover off; font measure 18;\
-						set MessageCallback "Model.JSmol.onMessage";\
-						set MinimizationCallback "Model.JSmol.MinimizationCallback";',
+unbind "LEFT CLICK" "_pickMeasure"; bind "RIGHT CLICK" "_pickMeasure";\
+unbind "LEFT CLICK" "_pickAtom"; bind "RIGHT CLICK" "_pickAtom";\
+frank off; set specular off;\
+background ' + Model.bg.jmol + '; color label ' + Model.bg.jmol + ';\
+background echo ' + Model.bg.jmol + '; color echo ' + Model.bg.jmol + ';\
+set echo top left; font echo 18 serif bold;\
+set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false;\
+set hoverDelay 0.001; hover off; font measure 18;\
+set MessageCallback "Model.JSmol.onMessage";\
+set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 						readyFunction: Model.JSmol.onReady.bind(Model.JSmol),
 						console: "none"
 					});
@@ -897,9 +897,10 @@ var Model = {
 			{
 				this.currentModel = mol;
 
+				this._setPicking("OFF");
+
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
-				this._setPicking("OFF");
 				this.scriptWaitOutput("rotate best");
 
 				return true;
@@ -914,10 +915,11 @@ var Model = {
 			{
 				this.currentModel = pdb;
 
+				this._setPicking("OFF");
+				this._setPlatformSpeed(Model.JSmol.platformSpeed);
+
 				this.scriptWaitOutput("set defaultLattice {0 0 0};");
 				this.scriptWaitOutput("set showUnitcell false;");
-				this.scriptWaitOutput("set picking off;");
-				this._setPlatformSpeed(Model.JSmol.platformSpeed);
 
 				JSmol.__loadModel(pdb);
 				this.setRepresentation(Model.representation);
@@ -935,6 +937,8 @@ var Model = {
 			{
 				this.currentModel = cif + cell;
 
+				this._setPicking("OFF");
+
 				cell = cell || [1, 1, 1];
 				this.scriptWaitOutput("set defaultLattice {" + cell.join(" ") + "};");
 
@@ -942,7 +946,6 @@ var Model = {
 				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
 
 				this.setRepresentation(Model.representation);
-				this._setPicking("OFF");
 				this.scriptWaitOutput("rotate best");
 
 				return true;
@@ -959,8 +962,9 @@ var Model = {
 			$(".jmol-rnd").removeClass("checked");
 			$("#jmol-render-" + (i == 1 ? "minimal" : i == 4 ? "normal" : "all")).addClass("checked");
 
-			this.setPicking("OFF");
 			this.platformSpeed = i;
+
+			this.setPicking("OFF");
 			this._setPlatformSpeed(i);
 		},
 
@@ -1095,7 +1099,7 @@ var Model = {
 			Model.JSmol.safeCallback(function()
 			{
 				Model.JSmol._setPicking("OFF", true);
-				Model.JSmol._setPlatformSpeed(2);
+				Model.JSmol._setPlatformSpeed(1);
 				Model.JSmol.script(JmolScripts.clearMolecule);
 				Model.JSmol.script(JmolScripts.resetLabels);
 				Model.JSmol.script("minimize;");
@@ -1136,7 +1140,7 @@ var Model = {
 			{
 				if(!repressPlatformSpeedReset)
 				{
-					Model.JSmol._setPlatformSpeed(2);
+					Model.JSmol._setPlatformSpeed(1);
 				}
 
 				Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");

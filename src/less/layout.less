@@ -38,25 +38,34 @@ body
 	right: 0;
 }
 
-body.no-menu > #menu
+.no-menu > #menu
 {
 	display: none;
 }
 
-body.no-menu > #progress
+.no-menu > #progress
 {
 	top: 0;
 }
 
-body.no-menu > .content
+.no-menu > #content
 {
 	top: 0;
 }
 
-.content
+#content
 {
 	position: absolute;
 	top: @menubar-height + 1;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.layer
+{
+	position: absolute;
+	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -72,13 +81,13 @@ body.no-menu > .content
 	background: #eee;
 }
 
-#content.layout-sketcher > #sketcher, #content.layout-hsplit > #sketcher
+.layout-sketcher > #sketcher, .layout-hsplit > #sketcher
 { right: 0; }
 
-#content.layout-hsplit > #sketcher
+.layout-hsplit > #sketcher
 { bottom: 50%; }
 
-#content.layout-model > #sketcher
+.layout-model > #sketcher
 { visibility: hidden; }
 
 #model
@@ -92,13 +101,13 @@ body.no-menu > .content
 	overflow: hidden;
 }
 
-#content.layout-model > #model, #content.layout-hsplit > #model
+.layout-model > #model, .layout-hsplit > #model
 { left: 0; }
 
-#content.layout-hsplit > #model
+.layout-hsplit > #model
 { top: 50%; }
 
-#content.layout-sketcher > #model
+.layout-sketcher > #model
 { visibility: hidden; }
 
 #messages
@@ -106,7 +115,7 @@ body.no-menu > .content
 	z-index: 3;
 }
 
-#dialog-layer
+#dialog-overlay
 {
 	z-index: 4;
 }

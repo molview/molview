@@ -29,13 +29,13 @@ if(isset($q) || isset($smiles) || isset($cid)) $description = "View this structu
 else if(isset($pdbid)) $description = "View this protein at http://molview.org";
 
 //same as
-$same_as = "http://molview.hermanbergwerf.com";
+$same_as = "";
 if(isset($q)) $same_as = "//en.wikipedia.org/wiki/".$q;
 else if(isset($cid)) $same_as = "//www.rcsb.org/pdb/explore/explore.do?structureId=".$pdbid;
 else if(isset($pdbid)) $same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".$cid;
 
 //image
-$image_url = "http://molview.org/src/src/img/image.png";
+$image_url = "http://molview.org/img/image.png";
 $pubchem_query = null;
 $pubchem_value = null;
 if(isset($q))			{ $pubchem_query = "name"; $pubchem_value = $q; }
@@ -107,7 +107,7 @@ else if(isset($codid))
 	- pdbid = load PDBID
 	- codid = load CIF from COD
 	- mode = balls || stick || vdw || wireframe || line
-	- bg = black || gray || white
+	- bg = black || grey || white
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -195,7 +195,7 @@ else if(isset($codid))
 	<body id="model" <?php
 		if(isset($bg))
 		{
-			echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
+			echo 'style="background:'.($bg != "white" ? $bg != "grey" ?
 				"#000000" : "#cccccc" : "#ffffff").'"';
 		}
 	?>>

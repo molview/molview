@@ -11,12 +11,13 @@ var InfoCard = {
 	 * Updates content of InfoCard card
 	 * @param {String} smiles SMILES string
 	 */
-	update: function(smiles, cid, inchikey, inchi)
+	update: function(smiles)
 	{
 		if(this.data["smiles"] != smiles && smiles != "")
 		{
 			$(".chemprop").html("").val("").removeClass("chemprop-unavailable").addClass("chemprop-loading");
 			$("#molecule-image").attr("src", "img/empty.png");
+			$("#molecule-image-wrapper").show();
 			$("#molecule-info").hide();
 			$("#molecule-title").text("");
 			$("#molecule-description").text("");
@@ -42,13 +43,13 @@ var InfoCard = {
 				}
 
 				//load properties
+				InfoCard.loadProperty("isomericsmiles");//first in order to use isomericsmiles ASAP
 				InfoCard.loadProperty("formula");
 				InfoCard.loadProperty("mw");
 				InfoCard.loadProperty("donors");
 				InfoCard.loadProperty("acceptors");
 				InfoCard.loadProperty("sysname");
 				InfoCard.loadProperty("canonicalsmiles");
-				InfoCard.loadProperty("isomericsmiles");
 				InfoCard.loadProperty("inchikey");
 				InfoCard.loadProperty("inchi");
 				InfoCard.loadProperty("cas");
@@ -87,8 +88,6 @@ var InfoCard = {
 	{
 		if(InfoCard["smiles"] == "") return;
 
-		$("#molecule-image-wrapper").hide();
-
 		var img = new Image();
 		img.onload = function()
 		{
@@ -102,7 +101,7 @@ var InfoCard = {
 		}
 		img.onerror = function()
 		{
-			$("#molecule-image").attr("src", "img/empty.png");
+			$("#molecule-image").attr("src", "img/empty.png").hide();
 		}
 
 		if(Sketcher.metadata.cid) img.src = Request.PubChem.image(Sketcher.metadata.cid);
@@ -214,11 +213,6 @@ var InfoCard = {
 								InfoCard.data[id] = data.PropertyTable.Properties[0][propName];
 							}
 
-							if(id == "isomericsmiles")
-							{
-								InfoCard.data["smiles"] = InfoCard.data["isomericsmiles"];
-							}
-
 							success(InfoCard.data[id]);
 						}
 						else
@@ -237,7 +231,8 @@ var InfoCard = {
 			{
 				if(InfoCard.data["smiles"] && CIRProps.indexOf(id) != -1)
 				{
-					Request.ChemicalIdentifierResolver.property(InfoCard.data["smiles"],
+					Request.ChemicalIdentifierResolver.property(
+						InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],
 						CIRPropNames[CIRProps.indexOf(id)],
 						function(data)
 					{

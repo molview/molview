@@ -12,7 +12,8 @@
 	&:focus
 	{
 		outline: none;
-		border-color: @contrast3;
+		background-color: @light !important;
+		border-color: @highlight !important;
 	}
 }
 
@@ -46,8 +47,9 @@ input[type="text"]
 
 input[type="text"]:focus
 {
+	outline: none;
 	background-color: @light;
-	border: 1px solid @highlight;
+	border-color: @highlight;
 }
 
 input[type="text"].alert
@@ -61,19 +63,14 @@ input[type="text"].expand
 	width: 100%;
 }
 
-input[type="text"]:focus
-{
-	outline: none;
-}
-
 select
 {
 	.form-box;
 
 	cursor: pointer;
-	padding: 5px;
+	margin: 10px 0 0 10px;
+	padding: 4px;
 	max-width: 100%;
-	line-height: 20px;
 }
 
 .btn
@@ -124,6 +121,12 @@ select
 {
 	display: block;
 	margin: 20px 10px;
+	padding-bottom: 10px;
+}
+
+.btn-group-bar
+{
+	display: block;
 	padding-bottom: 10px;
 }
 

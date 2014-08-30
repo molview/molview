@@ -108,7 +108,7 @@ var Messages = {
 		*/
 
 		//ignored causes
-		if(cause == "sketcher_no_macromolecules") return
+		if(cause == "sketcher_no_macromolecules") return;
 
 		$("body").removeClass("progress-cursor");
 

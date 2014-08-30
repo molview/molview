@@ -29,13 +29,13 @@ if(isset($q) || isset($smiles) || isset($cid)) $description = "View this structu
 else if(isset($pdbid)) $description = "View this biomolecule at http://molview.org";
 
 //same as
-$same_as = "http://molview.hermanbergwerf.com";
+$same_as = "";
 if(isset($q)) $same_as = "//en.wikipedia.org/wiki/".$q;
 else if(isset($cid)) $same_as = "//www.rcsb.org/pdb/explore/explore.do?structureId=".$pdbid;
 else if(isset($pdbid)) $same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".$cid;
 
 //image
-$image_url = "http://molview.org/src/img/image.png";
+$image_url = "http://molview.org/img/image.png";
 $pubchem_query = null;
 $pubchem_value = null;
 if(isset($q))			{ $pubchem_query = "name"; $pubchem_value = $q; }
@@ -111,7 +111,7 @@ else if(isset($codid))
 	 - menu = on || off
 	 - dialog = about || help || share || embed
 	 - mode = balls || stick || vdw || wireframe || line
-	 - bg = black || gray || white
+	 - bg = black || grey || white
 	-->
 	<head>
 		<meta charset="UTF-8" />
@@ -316,7 +316,7 @@ else if(isset($codid))
 							<li><a id="model-line" class="r-mode">Line</a></li>
 							<li class="menu-header">Background</li>
 							<li><a id="model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
-							<li><a id="model-bg-gray" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
+							<li><a id="model-bg-grey" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "grey" ? ' checked"' : '"' : '"'); ?> >Grey</a></li>
 							<li><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
 							<li><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
@@ -380,129 +380,191 @@ else if(isset($codid))
 						<button id="pubchem-search" class="btn btn-search" type="button" title="Find compounds via PubChem">Compounds</button>
 						<button id="rcsb-search" class="btn btn-search" type="button" title="Find macromolecules via RCSB">Macromolecules</button>
 						<button id="cod-search" class="btn btn-search" type="button" title="Find crystals via COD">Crystals</button>
-						<button id="show-search-results" class="btn btn-search last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
-						<button id="hide-search-results" class="btn btn-search last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
+						<button id="show-search-layer" class="btn btn-search last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
+						<button id="hide-search-layer" class="btn btn-search last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
 					</div>
 				</form>
 			</div>
 		</div>
-		<div id="content" <?php echo 'class="content '.$contentClass.'"' ?>>
-			<script type="text/javascript">
-				Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
-				Request.HTTP_CLIENT_IP = <?php
-				echo '"';
-				if(isset($_SERVER["HTTP_CLIENT_IP"]))
-					echo $_SERVER["HTTP_CLIENT_IP"];
-				else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-					echo $_SERVER["HTTP_X_FORWARDED_FOR"];
-				else echo $_SERVER["REMOTE_ADDR"];
-				echo '"';
-				?>;
+		<div id="content">
+			<div id="main-layer" <?php echo 'class="layer '.$contentClass.'"' ?>>
+				<script type="text/javascript">
+					Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
+					Request.HTTP_CLIENT_IP = <?php
+					echo '"';
+					if(isset($_SERVER["HTTP_CLIENT_IP"]))
+						echo $_SERVER["HTTP_CLIENT_IP"];
+					else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
+						echo $_SERVER["HTTP_X_FORWARDED_FOR"];
+					else echo $_SERVER["REMOTE_ADDR"];
+					echo '"';
+					?>;
 
-				Request.ChemicalIdentifierResolver.available = true;/*<?php
-				echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
-				?>;*/
+					Request.ChemicalIdentifierResolver.available = true;/*<?php
+					echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
+					?>;*/
 
-				if(Detector.webgl) $("#glmol-menu").show();
-				else $("#menu > .inner").css("min-width", 1200);
+					if(Detector.webgl) $("#glmol-menu").show();
+					else $("#menu > .inner").css("min-width", 1200);
 
-				MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
-				MolView.query = getQuery();
+					MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
+					MolView.query = getQuery();
 
-				if($(window).height() > $(window).width()
-					&& !MolView.query.layout
-					&& MolView.layout != "model") Actions.window_hsplit();
+					if($(window).height() > $(window).width()
+						&& !MolView.query.layout
+						&& MolView.layout != "model") Actions.window_hsplit();
 
-				if(MolView.touch) $("#theme-touch").addClass("checked");
-				else $("#theme-desktop").addClass("checked");
-			</script>
-			<div id="sketcher">
-				<div id="moledit" class="sketcher">
-					<div id="chem-tools" class="toolbar swipeable">
-						<div class="inner">
-							<div id="me-single" class="tool-button mode tool-button-selected" title="Single bond"></div>
-							<div id="me-double" class="tool-button mode" title="Double bond"></div>
-							<div id="me-triple" class="tool-button mode" title="Triple bond"></div>
-							<div id="me-updown" class="tool-button mode" title="Up/Down bond"></div>
-							<div class="vertical-separator"></div>
-							<div id="me-frag-0" class="tool-button mode" title="Benzene"></div>
-							<div id="me-frag-1" class="tool-button mode" title="Cyclopropane"></div>
-							<div id="me-frag-2" class="tool-button mode" title="Cyclobutane"></div>
-							<div id="me-frag-3" class="tool-button mode" title="Cyclopentane"></div>
-							<div id="me-frag-4" class="tool-button mode" title="Cyclohexane"></div>
-							<div id="me-frag-5" class="tool-button mode" title="Cycloheptane"></div>
-							<div class="vertical-separator"></div>
-							<div id="me-chain" class="tool-button mode" title="Click and drag to draw a chain of carbon atoms"></div>
-							<div id="me-charge-add" class="tool-button mode" title="Charge +">e<sup>+</sup></div>
-							<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>-</sup></div>
+					if(MolView.touch) $("#theme-touch").addClass("checked");
+					else $("#theme-desktop").addClass("checked");
+				</script>
+				<div id="sketcher">
+					<div id="moledit" class="sketcher">
+						<div id="chem-tools" class="toolbar swipeable">
+							<div class="inner">
+								<div id="me-single" class="tool-button mode tool-button-selected" title="Single bond"></div>
+								<div id="me-double" class="tool-button mode" title="Double bond"></div>
+								<div id="me-triple" class="tool-button mode" title="Triple bond"></div>
+								<div id="me-updown" class="tool-button mode" title="Up/Down bond"></div>
+								<div class="vertical-separator"></div>
+								<div id="me-frag-0" class="tool-button mode" title="Benzene"></div>
+								<div id="me-frag-1" class="tool-button mode" title="Cyclopropane"></div>
+								<div id="me-frag-2" class="tool-button mode" title="Cyclobutane"></div>
+								<div id="me-frag-3" class="tool-button mode" title="Cyclopentane"></div>
+								<div id="me-frag-4" class="tool-button mode" title="Cyclohexane"></div>
+								<div id="me-frag-5" class="tool-button mode" title="Cycloheptane"></div>
+								<div class="vertical-separator"></div>
+								<div id="me-chain" class="tool-button mode" title="Click and drag to draw a chain of carbon atoms"></div>
+								<div id="me-charge-add" class="tool-button mode" title="Charge +">e<sup>+</sup></div>
+								<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>-</sup></div>
+							</div>
 						</div>
-					</div>
-					<div id="edit-tools" class="toolbar swipeable">
-						<div class="inner">
-							<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
-							<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
-							<div class="horizontal-separator"></div>
-							<div id="me-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
-							<div id="me-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
-							<div class="horizontal-separator"></div>
-							<div id="me-move" class="tool-button tool-button-horizontal mode" title="Move"></div>
-							<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
-							<div class="horizontal-separator"></div>
-							<div id="me-rect" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Rectangle selection"></div>
-							<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
-							<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
-							<div class="horizontal-separator"></div>
-							<div id="me-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
-							<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
+						<div id="edit-tools" class="toolbar swipeable">
+							<div class="inner">
+								<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
+								<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
+								<div class="horizontal-separator"></div>
+								<div id="me-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
+								<div id="me-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
+								<div class="horizontal-separator"></div>
+								<div id="me-move" class="tool-button tool-button-horizontal mode" title="Move"></div>
+								<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
+								<div class="horizontal-separator"></div>
+								<div id="me-rect" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Rectangle selection"></div>
+								<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
+								<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
+								<div class="horizontal-separator"></div>
+								<div id="me-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
+								<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
+							</div>
 						</div>
-					</div>
-					<div id="elem-tools" class="toolbar swipeable">
-						<div class="inner">
-							<div id="me-atom-h" class="tool-button mode" title="Hydrogen">H</div>
-							<div id="me-atom-c" class="tool-button mode" title="Carbon">C</div>
-							<div id="me-atom-n" class="tool-button mode" title="Nitrogen">N</div>
-							<div id="me-atom-o" class="tool-button mode" title="Oxygen">O</div>
-							<div id="me-atom-s" class="tool-button mode" title="Sulfur">S</div>
-							<div id="me-atom-p" class="tool-button mode" title="Phosphorus">P</div>
-							<div id="me-atom-f" class="tool-button mode" title="Fluorine">F</div>
-							<div id="me-atom-i" class="tool-button mode" title="Iodine">I</div>
-							<div id="me-atom-cl" class="tool-button mode" title="Chlorine">Cl</div>
-							<div id="me-atom-br" class="tool-button mode" title="Bromine">Br</div>
-							<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
-							<div class="vertical-separator"></div>
-							<div id="me-info" class="tool-button" title="Information"></div>
+						<div id="elem-tools" class="toolbar swipeable">
+							<div class="inner">
+								<div id="me-atom-h" class="tool-button mode" title="Hydrogen">H</div>
+								<div id="me-atom-c" class="tool-button mode" title="Carbon">C</div>
+								<div id="me-atom-n" class="tool-button mode" title="Nitrogen">N</div>
+								<div id="me-atom-o" class="tool-button mode" title="Oxygen">O</div>
+								<div id="me-atom-s" class="tool-button mode" title="Sulfur">S</div>
+								<div id="me-atom-p" class="tool-button mode" title="Phosphorus">P</div>
+								<div id="me-atom-f" class="tool-button mode" title="Fluorine">F</div>
+								<div id="me-atom-i" class="tool-button mode" title="Iodine">I</div>
+								<div id="me-atom-cl" class="tool-button mode" title="Chlorine">Cl</div>
+								<div id="me-atom-br" class="tool-button mode" title="Bromine">Br</div>
+								<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
+								<div class="vertical-separator"></div>
+								<div id="me-info" class="tool-button" title="Information"></div>
+							</div>
 						</div>
-					</div>
-					<div id="moledit-area" class="edit-area">
-						<canvas id="moledit-canvas"></canvas>
+						<div id="moledit-area" class="edit-area">
+							<canvas id="moledit-canvas"></canvas>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div id="model" <?php
-				if(isset($bg))
-				{
-					echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
-						 "#000000" : "#cccccc" : "#ffffff").'"';
-				}
-			?>>
-				<div id="chemdoodle" class="render-engine" style="display: none;">
-					<canvas id="chemdoodle-canvas"></canvas>
+				<div id="model" <?php
+					if(isset($bg))
+					{
+						echo 'style="background:'.($bg != "white" ? $bg != "grey" ?
+							"#000000" : "#cccccc" : "#ffffff").'"';
+					}
+				?>>
+					<div id="chemdoodle" class="render-engine" style="display: none;">
+						<canvas id="chemdoodle-canvas"></canvas>
+					</div>
+					<div id="jsmol" class="render-engine" style="display: none;"></div>
+					<div id="glmol" class="render-engine" style="display: none;"></div>
 				</div>
-				<div id="jsmol" class="render-engine" style="display: none;"></div>
-				<div id="glmol" class="render-engine" style="display: none;"></div>
+			</div>
+			<div id="search-layer" class="layer search-results" style="display: none;">
+				<div class="container"></div>
+				<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
+				<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
+				<div id="load-more-cod" class="load-more" style="display: none;"></div>
+			</div>
+			<div id="infocard-layer" class="layer data-layer" style="display: none;">
+				<div class="btn-group-bar">
+					<button class="btn close btn-primary "><i class="fa fa-arrow-left"></i> Return</button>
+				</div>
+				<div id="properties-wrapper">
+					<div id="general-properties">
+						<div id="molecule-image-wrapper" class="properties-block">
+							<img id="molecule-image" src="img/empty.png" alt=""/>
+						</div>
+						<div class="properties-block">
+							<div id="molecule-info">
+								<h3 id="molecule-title"></h3>
+								<p id="molecule-description"></p>
+							</div>
+							<table id="common-chem-props" class="light-table">
+								<tbody>
+									<tr id="prop-formula-wrapper"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
+									<tr id="prop-mw-wrapper"><td>Molecular weight</td><td id="prop-mw" class="chemprop"></td></tr>
+									<tr id="prop-donors-wrapper"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
+									<tr id="prop-acceptors-wrapper"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<table id="chem-identifiers" class="input-table">
+						<thead>
+							<tr><th>Identifiers</th></tr>
+						</thead>
+						<tbody>
+							<tr id="prop-sysname-title"><th>Systematic name</th></tr>
+							<tr id="prop-sysname-wrapper"><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-canonicalsmiles-title"><th>Canonical SMILES</th></tr>
+							<tr id="prop-canonicalsmiles-wrapper"><td><input type="text" id="prop-canonicalsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-isomericsmiles-title"><th>Isomeric SMILES</th></tr>
+							<tr id="prop-isomericsmiles-wrapper"><td><input type="text" id="prop-isomericsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-inchikey-title"><th>InChiKey</th></tr>
+							<tr id="prop-inchikey-wrapper"><td><input type="text" id="prop-inchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-inchi-title"><th>InChi</th></tr>
+							<tr id="prop-inchi-wrapper"><td><input type="text" id="prop-inchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-cas-title"><th>CAS Number</th></tr>
+							<tr id="prop-cas-wrapper"><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-csid-title"><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
+							<tr id="prop-csid-wrapper"><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-cid-title"><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
+							<tr id="prop-cid-wrapper"><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="spectra-layer" class="layer data-layer" style="display: none;">
+				<div class="btn-group-bar">
+					<button class="btn close btn-primary "><i class="fa fa-arrow-left"></i> Return</button>
+					<select id="spectrum-select"></select>
+					<button id="png-current-spectrum" class="btn"><i class="fa fa-download"></i> Download PNG image</button>
+					<button id="jcamp-current-spectrum" class="btn"><i class="fa fa-download"></i> Download JCAMP data</button>
+				</div>
+				<div id="spectrum-wrapper">
+					<canvas id="spectrum-canvas"></canvas>
+				</div>
 			</div>
 		</div>
-		<div id="search-results" class="content search-results" style="display: none;">
-			<div class="container"></div>
-			<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
-			<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
-			<div id="load-more-cod" class="load-more" style="display: none;"></div>
-		</div>
+		<div id="messages"></div>
 		<div id="autocomplete-dropdown-wrapper" style="display: none;">
 			<div id="autocomplete-dropdown"></div>
 		</div>
-		<div id="messages"></div>
-		<div id="dialog-layer" class="dialog-layer">
+		<div id="dialog-overlay" class="dialog-overlay">
 			<div id="dialog-wrapper">
 				<div class="dialog" id="start-dialog">
 					<h1>Welcome to MolView</h1>
@@ -628,7 +690,7 @@ else if(isset($codid))
 							<h4>Representation</h4>
 							<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Macromolecules are automatically drawn using ribbons.</p>
 							<h4>Background</h4>
-							<p>You can switch between a black and a white model background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
+							<p>You can switch between a black, grey or white background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
 							<h4>Engines</h4>
 							<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
 							<ol>
@@ -662,9 +724,9 @@ else if(isset($codid))
 							<h4>Information card</h4>
 							<p>This function collects and displays information about the structural formula.</p>
 							<h4>Spectroscopy</h4>
-							<p>This method shows a dialog where you can view spectra related to the structural formula from the sketcher. More details are covered in chapter 5.</p>
+							<p>This function collects and displays information about the current structural formula (loaded from the Sketcher) You can also find a database reference for the current 3D model.</p>
 							<h4>Advanced search</h4>
-							<p>You can perform three types of advanced search based on the structural formula from the sketcher.</p>
+							<p>This function shows a new layer where you can view molecular spectra of the current structural formula (loaded from the Sketcher) More details are covered in chapter 5.</p>
 							<ol>
 								<li><b>Similarity search:</b> search for compounds with a similar structural formula</li>
 								<li><b>Substructure search:</b> search for compounds with the current structure as subset</li>
@@ -675,14 +737,14 @@ else if(isset($codid))
 					<div class="expandable">
 						<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
 						<div class="expandable-content">
-							<p>The Spectroscopy menu item is located under <i>Model > Chemical</i> data in the menubar. This function shows the spectroscopy dialog where you can choose from a number of spectra (if available)</p>
+							<p>You can open the Spectroscopy layer via <i>Menu >Model > Chemical data > Spectrocopy</i>. You can view three kinds of molecular spectra.</p>
 							<ol>
 								<li>H1-NMR prediction</li>
 								<li>Mass spectrum</li>
 								<li>IR spectrum</li>
 							</ol>
 							<h4>Export data</h4>
-							<p>The spectroscopy dialog allows you to export two kind of files from the current spectrum:</p>
+							<p>You can also export different kinds of data from the currently selected spectrum.</p>
 							<ul>
 								<li><b>PNG image:</b> snapshot from interactive spectrum</li>
 								<li><b>JCAMP file:</b> JCAMP-DX file of the current spectrum</li>
@@ -796,72 +858,6 @@ else if(isset($codid))
 					<input id="embed-code" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
 					<div class="footer">
 						<button class="btn close btn-primary">Close</button>
-					</div>
-				</div>
-				<div class="dialog" id="properties-dialog" style="display: none;">
-					<h2>Information</h2>
-					<div class="dialog-close-btn"></div>
-					<div id="properties-wrapper">
-						<div id="general-properties">
-							<div id="molecule-image-wrapper" class="properties-block">
-								<img id="molecule-image" src="img/empty.png" alt=""/>
-							</div>
-							<div class="properties-block">
-								<div id="molecule-info">
-									<h3 id="molecule-title"></h3>
-									<p id="molecule-description"></p>
-								</div>
-								<table id="common-chem-props" class="light-table">
-									<tbody>
-										<tr id="prop-formula-wrapper"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
-										<tr id="prop-mw-wrapper"><td>Molecular weight</td><td id="prop-mw" class="chemprop"></td></tr>
-										<tr id="prop-donors-wrapper"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
-										<tr id="prop-acceptors-wrapper"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<table id="chem-identifiers" class="input-table">
-							<thead>
-								<tr><th>Identifiers</th></tr>
-							</thead>
-							<tbody>
-								<tr id="prop-sysname-title"><th>Systematic name</th></tr>
-								<tr id="prop-sysname-wrapper"><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-canonicalsmiles-title"><th>Canonical SMILES</th></tr>
-								<tr id="prop-canonicalsmiles-wrapper"><td><input type="text" id="prop-canonicalsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-isomericsmiles-title"><th>Isomeric SMILES</th></tr>
-								<tr id="prop-isomericsmiles-wrapper"><td><input type="text" id="prop-isomericsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-inchikey-title"><th>InChiKey</th></tr>
-								<tr id="prop-inchikey-wrapper"><td><input type="text" id="prop-inchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-inchi-title"><th>InChi</th></tr>
-								<tr id="prop-inchi-wrapper"><td><input type="text" id="prop-inchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-cas-title"><th>CAS Number</th></tr>
-								<tr id="prop-cas-wrapper"><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-csid-title"><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-								<tr id="prop-csid-wrapper"><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-								<tr id="prop-cid-title"><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-								<tr id="prop-cid-wrapper"><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="footer">
-						<button class="btn close btn-primary">Close</button>
-					</div>
-				</div>
-				<div class="dialog" id="spectra-dialog" style="display: none;">
-					<h2>Spectroscopy</h2>
-					<div class="dialog-close-btn"></div>
-					<div id="spectrum">
-						<select id="spectrum-select"></select>
-						<div id="spectrum-wrapper">
-							<canvas id="spectrum-canvas"></canvas>
-						</div>
-					</div>
-					<div class="footer">
-						<button id="png-current-spectrum" class="btn">Download PNG image</button>
-						<button id="jcamp-current-spectrum" class="btn">Download JCAMP data</button>
-						<button class="btn close btn-primary ">Close</button>
 					</div>
 				</div>
 				<div class="dialog" id="elements-dialog" style="display: none;">

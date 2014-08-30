@@ -75,7 +75,7 @@ var Actions = {
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
 		InfoCard.update(smiles);
-		MolView.showDialog("properties");
+		MolView.showLayer("infocard");
 	},
 
 	data_spectra: function()
@@ -86,18 +86,15 @@ var Actions = {
 
 		if(Spectroscopy.data["smiles"] && Spectroscopy.data["smiles"] == smiles)
 		{
-			MolView.showDialog("spectra");
+			MolView.showLayer("spectra");
 		}
 		else
 		{
 			Spectroscopy.update(smiles);
-			MolView.showDialog("spectra");
+			MolView.showLayer("spectra");
 		}
 
-		window.setTimeout(function()
-		{
-			Spectroscopy.resize();
-		}, 100);
+		Spectroscopy.resize();
 	},
 
 	png_current_spectrum: function()
@@ -129,7 +126,7 @@ var Actions = {
 	search_substructure: function()
 	{
 		MolView.hideDialogs();
-		Actions.hide_search_results();
+		Actions.hide_search_layer();
 		Messages.process(function()
 		{
 			if(Sketcher.metadata.cid)
@@ -149,7 +146,7 @@ var Actions = {
 	search_superstructure: function()
 	{
 		MolView.hideDialogs();
-		Actions.hide_search_results();
+		Actions.hide_search_layer();
 		Messages.process(function()
 		{
 			if(Sketcher.metadata.cid)
@@ -169,7 +166,7 @@ var Actions = {
 	search_similarity: function()
 	{
 		MolView.hideDialogs();
-		Actions.hide_search_results();
+		Actions.hide_search_layer();
 		Messages.process(function()
 		{
 			if(Sketcher.metadata.cid)
@@ -197,7 +194,7 @@ var Actions = {
 	model_line:      function() { Model.setRepresentation("line"); },
 
 	model_bg_black: function() { Model.setBackground("black"); },
-	model_bg_gray:  function() { Model.setBackground("gray"); },
+	model_bg_grey:  function() { Model.setBackground("grey"); },
 	model_bg_white: function() { Model.setBackground("white"); },
 
 	engine_glmol: function()
@@ -387,25 +384,18 @@ var Actions = {
 		}
 	},
 
-	show_search_results: function()
+	show_search_layer: function()
 	{
-		$("#show-search-results").hide();
-		$("#hide-search-results").show();
-
-		$("#content").hide();
-		$("#search-results").show()
+		$("#show-search-layer").hide();
+		$("#hide-search-layer").show();
+		MolView.showLayer("search");
 	},
 
-	hide_search_results: function()
+	hide_search_layer: function()
 	{
-		$("#show-search-results").show();
-		$("#hide-search-results").hide();
-
-		$("#content").show();
-		$("#search-results").hide();
-
-		Sketcher.resize();
-		Model.resize();
+		$("#show-search-layer").show();
+		$("#hide-search-layer").hide();
+		MolView.showLayer("main");
 	},
 
 	load_more_pubchem: function()

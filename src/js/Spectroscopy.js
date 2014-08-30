@@ -8,7 +8,7 @@ var Spectroscopy = {
     data: {},
     smiles: undefined,
     spectrum: undefined,
-    spectrum_ratio: 1 / .3,
+    spectrumRatio: 1 / .3,
 
     /**
      * Initializes Spectoscopy DOM
@@ -17,7 +17,7 @@ var Spectroscopy = {
     {
         $(window).on("resize", function()
         {
-            if($("#spectra-dialog").is(":visible"))
+            if($("#spectra-layer").is(":visible"))
             {
                 Spectroscopy.resize();
             }
@@ -58,7 +58,7 @@ var Spectroscopy = {
         this.data["smiles"] = smiles;
 
         $("#spectrum").addClass("loading");
-        $("#spectrum-select").html('<option value="loading" disabled selected style="display:none;">Loading&hellip;</option>').val("loading");
+        $("#spectrum-select").html('<option value="loading" selected>Loading&hellip;</option>').val("loading");
         this.print("No spectrum selected");
 
         //update available spectra
@@ -183,11 +183,11 @@ var Spectroscopy = {
 
     resize: function()
     {
-        var w = $("#spectrum").width();
-        var h = Math.round(w / Spectroscopy.spectrum_ratio);
-        $("#spectrum-wrapper").css({
-            "width": w, "height": h
+        var w = $("#spectrum-wrapper").width();
+        var h = Math.round(w / Spectroscopy.spectrumRatio);
+        Spectroscopy.spectrum.resize(w * (MolView.mobile ? 3 : 1), h * (MolView.mobile ? 3 : 1));
+        $("#spectrum-canvas").css({
+            "width": w * (MolView.mobile ? 2 : 1), "height": h * (MolView.mobile ? 2 : 1)
         });
-        Spectroscopy.spectrum.resize(w * (MolView.mobile ? 2 : 1), h * (MolView.mobile ? 2 : 1));
     },
 };

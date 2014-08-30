@@ -114,15 +114,16 @@ var Sketcher = {
 
 	getSMILES: function()
 	{
-		if(this.smiles)
+		if(this.metadata.smiles)
 		{
-
+			return this.metadata.smiles;
 		}
 		else if(this.moledit)
 		{
 			if(this.moledit.chem.atoms.length == 0) throw new Error("No atoms found");
 			var molecule = chem.Molfile.parseCTFile(this.getMOL().split("\n"));
-			return (new chem.SmilesSaver()).saveMolecule(molecule);
+			this.metadata.smiles = new chem.SmilesSaver().saveMolecule(molecule);
+			return this.metadata.smiles;
 		}
 		else return "";
 	},

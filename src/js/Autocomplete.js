@@ -89,6 +89,8 @@ var Autocomplete = {
 				Autocomplete.hide();
 			}
 		});
+
+		$(window).on("blur", Autocomplete.hide);
 	},
 
 	/**
@@ -353,7 +355,7 @@ var Autocomplete = {
 			this.hide();
 			$("#search-input").blur();
 			MolView.hideDialogs();
-			Actions.hide_search_results();
+			Actions.hide_search_layer();
 
 			if(this.i == -1)//try to find a record match
 			{

@@ -68,7 +68,7 @@ var Loader = {
 				"url(" + Request.PubChem.image(data.CID) + ")")
 				.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
 
-			result.appendTo("#search-results .container");
+			result.appendTo("#search-layer .container");
 
 			if(data.Title)
 			{
@@ -83,7 +83,7 @@ var Loader = {
 			{
 				if(window.getSelection().type != "Range")
 				{
-					Actions.hide_search_results();
+					Actions.hide_search_layer();
 					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
 				}
 			});
@@ -150,8 +150,8 @@ var Loader = {
 					$("#load-more-rcsb").css("display", "none");
 					$("#load-more-cod").css("display", "none");
 
-					$("#search-results .container").empty();
-					Actions.show_search_results();
+					$("#search-layer .container").empty();
+					Actions.show_search_layer();
 
 					Loader.PubChem.i = 0;
 					Loader.PubChem.loadNextSet();
@@ -184,8 +184,8 @@ var Loader = {
 						$("#load-more-pubchem").css("display", "block");
 						$("#load-more-rcsb").css("display", "none");
 
-						$("#search-results .container").empty();
-						Actions.show_search_results();
+						$("#search-layer .container").empty();
+						Actions.show_search_layer();
 
 						Loader.PubChem.i = 0;
 						Loader.PubChem.loadNextSet();
@@ -352,7 +352,7 @@ var Loader = {
 				"url(" + Request.RCSB.image(data.structureId) + ")");
 			img.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
 
-			result.appendTo("#search-results .container");
+			result.appendTo("#search-layer .container");
 
 			var title = $('<div class="search-result-title"><span>' + data.structureId + "</span></div>");
 			result.append(title);
@@ -367,7 +367,7 @@ var Loader = {
 			{
 				if(window.getSelection().type != "Range")
 				{
-					Actions.hide_search_results();
+					Actions.hide_search_layer();
 					Loader.RCSB.loadPDBID($(this).data("pdbid"));
 				}
 			});
@@ -436,8 +436,8 @@ var Loader = {
 					$("#load-more-rcsb").css("display", "block");
 					$("#load-more-cod").css("display", "none");
 
-					$("#search-results .container").empty();
-					Actions.show_search_results();
+					$("#search-layer .container").empty();
+					Actions.show_search_layer();
 
 					Loader.RCSB.i = 0;
 					Loader.RCSB.loadNextSet();
@@ -534,7 +534,7 @@ var Loader = {
 			</div>
 			*/
 
-			var result = $('<div class="search-result"></div>').appendTo("#search-results .container");
+			var result = $('<div class="search-result"></div>').appendTo("#search-layer .container");
 
 			data.formula = chemFormulaFormat(data.formula);
 			var title_str = (data.mineral || data.commonname || data.chemname || data.formula || "?");
@@ -561,7 +561,7 @@ var Loader = {
 			{
 				if(window.getSelection().type != "Range")
 				{
-					Actions.hide_search_results();
+					Actions.hide_search_layer();
 					Loader.COD.loadCODID($(this).data("codid"), $(this).data("title"));
 				}
 			});
@@ -628,8 +628,8 @@ var Loader = {
 					$("#load-more-rcsb").css("display", "none");
 					$("#load-more-cod").css("display", "block");
 
-					$("#search-results .container").empty();
-					Actions.show_search_results();
+					$("#search-layer .container").empty();
+					Actions.show_search_layer();
 
 					Loader.COD.i = 0;
 					Loader.COD.loadNextSet();

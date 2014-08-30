@@ -1,6 +1,6 @@
 @import (reference) "vars";
 
-.dialog-layer
+.dialog-overlay
 {
 	position: absolute;
 	top: 0;
@@ -75,32 +75,6 @@
 .dialog-close-btn:after
 {
 	content: '\00D7';
-}
-
-/*
-Properties dialog
-*/
-
-#properties-dialog
-{
-	max-width: 600px;
-	background: @pubchem-pngbg;
-}
-
-@media all and (min-width: 1200px)
-{
-	#properties-dialog
-	{
-		max-width: 1100px;
-	}
-}
-
-@media all and (min-width: 1300px)
-{
-	#properties-dialog
-	{
-		max-width: 1200px;
-	}
 }
 
 /*
