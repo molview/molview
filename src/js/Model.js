@@ -403,8 +403,9 @@ var Model = {
 		container: undefined,
 		loadBioAssembly: false,
 		chain: {
-			representation: ["ribbon"],//ribbon || cylinders || trace || tube || bonds
-			coloring: "ss",//ss || spectrum || chain || bfactor || polarity
+			type: "ribbon",//ribbon || cylinders || btube || ctrace
+			bonds: false,
+			color: "ss",//ss || spectrum || chain || bfactor || polarity
 		},
 
 		/*
@@ -433,38 +434,38 @@ var Model = {
 					var asu = new THREE.Object3D();
 
 					this.colorByAtom(all, {});
-					if(chain.coloring == "ss") this.colorByStructure(all, 0xcc00cc, 0x00cccc);
-					else if(chain.coloring == "spectrum") this.colorChainbow(all);
-					else if(chain.coloring == "chain") this.colorByChain(all);
-					else if(chain.coloring == "bfactor") this.colorByBFactor(all);
-					else if(chain.coloring == "polarity") this.colorByPolarity(all, 0xcc0000, 0xcccccc);
+					if(chain.color == "ss") this.colorByStructure(all, 0xcc00cc, 0x00cccc);
+					else if(chain.color == "spectrum") this.colorChainbow(all);
+					else if(chain.color == "chain") this.colorByChain(all);
+					else if(chain.color == "bfactor") this.colorByBFactor(all);
+					else if(chain.color == "polarity") this.colorByPolarity(all, 0xcc0000, 0xcccccc);
 
 					if(Model.data.current == "PDB")
 					{
 						var do_not_smoothen = false;
 
-						if(chain.representation.indexOf("ribbon") != -1)
+						if(chain.type == "ribbon")
 						{
 							this.drawCartoon(asu, all, do_not_smoothen);
 							this.drawCartoonNucleicAcid(asu, all);
 						}
-						else if(chain.representation.indexOf("cylinders") != -1)
+						else if(chain.type == "cylinders")
 						{
 							this.drawHelixAsCylinder(asu, all, 1.6);
 							this.drawCartoonNucleicAcid(asu, all);
 						}
-						else if(chain.representation.indexOf("trace") != -1)
-						{
-							this.drawMainchainCurve(asu, all, this.curveWidth, "CA", 1);
-							this.drawMainchainCurve(asu, all, this.curveWidth, "O3'", 1);
-						}
-						else if(chain.representation.indexOf("tube") != -1)
+						else if(chain.type == "btube")
 						{
 							this.drawMainchainTube(asu, all, "CA");
 							this.drawMainchainTube(asu, all, "O3'");
 						}
+						else if(chain.type == "ctrace")
+						{
+							this.drawMainchainCurve(asu, all, this.curveWidth, "CA", 1);
+							this.drawMainchainCurve(asu, all, this.curveWidth, "O3'", 1);
+						}
 
-						if(chain.representation.indexOf("bonds") != -1)
+						if(chain.bonds)
 						{
 							this.drawBondsAsLine(asu, all, this.lineWidth);
 						}
@@ -591,14 +592,15 @@ var Model = {
 		},
 
 		/**
-		 * Toggles the current bio-assembly switch and updates the
+		 * Sets the current bio-assembly switch and updates the
 		 * assosiated render output
+	 	* @param {Boolean} enable Indicates if bio-assembly should be enabled
 		 */
-		toggleBioAssembly: function()
+		setBioAssembly: function(enable)
 		{
 			if(Model.engine == "GLmol" && Model.data.current == "PDB")
 			{
-				this.loadBioAssembly = !this.loadBioAssembly;
+				this.loadBioAssembly = enable;
 				if(this.loadBioAssembly) $("#bio-assembly").addClass("checked");
 				else $("#bio-assembly").removeClass("checked");
 
@@ -610,7 +612,10 @@ var Model = {
 						Model.GLmol.view.zoomInto(Model.GLmol.view.getAllAtoms());
 						Model.GLmol.view.show();
 					}
-					else Model.GLmol.view.loadMoleculeStr(false, Model.data.pdb);//in order to center macromolecule
+					else
+					{
+						Model.GLmol.view.loadPDB(Model.data.pdb);//in order to re-center asymmetric unit
+					}
 
 					Messages.clear();
 				}, "glmol_update");
@@ -618,66 +623,69 @@ var Model = {
 		},
 
 		/**
-		 * Sets the current chain representation
-		 * @param {String} representation Chain representation type
+		 * Sets the current chain representation and updates the
+		 * assosiated render output
+		 * @param {String}  type   Chain representation type
+		 * @param {Boolean} enable Indicates if type should be enabled
 		 */
-		setChainRepresentation: function(representation)
+		setChainType: function(type, enable)
 		{
-			this.chain.representation = [];
+			$(".glmol-chain").removeClass("checked");
+			if(enable) $("#glmol-chain-" + type).addClass("checked");
 
-			if(representation != "bonds")
-			{
-				$(".glmol-chain").not("#glmol-chain-" + representation).removeClass("checked");
-			}
-			$("#glmol-chain-" + representation).toggleClass("checked")
-
-			if($("#glmol-chain-ribbon").hasClass("checked"))
-			{
-				this.chain.representation.push("ribbon");
-			}
-			else if($("#glmol-chain-cylinders").hasClass("checked"))
-			{
-				this.chain.representation.push("cylinders");
-			}
-			else if($("#glmol-chain-trace").hasClass("checked"))
-			{
-				this.chain.representation.push("trace");
-			}
-			else if($("#glmol-chain-tube").hasClass("checked"))
-			{
-				this.chain.representation.push("tube");
-			}
-
-			if($("#glmol-chain-bonds").hasClass("checked"))
-			{
-				this.chain.representation.push("bonds");
-			}
+			this.chain.type = (enable ? type : "none");
 
 			if(Model.engine == "GLmol")
 			{
-				Messages.process(function()
+				var msg = Messages.process(function()
 				{
 					Model.GLmol.setRepresentation.call(Model.GLmol);
-					Messages.clear();
+					if(msg) Messages.clear();
 				}, "glmol_update");
 			}
 		},
 
 		/**
-		* Sets the current chain coloring
+		 * Sets chain.bonds and updates the
+	 	* assosiated render output
+		 * @param {Boolean} enable Indicates if chain.bonds should be enabled
+		 */
+		setChainBonds: function(enable)
+		{
+			if(enable) $("#glmol-chain-bonds").addClass("checked");
+			else $("#glmol-chain-bonds").removeClass("checked");
+
+			this.chain.bonds = enable;
+
+			if(Model.engine == "GLmol")
+			{
+				var msg = Messages.process(function()
+				{
+					Model.GLmol.setRepresentation.call(Model.GLmol);
+					if(msg) Messages.clear();
+				}, "glmol_update");
+			}
+		},
+
+		/**
+		* Sets the current chain coloring and updates the
+		* assosiated render output
 		* @param {String} coloring Chain coloring type
 		*/
-		setChainColoring: function(coloring)
+		setChainColor: function(color)
 		{
 			$(".glmol-color").removeClass("checked");
-			$("#glmol-color-" + coloring).addClass("checked");
+			$("#glmol-color-" + color).addClass("checked");
 
-			this.chain.coloring = coloring;
-			if(Model.engine == "GLmol") Messages.process(function()
+			this.chain.color = color;
+			if(Model.engine == "GLmol")
 			{
-				Model.GLmol.setRepresentation.call(Model.GLmol);
-				Messages.clear();
-			}, "glmol_update");
+				var msg = Messages.process(function()
+				{
+					Model.GLmol.setRepresentation.call(Model.GLmol);
+					if(msg) Messages.clear();
+				}, "glmol_update");
+			}
 		},
 
 		toDataURL: function()
@@ -1214,12 +1222,18 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		setRepresentation: function(res)
 		{
 			if(res == "balls") res = "Ball and Stick";
-			if(res == "stick") res = "Stick";
-			if(res == "vdw") res = "van der Waals Spheres";
-			if(res == "wireframe") res = "Wireframe";
-			if(res == "line") res = "Line";
+			else if(res == "stick") res = "Stick";
+			else if(res == "vdw") res = "van der Waals Spheres";
+			else if(res == "wireframe") res = "Wireframe";
+			else if(res == "line") res = "Line";
 
 			this.view.specs.set3DRepresentation(res);
+
+			/* if(res == "Wireframe")
+			{
+				this.view.specs.bonds_renderAsLines_3D = true;
+			} */
+
 			this.view.specs.backgroundColor = Model.bg.html;
 			this.view.specs.crystals_unitCellColor = Model.bg.html;
 			this.view.specs.bonds_useJMOLColors = true;

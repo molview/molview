@@ -2,13 +2,17 @@
 
 Future improvement plans
 
- - Add EDTSurf to MolView
- - Protein solvents display
  - CIF loader for GLmol
+ - Add EDTSurf to GLmol
+ - Protein solvents display in GLmol
+ - THREE.CanvasRenderer for GLmol (update THREE.js)
+ - Electron density maps for macromolecules
+
  - Client-Side 2D depiction
- - External pages (about, mission, manual)
- - Language localisation
+ - External site (features, mission, manual)
+ - MolView for Android and iOS using Apache Cordova
  - Make MolView Open-Source
+ - Language localisation
 
 ## 2.2.x
 

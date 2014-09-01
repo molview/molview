@@ -16,7 +16,7 @@ var InfoCard = {
 		if(this.data["smiles"] != smiles && smiles != "")
 		{
 			$(".chemprop").html("").val("").removeClass("chemprop-unavailable").addClass("chemprop-loading");
-			$("#molecule-image").attr("src", "img/empty.png");
+			$("#molecule-image").attr("src", emptyImage);
 			$("#molecule-image-wrapper").show();
 			$("#molecule-info").hide();
 			$("#molecule-title").text("");
@@ -101,7 +101,7 @@ var InfoCard = {
 		}
 		img.onerror = function()
 		{
-			$("#molecule-image").attr("src", "img/empty.png").hide();
+			$("#molecule-image").attr("src", emptyImage).hide();
 		}
 
 		if(Sketcher.metadata.cid) img.src = Request.PubChem.image(Sketcher.metadata.cid);

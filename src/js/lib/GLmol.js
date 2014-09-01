@@ -192,7 +192,7 @@ var GLmol =(function()
 		this.canvasVDW = false;//draw using vdwRadii
 		this.canvasLine = false;//draw lines
 		this.canvasDrawStack = [];
-		this.canvasDetail = 30;//arc segments
+		this.canvasDetail = 24;//arc segments
 
 		// Multi touch parameters
 		this.multiTouchD = 0;
@@ -2386,7 +2386,7 @@ var GLmol =(function()
 			{
 				ctx.save();
 				ctx.translate(part.screen.x, part.screen.y);
-			
+
 				ctx.fillStyle = "#000000";
 				ctx.lineWidth = lineWidth;
 				ctx.beginPath();
@@ -2398,9 +2398,9 @@ var GLmol =(function()
 				}
 				ctx.closePath();
 				ctx.fill();
-			
+
 				ctx.restore();
-				
+
 				//draw bonds blackbody
 				if(!this.canvasVDW)
 				{
@@ -2413,7 +2413,7 @@ var GLmol =(function()
 						{
 							var cx = (part.screen.x + atom.screen.x) / 2;
 							var cy = (part.screen.y + atom.screen.y) / 2;
-					
+
 							ctx.lineWidth = ((this.isDragging || this.canvasLine) ?
 								1 / this.zoom2D : this.canvasBondWidth) + lineWidth * 2;
 							ctx.strokeStyle = "#000000";
@@ -2433,7 +2433,7 @@ var GLmol =(function()
 					}
 				}
 			}
-			
+
 			//draw colored bonds
 			if(!this.canvasVDW || this.isDragging)
 			{
@@ -2447,7 +2447,7 @@ var GLmol =(function()
 					{
 						var cx = (part.screen.x + atom.screen.x) / 2;
 						var cy = (part.screen.y + atom.screen.y) / 2;
-					
+
 						ctx.lineWidth = (this.isDragging || this.canvasLine) ?
 							1 / this.zoom2D : this.canvasBondWidth;
 
@@ -2473,7 +2473,7 @@ var GLmol =(function()
 			{
 				ctx.save();
 				ctx.translate(part.screen.x, part.screen.y);
-			
+
 				ctx.fillStyle = part.color;
 				ctx.beginPath();
 				for(var v = 0; v < part.arc.length; v++)
@@ -2483,7 +2483,7 @@ var GLmol =(function()
 				}
 				ctx.closePath();
 				ctx.fill();
-			
+
 				ctx.restore();
 			}
 		}

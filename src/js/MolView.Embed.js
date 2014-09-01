@@ -76,11 +76,39 @@ var MolView = {
 				}
 				else if(key == "mode")
 				{
-					if(value == "balls") Model.setRepresentation("balls");
-					if(value == "stick") Model.setRepresentation("stick");
-					if(value == "vdw") Model.setRepresentation("vdw");
-					if(value == "wireframe") Model.setRepresentation("wireframe");
-					if(value == "line") Model.setRepresentation("lines");
+					if(value == "balls" || value == "stick"
+					|| value == "vdw" || value == "wireframe"
+					|| value == "line")
+					{
+						Model.setRepresentation(value);
+					}
+				}
+				else if(key == "chainType")
+				{
+					if(value == "ribbon" || value == "cylinders"
+					|| value == "btube" || value == "ctrace")
+					{
+						Model.GLmol.setChainType(value, true);
+					}
+
+					if(value == "bonds")
+					{
+						Model.GLmol.setChainType("none", true);
+						Model.GLmol.setChainBonds(true);
+					}
+				}
+				else if(key == "chainBonds")
+				{
+					Model.GLmol.setChainBonds(value == "true");
+				}
+				else if(key == "chainColor")
+				{
+					if(value == "ss" || value == "spectrum"
+					|| value == "chain" || value == "bfactor"
+					|| value == "polarity")
+					{
+						Model.GLmol.setChainColor(value);
+					}
 				}
 				else if(key == "bg")
 				{

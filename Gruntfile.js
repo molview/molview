@@ -2,6 +2,7 @@ module.exports = function(grunt)
 {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		clean: ['build', 'img'],
 		uglify:
 		{
 			index:
@@ -115,6 +116,21 @@ ALL RIGHTS RESERVED\n\
 				dest: 'build/<%= pkg.name %>.embed.min.js'
 			}
 		},
+		replace:
+		{
+			index:
+			{
+				src: 'build/<%= pkg.name %>.min.js',
+				dest: 'build/<%= pkg.name %>.min.js',
+				replacements: [{ from: '"use strict";', to: '' }]
+    		},
+			embed:
+			{
+				src: 'build/<%= pkg.name %>.embed.min.js',
+				dest: 'build/<%= pkg.name %>.embed.min.js',
+				replacements: [{ from: '"use strict";', to: '' }]
+			}
+		},
 		less:
 		{
 			index:
@@ -156,8 +172,6 @@ ALL RIGHTS RESERVED\n\
 				},
 				src: [
 					'src/less/var.less',
-					'src/less/form.less',
-					'src/less/global.less',
 					'src/less/model.less',
 					'src/less/messages.less',
 					'src/less/embed.less'
@@ -226,6 +240,17 @@ ALL RIGHTS RESERVED\n\
 					}]
 			}
 		},
+		copy:
+		{
+			target:
+			{
+				files: [
+					{ expand: true, flatten: true, src: 'project/docs/img/*', dest: 'img/help/', filter: 'isFile' },
+					{ expand: true, flatten: true, src: 'src/img/icon/*', dest: 'img/icon/', filter: 'isFile' },
+					{ expand: true, flatten: true, src: ['src/img/image.png', 'src/img/logo.png'], dest: 'img/', filter: 'isFile' }
+				]
+			}
+		},
 		watch:
 		{
 			scripts: {
@@ -235,9 +260,12 @@ ALL RIGHTS RESERVED\n\
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-text-replace');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-svgmin');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.registerTask('default', ['uglify', 'less', 'svgmin']);
+	grunt.registerTask('default', ['clean', 'uglify', 'replace', 'less', 'svgmin', 'copy']);
 };

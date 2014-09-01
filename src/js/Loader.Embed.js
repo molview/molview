@@ -33,7 +33,7 @@ var Loader = {
 		});
 	},
 
-	RCSB: {
+	PubChem: {
 
 		loadCID: function(cid, name)
 		{

@@ -4,7 +4,7 @@
 		<link href="../src/img/icon/32.png" type="image/png" rel="shortcut icon" />
 		<title>Thanks!</title>
 		<meta name="viewport" content="width=device-width" />
-		
+
 		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700,600" />
 		<style>
 		body
@@ -12,12 +12,12 @@
 			margin: 0;
 			padding: 0;
 			background: #eee;
-			
+
 			/* global font styling */
 			font-family: 'Open Sans', sans-serif;
 			color: #000;
 		}
-		
+
 		body .center
 		{
 			position: absolute;
@@ -26,7 +26,7 @@
 			right: 0;
 			bottom: 0;
 			min-width: 300px;/* should be larger than .message */
-			
+
 			text-align: center;
 			font-size: 0;
 			white-space: nowrap;
@@ -53,16 +53,15 @@
 		h1
 		{
 			margin: 0;
-			font-size: 200px;
 			line-height: 1;
 		}
-		
+
 		@-webkit-keyframes jumping
 		{
-			0% { -webkit-transform: translate(0, 0) rotate(0); }
-			70% { -webkit-transform: translate(0, -50px) rotate(360deg); }
-			90% { -webkit-transform: translate(0, 0) rotate(360deg); }
-			100% { -webkit-transform: translate(0, 0) rotate(360deg); }
+			0% { -webkit-transform: translate(0, 0) rotate(0); scale(1, 1); }
+			70% { -webkit-transform: translate(0, -50px) rotate(360deg); scale(1, 1); }
+			90% { -webkit-transform: translate(0, 0) rotate(360deg); scale(1, 1); }
+			100% { -webkit-transform: translate(0, 0) rotate(360deg); scale(1, 1); }
 		}
 
 		.jumping
@@ -74,11 +73,9 @@
 	<body>
 		<div class="center">
 			<div class="message">
-				<img class="jumping" src="../img/logo.svg" style="margin: 0 auto; width: 500px;" />
-				<h1>Thanks!</h1>
+				<img class="jumping" src="../img/logo.svg" style="margin: 0 auto; width: 200px;" />
+				<h1>Thank you for your donation!</h1>
 			<div>
 		<div>
 	</body>
 </html>
-
-

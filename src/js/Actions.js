@@ -269,17 +269,17 @@ var Actions = {
 	/*
 	GLmol menu
 	*/
-	bio_assembly:          function() { Model.GLmol.toggleBioAssembly(); },
-	glmol_chain_ribbon:    function() { Model.GLmol.setChainRepresentation("ribbon"); },
-	glmol_chain_cylinders: function() { Model.GLmol.setChainRepresentation("cylinders"); },
-	glmol_chain_trace:     function() { Model.GLmol.setChainRepresentation("trace"); },
-	glmol_chain_tube:      function() { Model.GLmol.setChainRepresentation("tube"); },
-	glmol_chain_bonds:     function() { Model.GLmol.setChainRepresentation("bonds"); },
-	glmol_color_ss:        function() { Model.GLmol.setChainColoring("ss"); },
-	glmol_color_spectrum:  function() { Model.GLmol.setChainColoring("spectrum"); },
-	glmol_color_chain:     function() { Model.GLmol.setChainColoring("chain"); },
-	glmol_color_bfactor:   function() { Model.GLmol.setChainColoring("bfactor"); },
-	glmol_color_polarity:  function() { Model.GLmol.setChainColoring("polarity"); },
+	bio_assembly:          function() { Model.GLmol.setBioAssembly(!$("#bio-assembly").hasClass("checked")); },
+	glmol_chain_ribbon:    function() { Model.GLmol.setChainType("ribbon", !$("#glmol-chain-ribbon").hasClass("checked")); },
+	glmol_chain_cylinders: function() { Model.GLmol.setChainType("cylinders", !$("#glmol-chain-cylinders").hasClass("checked")); },
+	glmol_chain_btube:     function() { Model.GLmol.setChainType("btube", !$("#glmol-chain-btube").hasClass("checked")); },
+	glmol_chain_ctrace:    function() { Model.GLmol.setChainType("ctrace", !$("#glmol-chain-ctrace").hasClass("checked")); },
+	glmol_chain_bonds:     function() { Model.GLmol.setChainBonds(!$("#glmol-chain-bonds").hasClass("checked")); },
+	glmol_color_ss:        function() { Model.GLmol.setChainColor("ss"); },
+	glmol_color_spectrum:  function() { Model.GLmol.setChainColor("spectrum"); },
+	glmol_color_chain:     function() { Model.GLmol.setChainColor("chain"); },
+	glmol_color_bfactor:   function() { Model.GLmol.setChainColor("bfactor"); },
+	glmol_color_polarity:  function() { Model.GLmol.setChainColor("polarity"); },
 
 	/*
 	Jmol menu

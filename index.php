@@ -24,9 +24,9 @@ else if(isset($pdbid)) $title = $pdbid;
 else if(isset($codid)) $title = "COD: ".$codid;
 
 //description
-$description = "MolView is a web application for drawing, searching and viewing chemical structures on desktops, tablets and smartphones.";
-if(isset($q) || isset($smiles) || isset($cid)) $description = "View this structure at http://molview.org";
-else if(isset($pdbid)) $description = "View this biomolecule at http://molview.org";
+$description = "Advanced, web-based chemistry application for free!";
+if(isset($q) || isset($smiles) || isset($cid)) $description = "View this molecule at http://molview.org";
+else if(isset($pdbid)) $description = "View this macromolecule at http://molview.org";
 
 //same as
 $same_as = "";
@@ -111,6 +111,9 @@ else if(isset($codid))
 	 - menu = on || off
 	 - dialog = about || help || share || embed
 	 - mode = balls || stick || vdw || wireframe || line
+	 - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
+	 - chainBonds = true || false
+	 - chainColor = ss || spectrum || chain || bfactor || polarity
 	 - bg = black || grey || white
 	-->
 	<head>
@@ -335,8 +338,8 @@ else if(isset($codid))
 							<li class="menu-header">Chain representation</li>
 							<li><a id="glmol-chain-ribbon" class="glmol-chain checked">Ribbon</a></li>
 							<li><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
-							<li><a id="glmol-chain-trace" class="glmol-chain">C-alpha trace</a></li>
-							<li><a id="glmol-chain-tube" class="glmol-chain">B-factor tube</a></li>
+							<li><a id="glmol-chain-btube" class="glmol-chain">B-factor tube</a></li>
+							<li><a id="glmol-chain-ctrace" class="glmol-chain">C-alpha trace</a></li>
 							<li class="menu-divider"></li>
 							<li><a id="glmol-chain-bonds">Bonds</a></li>
 							<li class="menu-header">Chain coloring</li>
@@ -494,6 +497,9 @@ else if(isset($codid))
 				</div>
 			</div>
 			<div id="search-layer" class="layer search-results" style="display: none;">
+				<div class="btn-group-bar">
+					<button class="btn close btn-primary "><i class="fa fa-arrow-left"></i> Return</button>
+				</div>
 				<div class="container"></div>
 				<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
 				<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
@@ -506,7 +512,7 @@ else if(isset($codid))
 				<div id="properties-wrapper">
 					<div id="general-properties">
 						<div id="molecule-image-wrapper" class="properties-block">
-							<img id="molecule-image" src="img/empty.png" alt=""/>
+							<img id="molecule-image" alt=""/>
 						</div>
 						<div class="properties-block">
 							<div id="molecule-info">
@@ -573,7 +579,7 @@ else if(isset($codid))
 						<button id="start-help" class="btn btn-large">Getting started</button>
 						<button class="btn close btn-large btn-primary">Continue</button>
 					</div>
-					<p>Oh, by the way, MolView is also on YouTube, Twitter, Facebook and Google Plus to keep you updated about the latest stuff!</p>
+					<p>MolView is also on YouTube, Twitter, Facebook and Google Plus to keep you updated about the latest stuff!</p>
 					<div class="btn-group">
 						<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
 						<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
@@ -587,7 +593,7 @@ else if(isset($codid))
 					<h2>About</h2>
 					<div class="dialog-close-btn"></div>
 					<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
-					This web application is built upon the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
+					This web application is built using the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
 					<ul>
 						<li>JavaScript libraries
 							<ul>
@@ -654,15 +660,15 @@ else if(isset($codid))
 							<p>You can draw structural formulas using the Sketcher component.</p>
 							<h4>Top toolbar</h4>
 							<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule which is displayed in the model window.</p>
-							<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/TopToolbar.jpg" alt="Top toolbar" /></p>
+							<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.png" alt="Top toolbar" /></p>
 							<p class="image-note"><i>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, clean structural formula, 2D to 3D conversion</i></p>
 							<h4>Left toolbar</h4>
 							<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. You can draw a carbon chain using the chain tool. Just click a start point or atom and drag a chain.</p>
-							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/LeftToolbar.jpg" alt="Left toolbar" /></p>
+							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.png" alt="Left toolbar" /></p>
 							<p class="image-note"><i>Left toolbar (rotated), from left to right: single bond, double bond, triple bond, up/down bond, benzene, cyclopropane/butane/pentane/hexane/heptane, chain, charge+, charge-</i></p>
 							<h4>Right toolbar</h4>
 							<p>The right toolbar contains some common elements and a periodic table tool in case you want to use another element. You can select an atom and click an existing atom in order to replace it with the selected atom. Note that you can only replace existing atoms. In order to add an atom, you will first have to add a new bond using the tools from the left toolbar.</p>
-							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/RightToolbar.jpg" alt="Right toolbar" /></p>
+							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.png" alt="Right toolbar" /></p>
 							<p class="image-note"><i>Right toolbar (rotated), from left to right: hydrogen, carbon, nitrogen, oxygen, sulfur, phosphorus, fluorine, iodine, chlorine, bromine, table of elements, info (about dialog)</i></p>
 						</div>
 					</div>
@@ -677,7 +683,7 @@ else if(isset($codid))
 							</ul>
 							<p>You can also enter a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. It is also possible to enter a SMILES, InChi or InChiKey string in the search field.</p>
 							<p>You can show or hide search results using the leftmost button. Note that <i>Macromolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display macromolecules anyway.</p>
-							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.jpg" alt="Search bar" /></p>
+							<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.png" alt="Search bar" /></p>
 							<p class="image-note"><i>Search bar, from left to right: input field, fast search, compounds search (PubChem), macromolecules search (RCSB) and crystals search (COD)</i></p>
 						</div>
 					</div>
@@ -739,9 +745,9 @@ else if(isset($codid))
 						<div class="expandable-content">
 							<p>You can open the Spectroscopy layer via <i>Menu >Model > Chemical data > Spectrocopy</i>. You can view three kinds of molecular spectra.</p>
 							<ol>
-								<li>H1-NMR prediction</li>
 								<li>Mass spectrum</li>
 								<li>IR spectrum</li>
+								<li>H1-NMR prediction</li>
 							</ol>
 							<h4>Export data</h4>
 							<p>You can also export different kinds of data from the currently selected spectrum.</p>
@@ -762,8 +768,8 @@ else if(isset($codid))
 							<ol>
 								<li><b>Ribbon:</b> draws ribbon diagram <i>(default representation)</i></li>
 								<li><b>Cylinder and plate:</b> solid cylinders for α-helices and solid plates for β-sheets</li>
-								<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
 								<li><b>B-factor tube:</b> tube with B-factor as  thickness <i>(thermal motion)</i></li>
+								<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
 							</ol>
 							<h4>Chain coloring</h4>
 							<p>You can choose from five chain coloring methods.</p>

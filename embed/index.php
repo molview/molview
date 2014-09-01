@@ -17,7 +17,7 @@ if(strpos($_SERVER["QUERY_STRING"], "+") !== false)
 parse_str($_SERVER["QUERY_STRING"]);
 if(isset($pdbid)) $pdbid = strtoupper($pdbid);
 
-//title
+//titleAdvanced, web-based chemistry application for free!
 $title = "MolView";
 if(isset($q)) $title = ucfirst($q);
 else if(isset($pdbid)) $title = $pdbid;
@@ -25,8 +25,8 @@ else if(isset($codid)) $title = "COD: ".$codid;
 
 //description
 $description = "MolView is a web application for drawing, searching and viewing chemical structures on desktops, tablets and smartphones.";
-if(isset($q) || isset($smiles) || isset($cid)) $description = "View this structure at http://molview.org";
-else if(isset($pdbid)) $description = "View this protein at http://molview.org";
+if(isset($q) || isset($smiles) || isset($cid)) $description = "View this molecule at http://molview.org";
+else if(isset($pdbid)) $description = "View this macromolecule at http://molview.org";
 
 //same as
 $same_as = "";
@@ -106,8 +106,11 @@ else if(isset($codid))
 	- cid = load CID
 	- pdbid = load PDBID
 	- codid = load CIF from COD
-	- mode = balls || stick || vdw || wireframe || line
-	- bg = black || grey || white
+	- mode = [balls] || stick || vdw || wireframe || line
+	- chainType = [ribbon] || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
+	- chainBonds = [false] || true
+	- chainColor = [ss] || spectrum || chain || bfactor || polarity
+	- bg = [black] || grey || white
 	-->
 	<head>
 		<meta charset="UTF-8" />

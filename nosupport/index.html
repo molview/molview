@@ -4,8 +4,6 @@
 		<link href="../img/icon/32.png" type="image/png" rel="shortcut icon" />
 		<title>No support!</title>
 		<meta name="viewport" content="width=device-width" />
-		
-		<link type="text/css" rel="stylesheet" href="../src/css/global.css" />
 		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,800,700,600" />
 		<style>
 		body
@@ -13,12 +11,12 @@
 			margin: 0;
 			padding: 0;
 			background: #eee;
-			
+
 			/* global font styling */
 			font-family: 'Open Sans', sans-serif;
 			color: #000;
 		}
-		
+
 		body .center
 		{
 			position: absolute;
@@ -27,7 +25,7 @@
 			right: 0;
 			bottom: 0;
 			min-width: 300px;/* should be larger than .message */
-			
+
 			text-align: center;
 			font-size: 0;
 			white-space: nowrap;
@@ -51,20 +49,31 @@
 			font-size: initial;
 		}
 
-		p
+		a
 		{
-			font-size: 20pt;
+			color: #06c;
+			cursor: pointer;
+		}
+
+		a:hover
+		{
+			color: #f50
+		}
+
+		a:active
+		{
+			color: #f00;
 		}
 		</style>
 	</head>
 	<body>
 		<div class="center">
 			<div class="message">
-				<img src="../img/logo.png" style="margin: 0 auto; width: 500px;" />
-				<p>MolView is not supported on Internet Explorer 9 and older versions.<br/>Upgrade Internet Explorer or download <a class='link' href='//google.com/chrome' title='A modern browser'>Google Chrome</a>.</p>
+				<img src="../img/logo.png" style="margin: 0 auto; width: 200px;" />
+				<h1>No support!</h1>
+				<p style="font-weight: bold; font-style: italic;">MolView is not supported on Internet Explorer 9 and below!</p>
+				<p><a href='//google.com/chrome' title='A modern browser'>Download</a> Google Chrome or upgrade Internet Explorer.</p>
 			<div>
 		<div>
 	</body>
 </html>
-
-

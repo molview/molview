@@ -230,8 +230,8 @@ var MolView = {
 			$("#bio-assembly").on(this.trigger, Actions.bio_assembly);
 			$("#glmol-chain-ribbon").on(this.trigger, Actions.glmol_chain_ribbon);
 			$("#glmol-chain-cylinders").on(this.trigger, Actions.glmol_chain_cylinders);
-			$("#glmol-chain-trace").on(this.trigger, Actions.glmol_chain_trace);
-			$("#glmol-chain-tube").on(this.trigger, Actions.glmol_chain_tube);
+			$("#glmol-chain-btube").on(this.trigger, Actions.glmol_chain_btube);
+			$("#glmol-chain-ctrace").on(this.trigger, Actions.glmol_chain_ctrace);
 			$("#glmol-chain-bonds").on(this.trigger, Actions.glmol_chain_bonds);
 			$("#glmol-color-ss").on(this.trigger, Actions.glmol_color_ss);
 			$("#glmol-color-spectrum").on(this.trigger, Actions.glmol_color_spectrum);
@@ -342,10 +342,37 @@ var MolView = {
 			else if(key == "mode")
 			{
 				if(value == "balls") Actions.model_balls();
-				if(value == "stick") Actions.model_stick();
-				if(value == "vdw") Actions.model_vdw();
-				if(value == "wireframe") Actions.model_wireframe();
-				if(value == "line") Actions.model_line();
+				else if(value == "stick") Actions.model_stick();
+				else if(value == "vdw") Actions.model_vdw();
+				else if(value == "wireframe") Actions.model_wireframe();
+				else if(value == "line") Actions.model_line();
+			}
+			else if(key == "chainType")
+			{
+				if(value == "ribbon" || value == "cylinders"
+				|| value == "btube" || value == "ctrace")
+				{
+					Model.GLmol.setChainType(value, true);
+				}
+
+				if(value == "bonds")
+				{
+					Model.GLmol.setChainType("none", true);
+					Model.GLmol.setChainBonds(true);
+				}
+			}
+			else if(key == "chainBonds")
+			{
+				Model.GLmol.setChainBonds(value == "true");
+			}
+			else if(key == "chainColor")
+			{
+				if(value == "ss" || value == "spectrum"
+				|| value == "chain" || value == "bfactor"
+				|| value == "polarity")
+				{
+					Model.GLmol.setChainColor(value);
+				}
 			}
 			else if(key == "bg")
 			{

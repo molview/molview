@@ -43,8 +43,9 @@ var Messages = {
 	/**
 	 * Displays progress message assosiated with $what and call $cb using a
 	 * timeout in order to update the UI
-	 * @param {Function} cb
-	 * @param {String}   what
+	 * @param  {Function} cb
+	 * @param  {String}   what
+	 * @return {Boolean} Indicates if process message is shown
 	 */
 	process: function(cb, what)
 	{
@@ -63,20 +64,32 @@ var Messages = {
 		- glmol_update
 		*/
 
-		Messages.clear();
+		var ret = true;
 
-		if(what && what != "" && Messages[what] && Messages[what] != "")
+		//Do not replace the current message (if present) with glmol_update
+		if(!(what == "glmol_update" && !Messages.isEmpty()))
 		{
-			$("body").addClass("progress-cursor");
+			Messages.clear();
 
-			var msg =  $("<div/>").addClass("message");
-			$("<div/>").addClass("message-text")
-				.html(Messages[what])
-				.appendTo(msg);
-			msg.appendTo($("#messages"));
+			if(what && what != "" && Messages[what] && Messages[what] != "")
+			{
+				$("body").addClass("progress-cursor");
+
+				var msg =  $("<div/>").addClass("message");
+				$("<div/>").addClass("message-text")
+					.html(Messages[what])
+					.appendTo(msg);
+				msg.appendTo($("#messages"));
+			}
+		}
+		else
+		{
+			ret = false;
 		}
 
 		window.setTimeout(cb, 300);//delay in order to update screen
+
+		return ret;
 	},
 
 	/**
@@ -145,4 +158,14 @@ var Messages = {
 		$("#messages").empty();
 		$("body").removeClass("progress-cursor");
 	},
+
+	isEmpty: function()
+	{
+		return $("#messages").is(':empty');
+	},
+
+	size: function()
+	{
+		return $("#messages .message").length;
+	}
 };
