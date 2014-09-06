@@ -19,16 +19,13 @@
 var Sketcher = {
 	moledit: undefined,
 	title_lock: false,//prevent title switching while Loading compound
-
-	//data passed by Loader
 	metadata: {
 		cid: undefined,
 		inchi: undefined,
 		inchikey: undefined,
 		smiles: undefined,
 	},
-
-	//init and load defaults
+	
 	init: function()
 	{
 		this.initPeriodicTable();

@@ -16,7 +16,40 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//array containing properties supported by PubChem using a CID
+var PubChemProps = [ "formula", "mw", "donors", "acceptors",
+	"sysname", "canonicalsmiles", "isomericsmiles", "inchikey", "inchi" ];
+
+//array containing PubChem names for the properties in PubChemProps
+var PubChemPropNames = [ "MolecularFormula", "MolecularWeight",
+	"HBondDonorCount", "HBondAcceptorCount", "IUPACName",
+	"CanonicalSMILES", "IsomericSMILES", "InChIKey", "InChI" ];
+
+//array containing properties supported by the Chemical Identifier Resolver
+var CIRProps = [ "formula", "mw", "donors", "acceptors",
+	"smiles", "inchikey", "inchi", "cas", "csid" ];
+
+//array containing CIR names for the properties in CIRProps
+var CIRPropNames = [ "formula", "mw", "h_bond_donor_count", "h_bond_acceptor_count",
+	"smiles", "stdinchikey", "stdinchi", "cas", "chemspider_id" ];
+
 var InfoCard = {
+	/**
+	 * Stores last PubChem request in order to load multiple Pubchem
+	 * properties in one AJAX call while using a single property method interface
+	 */
+	PubChem_cache: undefined,
+
+	/**
+	 * Properties which are waiting for the PubChem cache to be loaded
+	 * Stored as callbacks to inside function in loadFromPubChemCache methods
+	 * [{success: Function, fail: Function}]
+	 */
+	PubChem_queue: [],
+
+	/**
+	 * Stores all raw InfoCard data
+	 */
 	data: {},
 
 	/**
@@ -36,6 +69,8 @@ var InfoCard = {
 			$("#common-chem-props tr").show();
 			$("#chem-identifiers tr").show();
 
+			this.PubChem_cache = undefined;
+			this.PubChem_queue = [];
 			this.data = {};
 			this.data["smiles"] = smiles;
 			this.data["cid"] = Sketcher.metadata.cid;
@@ -182,90 +217,77 @@ var InfoCard = {
 			}
 		}
 
+		function tryPubChem()
+		{
+			if(InfoCard.PubChem_cache && PubChemProps.indexOf(id) != -1)
+			{
+				InfoCard.loadFromPubChemCache(id, success, tryCIR);
+			}
+			else if(InfoCard.data["cid"] && PubChemProps.indexOf(id) != -1)
+			{
+				InfoCard.PubChem_cache = { loading: true };
+
+				Request.PubChem.properties(InfoCard.data["cid"], PubChemPropNames,
+				function(data)
+				{
+					InfoCard.PubChem_cache = data;
+					for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
+					{
+						InfoCard.PubChem_queue[i].success();
+					}
+					InfoCard.PubChem_queue = [];
+					InfoCard.loadFromPubChemCache(id, success, tryCIR);
+				},
+				function()
+				{
+					for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
+					{
+						InfoCard.PubChem_queue[i].fail();
+					}
+					InfoCard.PubChem_queue = [];
+					InfoCard.PubChem_cache = { failed: true };
+					tryCIR();
+				});
+			}
+			else
+			{
+				tryCIR();
+			}
+		}
+
+		function tryCIR()
+		{
+			if(InfoCard.data["smiles"] && CIRProps.indexOf(id) != -1)
+			{
+				Request.ChemicalIdentifierResolver.property(
+					InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],
+					CIRPropNames[CIRProps.indexOf(id)],
+					function(data)
+				{
+					if(id == "formula")
+					{
+						InfoCard.data[id] = chemFormulaFormat(data);
+					}
+					else
+					{
+						InfoCard.data[id] = data;
+					}
+
+					success(InfoCard.data[id]);
+				}, _fail);
+			}
+			else
+			{
+				_fail();
+			}
+		}
+
 		if(InfoCard.data[id])
 		{
 			success(InfoCard.data[id]);
 		}
 		else//retrieve property
 		{
-			//array containing properties supported by PubChem using a CID
-			var PubChemProps = [ "formula", "mw", "donors", "acceptors",
-				"sysname", "canonicalsmiles", "isomericsmiles", "inchikey", "inchi" ];
-
-			//array containing PubChem names for the properties in PubChemProps
-			var PubChemPropNames = [ "MolecularFormula", "MolecularWeight",
-				"HBondDonorCount", "HBondAcceptorCount", "IUPACName",
-				"CanonicalSMILES", "IsomericSMILES", "InChIKey", "InChI" ];
-
-			//array containing properties supported by the Chemical Identifier Resolver
-			var CIRProps = [ "formula", "mw", "donors", "acceptors",
-				"smiles", "inchikey", "inchi", "cas", "csid" ];
-
-			//array containing CIR names for the properties in CIRProps
-			var CIRPropNames = [ "formula", "mw", "h_bond_donor_count", "h_bond_acceptor_count",
-				"smiles", "stdinchikey", "stdinchi", "cas", "chemspider_id" ];
-
-			function tryPubChem()
-			{
-				if(InfoCard.data["cid"] && PubChemProps.indexOf(id) != -1)
-				{
-					var propName = PubChemPropNames[PubChemProps.indexOf(id)];
-					Request.PubChem.properties(InfoCard.data["cid"], propName,
-					function(data)
-					{
-						if(data.PropertyTable.Properties[0][propName])
-						{
-							if(id == "formula")
-							{
-								InfoCard.data[id] = chemFormulaFormat(
-									data.PropertyTable.Properties[0][propName]);
-							}
-							else
-							{
-								InfoCard.data[id] = data.PropertyTable.Properties[0][propName];
-							}
-
-							success(InfoCard.data[id]);
-						}
-						else
-						{
-							tryCIR();
-						}
-					}, tryCIR);
-				}
-				else
-				{
-					tryCIR();
-				}
-			}
-
-			function tryCIR()
-			{
-				if(InfoCard.data["smiles"] && CIRProps.indexOf(id) != -1)
-				{
-					Request.ChemicalIdentifierResolver.property(
-						InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],
-						CIRPropNames[CIRProps.indexOf(id)],
-						function(data)
-					{
-						if(id == "formula")
-						{
-							InfoCard.data[id] = chemFormulaFormat(data);
-						}
-						else
-						{
-							InfoCard.data[id] = data;
-						}
-
-						success(InfoCard.data[id]);
-					}, _fail);
-				}
-				else
-				{
-					_fail();
-				}
-			}
-
 			if(id == "cid")
 			{
 				Request.PubChem.smilesToCID(InfoCard.data["smiles"], function(cid)
@@ -278,6 +300,57 @@ var InfoCard = {
 			{
 				tryPubChem();
 			}
+		}
+	},
+
+	/**
+	 * Loads PubChem property from cache (only the last PubChem request
+	 * is cached)
+	 * @param  {String}   propName PubChem property name
+	 * @param  {Function} succes   Called when property is loaded from the cache
+	 * @param  {Function} fail     Called when property cannot be loaded
+	 * @return {Boolean}           Indicates if property is loaded successfully
+	 */
+	loadFromPubChemCache: function(id, success, fail)
+	{
+		function _load(id)
+		{
+			var propName = PubChemPropNames[PubChemProps.indexOf(id)];
+			if(InfoCard.PubChem_cache.PropertyTable.Properties[0][propName] !== undefined)
+			{
+				if(propName == "MolecularFormula")
+				{
+					InfoCard.data[id] = chemFormulaFormat(
+						InfoCard.PubChem_cache.PropertyTable.Properties[0][propName]);
+				}
+				else
+				{
+					InfoCard.data[id] = InfoCard.PubChem_cache.PropertyTable.Properties[0][propName];
+				}
+				return true;
+			}
+			else return false;
+		}
+
+		if(!InfoCard.PubChem_cache || InfoCard.PubChem_cache.failed)
+		{
+			fail();
+		}
+		else if(InfoCard.PubChem_cache.loading)
+		{
+			InfoCard.PubChem_queue.push({
+				success: function()
+				{
+					if(_load(id)) success(InfoCard.data[id]);
+					else fail();
+				},
+				fail: fail
+			});
+		}
+		else
+		{
+			if(_load(id)) success(InfoCard.data[id]);
+			else fail();
 		}
 	}
 };

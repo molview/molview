@@ -37,7 +37,7 @@ Revisions:
   - Renamed protein to biomolecule
   - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
   - Revised Information loading sequence
-  > Moved metadata lookup and preprocessing to separate PHP file
+  - Moved metadata lookup to separate PHP file
 
 Features:
 
@@ -45,14 +45,14 @@ Features:
   - Added GLmol menu for WebGL devices
   - Added JSmol middle mouse button dragging
   - Added Autocomplete for compounds, minerals and proteins
-  - Added option to alter the Model background color
+  - Moved InfoCard and Spectra to separate layer
   - Added transparency support for exported images
+  - Added option to alter the Model background color
   - Added dialog close buttons
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
   - Added menu-toggle hover event for non-touch devices
-  - Moved InfoCard and Spectra to separate layer
-  > Added menuitem icons
+  > Added menu-item icons
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
   > Added percent composition table to Information card

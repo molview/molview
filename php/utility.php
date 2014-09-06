@@ -22,13 +22,6 @@ function is_below_IE10()
 	return preg_match('/(?i)msie [0-9]/',$_SERVER['HTTP_USER_AGENT']);
 }
 
-function ieversion()
-{
-	ereg('MSIE ([0-9].[0-9])', $_SERVER['HTTP_USER_AGENT'], $reg);
-	if(!isset($reg[1])) return -1;
-	else return floatval($reg[1]);
-}
-
 function humanize($str)
 {
 	return preg_replace_callback('/(\b[A-Z]+\b)/', function($words)
