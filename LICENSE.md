@@ -1,8 +1,30 @@
+License
+=======
+
+MolView (http://molview.org)
+Copyright (c) 2014, Herman Bergwerf
+
+MolView is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+MolView is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
 Third party licenses
 ====================
-Below is a full list of all libraries used in MolView.
+
+Below is a full list of all third party code used in MolView.
 If you believe your code is used in MolView but not contained in this list,
-please send an email to info@molview.org
+please contact me via info@molview.org
 
 1. **JSmol**
 
@@ -34,7 +56,7 @@ please send an email to info@molview.org
 
    License: dual license of MIT or LGPL3
 
-   See: http://www.gnu.org/licenses/lgpl.html
+   *(Modified under LGPL3)*
 
 
 
@@ -51,8 +73,6 @@ please send an email to info@molview.org
    iview: an interactive WebGL visualizer for protein-ligand complex.
 
    BMC Bioinformatics, 15(1):56, 2014.
-
-   See: http://www.apache.org/licenses/LICENSE-2.0
 
 
 
@@ -84,8 +104,6 @@ please send an email to info@molview.org
    Please contact iChemLabs <http://www.ichemlabs.com/contact-us> for
    alternate licensing options.
 
-   See: http://www.gnu.org/copyleft/gpl.html
-
 
 
 6. **jQuery**
@@ -116,7 +134,10 @@ please send an email to info@molview.org
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
    GNU Affero General Public License for more details.
 
-   See: http://www.gnu.org/licenses/agpl-3.0.html
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+   *(Modified under AGPL3)*
 
 
 
@@ -150,13 +171,9 @@ please send an email to info@molview.org
 
 
 
-10. **Console polyfill**
+10. **PeriodicTable**
 
-   https://github.com/paulmillr/console-polyfill
-
-   Copyright (c) 2013 [Paul Miller](http://paulmillr.com/)
-
-   MIT License
+   https://github.com/diniska/chemistry/blob/master/PeriodicalTable/periodicTable.json
 
 
 
@@ -165,29 +182,10 @@ please send an email to info@molview.org
    https://github.com/jeresig/jquery.hotkeys
 
 
-
-12. **PeriodicTable**
-
-   https://github.com/diniska/chemistry/blob/master/PeriodicalTable/periodicTable.json
-
-
-
-MIT License
------------
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Full licenses
+-------------
+- GPL3: see /licenses/gpl.txt
+- AGPL3: see /licenses/agpl.txt
+- LGPL3: see /licenses/lgpl.txt
+- MIT: see /licenses/mit.txt
+- Apache License 2.0: see /licenses/apache-license-2.0.txt

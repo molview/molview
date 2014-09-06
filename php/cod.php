@@ -1,4 +1,22 @@
 <?php
+/**
+ * This file is part of MolView (http://molview.org)
+ * Copyright (c) 2014, Herman Bergwerf
+ *
+ * MolView is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MolView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /*
 PHP script for processing and retrieving data from the Crystallography Open Database
 
@@ -34,17 +52,17 @@ if($cod -> connect_errno > 0) die("Unable to connect to COD [".$cod -> connect_e
 function cod_search($query, $value, $params, $three)
 {
 	global $cod;
-	
+
 	if($stmt = $cod -> prepare($query))
 	{
 		if($three) $stmt -> bind_param($params, $value, $value, $value);
 		else $stmt -> bind_param($params, $value);
 		$stmt -> execute();
-		
+
 		$ret = array();
 		$stmt -> bind_result($row);
 		while($stmt -> fetch()) array_push($ret, $row);
-		
+
 		$stmt -> close();
 		return $ret;
 	}
@@ -55,7 +73,7 @@ function cod_search($query, $value, $params, $three)
 function cscod_search($q)
 {
 	global $cod_csid_search_query;
-	
+
 	$csid = file("http://cactus.nci.nih.gov/chemical/structure/".$q."/chemspider_id");
 	if(count($csid) > 1) $csid = $csid[0];
 	if(isset($csid))
@@ -73,15 +91,15 @@ if($type == "search" && isset($q))
 	- query COD name
 	- query COD title
 	- search CSID2COD
-	
+
 	Returns:
 	{
 		"records":[...]
 	}
 	*/
-	
+
 	header("Content-Type: application/json");
-	
+
 	//get list of COD IDs
 	$array = cod_search($cod_search_query, $q, "sss", true);
 	if($array === false || count($array) == 0)
@@ -92,14 +110,14 @@ if($type == "search" && isset($q))
 			$array = cod_search($cod_deep_search_query, "%".$q."%", "s", false);
 		}
 	}
-	
+
 	//echo list as JSON Array
 	if(count($array) > 0) echo '{"records":["'.implode('","', $array).'"]}';
 	else echo '{"records":[]}';
 }
 else if($type == "information" && isset($codids))
 {
-	/*	
+	/*
 	Returns:
 	{
 		"records": [
@@ -114,11 +132,11 @@ else if($type == "information" && isset($codids))
 		]
 	}
 	*/
-	
+
 	header("Content-Type: application/json");
-	
+
 	$query = "SELECT file,mineral,commonname,chemname,formula,title FROM data WHERE file IN(".$codids.")";
-	
+
 	if($result = $cod -> query($query))
 	{
 		echo '{"records":[';
@@ -127,7 +145,7 @@ else if($type == "information" && isset($codids))
 		{
 			if($first_record) $first_record = false;
 			else echo ",";
-			
+
 			echo "{";
 			echo '"codid":'.json_encode($row[0]);
 			if(isset($row[1])) if($row[1] != "?") echo ',"mineral":'.json_encode(utf8_encode($row[1]));
@@ -142,7 +160,7 @@ else if($type == "information" && isset($codids))
 }
 else if($type == "smiles" && isset($codids))
 {
-	/*	
+	/*
 	Returns:
 	{
 		"records": [
@@ -153,11 +171,11 @@ else if($type == "smiles" && isset($codids))
 		]
 	}
 	*/
-	
+
 	header("Content-Type: application/json");
-	
+
 	$query = "SELECT codid,value FROM smiles WHERE codid IN(".$codids.")";
-	
+
 	if($result = $cod -> query($query))
 	{
 		$smiles = array();
@@ -165,7 +183,7 @@ else if($type == "smiles" && isset($codids))
 		{
 			$smiles[$row[0]] = $row[1];
 		}
-		
+
 		echo '{"records":[';
 		$first_record = true;
 		$codids = explode(",", $codids);
@@ -173,7 +191,7 @@ else if($type == "smiles" && isset($codids))
 		{
 			if($first_record) $first_record = false;
 			else echo ",";
-			
+
 			echo "{";
 			echo '"codid":'.json_encode($codid).',"smiles":';
 			if(isset($smiles[$codid])) echo json_encode(utf8_encode($smiles[$codid]));
@@ -191,4 +209,3 @@ else if($type == "smiles" && isset($codids))
 
 //close COD connection
 $cod -> close();
-?>

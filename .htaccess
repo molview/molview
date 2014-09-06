@@ -1,0 +1,6 @@
+Options +FollowSymlinks
+RewriteEngine on
+
+RewriteRule ^thanks$ pages/thanks.html [L]
+RewriteRule ^nosupport$ pages/nosupport.html [L]
+RewriteRule ^embed$ embed.php [L]

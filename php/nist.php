@@ -1,4 +1,22 @@
 <?php
+/**
+ * This file is part of MolView (http://molview.org)
+ * Copyright (c) 2014, Herman Bergwerf
+ *
+ * MolView is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MolView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /*
 PHP script for processing and retrieving data from the NIST Chemistry Webbook
 
@@ -30,10 +48,10 @@ if(!isset($type) || !isset($cas))
 if($type == "lookup")
 {
 	header("Content-Type: application/json");
-	
+
 	/*
 	Extract spectra from Coblentz and NIST Mass Spec Data Center
-	
+
 	Returns (example for cas=50-78-2):
 	{
 		"mass": true,
@@ -52,17 +70,17 @@ if($type == "lookup")
 		]
 	}
 	*/
-	
+
 	$nist_page = file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?Mask=80&ID=".$cas);
-	
+
 	echo "{";
 	echo '"mass":'.(strrpos($nist_page, "Mass spectrum (electron ionization)") === false ? "false" : "true").",";
 	echo '"uvvis":'.(strrpos($nist_page, "UV/Visible spectrum") === false ? "false" : "true").",";
 	echo '"ir":[';
-	
+
 	//if there is only one records (Index=0) the result is directly embeded into the webpage (see caffeine)
 	preg_match_all('/<th align="left" valign="top">State<\/th><td align="left" valign="top">([^<]*)<\/td>/', $nist_page, $records);
-	
+
 	if(count($records[0]) > 0)
 	{
 		preg_match_all('/Index=([0-9])/', $nist_page, $indexes);
@@ -74,7 +92,7 @@ if($type == "lookup")
 		$inlist = false;
 		$listnr = 0;
 		$length = 0;
-		
+
 		$key = array_search('<h2><a id="IR-Spec" name="IR-Spec">IR Spectrum</a></h2>', $nist_page);
 		if($key !== false)
 		{
@@ -85,7 +103,7 @@ if($type == "lookup")
 			echo "]}";
 			return;
 		}
-		
+
 		//loop trough NIST webpage lines
 		for($idx = 0; $idx < count($nist_page); $idx++)
 		{
@@ -109,14 +127,14 @@ if($type == "lookup")
 					if(count($results[0]) > 0)
 					{
 						preg_match_all('/Index=([0-9])/', $nist_page[$idx], $indexes);
-						
+
 						if($length > 0) echo ",";
 						echo "{";
 						echo '"i":'.json_encode(utf8_encode($indexes[1][count($indexes[1]) - 1])).",";//pick last Index=n in this line
 						echo '"state":'.json_encode(utf8_encode($results[1][0])).",";
 						echo '"source":'.json_encode(utf8_encode($results[2][0]));
 						echo "}";
-						
+
 						$length++;
 					}
 				}
@@ -132,7 +150,7 @@ if($type == "lookup")
 			}
 		}
 	}
-    
+
 	echo "]}";
 }
 else if($type == "mass")
@@ -151,4 +169,3 @@ else if($type == "uvvis")
 	header("Content-Type: text");
 	echo file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=UVVis&Index=0");
 }
-?>

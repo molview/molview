@@ -1,5 +1,5 @@
 <?php
-include("../php/utility.php");
+include("php/utility.php");
 error_reporting(0);
 
 if(is_below_IE10())
@@ -11,6 +11,7 @@ if(is_below_IE10())
 //preserve + sign by encoding it before parsing it
 if(strpos($_SERVER["QUERY_STRING"], "+") !== false)
 {
+	//prevent conversion from '+' to space
     $_SERVER["QUERY_STRING"] = str_replace("+", "%2B", $_SERVER["QUERY_STRING"]);
 }
 
@@ -95,23 +96,43 @@ else if(isset($codid))
 
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/Thing">
-	<!--
-	MolView v2.0 (http://molview.org)
-	Copyright (c) 2014, Herman Bergwerf
-	ALL RIGHTS RESERVED
 
-	Query parameters:
-	- q = search query (auto fast search)
-	- smiles = resolve SMILES string
-	- cid = load CID
-	- pdbid = load PDBID
-	- codid = load CIF from COD
-	- mode = [balls] || stick || vdw || wireframe || line
-	- chainType = [ribbon] || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
-	- chainBonds = [false] || true
-	- chainColor = [ss] || spectrum || chain || bfactor || polarity
-	- bg = [black] || grey || white
-	-->
+<!--
+This file is part of MolView (http://molview.org)
+Copyright (c) 2014, Herman Bergwerf
+
+MolView is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+MolView is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--
+Query parameters:
+  - q = search query
+  - search = fast || pubchem || rcsb || cod
+  - smiles = resolve SMILES string
+  - cid = load CID
+  - pdbid = load PDBID
+  - codid = load CIF from COD
+  - layout = model || sketcher || hsplit || vsplit
+  - menu = on || off
+  - dialog = about || help || share || embed
+  - mode = balls || stick || vdw || wireframe || line
+  - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
+  - chainBonds = true || false
+  - chainColor = ss || spectrum || chain || bfactor || polarity
+  - bg = black || grey || white
+-->
+
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -120,7 +141,7 @@ else if(isset($codid))
 
 		<?php echo "<title>".$title."</title>"; ?>
 
-		<link rel="icon" href="../src/img/icon/32.png" />
+		<link rel="icon" href="favicon-32x32.png" />
 
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" content="herman,bergwerf,free,molecule,chemistry,protein,application,smartphone,tablet,chrome os,properties,sketch,draw,edit,view" />
@@ -163,10 +184,10 @@ else if(isset($codid))
 
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
-		<link type="text/css" rel="stylesheet" href="../build/molview.embed.min.css" media="screen" />
+		<link type="text/css" rel="stylesheet" href="build/molview.embed.min.css" media="screen" />
 
 		<!-- JS -->
-		<script type="text/javascript" src="../build/molview.embed.min.js"></script>
+		<script type="text/javascript" src="build/molview.embed.min.js"></script>
 
 		<!-- Google Analytics -->
 		<script>

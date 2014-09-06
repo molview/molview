@@ -1,32 +1,34 @@
 ## 2.3.x
 
-Future improvement plans
+Improvement subjects:
 
- - CIF loader for GLmol
- - Add EDTSurf to GLmol
- - Protein solvents display in GLmol
- - THREE.CanvasRenderer for GLmol (update THREE.js)
- - Electron density maps for macromolecules
+ - Add CIF loader to GLmol
+ - Add EDTSurf implementation to GLmol
+ - Add protein solvents display to GLmol
+ - Add THREE.CanvasRenderer to GLmol (update THREE.js)
+ - Add electron density maps for macromolecules
 
- - Client-Side 2D depiction
- - External site (features, mission, manual)
+ - Server-sise backend services (depiction)
+ - MolView home website (features, mission, manual)
  - MolView for Android and iOS using Apache Cordova
- - Make MolView Open-Source
- - Language localisation
 
 ## 2.2.x
 
 Bugfixes:
 
   - Patched Chemical Identifier Resolver lookup failure ('/' as '%5C')
-  - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel)
-  - Added empty CIF check (in PHP mirror)
+  - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel everywhere)
+  - Added empty CIF validation in cif.php mirror
   - Added crystal 2D depiction fallbacks
   - Fixed GLmol face culling issue
 
-Backend:
+Revisions:
 
-  - Removed model onload layout for CODID
+  - Revised logo
+  - Removed auto onload model layout for crystals
+  - Redesigned sketcher selection style
+  - Redesigned UI (flat and light)
+  - Redesigned search results style
   - Revised CSS efficiency
   - Migrated CSS to LESS
   - Minified JS and CSS
@@ -35,12 +37,10 @@ Backend:
   - Renamed protein to biomolecule
   - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
   - Revised Information loading sequence
-  > Added CAS lookup fallback using PubChem
-  > Revised SMILES 2D/3D conversion sequence (PubChem > CIR)
+  > Moved metadata lookup and preprocessing to separate PHP file
 
-Frontend:
+Features:
 
-  - Updated logo
   - Added PDBID search
   - Added GLmol menu for WebGL devices
   - Added JSmol middle mouse button dragging
@@ -48,21 +48,22 @@ Frontend:
   - Added option to alter the Model background color
   - Added transparency support for exported images
   - Added dialog close buttons
-  - Redesigned sketcher selection style
-  - Redesigned UI (flat and light)
-  - Redesigned search results style
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
   - Added menu-toggle hover event for non-touch devices
   - Moved InfoCard and Spectra to separate layer
+  > Added menuitem icons
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
   > Added percent composition table to Information card
-  > Revised SMILES 3D conformation URL key (CID > InChiKey > SMILES)
+  > Added CAS lookup fallback using PubChem
+  > Added SMILES 3D conformation fallback using PubChem
+  > Added SMILES 3D conformation URL keys (CID > InChiKey > SMILES)
   > Added *Don't show me again* option to Messages alerts
-  > Added user preferences using HTML5 Web Storage
+  > Added user preferences storage using HTML5 Web Storage
   > Added functional groups support in Sketcher
   > Integrated COD image archive
+  > Track user interaction via analytics.js
 
 ## 2.1.3 (2014-07-07)
 
@@ -87,7 +88,7 @@ Features:
 
 Bugfixes:
 
-  - Removed `jMouseWheel` from GLmol (firefox bug)
+  - Removed `jMouseWheel` from GLmol (Firefox bug)
   - Fixed crystal search results formula overflow
 
 Revisions:
@@ -98,9 +99,9 @@ Revisions:
 
 Bugfixes:
 
-  - No auto hsplit when loaded as `MolView.layout == model`
-  - Jmol CIF no full unitcell after initialisation (scriptWaitOutput fix)
-  - Jmol load structure + setRepresentation flash (scriptWaitOutput fix)
+  - No auto hsplit when loaded as `?layout=model`
+  - Jmol CIF no full unitcell after initialisation (using scriptWaitOutput)
+  - Jmol load structure + setRepresentation flash (using scriptWaitOutput)
   - Jmol re-enable measurement after Model is updated
   - Removed alerts in m2s (Ketcher MOL2SMILES port)
 
@@ -111,7 +112,7 @@ Revisions:
   - Implemented Jmol scriptWaitOutput
   - Improved `ChemicalView.removeImplicitHydrogen`
   - Revised search result title appereance
-  - Removed forced model view for CIF files (except for onload view)
+  - Removed forced model view for crystals (except for onload view)
   - ChemicalData PubChem integration redesign
   - ChemicalData CanonicalSMILES from PubChem
 

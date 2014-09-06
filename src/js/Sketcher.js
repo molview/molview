@@ -1,8 +1,20 @@
-/*!
-MolView v2.2 (http://molview.org)
-Copyright (c) 2014, Herman Bergwerf
-ALL RIGHTS RESERVED
-*/
+/**
+ * This file is part of MolView (http://molview.org)
+ * Copyright (c) 2014, Herman Bergwerf
+ *
+ * MolView is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MolView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 var Sketcher = {
 	moledit: undefined,
@@ -20,6 +32,7 @@ var Sketcher = {
 	init: function()
 	{
 		this.initPeriodicTable();
+		this.resizeToolbars();
 
 		if(Detector.canvas)
 		{
@@ -45,7 +58,32 @@ var Sketcher = {
 		if(this.moledit)
 		{
 			this.moledit.resize();
+			this.resizeToolbars();
 		}
+	},
+
+	resizeToolbars: function()
+	{
+		var top   = 40 + $("#edit-tools").css("height", 40).scrollTop(40).scrollTop();
+		var left  = 40 + $("#chem-tools").css("width", 40).scrollLeft(40).scrollLeft();
+		var right = 40 + $("#elem-tools").css("width", 40).scrollLeft(40).scrollLeft();
+
+		$("#edit-tools").css({
+			left: left,
+			height: top
+		});
+		$("#chem-tools").css({
+			width: left
+		});
+		$("#elem-tools").css({
+			top: top,
+			width: right
+		});
+		$("#moledit-area").css({
+			top: top,
+			left: left,
+			right: right,
+		});
 	},
 
 	initPeriodicTable: function()

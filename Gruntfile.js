@@ -9,21 +9,32 @@ module.exports = function(grunt)
 			{
 				options:
 				{
-					banner: '/*!\n\
-MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
-Copyright (c) 2014, Herman Bergwerf\n\
-ALL RIGHTS RESERVED\n\
-*/\n',
+					banner: '/**\n\
+ * This file is part of MolView (http://molview.org)\n\
+ * Copyright (c) 2014, Herman Bergwerf\n\
+ *\n\
+ * MolView is free software: you can redistribute it and/or modify\n\
+ * it under the terms of the GNU Affero General Public License as published by\n\
+ * the Free Software Foundation, either version 3 of the License, or\n\
+ * (at your option) any later version.\n\
+ *\n\
+ * MolView is distributed in the hope that it will be useful,\n\
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+ * GNU Affero General Public License for more details.\n\
+ *\n\
+ * You should have received a copy of the GNU Affero General Public License\n\
+ * along with MolView.  If not, see <http://www.gnu.org/licenses/>.\n\
+ */\n',
 					compress: { drop_console: true }
 				},
 				src: [
 					'src/js/lib/JSmol.min.js',
 
 					//Misc
-					'src/js/lib/jquery-1.11.1.min.js',
+					'src/js/lib/jquery.min.js',
 					'src/js/lib/jquery.hotkeys.js',
 					'src/js/lib/Detector.js',
-					'src/js/lib/Polyfill.js',
 
 					//Ketcher
 					'src/js/m2s/prototype.js',
@@ -48,8 +59,8 @@ ALL RIGHTS RESERVED\n\
 					'src/js/moledit/Objects.js',
 					'src/js/moledit/Chemical.js',
 					'src/js/moledit/ChemicalView.js',
-					'src/js/moledit/ChemicalView_core.js',
-					'src/js/moledit/ChemicalView_events.js',
+					'src/js/moledit/ChemicalViewCore.js',
+					'src/js/moledit/ChemicalViewEvents.js',
 					'src/js/moledit/Utility.js',
 
 					//GLmol
@@ -90,18 +101,29 @@ ALL RIGHTS RESERVED\n\
 			{
 				options:
 				{
-					banner: '/*!\n\
-MolView <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n\
-Copyright (c) 2014, Herman Bergwerf\n\
-ALL RIGHTS RESERVED\n\
-*/\n',
+					banner:'/**\n\
+ * This file is part of MolView (http://molview.org)\n\
+ * Copyright (c) 2014, Herman Bergwerf\n\
+ *\n\
+ * MolView is free software: you can redistribute it and/or modify\n\
+ * it under the terms of the GNU Affero General Public License as published by\n\
+ * the Free Software Foundation, either version 3 of the License, or\n\
+ * (at your option) any later version.\n\
+ *\n\
+ * MolView is distributed in the hope that it will be useful,\n\
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+ * GNU Affero General Public License for more details.\n\
+ *\n\
+ * You should have received a copy of the GNU Affero General Public License\n\
+ * along with MolView.  If not, see <http://www.gnu.org/licenses/>.\n\
+ */\n',
 					compress: { drop_console: true }
 				},
 				src: [
 					'src/js/lib/JSmol.min.js',
-					'src/js/lib/jquery-1.11.1.min.js',
+					'src/js/lib/jquery.min.js',
 					'src/js/lib/Detector.js',
-					'src/js/lib/Polyfill.js',
 					'src/js/lib/three.min.js',
 					'src/js/lib/GLmol.js',
 					'src/js/lib/ChemDoodleWeb.js',
@@ -233,8 +255,8 @@ ALL RIGHTS RESERVED\n\
 				files: [
 					{
 						expand: true,
-						cwd: 'src/img',
-						src: ['**/*.svg'],
+						cwd: 'src/svg',
+						src: ['action/*', 'bond/*', 'frag/*', 'layout/*', 'misc/*'],
 						dest: 'img/',
 						ext: '.svg'
 					}]
@@ -242,12 +264,15 @@ ALL RIGHTS RESERVED\n\
 		},
 		copy:
 		{
-			target:
+			img:
 			{
 				files: [
-					{ expand: true, flatten: true, src: 'project/docs/img/*', dest: 'img/help/', filter: 'isFile' },
-					{ expand: true, flatten: true, src: 'src/img/icon/*', dest: 'img/icon/', filter: 'isFile' },
-					{ expand: true, flatten: true, src: ['src/img/image.png', 'src/img/logo.png'], dest: 'img/', filter: 'isFile' }
+					{ expand: true, flatten: true, src: 'docs/img/*', dest: 'img/help/', filter: 'isFile' },
+					{ expand: true, flatten: true, src: 'src/png/*', dest: 'img/', filter: 'isFile' },
+					{ expand: true, flatten: true, src: 'src/png/icon/*', dest: 'img/icon/', filter: 'isFile' },
+					{ src: 'src/png/image.png', dest: 'img/image.png' },
+					{ src: 'src/svg/icon/48.svg', dest: 'img/logo.svg' },
+					{ src: 'src/svg/icon/brand.svg', dest: 'img/brand.svg' }
 				]
 			}
 		},

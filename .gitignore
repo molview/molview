@@ -1,9 +1,8 @@
 /node_modules
+/bower_components
 /img
 /build
 /jmol
-!/project
-/project/*
-!/project/docs/
-!/project/datasets/
-!/project/vector/
+/project
+/*.png
+favicon.ico

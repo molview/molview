@@ -2,17 +2,19 @@
 From: https://github.com/diniska/chemistry/blob/master/PeriodicalTable/periodicTable.json
 */
 
-var PeriodicTable = {
-	"table":[
+var PeriodicTable =
+{
+	"table": [
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%201%20element",
 			"elements": [
 				{
-					"group": "Element",
+					"group": "",
 					"position": 0,
-					"number": 1,
 					"name": "Hydrogen",
-					"molar": 1.00794,
+					"number": 1,
 					"small": "H",
+					"molar": 1.00794,
 					"electrons": [
 						1
 					]
@@ -20,10 +22,10 @@ var PeriodicTable = {
 				{
 					"group": "Element Noble p",
 					"position": 17,
-					"number": 2,
 					"name": "Helium",
-					"molar": 4.002602,
+					"number": 2,
 					"small": "He",
+					"molar": 4.002602,
 					"electrons": [
 						2
 					]
@@ -31,6 +33,7 @@ var PeriodicTable = {
 			]
 		},
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%202%20element",
 			"elements": [
 				{
 					"group": "Element Alkali s",
@@ -131,6 +134,7 @@ var PeriodicTable = {
 			]
 		},
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%203%20element",
 			"elements": [
 				{
 					"group": "Element Alkali s",
@@ -239,6 +243,7 @@ var PeriodicTable = {
 			]
 		},
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%204%20element",
 			"elements": [
 				{
 					"group": "Element Alkali s",
@@ -495,6 +500,7 @@ var PeriodicTable = {
 			]
 		},
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%205%20element",
 			"elements": [
 				{
 					"group": "Element Alkali s",
@@ -768,6 +774,7 @@ var PeriodicTable = {
 			]
 		},
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%206%20element",
 			"elements": [
 				{
 					"group": "Element Alkali s",
@@ -801,13 +808,13 @@ var PeriodicTable = {
 						2
 					]
 				},
-				/*{
+				{
 					"group": "Lanthanoid InnerBorder BlueLeft BlueTop BlueRight",
 					"position": 2,
 					"name": "",
 					"number": "",
 					"small": "57-71"
-				},*/
+				},
 				{
 					"group": "Element Transition d",
 					"position": 3,
@@ -1051,6 +1058,7 @@ var PeriodicTable = {
 			]
 		},
 		{
+			"wiki": "http://en.wikipedia.org/wiki/Period%207%20element",
 			"elements": [
 				{
 					"group": "Element Alkali s",
@@ -1086,13 +1094,13 @@ var PeriodicTable = {
 						2
 					]
 				},
-				/*{
+				{
 					"group": "Actinoid InnerBorder BlueLeft BlueRight",
 					"position": 2,
 					"name": "",
 					"number": "",
 					"small": "89-103"
-				},*/
+				},
 				{
 					"group": "Element Transition d",
 					"position": 3,
