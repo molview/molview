@@ -30,12 +30,12 @@ var MolView = {
 		this.query = getQuery();
 
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
+		{
 			this.loadDefault = false;
+		}
 
 		this.touch = isTouchDevice();
-		if(this.touch) $(document.body).addClass("touch");
 		this.mobile = isMobile();
-		this.height = window.innerHeight;
 
 		Progress.init();
 		if(this.loadDefault)
@@ -47,10 +47,7 @@ var MolView = {
 		//initialize
 		Request.init();
 
-		$(window).on("resize", function()
-		{
-			Model.resize();
-		});
+		$(window).on("resize", Model.resize);
 
 		Progress.increment();
 
@@ -127,7 +124,7 @@ var MolView = {
 					Model.setBackground(value);
 				}
 			});
-		}).bind(this), Detector.webgl ? "GLmol" : ((this.query.pdbid || this.query.codid) ? "JSmol" : "GLmol"));
+		}).bind(this), Detector.webgl ? "GLmol" : (((this.query.pdbid && !MolView.mobile) || this.query.codid) ? "JSmol" : "GLmol"));
 	},
 
 	//do not remove: called from Loader

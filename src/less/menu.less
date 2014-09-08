@@ -52,7 +52,7 @@
 	bottom: 0;
 }
 
-.menu .brick
+.menu-brick
 {
 	float: left;
 	position: relative;
@@ -66,27 +66,17 @@
 	padding: 0;
 }
 
-.menu-bar > li, .dropdown-menu > li
+.dropdown, .menu-item, .menu-header, .menu-divider, #layout-menu
 {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.menu-bar > li
+.dropdown
 {
 	float: left;
 	position: relative;
-}
-
-.dropdown > .dropdown-toggle
-{
-	padding: 10px 15px;
-}
-
-.dropdown-toggle > .caret
-{
-	margin: 9px 0 0 7px;
 }
 
 .dropdown
@@ -101,7 +91,7 @@
 	position: relative;
 	display: block;
 	margin: 0;
-	padding: 0;
+	padding: 10px 15px;
 	line-height: 20px;
 }
 
@@ -122,7 +112,7 @@
 	overflow-y: auto;
 }
 
-li.menu-header
+.menu-header
 {
 	display: block;
 	cursor: default;
@@ -133,7 +123,7 @@ li.menu-header
 	white-space: nowrap;
 }
 
-.dropdown-menu > li > a
+.menu-item > a
 {
 	display: block;
 	line-height: 20px;
@@ -148,6 +138,7 @@ li.menu-header
 /* custom layout menu */
 #layout-menu
 {
+	padding: 3px;
 	width: 336px;
 	height: 50px;
 }
@@ -162,7 +153,7 @@ li.menu-header
 
 	background-repeat: no-repeat;
 	background-position: center;
-	border: 1px solid #333;
+	border: 1px solid @foreground;
 	background-size: 80px;
 }
 
@@ -170,21 +161,15 @@ li.menu-header
 {
 	#layout-menu
 	{
-		width: 352px;
-		height: 212px;
+		width: 345px;
+		height: 205px;
 	}
 
 	#layout-menu > a
 	{
-		float: left;
 		margin: 5px;
-		padding: 0;
 		width: 160px;
 		height: 90px;
-
-		background-repeat: no-repeat;
-		background-position: center;
-		border: 3px solid #333;
 		background-size: 160px;
 	}
 }

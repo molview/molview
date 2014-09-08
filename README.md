@@ -8,15 +8,11 @@ a similar webapplication.
 
 **JavaScript libraries**
 
-  - [MolEdit v1.2.4](https://www.molsoft.com/moledit.html): sketcher
-    (modified with permission from [MolSoft](https://www.molsoft.com/))
-  - [Ketcher](http://ggasoftware.com/opensource/ketcher): SMILES conversion
-    (modified under GNU Affero GPL)
-  - [GLmol v0.47](http://webglmol.sourceforge.jp/index-en.html): 3D rendering
-    (modified under MIT licence)
-  - [JSmol](http://sourceforge.net/projects/jsmol/): 3D rendering
-    (Jmol v14.0.11)
-  - [ChemDoodle Web Components v6.0.1](http://web.chemdoodle.com/): 3D rendering
+  - [MolEdit v1.2.4](https://www.molsoft.com/moledit.html): structural formula sketcher
+  - [Ketcher](http://ggasoftware.com/opensource/ketcher): Molfile to SMILES conversion
+  - [GLmol v0.47](http://webglmol.sourceforge.jp/index-en.html): primary 3D render engine
+  - [JSmol v14.3.7](http://sourceforge.net/projects/jsmol/): 3D render engine
+  - [ChemDoodle Web Components v6.0.1](http://web.chemdoodle.com/): 3D render engine
     and spectrum display
 
 **Databases/REST API's**

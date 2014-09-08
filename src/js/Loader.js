@@ -516,7 +516,7 @@ var Loader = {
 							Model.loadPDB(pdb);
 							finish();
 						}
-						else//switch to JSmol
+						else//switch to GLmol
 						{
 							Model.loadPDB(pdb, true);
 							Model.setRenderEngine("GLmol", finish);
@@ -855,6 +855,8 @@ var Loader = {
 		{
 			Model.loadMOL(mol);
 			Sketcher.markUpdated();
+
+			document.title = "MolView";
 
 			Progress.complete();
 			Messages.clear();

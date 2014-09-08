@@ -60,26 +60,6 @@ var Model = {
 	},
 
 	/**
-	 * Resizes 3D canvas in order to fit the current #model area
-	 */
-	resize: function()
-	{
-		if(this.engine == "GLmol") this.GLmol.resize();
-		else if(this.engine == "JSmol") this.JSmol.resize();
-		else if(this.engine == "CDW") this.CDW.resize();
-	},
-
-	/**
-	 * Resets model position, rotation and scaling back to default
-	 */
-	reset: function()
-	{
-		if(this.engine == "GLmol") this.GLmol.reset();
-		else if(this.engine == "JSmol") this.JSmol.reset();
-		else if(this.engine == "CDW") this.CDW.reset();
-	},
-
-	/**
 	 * @return {Boolean} True if current render engine is GLmol
 	 */
 	isGLmol: function()
@@ -101,6 +81,26 @@ var Model = {
 	isCDW: function()
 	{
 		return Model.engine == "CDW";
+	},
+
+	/**
+	 * Resizes 3D canvas in order to fit the current #model area
+	 */
+	resize: function()
+	{
+		if(this.isGLmol()) this.GLmol.resize();
+		else if(this.isJSmol()) this.JSmol.resize();
+		else if(this.isCDW()) this.CDW.resize();
+	},
+
+	/**
+	 * Resets model position, rotation and scaling back to default
+	 */
+	reset: function()
+	{
+		if(this.isGLmol()) this.GLmol.reset();
+		else if(this.isJSmol()) this.JSmol.reset();
+		else if(this.isCDW()) this.CDW.reset();
 	},
 
 	/**
@@ -746,7 +746,7 @@ var Model = {
 
 				Messages.process(function()
 				{
-					Jmol.setDocument(0);
+					Jmol.setDocument(false);
 					Jmol.getApplet("JSmol", {
 						width: $("#model").width(),
 						height: $("#model").height(),
@@ -754,6 +754,7 @@ var Model = {
 						showfrank: false,
 						disableJ2SLoadMonitor: true,
 						disableInitialConsole: true,
+						allowJavaScript: true,
 						use: "HTML5",
 						j2sPath: MolView.JMOL_J2S_PATH,
 						script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
@@ -871,7 +872,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		{
 			if(this.ready)
 			{
-				Model.JSmol.script("reset;");
+				Model.JSmol.script("reset; rotate best;");
 			}
 		},
 
@@ -922,7 +923,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
-				this.scriptWaitOutput("rotate best");
+				this.scriptWaitOutput("rotate best;");
 
 				return true;
 			}
@@ -944,7 +945,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 				JSmol.__loadModel(pdb);
 				this.setRepresentation(Model.representation);
-				this.script("rotate best");
+				this.script("rotate best;");
 
 				return true;
 			}
@@ -967,7 +968,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 				this.scriptWaitOutput("set showUnitcell " + (cell.reduce(function(a, b){ return a * b; }) > 1 ? "false" : "true"));
 
 				this.setRepresentation(Model.representation);
-				this.scriptWaitOutput("rotate best");
+				this.scriptWaitOutput("rotate best;");
 
 				return true;
 			}
@@ -985,7 +986,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 			this.platformSpeed = i;
 
-			this.setPicking("OFF");
+			this._setPicking("OFF");
 			this._setPlatformSpeed(i);
 		},
 
@@ -1161,7 +1162,8 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			{
 				if(!repressPlatformSpeedReset)
 				{
-					Model.JSmol._setPlatformSpeed(1);
+					//1 will enable lines representation on mousedown
+					Model.JSmol._setPlatformSpeed(2);
 				}
 
 				Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");

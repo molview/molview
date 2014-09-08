@@ -4,15 +4,24 @@ Improvement subjects:
 
  - Add CIF loader to GLmol
  - Add EDTSurf implementation to GLmol
- - Add protein solvents display to GLmol
  - Add THREE.CanvasRenderer to GLmol (update THREE.js)
- - Add electron density maps for macromolecules
 
+ - Add protein solvents display
+ - Add electron density maps for macromolecules
+ - Add dotted H-bonds and SS-bonds for proteins
+
+ - Create Touch menu drawer
  - Server-sise backend services (depiction)
  - MolView home website (features, mission, manual)
  - MolView for Android and iOS using Apache Cordova
 
 ## 2.2.x
+
+Project:
+
+  - Added AGPL license
+  - Added build script (fetch libs, run grunt, render SVG)
+  > Added Privacy Policy
 
 Bugfixes:
 
@@ -31,13 +40,12 @@ Revisions:
   - Redesigned search results style
   - Revised CSS efficiency
   - Migrated CSS to LESS
-  - Minified JS and CSS
-  - Minified SVG
   - Renamed Loader modules
   - Renamed protein to biomolecule
   - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
   - Revised Information loading sequence
   - Moved metadata lookup to separate PHP file
+  - Removed embed warning about slow, non-WebGL devices
 
 Features:
 
@@ -52,7 +60,7 @@ Features:
   - Added welcome dialog
   - Added option to switch between MolView themes (desktop and touch)
   - Added menu-toggle hover event for non-touch devices
-  > Added menu-item icons
+  - Added menu-item icons
   > Added external references to Information card (Chemicalize, Google, PDB, COD)
   > Added scientific reference to the NIST Chemistry WebBook for spectra
   > Added percent composition table to Information card
@@ -64,6 +72,7 @@ Features:
   > Added functional groups support in Sketcher
   > Integrated COD image archive
   > Track user interaction via analytics.js
+  > Debugging via analytics.js
 
 ## 2.1.3 (2014-07-07)
 

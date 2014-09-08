@@ -112,7 +112,7 @@ Query parameters:
 		?>
 
 		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
 
@@ -203,9 +203,9 @@ Query parameters:
 		</div>
 		<div id="menu" class="no-select menu swipeable">
 			<div class="inner">
-				<ul id="main-menu" class="brick menu-bar">
+				<ul id="main-menu" class="menu-brick menu-bar">
 					<li class="dropdown">
-						<a class="dropdown-toggle brand">MolView<b class="caret"></b></a>
+						<a class="dropdown-toggle brand">MolView</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Layout</li>
 							<li id="layout-menu">
@@ -215,98 +215,98 @@ Query parameters:
 								<a id="window-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
 							<li class="menu-header">Theme</li>
-							<li><a id="theme-desktop">Desktop</a></li>
-							<li><a id="theme-touch">Touch</a></li>
+							<li class="menu-item"><a id="theme-desktop">Desktop</a></li>
+							<li class="menu-item"><a id="theme-touch">Touch</a></li>
 							<li class="menu-header">Information</li>
-							<li><a id="mv-help">Help</a></li>
-							<li><a id="mv-about">About</a></li>
+							<li class="menu-item"><a id="mv-help">Help</a></li>
+							<li class="menu-item"><a id="mv-about">About</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle">Tools<b class="caret"></b></a>
+						<a class="dropdown-toggle">Tools</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Link</li>
-							<li><a id="mv-share">Share</a></li>
-							<li><a id="mv-embed">Embed</a></li>
+							<li class="menu-item"><a id="mv-share">Share</a></li>
+							<li class="menu-item"><a id="mv-embed">Embed</a></li>
 							<li class="menu-header">Export</li>
-							<li><a id="export-2d">Structural formula image</a></li>
-							<li><a id="export-3d">3D model image</a></li>
-							<li><a id="save-local-3d">MOL file</a></li>
+							<li class="menu-item"><a id="export-2d">Structural formula image</a></li>
+							<li class="menu-item"><a id="export-3d">3D model image</a></li>
+							<li class="menu-item"><a id="save-local-3d">MOL file</a></li>
 							<li class="menu-header">Chemical data</li>
-							<li><a id="data-infocard">Information card</a></li>
-							<li><a id="data-spectra">Spectroscopy</a></li>
+							<li class="menu-item"><a id="data-infocard">Information card</a></li>
+							<li class="menu-item"><a id="data-spectra">Spectroscopy</a></li>
 							<li class="menu-header">Advanced search</li>
-							<li><a id="search-similarity">Similarity</a></li>
-							<li><a id="search-substructure">Substructure</a></li>
-							<li><a id="search-superstructure">Superstructure</a></li>
+							<li class="menu-item"><a id="search-similarity">Similarity</a></li>
+							<li class="menu-item"><a id="search-substructure">Substructure</a></li>
+							<li class="menu-item"><a id="search-superstructure">Superstructure</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle">Model<b class="caret"></b></a>
+						<a class="dropdown-toggle">Model</a>
 						<ul class="dropdown-menu">
-							<li><a id="model-reset">Reset</a></li>
+							<li class="menu-item"><a id="model-reset">Reset</a></li>
 							<li class="menu-header">Representation</li>
-							<li><a id="model-balls" class="r-mode checked">Ball and Stick</a></li>
-							<li><a id="model-stick" class="r-mode">Stick</a></li>
-							<li><a id="model-vdw" class="r-mode">van der Waals Spheres</a></li>
-							<li><a id="model-wireframe" class="r-mode">Wireframe</a></li>
-							<li><a id="model-line" class="r-mode">Line</a></li>
+							<li class="menu-item"><a id="model-balls" class="r-mode checked">Ball and Stick</a></li>
+							<li class="menu-item"><a id="model-stick" class="r-mode">Stick</a></li>
+							<li class="menu-item"><a id="model-vdw" class="r-mode">van der Waals Spheres</a></li>
+							<li class="menu-item"><a id="model-wireframe" class="r-mode">Wireframe</a></li>
+							<li class="menu-item"><a id="model-line" class="r-mode">Line</a></li>
 							<li class="menu-header">Background</li>
-							<li><a id="model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
-							<li><a id="model-bg-grey" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "grey" ? ' checked"' : '"' : '"'); ?> >Grey</a></li>
-							<li><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
+							<li class="menu-item"><a id="model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
+							<li class="menu-item"><a id="model-bg-grey" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "grey" ? ' checked"' : '"' : '"'); ?> >Grey</a></li>
+							<li class="menu-item"><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
-							<li><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
-							<li><a id="engine-jmol">Jmol (extensive)</a></li>
-							<li><a id="engine-cdw">ChemDoodle</a></li>
+							<li class="menu-item"><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
+							<li class="menu-item"><a id="engine-jmol">Jmol (extensive)</a></li>
+							<li class="menu-item"><a id="engine-cdw">ChemDoodle</a></li>
 							<li class="menu-header">Crystallography</li>
-							<li><a id="cif-unit-cell">Load unit cell</a></li>
-							<li><a id="cif-2x2x2-cell">Load 2&times;2&times;2 supercell</a></li>
-							<li><a id="cif-1x3x3-cell">Load 1&times;3&times;3 supercell</a></li>
+							<li class="menu-item"><a id="cif-unit-cell">Load unit cell</a></li>
+							<li class="menu-item"><a id="cif-2x2x2-cell">Load 2&times;2&times;2 supercell</a></li>
+							<li class="menu-item"><a id="cif-1x3x3-cell">Load 1&times;3&times;3 supercell</a></li>
 						</ul>
 					</li>
 					<li id="glmol-menu" class="dropdown" style="display: none;">
-						<a class="dropdown-toggle">GLmol<b class="caret"></b></a>
+						<a class="dropdown-toggle">GLmol</a>
 						<ul class="dropdown-menu">
-							<li><a id="bio-assembly">Biological assembly</a></li>
+							<li class="menu-item"><a id="bio-assembly">Biological assembly</a></li>
 							<li class="menu-header">Chain representation</li>
-							<li><a id="glmol-chain-ribbon" class="glmol-chain checked">Ribbon</a></li>
-							<li><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
-							<li><a id="glmol-chain-btube" class="glmol-chain">B-factor tube</a></li>
-							<li><a id="glmol-chain-ctrace" class="glmol-chain">C-alpha trace</a></li>
+							<li class="menu-item"><a id="glmol-chain-ribbon" class="glmol-chain checked">Ribbon</a></li>
+							<li class="menu-item"><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
+							<li class="menu-item"><a id="glmol-chain-btube" class="glmol-chain">B-factor tube</a></li>
+							<li class="menu-item"><a id="glmol-chain-ctrace" class="glmol-chain">C-alpha trace</a></li>
 							<li class="menu-divider"></li>
-							<li><a id="glmol-chain-bonds">Bonds</a></li>
+							<li class="menu-item"><a id="glmol-chain-bonds">Bonds</a></li>
 							<li class="menu-header">Chain coloring</li>
-							<li><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
-							<li><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
-							<li><a id="glmol-color-chain" class="glmol-color">Chain</a></li>
-							<li><a id="glmol-color-bfactor" class="glmol-color">B-factor</a></li>
-							<li><a id="glmol-color-polarity" class="glmol-color">Polarity</a></li>
+							<li class="menu-item"><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
+							<li class="menu-item"><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
+							<li class="menu-item"><a id="glmol-color-chain" class="glmol-color">Chain</a></li>
+							<li class="menu-item"><a id="glmol-color-bfactor" class="glmol-color">B-factor</a></li>
+							<li class="menu-item"><a id="glmol-color-polarity" class="glmol-color">Polarity</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle">Jmol<b class="caret"></b></a>
+						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
-							<li><a id="jmol-clean" class="jmol-script">Clean</a></li>
+							<li class="menu-item"><a id="jmol-clean" class="jmol-script">Clean</a></li>
 							<li class="menu-header">Calculations</li>
-							<li><a id="mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
-							<li><a id="mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
-							<li><a id="jmol-charge" class="jmol-script jmol-calc">Charge</a></li>
-							<li><a id="bond-dipoles" class="jmol-script jmol-calc">Bond dipoles</a></li>
-							<li><a id="net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
-							<li><a id="jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
+							<li class="menu-item"><a id="mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
+							<li class="menu-item"><a id="mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
+							<li class="menu-item"><a id="jmol-charge" class="jmol-script jmol-calc">Charge</a></li>
+							<li class="menu-item"><a id="bond-dipoles" class="jmol-script jmol-calc">Bond dipoles</a></li>
+							<li class="menu-item"><a id="net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
+							<li class="menu-item"><a id="jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
 							<li class="menu-header">Measurement</li>
-							<li><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
-							<li><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
-							<li><a id="measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
+							<li class="menu-item"><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
+							<li class="menu-item"><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
+							<li class="menu-item"><a id="measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
 							<li class="menu-header">Render mode</li>
-							<li><a id="jmol-render-all" class="jmol-rnd">Everything</a></li>
-							<li><a id="jmol-render-normal" class="jmol-rnd checked">Normal</a></li>
-							<li><a id="jmol-render-minimal" class="jmol-rnd">Minimal</a></li>
+							<li class="menu-item"><a id="jmol-render-all" class="jmol-rnd">Everything</a></li>
+							<li class="menu-item"><a id="jmol-render-normal" class="jmol-rnd checked">Normal</a></li>
+							<li class="menu-item"><a id="jmol-render-minimal" class="jmol-rnd">Minimal</a></li>
 						</ul>
 					</li>
 				</ul>
-				<form id="search" class="brick form-bar" action="javascript:void(0)">
+				<form id="search" class="menu-brick form-bar" action="javascript:void(0)">
 					<div id="search-input-wrap">
 						<input id="search-input" name="q" type="text"
 							placeholder="Name, InChiKey, SMILES &hellip;"
@@ -532,10 +532,10 @@ Query parameters:
 						<ul>
 							<li>JavaScript libraries
 								<ul>
-									<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4</a>: sketcher (modified with permission from <a class="link" href="https://www.molsoft.com" target="_blank" title="MolSoft">MolSoft</a>)</li>
+									<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4</a>: structural formula sketcher</li>
 									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Molfile to SMILES conversion</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
-									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.2.3</a>: 3D render engine</li>
+									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.7</a>: 3D render engine</li>
 									<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1</a>: 3D render engine and spectrum display</li>
 								</ul>
 							</li>
@@ -647,7 +647,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Advanced tools</b></div>
+							<div class="expandable-title"><i class="fa"></i><b>Tools</b></div>
 							<div class="expandable-content">
 								<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
 								<h4>Link</h4>
@@ -664,9 +664,9 @@ Query parameters:
 								<h4>Information card</h4>
 								<p>This function collects and displays information about the structural formula.</p>
 								<h4>Spectroscopy</h4>
-								<p>This function collects and displays information about the current structural formula (loaded from the Sketcher) You can also find a database reference for the current 3D model.</p>
+								<p>This function shows a new layer where you can view molecular spectra of the current structural formula (loaded from the Sketcher) More details are covered in the Spectroscopy chapter.</p>
 								<h4>Advanced search</h4>
-								<p>This function shows a new layer where you can view molecular spectra of the current structural formula (loaded from the Sketcher) More details are covered in chapter 5.</p>
+								<p>These functions allow you to perform some advanced searches through the PubChem database using the structural formula from the sketcher.</p>
 								<ol>
 									<li><b>Similarity search:</b> search for compounds with a similar structural formula</li>
 									<li><b>Substructure search:</b> search for compounds with the current structure as subset</li>
@@ -788,7 +788,6 @@ Query parameters:
 						<div class="dialog-close-btn"></div>
 						<div class="alert-box">
 							<span id="embed-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model is embedded)</span>
-							<span id="embed-macromolecule" class="alert-bar">Embedded macromolecules cannot be viewed on smartphones without WebGL support</span>
 						</div>
 						<h4>Width</h3>
 						<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>

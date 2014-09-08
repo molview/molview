@@ -276,7 +276,7 @@ var GLmol =(function()
 			ev.preventDefault();
 			if(!me.scene) return;
 
-			var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
+			var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
 			if(scaleFactor > 2000) scaleFactor = 2000;
 
 			if(ev.originalEvent.detail)
@@ -287,7 +287,7 @@ var GLmol =(function()
 			else if(ev.originalEvent.wheelDelta)
 			{
 				me.rotationGroup.position.z -= scaleFactor * ev.originalEvent.wheelDelta / 400;
-				me.zoom2D -= scaleFactor * ev.originalEvent.wheelDelta / 400;
+				me.zoom2D -= 0.5 * scaleFactor * ev.originalEvent.wheelDelta / 400;
 			}
 
 			if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
@@ -333,8 +333,8 @@ var GLmol =(function()
 				var ratio = d / me.multiTouchD;
 				me.multiTouchD = d;
 
-				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				me.rotationGroup.position.z += scaleFactor * - (ratio - 1);
+				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				me.rotationGroup.position.z += scaleFactor * (-ratio + 1);
 				me.zoom2D *= ratio;
 
 				if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
@@ -2261,6 +2261,7 @@ var GLmol =(function()
 
 		this.rotationGroup.position.z = maxD * 0.35 / Math.tan(Math.PI / 180.0 * this.camera.fov / 2) - 150;
 		this.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
+		this.zoom2D = 30 / (maxD / 25);
 	};
 
 	GLmol.prototype.rebuildScene = function()

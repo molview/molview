@@ -3,15 +3,16 @@
 # Build entire MolView project
 
 # Download and unzip JSmol
-wget http://downloads.sourceforge.net/project/jmol/Jmol/Version%2014.2/Version%2014.2.4/Jmol-14.2.4_2014.08.03-binary.zip
-unzip Jmol-14.2.4_2014.08.03-binary.zip
-unzip jmol-14.2.4_2014.08.03/jsmol.zip
+wget http://chemapps.stolaf.edu/jmol/zip/Jmol.zip
+unzip Jmol.zip jsmol.zip jsmol.zip
+unzip jsmol.zip
 mv jsmol/JSmol.min.js src/js/lib/JSmol.min.js
+rm -r jmol
 mkdir jmol
 mv jsmol/j2s jmol/j2s
 rm -r jsmol
-rm -r jmol-14.2.4_2014.08.03
-rm Jmol-14.2.4_2014.08.03-binary.zip
+rm -r jsmol.zip
+rm Jmol.zip
 
 # Download some third party code
 wget http://code.jquery.com/jquery-1.11.1.min.js

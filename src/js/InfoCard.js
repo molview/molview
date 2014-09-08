@@ -17,21 +17,36 @@
  */
 
 //array containing properties supported by PubChem using a CID
-var PubChemProps = [ "formula", "mw", "donors", "acceptors",
-	"sysname", "canonicalsmiles", "isomericsmiles", "inchikey", "inchi" ];
+var PubChemProps = {
+	"formula": "MolecularFormula",
+	"mw": "MolecularWeight",
+	"donors": "HBondDonorCount",
+	"acceptors": "HBondAcceptorCount",
+	"sysname": "IUPACName",
+	"canonicalsmiles": "CanonicalSMILES",
+	"isomericsmiles": "IsomericSMILES",
+	"inchikey": "InChIKey",
+	"inchi": "InChI"
+};
 
-//array containing PubChem names for the properties in PubChemProps
+//array containing all requested PubChem props
 var PubChemPropNames = [ "MolecularFormula", "MolecularWeight",
 	"HBondDonorCount", "HBondAcceptorCount", "IUPACName",
 	"CanonicalSMILES", "IsomericSMILES", "InChIKey", "InChI" ];
 
 //array containing properties supported by the Chemical Identifier Resolver
-var CIRProps = [ "formula", "mw", "donors", "acceptors",
-	"smiles", "inchikey", "inchi", "cas", "csid" ];
-
-//array containing CIR names for the properties in CIRProps
-var CIRPropNames = [ "formula", "mw", "h_bond_donor_count", "h_bond_acceptor_count",
-	"smiles", "stdinchikey", "stdinchi", "cas", "chemspider_id" ];
+var CIRProps = {
+	"formula": "formula",
+	"mw": "mw",
+	"donors": "h_bond_donor_count",
+	"acceptors": "h_bond_acceptor_count",
+	"sysname": "iupac_name",
+	"canonicalsmiles": "smiles",
+	"inchikey": "stdinchikey",
+	"inchi": "stdinchi",
+	"cas": "cas",
+	"csid": "chemspider_id"
+};
 
 var InfoCard = {
 	/**
@@ -219,18 +234,19 @@ var InfoCard = {
 
 		function tryPubChem()
 		{
-			if(InfoCard.PubChem_cache && PubChemProps.indexOf(id) != -1)
+			if(InfoCard.PubChem_cache && PubChemProps[id])
 			{
 				InfoCard.loadFromPubChemCache(id, success, tryCIR);
 			}
-			else if(InfoCard.data["cid"] && PubChemProps.indexOf(id) != -1)
+			else if(InfoCard.data["cid"] && PubChemProps[id])
 			{
 				InfoCard.PubChem_cache = { loading: true };
 
 				Request.PubChem.properties(InfoCard.data["cid"], PubChemPropNames,
 				function(data)
 				{
-					InfoCard.PubChem_cache = data;
+					InfoCard.PubChem_cache = data.PropertyTable.Properties[0] || { failed: true };
+
 					for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
 					{
 						InfoCard.PubChem_queue[i].success();
@@ -257,16 +273,19 @@ var InfoCard = {
 
 		function tryCIR()
 		{
-			if(InfoCard.data["smiles"] && CIRProps.indexOf(id) != -1)
+			if(InfoCard.data["smiles"] && CIRProps[id] != -1)
 			{
 				Request.ChemicalIdentifierResolver.property(
 					InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],
-					CIRPropNames[CIRProps.indexOf(id)],
-					function(data)
+					CIRProps[id], function(data)
 				{
 					if(id == "formula")
 					{
-						InfoCard.data[id] = chemFormulaFormat(data);
+						InfoCard.data["formula"] = chemFormulaFormat(data);
+					}
+					else if(id == "sysname")
+					{
+						InfoCard.data["sysname"] = humanize(data);
 					}
 					else
 					{
@@ -315,17 +334,16 @@ var InfoCard = {
 	{
 		function _load(id)
 		{
-			var propName = PubChemPropNames[PubChemProps.indexOf(id)];
-			if(InfoCard.PubChem_cache.PropertyTable.Properties[0][propName] !== undefined)
+			if(InfoCard.PubChem_cache[PubChemProps[id]] !== undefined)
 			{
-				if(propName == "MolecularFormula")
+				if(id == "formula")
 				{
 					InfoCard.data[id] = chemFormulaFormat(
-						InfoCard.PubChem_cache.PropertyTable.Properties[0][propName]);
+						InfoCard.PubChem_cache[PubChemProps[id]]);
 				}
 				else
 				{
-					InfoCard.data[id] = InfoCard.PubChem_cache.PropertyTable.Properties[0][propName];
+					InfoCard.data[id] = InfoCard.PubChem_cache[PubChemProps[id]];
 				}
 				return true;
 			}

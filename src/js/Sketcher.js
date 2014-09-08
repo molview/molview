@@ -18,14 +18,13 @@
 
 var Sketcher = {
 	moledit: undefined,
-	title_lock: false,//prevent title switching while Loading compound
 	metadata: {
 		cid: undefined,
 		inchi: undefined,
 		inchikey: undefined,
 		smiles: undefined,
 	},
-	
+
 	init: function()
 	{
 		this.initPeriodicTable();
@@ -44,7 +43,6 @@ var Sketcher = {
 			{
 				Sketcher.metadata = {};
 				$("#resolve").removeClass("resolve-updated");
-				if(!Sketcher.title_lock) document.title = "MolView";
 			};
 		}
 		else Messages.alert("no_canvas_support");
@@ -131,10 +129,8 @@ var Sketcher = {
 		//load molecule
 		if(this.moledit)
 		{
-			this.title_lock = true;
 			this.moledit.loadMOL(mol);
 			this.moledit.removeImplicitHydrogen();
-			this.title_lock = false;
 		}
 	},
 
