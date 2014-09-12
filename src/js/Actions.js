@@ -297,6 +297,7 @@ var Actions = {
 	Jmol menu
 	*/
 	jmol_clean:    function() { Model.JSmol.clean(); },
+	jmol_hq:       function() { Model.JSmol.setQuality(!$("#jmol-hq").hasClass("checked")); },
 	mep_lucent:    function() { Model.JSmol.loadMEPSurface(true); },
 	mep_opaque:    function() { Model.JSmol.loadMEPSurface(false); },
 	jmol_charge:   function() { Model.JSmol.displayCharge(); },
@@ -306,35 +307,20 @@ var Actions = {
 
 	measure_distance: function()
 	{
-		Model.JSmol.setPicking($("#measure-torsion").hasClass("checked")
+		Model.JSmol.setMeasure($("#measure-distance").hasClass("checked")
 			? "OFF" : "DISTANCE");
 	},
 
 	measure_angle: function()
 	{
-		Model.JSmol.setPicking($("#measure-torsion").hasClass("checked")
+		Model.JSmol.setMeasure($("#measure-angle").hasClass("checked")
 			? "OFF" : "ANGLE");
 	},
 
 	measure_torsion: function()
 	{
-		Model.JSmol.setPicking($("#measure-torsion").hasClass("checked")
+		Model.JSmol.setMeasure($("#measure-torsion").hasClass("checked")
 			? "OFF" : "TORSION");
-	},
-
-	jmol_render_all: function()
-	{
-		Model.JSmol.setPlatformSpeed(7);
-	},
-
-	jmol_render_normal: function()
-	{
-		Model.JSmol.setPlatformSpeed(4);
-	},
-
-	jmol_render_minimal: function()
-	{
-		Model.JSmol.setPlatformSpeed(1);
 	},
 
 	/*

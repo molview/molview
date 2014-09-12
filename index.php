@@ -42,20 +42,20 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 
 <!--
 Query parameters:
-  - q = search query
-  - search = fast || pubchem || rcsb || cod
-  - smiles = resolve SMILES string
-  - cid = load CID
-  - pdbid = load PDBID
-  - codid = load CIF from COD
-  - layout = model || sketcher || hsplit || vsplit
-  - menu = on || off
-  - dialog = about || help || share || embed
-  - mode = balls || stick || vdw || wireframe || line
-  - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
-  - chainBonds = true || false
-  - chainColor = ss || spectrum || chain || bfactor || polarity
-  - bg = black || grey || white
+- q = search query
+- search = fast || pubchem || rcsb || cod
+- smiles = resolve SMILES string
+- cid = load CID
+- pdbid = load PDBID
+- codid = load CIF from COD
+- layout = model || sketcher || hsplit || vsplit
+- menu = on || off
+- dialog = about || help || share || embed
+- mode = balls || stick || vdw || wireframe || line
+- chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
+- chainBonds = true || false
+- chainColor = ss || spectrum || chain || bfactor || polarity
+- bg = black || grey || white
 -->
 
 	<head>
@@ -256,8 +256,8 @@ Query parameters:
 							<li class="menu-item"><a id="model-bg-grey" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "grey" ? ' checked"' : '"' : '"'); ?> >Grey</a></li>
 							<li class="menu-item"><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
-							<li class="menu-item"><a id="engine-glmol" class="checked">GLmol (fast)</a></li>
-							<li class="menu-item"><a id="engine-jmol">Jmol (extensive)</a></li>
+							<li class="menu-item"><a id="engine-glmol" class="checked">GLmol</a></li>
+							<li class="menu-item"><a id="engine-jmol">Jmol</a></li>
 							<li class="menu-item"><a id="engine-cdw">ChemDoodle</a></li>
 							<li class="menu-header">Crystallography</li>
 							<li class="menu-item"><a id="cif-unit-cell">Load unit cell</a></li>
@@ -288,6 +288,7 @@ Query parameters:
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="jmol-clean" class="jmol-script">Clean</a></li>
+							<li class="menu-item"><a id="jmol-hq" class="checked">High Quality</a></li>
 							<li class="menu-header">Calculations</li>
 							<li class="menu-item"><a id="mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
 							<li class="menu-item"><a id="mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
@@ -299,10 +300,6 @@ Query parameters:
 							<li class="menu-item"><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
 							<li class="menu-item"><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
 							<li class="menu-item"><a id="measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
-							<li class="menu-header">Render mode</li>
-							<li class="menu-item"><a id="jmol-render-all" class="jmol-rnd">Everything</a></li>
-							<li class="menu-item"><a id="jmol-render-normal" class="jmol-rnd checked">Normal</a></li>
-							<li class="menu-item"><a id="jmol-render-minimal" class="jmol-rnd">Minimal</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -519,7 +516,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
 							<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
-							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolviewOrganization/about" rel="publisher">Google+</a>
+							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 						</div>
 						<p id="donate-msg">We believe MolView should be accessible for free to everyone. Since MolView is non-profit and there is no budget behind its development and maintenance we need your support!<br/>This way we can continue to add more awesome features to MolView.</p>
 						<a class="btn" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">Donate</a>
@@ -528,7 +525,7 @@ Query parameters:
 						<h2>About</h2>
 						<div class="dialog-close-btn"></div>
 						<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
-						This web application is built using the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
+						This web application is built on top of the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
 						<ul>
 							<li>JavaScript libraries
 								<ul>
@@ -568,7 +565,7 @@ Query parameters:
 							&nbsp;|&nbsp;
 							<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							&nbsp;|&nbsp;
-							<a class="link" target="_blank" title="+MolView" href="https://google.com/+MolviewOrganization" rel="publisher">Google+</a>
+							<a class="link" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization" rel="publisher">Google+</a>
 							&nbsp;|&nbsp;
 							<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
 						</p>
@@ -585,7 +582,7 @@ Query parameters:
 								document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
 							}
 						</script>
-						<p><a class="link" href="docs/MolView-v2.2-manual.pdf" target="_blank">Download PDF version</a></p>
+						<p><a class="link" href="docs/manual.pdf" target="_blank">PDF version</a></p>
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 						<h3>Subjects</h3>
 						<div class="expandable">
@@ -728,6 +725,8 @@ Query parameters:
 								<p>Jmol offers some advanced functions. You can find them in the Jmol menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
 								<h4>Clear</h4>
 								<p>Clears all executed calculations and measurements.</p>
+								<h4>High Quality</h4>
+								<p>Enables High Quality rendering in Jmol (enabled by default on fast devices) When turned off, anti-aliasing is disabled and the model is drawn using lines while transforming it.</p>
 								<h4>Calculations</h4>
 								<p>You can perform the following Jmol calculations in Jmol:</p>
 								<ul>
@@ -735,23 +734,16 @@ Query parameters:
 									<li><b>Charge:</b> calculates and projects atomic charge as text label and white to atom color gradient</li>
 									<li><b>Bond dipoles:</b> calculates and draws individual bond dipoles</li>
 									<li><b>Overall dipole:</b> calculates and draws netto bond dipole</li>
-									<li><b>Energy minimization:</b> executes an MMFF94 energy minimization calculation<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
+									<li><b>Energy minimization:</b> executes an interactive MMFF94 energy minimization<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
 								</ul>
 								<h4>Measurement</h4>
-								<p>You can execute distance, angle and torsion measurements using Jmol. You can select one of these measurement modes via the Jmol menu <i>(click selected mode again to deselect)</i> Select atoms using the right mouse button.</p>
+								<p>You can measure distance, angle and torsion using Jmol. You can activate and deactivate one of these measurement types via the Jmol menu.</p>
 								<ul>
 									<li><b>Distance</b> distance between two atoms in <b>nm</b> <i>(select two atoms)</i></li>
 									<li><b>Angle</b> angle between two bonds in <b>deg</b> <i>(select three atoms)</i></li>
 									<li><b>Torsion</b> torsion between four atoms in <b>deg</b> <i>(select four atoms)</i></li>
 								</ul>
 								<p>Note that the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
-								<h4>Render mode</h4>
-								<p>In Jmol, you can switch between different render modes in order to speed up performance or to increase quality.<br/>There are three render modes:</p>
-								<ol>
-									<li><b>Everything:</b> slowest but best quality</li>
-									<li><b>Normal:</b> average speed and quality</li>
-									<li><b>Minimal:</b> fastest but least quality</li>
-								</ol>
 							</div>
 						</div>
 						<p>
@@ -759,7 +751,7 @@ Query parameters:
 							<ul>
 								<li>Twitter: <a class="link" target="_blank" title="Twitter page" href="https://twitter.com/molview">@molview</a></li>
 								<li>Facebook: <a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">MolView</a></li>
-								<li>Google Plus: <a class="link" target="_blank" title="Google+ page" href="https://google.com/+MolviewOrganization" rel="publisher">+MolView</a></li>
+								<li>Google Plus: <a class="link" target="_blank" title="Google+ page" href="https://google.com/+MolViewOrganization" rel="publisher">+MolView</a></li>
 								<li>Mail: <a class="link" target="_blank" title="Mail adress" href="mailto:support@molview.org">support@molview.org</a></li>
 							</ul>
 						</p>

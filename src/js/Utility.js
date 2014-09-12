@@ -188,6 +188,19 @@ function AJAX(obj)
 	return $.ajax(obj);
 }
 
+/* Test if DOM Element dimensions have changed */
+$.fn.sizeChanged = function()
+{
+	return !(this.data("savedWidth") ==  this.width()
+		  && this.data("savedHeight") ==  this.height());
+}
+
+$.fn.saveSize = function()
+{
+	this.data("savedWidth", this.width());
+	this.data("savedHeight", this.height());
+}
+
 /* PHP similar_text JavaScript implementation
 see: http://phpjs.org/functions/similar_text/ */
 function similar_text(first, second, percent)

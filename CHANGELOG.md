@@ -1,19 +1,23 @@
-## 2.3.x
+## Whishlist:
 
-Improvement subjects:
+Features:
 
- - Add CIF loader to GLmol
- - Add EDTSurf implementation to GLmol
- - Add THREE.CanvasRenderer to GLmol (update THREE.js)
+  - Add CIF loader to GLmol
+  - Add EDTSurf (protein surfaces) implementation to GLmol
+  - Add THREE.CanvasRenderer to GLmol (update THREE.js)
+  - Add protein solvents display
+  - Add electron density maps for macromolecules
+  - Add dotted H-bonds and SS-bonds for proteins
+  - Create interactive protein viewer
 
- - Add protein solvents display
- - Add electron density maps for macromolecules
- - Add dotted H-bonds and SS-bonds for proteins
+Expansions:
 
- - Create Touch menu drawer
- - Server-sise backend services (depiction)
- - MolView home website (features, mission, manual)
- - MolView for Android and iOS using Apache Cordova
+  - Integrate COD image archive
+  - Create Touch menu drawer
+  - MolView home website (pages: features, about, manual, changelog, license)
+  - MolView for Android and iOS using CocoonJS
+  - Backend services using CDK and the Google Cloud Platform
+  - Explore Mathematica features
 
 ## 2.2.x
 
@@ -30,49 +34,51 @@ Bugfixes:
   - Added empty CIF validation in cif.php mirror
   - Added crystal 2D depiction fallbacks
   - Fixed GLmol face culling issue
+  - Fixed JSmol measure and rotate issue
 
 Revisions:
 
   - Revised logo
-  - Removed auto onload model layout for crystals
+  - Revised CSS efficiency
+  - Migrated CSS to LESS
   - Redesigned sketcher selection style
   - Redesigned UI (flat and light)
   - Redesigned search results style
-  - Revised CSS efficiency
-  - Migrated CSS to LESS
+  - Revised Information loading sequence
   - Renamed Loader modules
   - Renamed protein to biomolecule
   - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
-  - Revised Information loading sequence
   - Moved metadata lookup to separate PHP file
+  - Replaced Jmol render-mode menu with hq switch
+  - Removed auto layout-model onload crystals
   - Removed embed warning about slow, non-WebGL devices
 
 Features:
 
   - Added PDBID search
-  - Added GLmol menu for WebGL devices
   - Added JSmol middle mouse button dragging
   - Added Autocomplete for compounds, minerals and proteins
-  - Moved InfoCard and Spectra to separate layer
-  - Added transparency support for exported images
-  - Added option to alter the Model background color
+  - Added transparency to exported images
   - Added dialog close buttons
   - Added welcome dialog
-  - Added option to switch between MolView themes (desktop and touch)
+  - Added Model background color menu
+  - Added MolView themes menu (desktop and touch)
+  - Added UI layer framework (layers: main, search, infocard, spectra)
   - Added menu-toggle hover event for non-touch devices
   - Added menu-item icons
-  > Added external references to Information card (Chemicalize, Google, PDB, COD)
-  > Added scientific reference to the NIST Chemistry WebBook for spectra
-  > Added percent composition table to Information card
-  > Added CAS lookup fallback using PubChem
-  > Added SMILES 3D conformation fallback using PubChem
-  > Added SMILES 3D conformation URL keys (CID > InChiKey > SMILES)
-  > Added *Don't show me again* option to Messages alerts
-  > Added user preferences storage using HTML5 Web Storage
-  > Added functional groups support in Sketcher
-  > Integrated COD image archive
+  - Added bio-assembly function
+  - Added protein chain types and coloring settings
+  > Add external references to Information card (Chemicalize, Google, PDB, COD)
+  > Add scientific reference to the NIST Chemistry WebBook for spectra
+  > Add percent composition table to Information card
+  > Add CAS lookup fallback using PubChem
+  > Add SMILES 3D conformation fallback using PubChem
+  > Add SMILES 3D conformation URL keys (CID > InChiKey > SMILES)
+  > Add *Don't show me again* option to Messages alerts
+  > Add user preferences storage using HTML5 Web Storage
+  > Add functional groups support in Sketcher
   > Track user interaction via analytics.js
-  > Debugging via analytics.js
+  > Debug via analytics.js
 
 ## 2.1.3 (2014-07-07)
 

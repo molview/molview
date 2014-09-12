@@ -192,7 +192,7 @@ var MolView = {
 
 		if(this.touch && !Detector.webgl)
 		{
-			Model.JSmol.platformSpeed = 1;
+			Model.JSmol.setQuality(false);
 		}
 
 		//actions
@@ -254,6 +254,8 @@ var MolView = {
 		$("#glmol-color-polarity").on(this.trigger, Actions.glmol_color_polarity);
 
 		$("#jmol-clean").on(this.trigger, Actions.jmol_clean);
+		$("#jmol-hq").on(this.trigger, Actions.jmol_hq);
+
 		$("#mep-lucent").on(this.trigger, Actions.mep_lucent);
 		$("#mep-opaque").on(this.trigger, Actions.mep_opaque);
 		$("#jmol-charge").on(this.trigger, Actions.jmol_charge);
@@ -264,10 +266,6 @@ var MolView = {
 		$("#measure-distance").on(this.trigger, Actions.measure_distance);
 		$("#measure-angle").on(this.trigger, Actions.measure_angle);
 		$("#measure-torsion").on(this.trigger, Actions.measure_torsion);
-
-		$("#jmol-render-all").on(this.trigger, Actions.jmol_render_all);
-		$("#jmol-render-normal").on(this.trigger, Actions.jmol_render_normal);
-		$("#jmol-render-minimal").on(this.trigger, Actions.jmol_render_minimal);
 
 		$("#pubchem-search").on("click", Actions.pubchem_search);
 		$("#rcsb-search").on("click", Actions.rcsb_search);

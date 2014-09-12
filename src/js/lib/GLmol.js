@@ -145,18 +145,27 @@ var GLmol =(function()
 				alpha: true
 			});
 			this.renderer.sortObjects = false;//hopefully improve performance
-			this.renderer.domElement.style.width = "100%";
-			this.renderer.domElement.style.height = "100%";
+
 			this.container.append(this.renderer.domElement);
 			this.renderer.setSize(this.WIDTH, this.HEIGHT);
+			jQuery(this.renderer.domElement).css({
+				width: this.container.width(),
+				height: this.container.height()
+			});
+
 			this.webglFailed = false;
 		}
 		catch(e)
 		{
 			this.canvas2d = jQuery('<canvas></canvas');
 			this.container.append(this.canvas2d);
+
 			this.canvas2d[0].height = this.HEIGHT;
 			this.canvas2d[0].width = this.WIDTH;
+			jQuery(this.canvas2d).css({
+				width: this.container.width(),
+				height: this.container.height()
+			});
 		}
 
 		this.camera = new THREE.PerspectiveCamera(20, this.ASPECT, 1, 800); // will be updated anyway
@@ -396,7 +405,13 @@ var GLmol =(function()
 		if(!this.webglFailed)
 		{
 			this.ASPECT = this.WIDTH / this.HEIGHT;
+
 			this.renderer.setSize(this.WIDTH, this.HEIGHT);
+			jQuery(this.renderer.domElement).css({
+				width: this.container.width(),
+				height: this.container.height()
+			});
+
 			this.camera.aspect = this.ASPECT;
 			this.camera.updateProjectionMatrix();
 		}
@@ -404,6 +419,10 @@ var GLmol =(function()
 		{
 			this.canvas2d[0].height = this.HEIGHT;
 			this.canvas2d[0].width = this.WIDTH;
+			jQuery(this.canvas2d).css({
+				width: this.container.width(),
+				height: this.container.height()
+			});
 		}
 		this.show();
 	};

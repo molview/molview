@@ -58,7 +58,8 @@ var Loader = {
 		});
 	},
 
-	PubChem: {
+	PubChem:
+	{
 		i: 0,
 		step: 10,
 		loading: false,
@@ -342,7 +343,8 @@ var Loader = {
 		}
 	},
 
-	RCSB: {
+	RCSB:
+	{
 		i: 0,
 		step: 10,
 		loading: false,
@@ -503,8 +505,7 @@ var Loader = {
 							}
 							else//switch to JSmol
 							{
-								Model.loadPDB(pdb, true);
-								Model.JSmol.setPlatformSpeed(1);
+								Model.preloadPDB(pdb);
 								Model.setRenderEngine("JSmol", finish);
 							}
 						}
@@ -518,7 +519,7 @@ var Loader = {
 						}
 						else//switch to GLmol
 						{
-							Model.loadPDB(pdb, true);
+							Model.preloadPDB(pdb);
 							Model.setRenderEngine("GLmol", finish);
 						}
 					}
@@ -531,7 +532,8 @@ var Loader = {
 		}
 	},
 
-	COD: {
+	COD:
+	{
 		i: 0,
 		step: 10,
 		loading: false,

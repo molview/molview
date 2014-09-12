@@ -47,15 +47,17 @@ var MolView = {
 		//initialize
 		Request.init();
 
-		$(window).on("resize", Model.resize);
+		$(window).on("resize", Model.resize.bind(Model));
 
 		Progress.increment();
 
+		if(this.touch && !Detector.webgl)
+		{
+			Model.JSmol.setQuality(false);
+		}
+
 		Model.init((function()
 		{
-			if(this.touch && !Detector.webgl)
-				Model.JSmol.setPlatformSpeed(1);
-
 			//execute query commands
 			$.each(this.query, function(key, value)
 			{

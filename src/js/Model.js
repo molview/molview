@@ -275,18 +275,28 @@ var Model = {
 	* Loads a PDB file into the 3D engine
 	* Updates Model metadata and UI
 	* @param {String}  pdb       PDB file
-	* @param {Boolean} noDisplay If True, the PDB file is NOT displayed
 	*/
-	loadPDB: function(pdb, noDisplay)
+	loadPDB: function(pdb)
 	{
 		this.data.current = "PDB";
 		this.data.pdb = pdb;
 		$("#save-local-3d").text("PDB file");
 		$(".jmol-script").addClass("disabled");
 
-		if(noDisplay) return;
-
 		this._loadPDB(pdb);
+	},
+
+	/**
+	* Saves a PDB file and but does not load it
+	* Updates Model metadata and UI
+	* @param {String}  pdb       PDB file
+	*/
+	preloadPDB: function(pdb, noDisplay)
+	{
+		this.data.current = "PDB";
+		this.data.pdb = pdb;
+		$("#save-local-3d").text("PDB file");
+		$(".jmol-script").addClass("disabled");
 	},
 
 	/**
@@ -411,8 +421,6 @@ var Model = {
 	{
 		ready: false,
 		view: undefined,
-		canvas: undefined,
-		container: undefined,
 		loadBioAssembly: false,
 		chain: {
 			type: "ribbon",//ribbon || cylinders || btube || ctrace
@@ -431,10 +439,6 @@ var Model = {
 			if(Detector.canvas)
 			{
 				this.view = new GLmol("glmol", !Detector.webgl, MolView.mobile ? 1.5 : 1.0);
-
-				this.container = $("#glmol");
-				this.canvas = this.container.children("canvas").first();
-				this.canvas.css("width", this.container.width());
 
 				this.view.defineRepresentation = function()
 				{
@@ -540,10 +544,9 @@ var Model = {
 
 		resize: function()
 		{
-			if(this.view !== undefined)
+			if(this.view && $("#glmol").sizeChanged())
 			{
-				if(this.canvas !== undefined && this.container !== undefined)
-					this.canvas.css("width", this.container.width());
+				$("#glmol").saveSize();
 				this.view.resize();
 			}
 		},
@@ -725,7 +728,7 @@ var Model = {
 	{
 		ready: false,
 		readyCB: undefined,//only used in constructor
-		platformSpeed: 4,
+		hq: true,//high quality
 		picking: "OFF",
 
 		/*
@@ -737,7 +740,6 @@ var Model = {
 		init: function(cb)
 		{
 			if(Jmol == undefined) return;
-
 			delete Jmol._tracker;
 
 			if(Detector.canvas)
@@ -758,17 +760,15 @@ var Model = {
 						use: "HTML5",
 						j2sPath: MolView.JMOL_J2S_PATH,
 						script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
-unbind "LEFT CLICK" "_pickMeasure"; bind "RIGHT CLICK" "_pickMeasure";\
-unbind "LEFT CLICK" "_pickAtom"; bind "RIGHT CLICK" "_pickAtom";\
 frank off; set specular off;\
 background ' + Model.bg.jmol + '; color label ' + Model.bg.jmol + ';\
 background echo ' + Model.bg.jmol + '; color echo ' + Model.bg.jmol + ';\
 set echo top left; font echo 18 serif bold;\
 set antialiasDisplay true; set disablePopupMenu true; set showunitcelldetails false;\
 set hoverDelay 0.001; hover off; font measure 18;\
-set MessageCallback "Model.JSmol.onMessage";\
+set MessageCallback "Model.JSmol.MessageCallback";\
 set MinimizationCallback "Model.JSmol.MinimizationCallback";',
-						readyFunction: Model.JSmol.onReady.bind(Model.JSmol),
+						readyFunction: Model.JSmol.ReadyCallback.bind(Model.JSmol),
 						console: "none"
 					});
 					$("#jsmol").html(Jmol.getAppletHtml(JSmol));
@@ -786,39 +786,39 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		/**
 		 * Called by JSmol when initialization is ready
 		 */
-		onReady: function()
+		ReadyCallback: function()
 		{
 			this.ready = true;
-			this.setPlatformSpeed(this.platformSpeed);
-			var scope = this;
+			this.setQuality(this.hq);
 
 			Model._setRenderEngine("JSmol");
 			Messages.clear();
-			if(scope.readyCB) scope.readyCB();
+			if(this.readyCB) this.readyCB();
 		},
 
 		/**
-		 * JSmol message callback
-		 */
-		MinimizationCallback: function(jsmolObject, message)
-		{
-			if(message == "done")
-			{
-				Model.JSmol._setPlatformSpeed(Model.JSmol.platformSpeed);
-				Messages.clear();
-			}
-		},
-
-		/**
-		* JSmol minimization callback
+		* JSmol message callback
 		*/
-		onMessage: function(jsmolObject, message)
+		MessageCallback: function(jsmolObject, message)
 		{
 			if(message.toLowerCase().indexOf("initial mmff e") > -1
 			&& message.toLowerCase().indexOf("max steps = 0") > -1)
 			{
 				var array = message.split(/ +/);
 				Model.JSmol.print("Energy = " + array[5] + " kJ");
+			}
+		},
+
+		/**
+		 * JSmol minimization callback
+		 */
+		MinimizationCallback: function(jsmolObject, message)
+		{
+			if(message == "done")
+			{
+				//restore quality settings
+				Model.JSmol._setQuality(Model.JSmol.hq);
+				Messages.clear();
 			}
 		},
 
@@ -862,8 +862,9 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 		resize: function()
 		{
-			if(this.ready)
+			if(this.ready && $("#jsmol").sizeChanged())
 			{
+				$("#jsmol").saveSize();
 				Jmol.resizeApplet(JSmol, [ $("#model").width(), $("#model").height() ]);
 			}
 		},
@@ -919,7 +920,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			{
 				this.currentModel = mol;
 
-				this._setPicking("OFF");
+				this._setMeasure("OFF");
 
 				JSmol._loadMolData(mol);
 				this.setRepresentation(Model.representation);
@@ -937,8 +938,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			{
 				this.currentModel = pdb;
 
-				this._setPicking("OFF");
-				this._setPlatformSpeed(Model.JSmol.platformSpeed);
+				this._setMeasure("OFF");
 
 				this.scriptWaitOutput("set defaultLattice {0 0 0};");
 				this.scriptWaitOutput("set showUnitcell false;");
@@ -959,7 +959,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			{
 				this.currentModel = cif + cell;
 
-				this._setPicking("OFF");
+				this._setMeasure("OFF");
 
 				cell = cell || [1, 1, 1];
 				this.scriptWaitOutput("set defaultLattice {" + cell.join(" ") + "};");
@@ -975,29 +975,31 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		},
 
 		/**
-		 * Set JSmol render quality (called platform speed by Jmol)
+		 * Set JSmol render quality (uses Jmol platformSpeed and antialiasDisplay)
 		 * Updates Model metadata and UI
-		 * @param {Integer} i Platform speed (1-8)
+		 * @param {Boolean} hq      Enable High Quality
+		 * @param {Boolean} measure Enable Measurement Quality [optional]
 		 */
-		setPlatformSpeed: function(i)
+		setQuality: function(hq, measure)
 		{
-			$(".jmol-rnd").removeClass("checked");
-			$("#jmol-render-" + (i == 1 ? "minimal" : i == 4 ? "normal" : "all")).addClass("checked");
+			$("#jmol-hq").removeClass("checked");
+			if(hq) $("#jmol-hq").addClass("checked");
 
-			this.platformSpeed = i;
-
-			this._setPicking("OFF");
-			this._setPlatformSpeed(i);
+			this.hq = hq;
+			this._setMeasure("OFF", true);
+			this._setQuality(hq, measure);
 		},
 
 		/**
-		 * Inside method to apply the specified Jmol platformSpeed
-		 * @param {Integer} i Platform speed (1-8)
+		 * Set JSmol render quality (uses Jmol platformSpeed and antialiasDisplay)
+		 * @param {Boolean} hq      Enable High Quality
+		 * @param {Boolean} measure Enable Measurement Quality [optional]
 		 */
-		_setPlatformSpeed: function(i)
+		_setQuality: function(hq, measure)
 		{
-			this.scriptWaitOutput("set antialiasDisplay " + (i <= 2 ? "false" : "true") + "; set platformSpeed " + i + ";");
-			this.scriptWaitOutput(JmolScripts.resetLabels);
+			this.scriptWaitOutput("set antialiasDisplay " +
+					(hq && !measure ? "true" : "false") + "; set platformSpeed "
+					+ (measure && hq ? 2 : hq ? 4 : 1 + ";"));
 		},
 
 		/**
@@ -1031,7 +1033,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			this.script(JmolScripts.clearMeasures);
 			this.script(JmolScripts.clearMolecule);
 			this.script(JmolScripts.resetLabels);
-			this.setPicking("OFF");
+			this.setMeasure("OFF");
 		},
 
 		calculatePartialCharge: function()
@@ -1063,7 +1065,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			MolView.makeModelVisible();
 			Model.JSmol.safeCallback(function()
 			{
-				Model.JSmol._setPicking("OFF");
+				Model.JSmol._setMeasure("OFF");
 				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("isosurface vdw resolution 0 color range -.07 .07 map mep " + (translucent ? "translucent" : "opaque") + ";");
 				Model.JSmol.script(JmolScripts.resetLabels);
@@ -1078,7 +1080,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			MolView.makeModelVisible();
 			Model.JSmol.safeCallback(function()
 			{
-				Model.JSmol._setPicking("OFF");
+				Model.JSmol._setMeasure("OFF");
 				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("label %-8.4[partialcharge]; hover off;");
 			}, "jmol_calculation");
@@ -1092,7 +1094,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			MolView.makeModelVisible();
 			Model.JSmol.safeCallback(function()
 			{
-				Model.JSmol._setPicking("OFF");
+				Model.JSmol._setMeasure("OFF");
 				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("dipole bonds on; dipole calculate bonds; hover off;");
 			}, "jmol_calculation");
@@ -1106,7 +1108,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			MolView.makeModelVisible();
 			Model.JSmol.safeCallback(function()
 			{
-				Model.JSmol._setPicking("OFF");
+				Model.JSmol._setMeasure("OFF");
 				Model.JSmol.calculatePartialCharge();
 				Model.JSmol.script("dipole molecular on; dipole calculate molecular; hover off;");
 			}, "jmol_calculation");
@@ -1120,8 +1122,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 			MolView.makeModelVisible();
 			Model.JSmol.safeCallback(function()
 			{
-				Model.JSmol._setPicking("OFF", true);
-				Model.JSmol._setPlatformSpeed(1);
+				Model.JSmol.setQuality(Model.JSmol.hq, true);//calls setMeasure("OFF")
 				Model.JSmol.script(JmolScripts.clearMolecule);
 				Model.JSmol.script(JmolScripts.resetLabels);
 				Model.JSmol.script("minimize;");
@@ -1129,45 +1130,50 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		},
 
 		/**
-		 * Enables or disables JSmol picking
+		 * Wrapper for _setMeasure (ensures JSmol context)
 		 * @param {String}  type Picking type (distance || angle || torsion)
 		 *                       or OFF to disable picking
-		 * @param {Boolean} repressPlatformSpeedReset
+		 * @param {Boolean} noQualityRestore
 		 */
-		setPicking: function(type, repressPlatformSpeedReset)
+		setMeasure: function(type, noQualityRestore)
 		{
+			if(this.picking == type.toLowerCase()) return;
+
 			Model.JSmol.safeCallback(function()
 			{
-				Model.JSmol._setPicking(type, repressPlatformSpeedReset)
+				Model.JSmol._setMeasure(type, noQualityRestore)
 			});
 		},
 
-		_setPicking: function(type, repressPlatformSpeedReset)
+		/**
+		 * Enables or disables JSmol picking
+		 * @param {String}  type Picking type (distance || angle || torsion)
+		 *                       or off to disable picking
+		 * @param {Boolean} noQualityRestore
+		 */
+		_setMeasure: function(type, noQualityRestore)
 		{
-			this.picking = type;
-			var measureButton = $("#measure-" + type.toLowerCase());
-			$(".jmol-picking").not(measureButton).removeClass("checked");
-			type = measureButton.toggleClass("checked").hasClass("checked") ? type : "OFF";
+			if(this.picking == type.toLowerCase()) return;
 
-			if(type == "OFF")
+			this.picking = type.toLowerCase();
+			$(".jmol-picking").removeClass("checked");
+
+			if(this.picking == "off")
 			{
 				Model.JSmol.scriptWaitOutput("set picking off;");
 
-				if(!repressPlatformSpeedReset)
+				if(!noQualityRestore)
 				{
-					Model.JSmol._setPlatformSpeed(Model.JSmol.platformSpeed);
+					Model.JSmol._setQuality(Model.JSmol.hq);
 				}
 			}
 			else
 			{
-				if(!repressPlatformSpeedReset)
-				{
-					//1 will enable lines representation on mousedown
-					Model.JSmol._setPlatformSpeed(2);
-				}
+				$("#measure-" + this.picking).addClass("checked");
 
+				//JSmol.setQuality will disable picking again
+				Model.JSmol._setQuality(Model.JSmol.hq, true);
 				Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");
-				Model.JSmol.scriptWaitOutput(JmolScripts.resetLabels);
 			}
 		},
 
@@ -1217,8 +1223,9 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 		resize: function()
 		{
-			if(this.view !== undefined)
+			if(this.view && $("#chemdoodle").sizeChanged())
 			{
+				$("#chemdoodle").saveSize();
 				this.view.resize($("#model").width(), $("#model").height());
 				if(this.molecule !== undefined) this.view.loadMolecule(this.molecule);
 			}

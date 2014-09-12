@@ -1,6 +1,9 @@
 Options +FollowSymlinks
 RewriteEngine on
 
+RewriteCond %{HTTP_HOST} ^molview.org$ [NC]
+RewriteRule ^(.*)$ http://www.molview.org/$1 [R=301]
+
 RewriteRule ^thanks$ pages/thanks.html [L]
 RewriteRule ^nosupport$ pages/nosupport.html [L]
 RewriteRule ^embed$ embed.php [L]

@@ -45,8 +45,8 @@ var Loader = {
 		});
 	},
 
-	PubChem: {
-
+	PubChem:
+	{
 		loadCID: function(cid, name)
 		{
 			Progress.clear();
@@ -98,11 +98,20 @@ var Loader = {
 		}
 	},
 
-	RCSB: {
+	RCSB:
+	{
 		loadPDBID: function(pdbid, name)
 		{
 			Progress.clear();
 			Progress.setSteps(2);
+
+			function finish()
+			{
+				document.title = name || pdbid.toUpperCase();
+
+				Progress.complete();
+				Messages.clear();
+			}
 
 			Messages.process(function()
 			{
@@ -118,48 +127,42 @@ var Loader = {
 						}
 						else
 						{
-							if(Model.engine == "JSmol")
+							if(Model.isJSmol())
 							{
 								Model.loadPDB(pdb);
-
-								document.title = name || pdbid.toUpperCase();
-
-								Progress.complete();
-								Messages.clear();
+								finish();
 							}
 							else//switch to JSmol
 							{
-								Model.loadPDB(pdb, true);
-								Model.JSmol.setPlatformSpeed(1);
-								Model.setRenderEngine("JSmol", function()
-								{
-									document.title = name || pdbid.toUpperCase();
-
-									Progress.complete();
-									Messages.clear();
-								});
+								Model.preloadPDB(pdb);
+								Model.setRenderEngine("JSmol", finish);
 							}
 						}
 					}
 					else
 					{
-						Model.loadPDB(pdb);
-
-						document.title = name || pdbid.toUpperCase();
-
-						Progress.complete();
-						Messages.clear();
+						if(Model.isGLmol())
+						{
+							Model.loadPDB(pdb);
+							finish();
+						}
+						else//switch to GLmol
+						{
+							Model.preloadPDB(pdb);
+							Model.setRenderEngine("GLmol", finish);
+						}
 					}
 				},
 				function()
 				{
-					Messages.alert("no_webgl_support");
+					Messages.alert("load_fail");
 				});
 			}, "macromolecule");
 		}
 	},
 
-	COD: {
+	COD:
+	{
 		loadCODID: function(codid, name)
 		{
 			Progress.clear();

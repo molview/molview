@@ -1,7 +1,7 @@
 MolView
 =======
 MolView is a web application for drawing, searching and viewing chemical
-structures. This web application is built upon the JavaScript libraries
+structures. This web application is built on top of the JavaScript libraries
 and online services listed below. I also drew inspration from the
 [Virtual Model Kit](http://chemagic.com/JSmolVMK2.htm),
 a similar webapplication.
@@ -48,6 +48,7 @@ See LICENSE.md for more details about third party code.
 Build
 -----
 Instructions:
+
 1. Copy all files to a server with PHP and .htaccess support
 2. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
 3. Run `./build.sh`
