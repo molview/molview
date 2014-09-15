@@ -230,7 +230,7 @@ var MolView = {
 		$("#model-line").on(this.trigger, Actions.model_line);
 
 		$("#model-bg-black").on(this.trigger, Actions.model_bg_black);
-		$("#model-bg-grey").on(this.trigger, Actions.model_bg_grey);
+		$("#model-bg-gray").on(this.trigger, Actions.model_bg_gray);
 		$("#model-bg-white").on(this.trigger, Actions.model_bg_white);
 
 		$("#cif-unit-cell").on(this.trigger, Actions.cif_unit_cell);
@@ -242,16 +242,18 @@ var MolView = {
 		$("#engine-cdw").on(this.trigger, Actions.engine_cdw);
 
 		$("#bio-assembly").on(this.trigger, Actions.bio_assembly);
-		$("#glmol-chain-ribbon").on(this.trigger, Actions.glmol_chain_ribbon);
-		$("#glmol-chain-cylinders").on(this.trigger, Actions.glmol_chain_cylinders);
-		$("#glmol-chain-btube").on(this.trigger, Actions.glmol_chain_btube);
-		$("#glmol-chain-ctrace").on(this.trigger, Actions.glmol_chain_ctrace);
-		$("#glmol-chain-bonds").on(this.trigger, Actions.glmol_chain_bonds);
-		$("#glmol-color-ss").on(this.trigger, Actions.glmol_color_ss);
-		$("#glmol-color-spectrum").on(this.trigger, Actions.glmol_color_spectrum);
-		$("#glmol-color-chain").on(this.trigger, Actions.glmol_color_chain);
-		$("#glmol-color-bfactor").on(this.trigger, Actions.glmol_color_bfactor);
-		$("#glmol-color-polarity").on(this.trigger, Actions.glmol_color_polarity);
+		$("#chain-type-ribbon").on(this.trigger, Actions.chain_type_ribbon);
+		$("#chain-type-cylinders").on(this.trigger, Actions.chain_type_cylinders);
+		$("#chain-type-btube").on(this.trigger, Actions.chain_type_btube);
+		$("#chain-type-ctrace").on(this.trigger, Actions.chain_type_ctrace);
+		$("#chain-type-bonds").on(this.trigger, Actions.chain_type_bonds);
+
+		$("#chain-color-ss").on(this.trigger, Actions.chain_color_ss);
+		$("#chain-color-spectrum").on(this.trigger, Actions.chain_color_spectrum);
+		$("#chain-color-chain").on(this.trigger, Actions.chain_color_chain);
+		$("#chain-color-residue").on(this.trigger, Actions.chain_color_residue);
+		$("#chain-color-polarity").on(this.trigger, Actions.chain_color_polarity);
+		$("#chain-color-bfactor").on(this.trigger, Actions.chain_color_bfactor);
 
 		$("#jmol-clean").on(this.trigger, Actions.jmol_clean);
 		$("#jmol-hq").on(this.trigger, Actions.jmol_hq);
@@ -366,26 +368,26 @@ var MolView = {
 				if(value == "ribbon" || value == "cylinders"
 				|| value == "btube" || value == "ctrace")
 				{
-					Model.GLmol.setChainType(value, true);
+					Model.setChainType(value, true);
 				}
 
 				if(value == "bonds")
 				{
-					Model.GLmol.setChainType("none", true);
-					Model.GLmol.setChainBonds(true);
+					Model.setChainType("none", true);
+					Model.setChainBonds(true, true);
 				}
 			}
 			else if(key == "chainBonds")
 			{
-				Model.GLmol.setChainBonds(value == "true");
+				Model.setChainBonds(value == "true", true);
 			}
 			else if(key == "chainColor")
 			{
 				if(value == "ss" || value == "spectrum"
-				|| value == "chain" || value == "bfactor"
-				|| value == "polarity")
+				|| value == "chain" || value == "residue"
+				|| value == "polarity" || value == "bfactor")
 				{
-					Model.GLmol.setChainColor(value);
+					Model.setChainColor(value, true);
 				}
 			}
 			else if(key == "bg")

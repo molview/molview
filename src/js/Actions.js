@@ -62,22 +62,22 @@ var Actions = {
 
 	export_2D: function()
 	{
-		var dataURL = Sketcher.toDataURL();
+		var dataURL = Sketcher.getImageDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (structural formula).png");
 	},
 
 	export_3D: function()
 	{
-		var dataURL = Model.toDataURL();
+		var dataURL = Model.getImageDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (model).png");
 	},
 
 	save_local_3D: function(name)
 	{
-		var blob = Model.getDataBlob();
-		saveAs(blob, (name || document.title) + "." + (Model.getDataExstension().toLowerCase()));
+		var blob = Model.getFileBlob();
+		saveAs(blob, (name || document.title) + "." + (Model.getFileExstension().toLowerCase()));
 	},
 
 	data_infocard: function()
@@ -206,7 +206,7 @@ var Actions = {
 	model_line:      function() { Model.setRepresentation("line"); },
 
 	model_bg_black: function() { Model.setBackground("black"); },
-	model_bg_grey:  function() { Model.setBackground("grey"); },
+	model_bg_gray:  function() { Model.setBackground("gray"); },
 	model_bg_white: function() { Model.setBackground("white"); },
 
 	engine_glmol: function()
@@ -244,7 +244,7 @@ var Actions = {
 
 	cif_unit_cell: function()
 	{
-		if(Model.data.current == "CIF")
+		if(Model.isCIF())
 		{
 			Messages.process(function()
 			{
@@ -256,7 +256,7 @@ var Actions = {
 
 	cif_2x2x2_cell: function()
 	{
-		if(Model.data.current == "CIF")
+		if(Model.isCIF())
 		{
 			Messages.process(function()
 			{
@@ -268,7 +268,7 @@ var Actions = {
 
 	cif_1x3x3_cell: function()
 	{
-		if(Model.data.current == "CIF")
+		if(Model.isCIF())
 		{
 			Messages.process(function()
 			{
@@ -279,19 +279,21 @@ var Actions = {
 	},
 
 	/*
-	GLmol menu
+	Protein menu
 	*/
-	bio_assembly:          function() { Model.GLmol.setBioAssembly(!$("#bio-assembly").hasClass("checked")); },
-	glmol_chain_ribbon:    function() { Model.GLmol.setChainType("ribbon", !$("#glmol-chain-ribbon").hasClass("checked")); },
-	glmol_chain_cylinders: function() { Model.GLmol.setChainType("cylinders", !$("#glmol-chain-cylinders").hasClass("checked")); },
-	glmol_chain_btube:     function() { Model.GLmol.setChainType("btube", !$("#glmol-chain-btube").hasClass("checked")); },
-	glmol_chain_ctrace:    function() { Model.GLmol.setChainType("ctrace", !$("#glmol-chain-ctrace").hasClass("checked")); },
-	glmol_chain_bonds:     function() { Model.GLmol.setChainBonds(!$("#glmol-chain-bonds").hasClass("checked")); },
-	glmol_color_ss:        function() { Model.GLmol.setChainColor("ss"); },
-	glmol_color_spectrum:  function() { Model.GLmol.setChainColor("spectrum"); },
-	glmol_color_chain:     function() { Model.GLmol.setChainColor("chain"); },
-	glmol_color_bfactor:   function() { Model.GLmol.setChainColor("bfactor"); },
-	glmol_color_polarity:  function() { Model.GLmol.setChainColor("polarity"); },
+	bio_assembly:          function() { Model.setBioAssembly(!$("#bio-assembly").hasClass("checked")); },
+	chain_type_ribbon:     function() { Model.setChainType(!$("#chain-type-ribbon").hasClass("checked") ? "ribbon" : "none"); },
+	chain_type_cylinders:  function() { Model.setChainType(!$("#chain-type-cylinders").hasClass("checked") ? "cylinders" : "none"); },
+	chain_type_btube:      function() { Model.setChainType(!$("#chain-type-btube").hasClass("checked") ? "btube" : "none"); },
+	chain_type_ctrace:     function() { Model.setChainType(!$("#chain-type-ctrace").hasClass("checked") ? "ctrace" : "none"); },
+	chain_type_bonds:      function() { Model.setChainBonds(!$("#chain-type-bonds").hasClass("checked")); },
+
+	chain_color_ss:        function() { Model.setChainColor("ss"); },
+	chain_color_spectrum:  function() { Model.setChainColor("spectrum"); },
+	chain_color_chain:     function() { Model.setChainColor("chain"); },
+	chain_color_residue:   function() { Model.setChainColor("residue"); },
+	chain_color_polarity:  function() { Model.setChainColor("polarity"); },
+	chain_color_bfactor:   function() { Model.setChainColor("bfactor"); },
 
 	/*
 	Jmol menu

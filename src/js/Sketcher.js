@@ -174,7 +174,7 @@ var Sketcher = {
 		$("#resolve").addClass("resolve-updated");
 	},
 
-	toDataURL: function()
+	getImageDataURL: function()
 	{
 		if(this.moledit)
 		{

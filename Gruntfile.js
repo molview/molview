@@ -84,6 +84,9 @@ module.exports = function(grunt)
 					'src/js/Progress.js',
 					'src/js/Messages.js',
 					'src/js/Sketcher.js',
+					'src/js/GLmolPlugin.js',
+					'src/js/JSmolPlugin.js',
+					'src/js/CDWPlugin.js',
 					'src/js/Model.js',
 					'src/js/Request.js',
 					'src/js/Loader.js',
@@ -130,6 +133,9 @@ module.exports = function(grunt)
 					'src/js/Utility.js',
 					'src/js/Progress.js',
 					'src/js/Messages.js',
+					'src/js/GLmolPlugin.js',
+					'src/js/JSmolPlugin.js',
+					'src/js/CDWPlugin.js',
 					'src/js/Model.js',
 					'src/js/Request.js',
 					'src/js/Loader.Embed.js',
@@ -292,5 +298,6 @@ module.exports = function(grunt)
 	grunt.loadNpmTasks('grunt-svgmin');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.registerTask('jsminify', ['uglify', 'replace']);
 	grunt.registerTask('default', ['clean', 'uglify', 'replace', 'less', 'svgmin', 'copy']);
 };

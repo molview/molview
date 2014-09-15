@@ -27,6 +27,7 @@ a similar webapplication.
 
 License
 -------
+```
 MolView (http://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 
@@ -42,7 +43,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with MolView.  If not, see <http://www.gnu.org/licenses/>.
-
+```
 See LICENSE.md for more details about third party code.
 
 Build

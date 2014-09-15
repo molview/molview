@@ -23,7 +23,7 @@ var Messages = {
 	crystal_2d_unreliable: "This structural formula might not correspond to the crystal structure",
 
 	//progress
-	switch_engine: "",
+	switch_engine: "Loading engine&hellip;",
 	compound: "Loading compound&hellip;",
 	macromolecule: "Loading macromolecule&hellip;",
 	crystal: "Loading crystal&hellip;",
@@ -31,7 +31,7 @@ var Messages = {
 	search: "Searching&hellip;",
 	clean: "Cleaning&hellip;",
 	resolve: "Updating&hellip;",
-	glmol_update: "Updating&hellip;",
+	model_update: "Updating&hellip;",
 	init_jmol: "Initializing Jmol&hellip;",
 	jmol_calculation: "Calculation in progress&hellip;",
 
@@ -41,6 +41,11 @@ var Messages = {
 	sketcher_no_macromolecules: "Macromolecules cannot be displayed in the sketcher",
 	mobile_old_no_macromolecules: "Macromolecules cannot be viewed on your device",
 	no_glmol_crystals: "You cannot view crystals using GLmol",
+	glmol_and_jmol_only: "This feature is only available in GLmol and Jmol",
+	glmol_only: "This feature is only available in GLmol",
+	no_jmol_chain_type: "The current chain representation is not supported by Jmol",
+	no_chemdoodle_chain_type: "The current chain representation is not supported by ChemDoodle",
+	no_chemdoodle_chain_color: "The current chain representation is not supported by ChemDoodle",
 
 	//fails
 	smiles_load_error: "Failed to load structure from sketcher",
@@ -51,6 +56,7 @@ var Messages = {
 	resolve_fail: "Structure cannot be resolved",
 	clean_fail: "Structure cannot be cleaned",
 	crystal_2d_fail: "Failed to load a structural formula for this crystal structure",
+	no_protein: "The current 3D model is not a protein",
 
 	/**
 	 * Displays progress message assosiated with $what and call $cb using a
@@ -73,13 +79,13 @@ var Messages = {
 		- resolve
 		- init_jmol
 		- jmol_calculation
-		- glmol_update
+		- model_update
 		*/
 
 		var ret = true;
 
-		//Do not replace the current message (if present) with glmol_update
-		if(!(what == "glmol_update" && !Messages.isEmpty()))
+		//Do not replace the current message (if present) with model_update
+		if(!(what == "model_update" && !Messages.isEmpty()))
 		{
 			Messages.clear();
 
@@ -100,7 +106,6 @@ var Messages = {
 		}
 
 		window.setTimeout(cb, 300);//delay in order to update screen
-
 		return ret;
 	},
 
@@ -121,6 +126,11 @@ var Messages = {
 		- no_webgl_support
 		- no_glmol_crystals
 		- sketcher_no_macromolecules
+		- glmol_and_jmol_only
+		- glmol_only
+		- no_jmol_chain_type
+		- no_chemdoodle_chain_type
+		- no_chemdoodle_chain_color
 
 		- smiles_load_error
 		- smiles_load_error_force
@@ -130,6 +140,7 @@ var Messages = {
 		- resolve_fail
 		- clean_fail
 		- crystal_2d_fail
+		- no_protein
 		*/
 
 		//ignored causes
@@ -145,17 +156,17 @@ var Messages = {
 				.append('<span class="error-message">' + (error.message || error.detailMessage || error) + "</span>")
 				.appendTo(msg);
 			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-				function(){ Progress.complete(); Messages.clear(); }).appendTo(msg);
+				function(){ Progress.complete(); Messages.clear(true); }).appendTo(msg);
 			msg.appendTo($("#messages"));
 		}
 		else
 		{
 			var msg =  $("<div/>").addClass("message alert-message");
 			$("<div/>").addClass("message-text")
-				.html(Messages[cause])
+				.html(Messages[cause] || cause)
 				.appendTo(msg);
 			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-				function(){ Progress.complete(); Messages.clear(); }).appendTo(msg);
+				function(){ Progress.complete(); Messages.clear(true); }).appendTo(msg);
 			msg.appendTo($("#messages"));
 		}
 
@@ -164,11 +175,15 @@ var Messages = {
 
 	/**
 	 * Clears all messages
+	 * @param {Boolean} byUser Indicates if the clear method is triggered by the user
 	 */
-	clear: function()
+	clear: function(byUser)
 	{
-		$("#messages").empty();
-		$("body").removeClass("progress-cursor");
+		if(!$("#messages").children().hasClass("alert-message") || byUser)
+		{
+			$("#messages").empty();
+			$("body").removeClass("progress-cursor");
+		}
 	},
 
 	isEmpty: function()

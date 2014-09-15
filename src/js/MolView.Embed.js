@@ -99,26 +99,26 @@ var MolView = {
 					if(value == "ribbon" || value == "cylinders"
 					|| value == "btube" || value == "ctrace")
 					{
-						Model.GLmol.setChainType(value, true);
+						Model.setChainType(value, true);
 					}
 
 					if(value == "bonds")
 					{
-						Model.GLmol.setChainType("none", true);
-						Model.GLmol.setChainBonds(true);
+						Model.setChainType("none", true);
+						Model.setChainBonds(true, true);
 					}
 				}
 				else if(key == "chainBonds")
 				{
-					Model.GLmol.setChainBonds(value == "true");
+					Model.setChainBonds(value == "true", true);
 				}
 				else if(key == "chainColor")
 				{
 					if(value == "ss" || value == "spectrum"
-					|| value == "chain" || value == "bfactor"
-					|| value == "polarity")
+					|| value == "chain" || value == "residue"
+					|| value == "polarity"|| value == "bfactor")
 					{
-						Model.GLmol.setChainColor(value);
+						Model.setChainColor(value, true);
 					}
 				}
 				else if(key == "bg")

@@ -38,6 +38,15 @@ function chemFormulaFormat(str)
 	else return undefined;
 }
 
+function oneOf(obj, array)
+{
+	for(var i = 0; i < array.length; i++)
+	{
+		if(obj == array[i]) return true;
+	}
+	return false;
+}
+
 function isTouchDevice()
 {
 	return !!('ontouchstart' in window) || (!!('onmsgesturechange' in window) && !!window.navigator.maxTouchPoints);

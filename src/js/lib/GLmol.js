@@ -42,9 +42,9 @@ Modifications:
 - loadSDF, loadXYZ, loadPDB functions
 - Fallback
   - zoom2D: 2D scale/zoom factor
-  - canvasAtomRadius: default fallback atom radius
+  - canvasAtomRadius: default atom radius
   - canvasBondWidth: fallback bond width
-  - canvasVDW: indicates if vdwRadii should be used rather than canvasAtomRadius
+  - canvasVDW: indicates if GLmolVDWRadii should be used rather than canvasAtomRadius
 */
 
 var TV3 = THREE.Vector3,
@@ -67,7 +67,83 @@ THREE.Matrix4.prototype.isIdentity = function()
 	return true;
 };
 
-var GLmol =(function()
+var GLmolElementColors = {
+	"H": 0xFFFFFF,"He": 0xD9FFFF,"Li": 0xCC80FF,"Be": 0xC2FF00,
+	"B": 0xFFB5B5,"C": 0x909090,"N": 0x3050F8,"O": 0xFF0D0D,
+	"F": 0x90E050,"Ne": 0xB3E3F5,"Na": 0xAB5CF2,"Mg": 0x8AFF00,
+	"Al": 0xBFA6A6,"Si": 0xF0C8A0,"P": 0xFF8000,"S": 0xFFFF30,
+	"Cl": 0x1FF01F,"Ar": 0x80D1E3,"K": 0x8F40D4,"Ca": 0x3DFF00,
+	"Sc": 0xE6E6E6,"Ti": 0xBFC2C7,"V": 0xA6A6AB,"Cr": 0x8A99C7,
+	"Mn": 0x9C7AC7,"Fe": 0xE06633,"Co": 0xF090A0,"Ni": 0x50D050,
+	"Cu": 0xC88033,"Zn": 0x7D80B0,"Ga": 0xC28F8F,"Ge": 0x668F8F,
+	"As": 0xBD80E3,"Se": 0xFFA100,"Br": 0xA62929,"Kr": 0x5CB8D1,
+	"Rb": 0x702EB0,"Sr": 0x00FF00,"Y": 0x94FFFF,"Zr": 0x94E0E0,
+	"Nb": 0x73C2C9,"Mo": 0x54B5B5,"Tc": 0x3B9E9E,"Ru": 0x248F8F,
+	"Rh": 0x0A7D8C,"Pd": 0x006985,"Ag": 0xC0C0C0,"Cd": 0xFFD98F,
+	"In": 0xA67573,"Sn": 0x668080,"Sb": 0x9E63B5,"Te": 0xD47A00,
+	"I": 0x940094,"Xe": 0x429EB0,"Cs": 0x57178F,"Ba": 0x00C900,
+	"La": 0x70D4FF,"Ce": 0xFFFFC7,"Pr": 0xD9FFC7,"Nd": 0xC7FFC7,
+	"Pm": 0xA3FFC7,"Sm": 0x8FFFC7,"Eu": 0x61FFC7,"Gd": 0x45FFC7,
+	"Tb": 0x30FFC7,"Dy": 0x1FFFC7,"Ho": 0x00FF9C,"Er": 0x00E675,
+	"Tm": 0x00D452,"Yb": 0x00BF38,"Lu": 0x00AB24,"Hf": 0x4DC2FF,
+	"Ta": 0x4DA6FF,"W": 0x2194D6,"Re": 0x267DAB,"Os": 0x266696,
+	"Ir": 0x175487,"Pt": 0xD0D0E0,"Au": 0xFFD123,"Hg": 0xB8B8D0,
+	"Tl": 0xA6544D,"Pb": 0x575961,"Bi": 0x9E4FB5,"Po": 0xAB5C00,
+	"At": 0x754F45,"Rn": 0x428296,"Fr": 0x420066,"Ra": 0x007D00,
+	"Ac": 0x70ABFA,"Th": 0x00BAFF,"Pa": 0x00A1FF,"U": 0x008FFF,
+	"Np": 0x0080FF,"Pu": 0x006BFF,"Am": 0x545CF2,"Cm": 0x785CE3,
+	"Bk": 0x8A4FE3,"Cf": 0xA136D4,"Es": 0xB31FD4,"Fm": 0xB31FBA,
+	"Md": 0xB30DA6,"No": 0xBD0D87,"Lr": 0xC70066,"Rf": 0xCC0059,
+	"Db": 0xD1004F,"Sg": 0xD90045,"Bh": 0xE00038,"Hs": 0xE6002E,
+	"Mt": 0xEB0026
+};
+
+// Hu, S.Z.; Zhou, Z.H.; Tsai, K.R. Acta Phys.-Chim. Sin., 2003, 19:1073.
+var GLmolVDWRadii = {
+	"H":1.08,"HE":1.34,"LI":1.75,"BE":2.05,"B":1.47,"C":1.49,"N":1.41,"O":1.4,
+	"F":1.39,"NE":1.68,"NA":1.84,"MG":2.05,"AL":2.11,"SI":2.07,"P":1.92,"S":1.82,
+	"CL":1.83,"AR":1.93,"K":2.05,"CA":2.21,"SC":2.16,"TI":1.87,"V":1.79,"CR":1.89,
+	"MN":1.97,"FE":1.94,"CO":1.92,"NI":1.84,"CU":1.86,"ZN":2.1,"GA":2.08,"GE":2.15,
+	"AS":2.06,"SE":1.93,"BR":1.98,"KR":2.12,"RB":2.16,"SR":2.24,"Y":2.19,"ZR":1.86,
+	"NB":2.07,"MO":2.09,"TC":2.09,"RU":2.07,"RH":1.95,"PD":2.02,"AG":2.03,"CD":2.3,
+	"IN":2.36,"SN":2.33,"SB":2.25,"TE":2.23,"I":2.23,"XE":2.21,"CS":2.22,"BA":2.51,
+	"LA":2.4,"CE":2.35,"PR":2.39,"ND":2.29,"PM":2.36,"SM":2.29,"EU":2.33,"GD":2.37,
+	"TB":2.21,"DY":2.29,"HO":2.16,"ER":2.35,"TM":2.27,"YB":2.42,"LU":2.21,"HF":2.12,
+	"TA":2.17,"W":2.1,"RE":2.17,"OS":2.16,"IR":2.02,"PT":2.09,"AU":2.17,"HG":2.09,
+	"TL":2.35,"PB":2.32,"BI":2.43,"PO":2.29,"AT":2.36,"RN":2.43,"FR":2.56,"RA":2.43,
+	"AC":2.6,"TH":2.37,"PA":2.43,"U":2.4,"NP":2.21,"PU":2.56,"AM":2.56,
+	"CM":2.56,"BK":2.56,"CF":2.56,"ES":2.56,"FM":2.56
+};
+
+var GLmolAminoColors = {
+	ALA: 0xC8C8C8,
+	ARG: 0x145AFF,
+	ASN: 0x00DCDC,
+	ASP: 0xE60A0A,
+	CYS: 0xE6E600,
+	GLN: 0x00DCDC,
+	GLU: 0xE60A0A,
+	GLY: 0xEBEBEB,
+	HIS: 0x8282D2,
+	ILE: 0x0F820F,
+	LEU: 0x0F820F,
+	LYS: 0x145AFF,
+	MET: 0xE6E600,
+	PHE: 0x3232AA,
+	PRO: 0xDC9682,
+	SER: 0xFA9600,
+	THR: 0xFA9600,
+	TRP: 0xB45AB4,
+	TYR: 0x3232AA,
+	VAL: 0x0F820F,
+	ASX: 0xFF69B4,
+	GLX: 0xFF69B4
+};
+
+var polarResidues = ['ARG', 'HIS', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS'];
+var nonPolarResidues = ['GLY', 'PRO', 'ALA', 'VAL', 'LEU', 'ILE', 'MET', 'PHE', 'TYR', 'TRP'];
+
+var GLmol = (function()
 {
 	function GLmol(id, force2d, scaleFactor)
 	{
@@ -77,55 +153,7 @@ var GLmol =(function()
 
 	GLmol.prototype.create = function(id, force2d, scaleFactor)
 	{
-		this.Nucleotides = ['  G', '  A', '  T', '  C', '  U', ' DG', ' DA', ' DT', ' DC', ' DU'];
-
-		this.ElementColors = {
-			"H": 0xFFFFFF,"He": 0xD9FFFF,"Li": 0xCC80FF,"Be": 0xC2FF00,
-			"B": 0xFFB5B5,"C": 0x909090,"N": 0x3050F8,"O": 0xFF0D0D,
-			"F": 0x90E050,"Ne": 0xB3E3F5,"Na": 0xAB5CF2,"Mg": 0x8AFF00,
-			"Al": 0xBFA6A6,"Si": 0xF0C8A0,"P": 0xFF8000,"S": 0xFFFF30,
-			"Cl": 0x1FF01F,"Ar": 0x80D1E3,"K": 0x8F40D4,"Ca": 0x3DFF00,
-			"Sc": 0xE6E6E6,"Ti": 0xBFC2C7,"V": 0xA6A6AB,"Cr": 0x8A99C7,
-			"Mn": 0x9C7AC7,"Fe": 0xE06633,"Co": 0xF090A0,"Ni": 0x50D050,
-			"Cu": 0xC88033,"Zn": 0x7D80B0,"Ga": 0xC28F8F,"Ge": 0x668F8F,
-			"As": 0xBD80E3,"Se": 0xFFA100,"Br": 0xA62929,"Kr": 0x5CB8D1,
-			"Rb": 0x702EB0,"Sr": 0x00FF00,"Y": 0x94FFFF,"Zr": 0x94E0E0,
-			"Nb": 0x73C2C9,"Mo": 0x54B5B5,"Tc": 0x3B9E9E,"Ru": 0x248F8F,
-			"Rh": 0x0A7D8C,"Pd": 0x006985,"Ag": 0xC0C0C0,"Cd": 0xFFD98F,
-			"In": 0xA67573,"Sn": 0x668080,"Sb": 0x9E63B5,"Te": 0xD47A00,
-			"I": 0x940094,"Xe": 0x429EB0,"Cs": 0x57178F,"Ba": 0x00C900,
-			"La": 0x70D4FF,"Ce": 0xFFFFC7,"Pr": 0xD9FFC7,"Nd": 0xC7FFC7,
-			"Pm": 0xA3FFC7,"Sm": 0x8FFFC7,"Eu": 0x61FFC7,"Gd": 0x45FFC7,
-			"Tb": 0x30FFC7,"Dy": 0x1FFFC7,"Ho": 0x00FF9C,"Er": 0x00E675,
-			"Tm": 0x00D452,"Yb": 0x00BF38,"Lu": 0x00AB24,"Hf": 0x4DC2FF,
-			"Ta": 0x4DA6FF,"W": 0x2194D6,"Re": 0x267DAB,"Os": 0x266696,
-			"Ir": 0x175487,"Pt": 0xD0D0E0,"Au": 0xFFD123,"Hg": 0xB8B8D0,
-			"Tl": 0xA6544D,"Pb": 0x575961,"Bi": 0x9E4FB5,"Po": 0xAB5C00,
-			"At": 0x754F45,"Rn": 0x428296,"Fr": 0x420066,"Ra": 0x007D00,
-			"Ac": 0x70ABFA,"Th": 0x00BAFF,"Pa": 0x00A1FF,"U": 0x008FFF,
-			"Np": 0x0080FF,"Pu": 0x006BFF,"Am": 0x545CF2,"Cm": 0x785CE3,
-			"Bk": 0x8A4FE3,"Cf": 0xA136D4,"Es": 0xB31FD4,"Fm": 0xB31FBA,
-			"Md": 0xB30DA6,"No": 0xBD0D87,"Lr": 0xC70066,"Rf": 0xCC0059,
-			"Db": 0xD1004F,"Sg": 0xD90045,"Bh": 0xE00038,"Hs": 0xE6002E,
-			"Mt": 0xEB0026
-		};
-
-		// Hu, S.Z.; Zhou, Z.H.; Tsai, K.R. Acta Phys.-Chim. Sin., 2003, 19:1073.
-		this.vdwRadii = {
-			"H":1.08,"HE":1.34,"LI":1.75,"BE":2.05,"B":1.47,"C":1.49,"N":1.41,"O":1.4,
-			"F":1.39,"NE":1.68,"NA":1.84,"MG":2.05,"AL":2.11,"SI":2.07,"P":1.92,"S":1.82,
-			"CL":1.83,"AR":1.93,"K":2.05,"CA":2.21,"SC":2.16,"TI":1.87,"V":1.79,"CR":1.89,
-			"MN":1.97,"FE":1.94,"CO":1.92,"NI":1.84,"CU":1.86,"ZN":2.1,"GA":2.08,"GE":2.15,
-			"AS":2.06,"SE":1.93,"BR":1.98,"KR":2.12,"RB":2.16,"SR":2.24,"Y":2.19,"ZR":1.86,
-			"NB":2.07,"MO":2.09,"TC":2.09,"RU":2.07,"RH":1.95,"PD":2.02,"AG":2.03,"CD":2.3,
-			"IN":2.36,"SN":2.33,"SB":2.25,"TE":2.23,"I":2.23,"XE":2.21,"CS":2.22,"BA":2.51,
-			"LA":2.4,"CE":2.35,"PR":2.39,"ND":2.29,"PM":2.36,"SM":2.29,"EU":2.33,"GD":2.37,
-			"TB":2.21,"DY":2.29,"HO":2.16,"ER":2.35,"TM":2.27,"YB":2.42,"LU":2.21,"HF":2.12,
-			"TA":2.17,"W":2.1,"RE":2.17,"OS":2.16,"IR":2.02,"PT":2.09,"AU":2.17,"HG":2.09,
-			"TL":2.35,"PB":2.32,"BI":2.43,"PO":2.29,"AT":2.36,"RN":2.43,"FR":2.56,"RA":2.43,
-			"AC":2.6,"TH":2.37,"PA":2.43,"U":2.4,"NP":2.21,"PU":2.56,"AM":2.56,
-			"CM":2.56,"BK":2.56,"CF":2.56,"ES":2.56,"FM":2.56
-		},
+		this.nucleotides = ['  G', '  A', '  T', '  C', '  U', ' DG', ' DA', ' DT', ' DC', ' DU'];
 
 		this.id = id;
 		this.aaScale = scaleFactor;
@@ -216,7 +244,7 @@ var GLmol =(function()
 		this.zoom2D = 30;
 		this.canvasAtomRadius = 0.5;
 		this.canvasBondWidth = 0.3;
-		this.canvasVDW = false;//draw using vdwRadii
+		this.canvasVDW = false;//draw atoms with r=GLmolVDWRadii
 		this.canvasLine = false;//draw lines
 		this.canvasDrawStack = [];
 		this.canvasDetail = 24;//arc segments
@@ -429,7 +457,7 @@ var GLmol =(function()
 
 	GLmol.prototype.loadSDF = function(str){ this.loadMolecule(str, this.parseSDF); };
 	GLmol.prototype.loadXYZ = function(str){ this.loadMolecule(str, this.parseXYZ); };
-	GLmol.prototype.loadPDB = function(str){ this.loadMolecule(str, this.parsePDB2); };
+	GLmol.prototype.loadPDB = function(str){ this.loadMolecule(str, this.parsePDB); };
 
 	GLmol.prototype.loadMolecule = function(str, parser)
 	{
@@ -446,7 +474,7 @@ var GLmol =(function()
 
 		parser.call(this, str);
 
-		this.rebuildScene(true);
+		this.rebuildScene();
 		this.zoomInto(this.getAllAtoms());
 		this.show();
 	};
@@ -534,7 +562,7 @@ var GLmol =(function()
 		return true;
 	};
 
-	GLmol.prototype.parsePDB2 = function(str)
+	GLmol.prototype.parsePDB = function(str)
 	{
 		var atoms = this.atoms;
 		var protein = this.protein;
@@ -761,7 +789,7 @@ var GLmol =(function()
 			});
 			var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 			group.add(sphere);
-			var r =(!forceDefault && this.vdwRadii[atom.elem] != undefined) ? this.vdwRadii[atom.elem] : defaultRadius;
+			var r =(!forceDefault && GLmolVDWRadii[atom.elem] != undefined) ? GLmolVDWRadii[atom.elem] : defaultRadius;
 			if(!forceDefault && scale) r *= scale;
 			sphere.scale.x = sphere.scale.y = sphere.scale.z = r;
 			sphere.position.x = atom.x;
@@ -786,7 +814,7 @@ var GLmol =(function()
 				color: atom.color
 			});
 			var sphere = new THREE.Mesh(geo, mat);
-			sphere.scale.x = sphere.scale.y = sphere.scale.z =(!forceDefault && this.vdwRadii[atom.elem] != undefined) ? this.vdwRadii[atom.elem] : defaultRadius;
+			sphere.scale.x = sphere.scale.y = sphere.scale.z =(!forceDefault && GLmolVDWRadii[atom.elem] != undefined) ? GLmolVDWRadii[atom.elem] : defaultRadius;
 			group.add(sphere);
 			sphere.position.x = atom.x;
 			sphere.position.y = atom.y;
@@ -1943,9 +1971,8 @@ var GLmol =(function()
 
 	GLmol.prototype.getChain = function(atomlist, chain)
 	{
-		var ret = [],
-			chains = {};
-		chain = chain.toString(); // concat if Array
+		var ret = [], chains = {};
+		chain = chain.toString();//concat if Array
 		for(var i = 0, lim = chain.length; i < lim; i++) chains[chain.substr(i, 1)] = true;
 		for(var i in atomlist)
 		{
@@ -1981,7 +2008,7 @@ var GLmol =(function()
 			if(atom == undefined) continue;
 
 			var c = colors[atom.elem];
-			if(c == undefined) c = this.ElementColors[atom.elem];
+			if(c == undefined) c = GLmolElementColors[atom.elem];
 			if(c == undefined) c = this.defaultColor;
 			atom.color = c;
 		}
@@ -1990,7 +2017,7 @@ var GLmol =(function()
 	/**
 	 * Note: Color only CA. maybe I should add atom.cartoonColor.
 	 */
-	GLmol.prototype.colorByStructure = function(atomlist, helixColor, sheetColor, colorSidechains)
+	GLmol.prototype.colorByStructure = function(atomlist, helixColor, sheetColor, coilColor, colorSidechains)
 	{
 		for(var i in atomlist)
 		{
@@ -2000,6 +2027,7 @@ var GLmol =(function()
 			if(!colorSidechains &&(atom.atom != 'CA' || atom.hetflag)) continue;
 			if(atom.ss[0] == 's') atom.color = sheetColor;
 			else if(atom.ss[0] == 'h') atom.color = helixColor;
+			else if(atom.ss[0] == 'c') atom.color = coilColor;
 		}
 	};
 
@@ -2085,8 +2113,6 @@ var GLmol =(function()
 
 	GLmol.prototype.colorByPolarity = function(atomlist, polar, nonpolar)
 	{
-		var polarResidues = ['ARG', 'HIS', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS'];
-		var nonPolarResidues = ['GLY', 'PRO', 'ALA', 'VAL', 'LEU', 'ILE', 'MET', 'PHE', 'TYR', 'TRP'];
 		var colorMap = {};
 		for(var i in polarResidues) colorMap[polarResidues[i]] = polar;
 		for(i in nonPolarResidues) colorMap[nonPolarResidues[i]] = nonpolar;
@@ -2183,8 +2209,7 @@ var GLmol =(function()
 	{
 		var all = this.getAllAtoms();
 		var hetatm = this.removeSolvents(this.getHetatms(all));
-		this.colorByAtom(all,
-		{});
+		this.colorByAtom(all, {});
 		this.colorByChain(all);
 
 		this.drawAtomsAsSphere(this.modelGroup, hetatm, this.sphereRadius);
@@ -2373,7 +2398,7 @@ var GLmol =(function()
 					i: i,
 					screen: atom.screen,
 					color: "rgb(" + (atom.color >> 16) + "," + (atom.color >> 8 & 255) + "," + (atom.color & 255) + ")",
-					r: this.canvasVDW ? this.vdwRadii[atom.elem] : this.canvasAtomRadius
+					r: this.canvasVDW ? GLmolVDWRadii[atom.elem] : this.canvasAtomRadius
 				};
 
 				//cache arc

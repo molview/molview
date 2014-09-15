@@ -36,16 +36,16 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 
 <!--
 Query parameters:
-  - q = search query
-  - smiles = resolve SMILES string
-  - cid = load CID
-  - pdbid = load PDBID
-  - codid = load CIF from COD
-  - mode = balls || stick || vdw || wireframe || line
-  - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
-  - chainBonds = true || false
-  - chainColor = ss || spectrum || chain || bfactor || polarity
-  - bg = black || grey || white
+- q = search query
+- smiles = resolve SMILES string
+- cid = load CID
+- pdbid = load PDBID
+- codid = load CIF from COD
+- mode = balls || stick || vdw || wireframe || line
+- chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
+- chainBonds = true || false
+- chainColor = ss || spectrum || chain || residue || polarity || bfactor
+- bg = black || gray || white
 -->
 
 	<head>
@@ -98,7 +98,7 @@ Query parameters:
 	<body id="model" <?php
 		if(isset($bg))
 		{
-			echo 'style="background:'.($bg != "white" ? $bg != "grey" ?
+			echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
 				"#000000" : "#cccccc" : "#ffffff").'"';
 		}
 	?>>

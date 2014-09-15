@@ -1,23 +1,20 @@
 ## Whishlist:
 
-Features:
-
   - Add CIF loader to GLmol
   - Add EDTSurf (protein surfaces) implementation to GLmol
   - Add THREE.CanvasRenderer to GLmol (update THREE.js)
   - Add protein solvents display
   - Add electron density maps for macromolecules
   - Add dotted H-bonds and SS-bonds for proteins
-  - Create interactive protein viewer
-
-Expansions:
+  - Create interactive macromolecule exploration
 
   - Integrate COD image archive
+  - Build COD archive mirror
   - Create Touch menu drawer
-  - MolView home website (pages: features, about, manual, changelog, license)
+  - MolView home website (pages: features, about, manual, changelog, license, feedback)
   - MolView for Android and iOS using CocoonJS
   - Backend services using CDK and the Google Cloud Platform
-  - Explore Mathematica features
+  - Investigate Mathematica features
 
 ## 2.2.x
 
@@ -25,14 +22,15 @@ Project:
 
   - Added AGPL license
   - Added build script (fetch libs, run grunt, render SVG)
-  > Added Privacy Policy
+  > Add Privacy Policy
+  > Add test procedure
 
 Bugfixes:
 
+  - Added CIF validation in cif.php mirror
   - Patched Chemical Identifier Resolver lookup failure ('/' as '%5C')
   - Patched Firefox mousewheel bug in sketcher (removed jMouseWheel everywhere)
-  - Added empty CIF validation in cif.php mirror
-  - Added crystal 2D depiction fallbacks
+  - Patched GLmol.zoomInto bug
   - Fixed GLmol face culling issue
   - Fixed JSmol measure and rotate issue
 
@@ -44,6 +42,7 @@ Revisions:
   - Redesigned sketcher selection style
   - Redesigned UI (flat and light)
   - Redesigned search results style
+  - Added crystal 2D depiction fallbacks
   - Revised Information loading sequence
   - Renamed Loader modules
   - Renamed protein to biomolecule
@@ -67,7 +66,7 @@ Features:
   - Added menu-toggle hover event for non-touch devices
   - Added menu-item icons
   - Added bio-assembly function
-  - Added protein chain types and coloring settings
+  - Added protein chain representation and color scheme settings
   > Add external references to Information card (Chemicalize, Google, PDB, COD)
   > Add scientific reference to the NIST Chemistry WebBook for spectra
   > Add percent composition table to Information card

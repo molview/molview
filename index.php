@@ -54,8 +54,8 @@ Query parameters:
 - mode = balls || stick || vdw || wireframe || line
 - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
 - chainBonds = true || false
-- chainColor = ss || spectrum || chain || bfactor || polarity
-- bg = black || grey || white
+- chainColor = ss || spectrum || chain || residue || polarity || bfactor
+- bg = black || gray || white
 -->
 
 	<head>
@@ -156,6 +156,9 @@ Query parameters:
 		<script type="text/javascript" src="src/js/Progress.js"></script>
 		<script type="text/javascript" src="src/js/Messages.js"></script>
 		<script type="text/javascript" src="src/js/Sketcher.js"></script>
+		<script type="text/javascript" src="src/js/GLmolPlugin.js"></script>
+		<script type="text/javascript" src="src/js/JSmolPlugin.js"></script>
+		<script type="text/javascript" src="src/js/CDWPlugin.js"></script>
 		<script type="text/javascript" src="src/js/Model.js"></script>
 		<script type="text/javascript" src="src/js/Request.js"></script>
 		<script type="text/javascript" src="src/js/Loader.js"></script>
@@ -253,7 +256,7 @@ Query parameters:
 							<li class="menu-item"><a id="model-line" class="r-mode">Line</a></li>
 							<li class="menu-header">Background</li>
 							<li class="menu-item"><a id="model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
-							<li class="menu-item"><a id="model-bg-grey" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "grey" ? ' checked"' : '"' : '"'); ?> >Grey</a></li>
+							<li class="menu-item"><a id="model-bg-gray" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
 							<li class="menu-item"><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
 							<li class="menu-item"><a id="engine-glmol" class="checked">GLmol</a></li>
@@ -265,23 +268,24 @@ Query parameters:
 							<li class="menu-item"><a id="cif-1x3x3-cell">Load 1&times;3&times;3 supercell</a></li>
 						</ul>
 					</li>
-					<li id="glmol-menu" class="dropdown" style="display: none;">
-						<a class="dropdown-toggle">GLmol</a>
+					<li class="dropdown">
+						<a class="dropdown-toggle">Protein</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="bio-assembly">Biological assembly</a></li>
 							<li class="menu-header">Chain representation</li>
-							<li class="menu-item"><a id="glmol-chain-ribbon" class="glmol-chain checked">Ribbon</a></li>
-							<li class="menu-item"><a id="glmol-chain-cylinders" class="glmol-chain">Cylinder and plate</a></li>
-							<li class="menu-item"><a id="glmol-chain-btube" class="glmol-chain">B-factor tube</a></li>
-							<li class="menu-item"><a id="glmol-chain-ctrace" class="glmol-chain">C-alpha trace</a></li>
+							<li class="menu-item"><a id="chain-type-ribbon" class="chain-type checked">Ribbon</a></li>
+							<li class="menu-item"><a id="chain-type-cylinders" class="chain-type">Cylinder and plate</a></li>
+							<li class="menu-item"><a id="chain-type-btube" class="chain-type">B-factor tube</a></li>
+							<li class="menu-item"><a id="chain-type-ctrace" class="chain-type">C-alpha trace</a></li>
 							<li class="menu-divider"></li>
-							<li class="menu-item"><a id="glmol-chain-bonds">Bonds</a></li>
-							<li class="menu-header">Chain coloring</li>
-							<li class="menu-item"><a id="glmol-color-ss" class="glmol-color checked">Secondary structure</a></li>
-							<li class="menu-item"><a id="glmol-color-spectrum" class="glmol-color">Spectrum</a></li>
-							<li class="menu-item"><a id="glmol-color-chain" class="glmol-color">Chain</a></li>
-							<li class="menu-item"><a id="glmol-color-bfactor" class="glmol-color">B-factor</a></li>
-							<li class="menu-item"><a id="glmol-color-polarity" class="glmol-color">Polarity</a></li>
+							<li class="menu-item"><a id="chain-type-bonds">Bonds</a></li>
+							<li class="menu-header">Chain color scheme</li>
+							<li class="menu-item"><a id="chain-color-ss" class="chain-color checked">Secondary structure</a></li>
+							<li class="menu-item"><a id="chain-color-spectrum" class="chain-color">Spectrum</a></li>
+							<li class="menu-item"><a id="chain-color-chain" class="chain-color">Chain</a></li>
+							<li class="menu-item"><a id="chain-color-residue" class="chain-color">Residue</a></li>
+							<li class="menu-item"><a id="chain-color-polarity" class="chain-color">Polarity</a></li>
+							<li class="menu-item"><a id="chain-color-bfactor" class="chain-color">B-factor</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -337,9 +341,6 @@ Query parameters:
 					Request.ChemicalIdentifierResolver.available = true;/*<?php
 					echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
 					?>;*/
-
-					if(Detector.webgl) $("#glmol-menu").show();
-					else $("#menu > .inner").css("min-width", 1200);
 
 					MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 					MolView.query = getQuery();
@@ -416,7 +417,7 @@ Query parameters:
 				<div id="model" <?php
 					if(isset($bg))
 					{
-						echo 'style="background:'.($bg != "white" ? $bg != "grey" ?
+						echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
 							"#000000" : "#cccccc" : "#ffffff").'"';
 					}
 				?>>
@@ -556,6 +557,8 @@ Query parameters:
 							<a class="link" href="CHANGELOG.md" target="_blank">Changelog</a>
 							&nbsp;|&nbsp;
 							<a class="link" href="LICENSE.md" target="_blank">License</a>
+							&nbsp;|&nbsp;
+							<a class="link" href="https://github.com/molview" target="_blank">GitHub</a>
 							<br/>
 							<a class="link" target="_blank" title="Chrome App" href="https://chrome.google.com/webstore/detail/molview/nogcacamdkipgkfpfiakaoamdnihinnm">Chrome Web Store</a>
 							&nbsp;|&nbsp;
@@ -619,44 +622,19 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>3D model</b></div>
-							<div class="expandable-content">
-								<p>You can find the general 3D <i>Model</i> menu in the menubar.</p>
-								<h4>Reset</h4>
-								<p>This function sets the model position, zoom and rotation back to default.</p>
-								<h4>Representation</h4>
-								<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Macromolecules are automatically drawn using ribbons.</p>
-								<h4>Background</h4>
-								<p>You can switch between a black, grey or white background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
-								<h4>Engines</h4>
-								<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
-								<ol>
-									<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
-									<li><b>GLmol</b> if you load macromolecules<br/><i>(due to significant higher performance)</i></li>
-									<li><b>ChemDoodle</b> if you load a crystal structure<br/><i>(GLmol cannot render crystal structures)</i></li>
-								</ol>
-								<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
-								<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
-								<h4>Model transformation</h4>
-								<p>You can rotate, translate and zoom the 3D model using a mouse. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model using one pointer and scale the model using multi-touch.</p>
-								<h4>Crystallography</h4>
-								<p>You can load an array of crystal cells (2x2x2 or 1x3x3) or a single unit cell when viewing crystal structures.</p>
-							</div>
-						</div>
-						<div class="expandable">
 							<div class="expandable-title"><i class="fa"></i><b>Tools</b></div>
 							<div class="expandable-content">
-								<p>You can find the <i>Tools</i> menu in the menubar. This menu contains several utility functions.</p>
+								<p>The <b>Tools</b> menu contains several utility functions which are listed below.</p>
 								<h4>Link</h4>
-								<p>You can embed or share a specific compound, biomolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the adress bar in order to link to the current structure.</p>
+								<p>You can embed or share a specific compound, biomolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the address bar in order to link to the current structure.</p>
 								<h4>Export</h4>
 								<p>Export options in the Export menu:</p>
 								<ul>
-									<li><b>Structural formula image:</b> PNG snapshot from sketcher <i>(transparent background)</i></li>
-									<li><b>3D model image:</b> PNG snapshot from model window<br/><i>(transparent background in GLmol and ChemDoodle)</i></li>
-									<li><b>MOL file:</b> exports a MDL Molfile from the 3D model<br/><i>(displayed if the 3D model is a common molecule)</i></li>
-									<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model<br/><i>(displayed if the 3D model is a biomolecule)</i></li>
-									<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model<br/><i>(displayed if the 3D model is a crystal structure)</i></li>
+									<li><b>Structural formula image:</b> sketcher snapshot (PNG with alpha channel)</li>
+									<li><b>3D model image:</b> model snapshot (PNG,  alpha channel in Glmol and ChemDoodle)</li>
+									<li><b>MOL file:</b> exports a MDL Molfile from the 3D model <b>(common molecules)</b></li>
+									<li><b>PDB file:</b> exports a Protein Data Bank file from the 3D model <b>(macromolecules)</b></li>
+									<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model <b>(crystal structures)</b></li>
 								</ul>
 								<h4>Information card</h4>
 								<p>This function collects and displays information about the structural formula.</p>
@@ -674,7 +652,7 @@ Query parameters:
 						<div class="expandable">
 							<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
 							<div class="expandable-content">
-								<p>You can open the Spectroscopy layer via <i>Menu >Model > Chemical data > Spectrocopy</i>. You can view three kinds of molecular spectra.</p>
+								<p>You can open the Spectroscopy view via <b>Tools > Spectrocopy</b>. You can view three kinds of molecular spectra.</p>
 								<ol>
 									<li>Mass spectrum</li>
 									<li>IR spectrum</li>
@@ -689,13 +667,44 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Custom GLmol display</b></div>
+							<div class="expandable-title"><i class="fa"></i><b>3D model</b></div>
 							<div class="expandable-content">
-								<p>The GLmol render engine contains some custom display functions for macromolecules. These functions are located under the <i>GLmol</i> menu in the menubar.</p>
+								<p>The <b>Model</b> menu contains some general functions for the 3D model.</p>
+								<h4>Reset</h4>
+								<p>This function sets the model position, zoom and rotation back to default.</p>
+								<h4>Representation</h4>
+								<p>You can choose from a list of different molecule representations including; ball and stick, stick, van der Waals spheres, wireframe and lines. Macromolecules are automatically drawn using ribbons.</p>
+								<h4>Background</h4>
+								<p>You can switch between a black, gray or white background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
+								<h4>Engines</h4>
+								<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
+								<ol>
+									<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
+									<li><b>GLmol</b> if you load macromolecules (due to significant higher performance)</li>
+									<li><b>ChemDoodle</b> if you load a crystal structure (GLmol cannot render crystal structures)</li>
+								</ol>
+								<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
+								<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
+								<h4>Model transformation</h4>
+								<p>You can rotate, pan and zoom the 3D model. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model with one finger and scale the model using two fingers.</p>
+								<h4>Crystallography</h4>
+								<p>You can load an array of crystal cells (2x2x2 or 1x3x3) or a single unit cell when viewing crystal structures.</p>
+								<h4>Fog and clipping</h4>
+								<p>When you are viewing large structures, like proteins, it can be useful to hide a certain part using fog or a clipping plane. GLmol offers a few options to do this.</p>
+								<ol>
+									<li><b>Fog:</b> you can move the fog forward by dragging the mouse <b>up</b> while holding <b>CTRL + SHIFT</b> (drag in the opposite direction to move the fog backward)</li>
+									<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the <b>left</b> while holding <b>CTRL + SHIFT</b> (drag in the opposite direction to move the clipping plane back)</li>
+								</ol>
+							</div>
+						</div>
+						<div class="expandable">
+							<div class="expandable-title"><i class="fa"></i><b>Protein display</b></div>
+							<div class="expandable-content">
+								<p>Proteins can be displayed in a number of different ways including different color types and different chain  representations. These settings are located under the <b>Protein</b> menu in the menubar.</p>
 								<h4>Biological assembly</h4>
 								<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
 								<h4>Chain representation</h4>
-								<p>GLmol offers four different chain representations, you can select one of them. You can also view all bonds as lines by enabling the <i>Bonds</i> option.</p>
+								<p>You can choose from four different chain representations. You can also view the full chain structure by enabling the <b>Bonds</b> option.</p>
 								<ol>
 									<li><b>Ribbon:</b> draws ribbon diagram <i>(default representation)</i></li>
 									<li><b>Cylinder and plate:</b> solid cylinders for α-helices and solid plates for β-sheets</li>
@@ -703,26 +712,21 @@ Query parameters:
 									<li><b>C-alpha trace:</b> lines between central carbon atom in amino-acids <i>(very fast rendering)</i></li>
 								</ol>
 								<h4>Chain coloring</h4>
-								<p>You can choose from five chain coloring methods.</p>
+								<p>You can choose from six chain color schemes.</p>
 								<ol>
 									<li><b>Secondary structures:</b> different colors for α-helices, β-sheets, etc.</li>
-									<li><b>Spectrum:</b> chain colored with full color spectrum <i>(blue-green-red)</i></li>
+									<li><b>Spectrum:</b> color spectrum <i>(rainbow)</i></li>
 									<li><b>Chain:</b> each chains gets a different color</li>
-									<li><b>B-factor:</b> blue for low B-factor and red for high B-factor <i>(if provided)</i></li>
+									<li><b>Residue:</b> all amino-acid residues are colored differently</li>
 									<li><b>Polarity:</b> colors polar amino-acids red and non polar amino-acids white</li>
-								</ol>
-								<h4>Fog and clipping</h4>
-								<p>When you are viewing large structures, like proteins, it can be usefull to hide a certain part using fog or clipping. GLmol offers a few options to do this.</p>
-								<ol>
-									<li><b>Fog:</b> you can move the fog forward by dragging the mouse <b>up</b> while holding the <b>CTRL</b> and the <b>SHIFT</b> key (and vice versa)</li>
-									<li><b>Clipping plane:</b> you can move a frontal clipping plane into the structure by dragging the mouse to the <b>left</b> while holding the <b>CTRL</b> and the <b>SHIFT</b> key (and vice versa)</li>
+									<li><b>B-factor:</b> blue for low B-factor and red for high B-factor <i>(if provided)</i></li>
 								</ol>
 							</div>
 						</div>
 						<div class="expandable">
 							<div class="expandable-title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
 							<div class="expandable-content">
-								<p>Jmol offers some advanced functions. You can find them in the Jmol menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
+								<p>Jmol offers some advanced functions. You can find them in the <b>Jmol</b> menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
 								<h4>Clear</h4>
 								<p>Clears all executed calculations and measurements.</p>
 								<h4>High Quality</h4>

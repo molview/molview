@@ -59,14 +59,14 @@ var Link = {
 			url += "&bg=" + Model.bg.colorName;
 		}
 
-		if(Model.GLmol.chain.type == "ribbon" || Model.GLmol.chain.type == "cylinders"
-		|| Model.GLmol.chain.type == "btube" || Model.GLmol.chain.type == "ctrace")
+		if(Model.chain.type == "ribbon" || Model.chain.type == "cylinders"
+		|| Model.chain.type == "btube" || Model.chain.type == "ctrace")
 		{
-			url += "&chainType=" + Model.GLmol.chain.type;
+			url += "&chainType=" + Model.chain.type;
 		}
-		if(Model.GLmol.chain.bonds)
+		if(Model.chain.bonds)
 		{
-			if(Model.GLmol.chain.type == "none")
+			if(Model.chain.type == "none")
 			{
 				url += "&chainType=bonds";
 			}
@@ -75,9 +75,9 @@ var Link = {
 				url += "&chainBonds=true"
 			}
 		}
-		if(Model.GLmol.chain.color)
+		if(Model.chain.color)
 		{
-			url += "&chainColor=" + Model.GLmol.chain.color;
+			url += "&chainColor=" + Model.chain.color;
 		}
 
 		Link.embedHTML = '<iframe style="width: ' + $("#embed-width").val() + '; height: ' + $("#embed-height").val() + ';" frameborder="0" src="' + url + '"></iframe>';
