@@ -22,6 +22,11 @@
 /*
 form
 */
+.input-wrapper > button:active
+{
+	color: @active;
+}
+
 select:active
 {
 	.form-box-active;
@@ -45,9 +50,9 @@ menu
 	background-color: @light !important;
 }
 
-.dropdown-menu > li > a:not(.disabled):active
+.menu-item > a:not(.disabled):active, #layout-menu > a:active
 {
-	background: @light3;
+	background-color: @light3;
 }
 
 /*

@@ -34,7 +34,7 @@ var CDWPlugin = {
 			this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width(), $("#model").height());
 			this.view.specs.macromolecules_ribbonCartoonize = this.view.specs.proteins_ribbonCartoonize = true;
 			this.view.specs.backgroundColor = Model.bg.html;
-			this.view.specs.crystals_unitCellColor = Model.bg.html;
+			this.view.specs.crystals_unitCellColor = Model.fg.html;
 			Model._setRenderEngine("CDW");
 			this.ready = true;
 			if(cb) cb();
@@ -77,10 +77,14 @@ var CDWPlugin = {
 
 		this.view.specs.set3DRepresentation(m);
 
+		if(m == "Ball and Stick")
+		{
+			this.view.specs.bonds_cylinderDiameter_3D = 0.2;
+		}
+
 		this.view.specs.backgroundColor = Model.bg.html;
-		this.view.specs.crystals_unitCellColor = Model.bg.html;
+		this.view.specs.crystals_unitCellColor = Model.fg.html;
 		this.view.specs.bonds_useJMOLColors = true;
-		if(m == "Ball and Stick") this.view.specs.bonds_cylinderDiameter_3D = 0.2;
 
 		if(Model.isPDB())
 		{
@@ -116,10 +120,10 @@ var CDWPlugin = {
 		this.view.repaint();
 	},
 
-	setBackground: function(rgb, htmlColor)
+	setBackground: function(rgb, htmlColor, htmlFgColor)
 	{
 		this.view.specs.backgroundColor = htmlColor;
-		this.view.specs.crystals_unitCellColor = htmlColor;
+		this.view.specs.crystals_unitCellColor = htmlFgColor;
 		this.view.gl.clearColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, 1);
 		this.view.repaint();
 	},

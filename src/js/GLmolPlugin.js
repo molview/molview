@@ -81,6 +81,8 @@ var GLmolPlugin = {
 					{
 						this.drawBondsAsLine(asu, all, this.lineWidth);
 					}
+
+					//this.drawNucleicAcidLadder(asu, all);
 				}
 
 				if(!(Model.displayBU && Model.isPDB()))

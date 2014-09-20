@@ -22,9 +22,19 @@
 /*
 form
 */
-input:not([disabled])[type="text"]:hover
+.input-wrapper > button:hover
 {
-	background-color: @light;
+	color: @highlight;
+}
+
+input:not([disabled])[type="text"]:hover + .input-focus
+{
+	border-width: 0 1px 1px 1px;
+}
+
+.input:hover
+{
+	background: @light;
 }
 
 select:hover
@@ -48,12 +58,12 @@ menu
 .dropdown-toggle:hover
 {
 	background-color: @light2 !important;
-	border-color: @contrast;
+	border-color: @contrast !important;
 }
 
-.dropdown-menu > li > a:not(.disabled):hover
+.menu-item > a:not(.disabled):hover, #layout-menu > a:hover
 {
-	background: @light2;
+	background-color: @light2;
 }
 
 /*

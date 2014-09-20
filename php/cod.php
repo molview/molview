@@ -101,14 +101,18 @@ if($type == "search" && isset($q))
 	header("Content-Type: application/json");
 
 	//get list of COD IDs
-	$array = cod_search($cod_search_query, $q, "sss", true);
+	$array = cod_search($cod_search_query, "%".$q."%", "sss", true);
 	if($array === false || count($array) == 0)
 	{
 		$array = cscod_search($q);
+
+		/*
+		Deep search
 		if($array === false || count($array) == 0)
 		{
 			$array = cod_search($cod_deep_search_query, "%".$q."%", "s", false);
 		}
+		*/
 	}
 
 	//echo list as JSON Array

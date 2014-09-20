@@ -94,6 +94,8 @@ var Sketcher = {
 			{
 				var element = table[group].elements[i];
 
+				if(element.name == "") continue;
+
 				for(var f = position; f < element.position - 1; f++)//fill remaining space
 					$('<div class="pt-space"></div>').appendTo("#periodictable");
 

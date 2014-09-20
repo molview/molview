@@ -52,21 +52,7 @@
 	bottom: 0;
 }
 
-.menu-brick
-{
-	float: left;
-	position: relative;
-	margin: 0;
-	padding: 0;
-}
-
-.menu-bar
-{
-	margin: 0;
-	padding: 0;
-}
-
-.dropdown, .menu-item, .menu-header, .menu-divider, #layout-menu
+#main-menu, #layout-menu, .dropdown, .menu-item, .menu-header, .menu-divider
 {
 	margin: 0;
 	padding: 0;
@@ -75,12 +61,7 @@
 
 .dropdown
 {
-	float: left;
 	position: relative;
-}
-
-.dropdown
-{
 	margin: 0;
 	padding: 0;
 }
@@ -92,12 +73,8 @@
 	display: block;
 	margin: 0;
 	padding: 10px 15px;
+	height: 20px;
 	line-height: 20px;
-}
-
-.dropdown.open
-{
-	z-index: 2;
 }
 
 .dropdown-menu
@@ -110,6 +87,11 @@
 
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+.dropdown-left
+{
+	right: 0;
 }
 
 .menu-header
@@ -130,16 +112,60 @@
 	white-space: nowrap;
 }
 
+.dropdown.open
+{
+	z-index: 2;
+}
+
+/*
+Only hide other dropdowns while displaying
+at least one other dropdown in order to:
+- prevent persistent hover style after all dropdowns are dismissed
+- hide scrollbar for hidden dropdown-menus
+*/
+.menu.open .dropdown:not(.open) > .dropdown-menu
+{
+	display: none;
+}
+
 .dropdown.open > .dropdown-menu
 {
 	visibility: visible;
 }
 
-/* custom layout menu */
+/* search form */
+#search
+{
+	margin: 0 5px;
+}
+
+#search-input-wrap
+{
+	position: relative;
+}
+
+#search-input
+{
+	width: 300px;
+}
+
+#search-dropdown > .dropdown-toggle
+{
+	background: @light2;
+}
+
+#search-dropdown > .dropdown-toggle:after
+{
+	margin: 0;
+	color: @foreground;
+	content: '\f0d7';
+}
+
+/* layout menu */
 #layout-menu
 {
 	padding: 3px;
-	width: 336px;
+	width: 340px;
 	height: 50px;
 }
 
@@ -161,7 +187,7 @@
 {
 	#layout-menu
 	{
-		width: 345px;
+		width: 350px;
 		height: 205px;
 	}
 
@@ -178,40 +204,3 @@
 #window-sketcher { background-image: url(../img/layout/sketcher.svg); }
 #window-vsplit { background-image: url(../img/layout/vsplit.svg); }
 #window-hsplit { background-image: url(../img/layout/hsplit.svg); }
-
-/* custom search form CSS */
-#search
-{
-	float: right;
-	overflow: hidden;
-	margin-top: -1px;
-}
-
-#search-input-wrap
-{
-	position: relative;
-}
-
-#search-input
-{
-	height: 42px;
-}
-
-.btn-search
-{
-	height: 42px;
-	padding: 5px 10px;
-
-	line-height: 1;
-	border-color: @light3;
-	border-radius: 0;
-}
-
-/* absolute dimensions in order to make equal on all browsers */
-#search-input { width: 300px; }
-#fast-search { width: 42px; }
-#pubchem-search { width: 113px; }
-#rcsb-search { width: 145px; }
-#cod-search { width: 80px; }
-#show-search-layer { width: 42px; }
-#hide-search-layer { width: 42px; }

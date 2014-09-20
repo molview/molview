@@ -42,11 +42,7 @@ var MolView = {
 		if(this.mobile && !Detector.webgl)
 		{
 			this.macromolecules = false;
-			$("#rcsb-search").hide();
 		}
-
-		//add 10 to compensate small browser differences
-		$("#menu > .inner").css("min-width", $("#main-menu").outerWidth() + $("#search").outerWidth() + 10);
 
 		Progress.init();
 		if(this.loadDefault)
@@ -91,8 +87,7 @@ var MolView = {
 			Autocomplete.hide();
 			$(".dropdown-toggle").not(this).parent().removeClass("open");
 
-			$(this).parent().toggleClass("open");
-			if($(this).parent().hasClass("open"))
+			if($(this).parent().toggleClass("open").hasClass("open"))
 			{
 				$("#menu").addClass("open");
 			}
@@ -132,7 +127,7 @@ var MolView = {
 		$(window).on(this.trigger, function(e)
 		{
 			var container = $(".dropdown.open .dropdown-menu");
-			var form = $("#search");
+			var searchInput = $("#search-input");
 
 			if(!container.is(e.target) && container.has(e.target).length === 0)
 			{
@@ -143,7 +138,7 @@ var MolView = {
 				}, 100);
 			}
 
-			if(!form.is(e.target) && form.has(e.target).length === 0
+			if(!searchInput.is(e.target) && searchInput.has(e.target).length === 0
 				&& document.activeElement.id == "search-input")
 				$("#search-input").blur();
 		});
@@ -169,19 +164,13 @@ var MolView = {
 
 		$(".layer .btn.close").on(this.trigger, function(e)
 		{
-			MolView.showLayer("main");
+			MolView.setLayer("main");
 		});
 
 		//enable expandable expanding
 		$(".expandable-title").on(this.trigger, function(e)
 		{
 			$(this).parent().toggleClass("open");
-		});
-
-		//form
-		$("#search-input-wrap").on(this.trigger, function()
-		{
-			$("#search-input").focus();
 		});
 
 		//initialize
@@ -269,12 +258,11 @@ var MolView = {
 		$("#measure-angle").on(this.trigger, Actions.measure_angle);
 		$("#measure-torsion").on(this.trigger, Actions.measure_torsion);
 
-		$("#pubchem-search").on("click", Actions.pubchem_search);
-		$("#rcsb-search").on("click", Actions.rcsb_search);
-		$("#cod-search").on("click", Actions.cod_search);
+		$("#pubchem-search").on(this.trigger, Actions.pubchem_search);
+		$("#rcsb-search").on(this.trigger, Actions.rcsb_search);
+		$("#cod-search").on(this.trigger, Actions.cod_search);
 
-		$("#show-search-layer, #menu-show-search-layer").on(this.trigger, Actions.show_search_layer);
-		$("#hide-search-layer, #menu-hide-search-layer").on(this.trigger, Actions.hide_search_layer);
+		$("#show-search-layer").on(this.trigger, Actions.show_search_layer);
 
 		$("#load-more-pubchem").on(this.trigger, Actions.load_more_pubchem);
 		$("#load-more-rcsb").on(this.trigger, Actions.load_more_rcsb);
@@ -318,19 +306,7 @@ var MolView = {
 			if(key == "q")
 			{
 				$("#search-input").val(value);
-
-				if(MolView.query.search)
-				{
-					if(MolView.query.search == "fast")
-						Messages.process(Loader.CIRsearch, "search");
-					else if(MolView.query.search == "pubchem")
-						Messages.process(Loader.PubChem.search, "search");
-					else if(MolView.query.search == "rcsb")
-						Messages.process(Loader.RCSB.search, "search");
-					else if(MolView.query.search == "cod")
-						Messages.process(Loader.COD.search, "search");
-				}
-				else Messages.process(Loader.CIRsearch, "search");
+				Messages.process(Loader.CIRsearch, "search");
 			}
 			else if(key == "smiles")
 			{
@@ -419,10 +395,10 @@ var MolView = {
 	},
 
 	/**
-	 * Hides dialog with id #$name-layer
+	 * Shows layer with id #$name-layer
 	 * @param {String} name Layer name
 	 */
-	showLayer: function(name)
+	setLayer: function(name)
 	{
 		$(".layer").hide();
 		$("#" + name + "-layer").show();
@@ -453,7 +429,7 @@ var MolView = {
 		$("#main-layer").removeClass("layout-sketcher layout-model layout-vsplit layout-hsplit").addClass("layout-" + layout);
 		this.layout = layout;
 
-		Actions.hide_search_layer();
+		this.setLayer("main");
 	},
 
 	/**

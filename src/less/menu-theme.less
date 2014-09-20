@@ -24,12 +24,13 @@
 	border-bottom: 1px solid @contrast;
 }
 
-.brand
+#brand
 {
+	width: 50px;
+	height: 40px;
 	background-image: url(../img/brand.svg);
 	background-repeat: no-repeat;
-	background-position: left;
-	padding-left: 40px !important;
+	background-position: center;
 }
 
 .dropdown-toggle
@@ -76,9 +77,10 @@
 	border-bottom: 1px dashed @contrast;
 }
 
-.menu-item > a.disabled
+.disabled
 {
 	color: @foreground-disabled;
+	border-color: @light2;
 	cursor: default;
 }
 

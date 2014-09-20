@@ -87,7 +87,7 @@ var Actions = {
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
 		InfoCard.update(smiles);
-		MolView.showLayer("infocard");
+		MolView.setLayer("infocard");
 	},
 
 	data_spectra: function()
@@ -98,12 +98,12 @@ var Actions = {
 
 		if(Spectroscopy.data["smiles"] && Spectroscopy.data["smiles"] == smiles)
 		{
-			MolView.showLayer("spectra");
+			MolView.setLayer("spectra");
 		}
 		else
 		{
 			Spectroscopy.update(smiles);
-			MolView.showLayer("spectra");
+			MolView.setLayer("spectra");
 		}
 
 		Spectroscopy.resize();
@@ -138,7 +138,7 @@ var Actions = {
 	search_substructure: function()
 	{
 		MolView.hideDialogs();
-		Actions.hide_search_layer();
+		MolView.setLayer("main");
 		Messages.process(function()
 		{
 			if(Sketcher.metadata.cid)
@@ -158,7 +158,7 @@ var Actions = {
 	search_superstructure: function()
 	{
 		MolView.hideDialogs();
-		Actions.hide_search_layer();
+		MolView.setLayer("main");
 		Messages.process(function()
 		{
 			if(Sketcher.metadata.cid)
@@ -178,7 +178,7 @@ var Actions = {
 	search_similarity: function()
 	{
 		MolView.hideDialogs();
-		Actions.hide_search_layer();
+		MolView.setLayer("main");
 		Messages.process(function()
 		{
 			if(Sketcher.metadata.cid)
@@ -328,20 +328,6 @@ var Actions = {
 	/*
 	Searching
 	*/
-	fast_search: function()
-	{
-		if($("#search-input").val() === "")
-		{
-			MolView.alertEmptyInput();
-		}
-		else
-		{
-			$("#search-input").blur();
-			MolView.hideDialogs();
-			Messages.process(Loader.CIRsearch, "search");
-		}
-	},
-
 	pubchem_search: function()
 	{
 		if($("#search-input").val() === "")
@@ -386,16 +372,7 @@ var Actions = {
 
 	show_search_layer: function()
 	{
-		$("#show-search-layer").hide();
-		$("#hide-search-layer").show();
-		MolView.showLayer("search");
-	},
-
-	hide_search_layer: function()
-	{
-		$("#show-search-layer").show();
-		$("#hide-search-layer").hide();
-		MolView.showLayer("main");
+		MolView.setLayer("search");
 	},
 
 	load_more_pubchem: function()

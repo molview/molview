@@ -96,7 +96,7 @@ var Loader = {
 			{
 				if(window.getSelection().type != "Range")
 				{
-					Actions.hide_search_layer();
+					MolView.setLayer("main");
 					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
 				}
 			});
@@ -381,7 +381,7 @@ var Loader = {
 			{
 				if(window.getSelection().type != "Range")
 				{
-					Actions.hide_search_layer();
+					MolView.setLayer("main");
 					Loader.RCSB.loadPDBID($(this).data("pdbid"));
 				}
 			});
@@ -575,7 +575,7 @@ var Loader = {
 			{
 				if(window.getSelection().type != "Range")
 				{
-					Actions.hide_search_layer();
+					MolView.setLayer("main");
 					Loader.COD.loadCODID($(this).data("codid"), $(this).data("title"));
 				}
 			});

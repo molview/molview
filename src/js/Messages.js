@@ -20,7 +20,7 @@ var Messages = {
 	//notifications
 	cir_down: "The Chemical Identifier Resolver is offline, some functions might be unavailable.",
 	cir_func_down: "This function is unavailable because the Chemical Identifier Resolver is offline.",
-	crystal_2d_unreliable: "This structural formula might not correspond to the crystal structure",
+	crystal_2d_unreliable: "This structural formula might not fully match the crystal structure",
 
 	//progress
 	switch_engine: "Loading engine&hellip;",
@@ -156,7 +156,7 @@ var Messages = {
 				.append('<span class="error-message">' + (error.message || error.detailMessage || error) + "</span>")
 				.appendTo(msg);
 			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-				function(){ Progress.complete(); Messages.clear(true); }).appendTo(msg);
+				function(){ $(this).parent().remove(); }).appendTo(msg);
 			msg.appendTo($("#messages"));
 		}
 		else
@@ -166,24 +166,29 @@ var Messages = {
 				.html(Messages[cause] || cause)
 				.appendTo(msg);
 			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-				function(){ Progress.complete(); Messages.clear(true); }).appendTo(msg);
+				function(){ $(this).parent().remove(); }).appendTo(msg);
 			msg.appendTo($("#messages"));
 		}
 
+		this.clear();
 		Progress.alert();
 	},
 
 	/**
-	 * Clears all messages
+	 * Clears all messages which are no longer necessary
 	 * @param {Boolean} byUser Indicates if the clear method is triggered by the user
 	 */
 	clear: function(byUser)
 	{
-		if(!$("#messages").children().hasClass("alert-message") || byUser)
+		$("body").removeClass("progress-cursor");
+
+		$("#messages").children().each(function()
 		{
-			$("#messages").empty();
-			$("body").removeClass("progress-cursor");
-		}
+			if(!$(this).hasClass("alert-message"))
+			{
+				$(this).remove();
+			}
+		});
 	},
 
 	isEmpty: function()

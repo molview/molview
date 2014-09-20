@@ -100,9 +100,13 @@ var Autocomplete = {
 
 		$("#search-input")[0].addEventListener("input", Autocomplete.refresh.bind(Autocomplete));
 		$("#search-input").on("keydown", Autocomplete.keydown.bind(Autocomplete));
-		$("#search").on("submit", Autocomplete.submit.bind(Autocomplete));
+		$("#search").on("submit", function(e)
+		{
+			e.preventDefault();
+			Autocomplete.submit();
+		});
 
-		$("#search-input").on("focus", Autocomplete.show.bind(Autocomplete));
+		$("#search-input").on("focus", Autocomplete.focus.bind(Autocomplete));
 
 		//hide autocomplete when clicked outside input and autocomplete
 		$(window).on(MolView.trigger, function(e)
@@ -158,7 +162,14 @@ var Autocomplete = {
 		var key = e.keyCode || e.which;
 		switch(key)
 		{
+			case 27://esc
+
+				this.hide();
+				$("#search-input").blur();
+				return true;
+
 			case 38://up
+
 				this.i--;
 
 				if(this.i == -1)
@@ -171,9 +182,10 @@ var Autocomplete = {
 				}
 
 				this.focusRecord(this.i);
-				return false;
+				return true;
 
 			case 40://down
+
 				this.i++;
 
 				if(this.i >= this.records.length)
@@ -183,7 +195,7 @@ var Autocomplete = {
 				}
 
 				this.focusRecord(this.i);
-				return false;
+				return true;
 
 			case 39://right
 
@@ -202,7 +214,7 @@ var Autocomplete = {
 						$("#search-input").val(matches[0].label);
 					}
 
-					return false;
+					return true;
 				}
 		}
 	},
@@ -345,16 +357,18 @@ var Autocomplete = {
 		}
 
 		$("#autocomplete-dropdown").append(ul);
+
+		if(records.length > 0) $("#autocomplete-dropdown").show();
+		else $("#autocomplete-dropdown").hide();
 	},
 
-	/**
-	 * Shows autocomplete dropdown
-	 */
-	show: function()
+	focus: function()
 	{
 		Autocomplete.i = -1;
 		$(".autocomplete-item").removeClass("autocomplete-item-hover");
 		$("#autocomplete-dropdown-wrapper").show();
+		$("#autocomplete-dropdown").hide();
+		$("#menu").scrollLeft(55);
 	},
 
 	/**
@@ -380,7 +394,7 @@ var Autocomplete = {
 			this.hide();
 			$("#search-input").blur();
 			MolView.hideDialogs();
-			Actions.hide_search_layer();
+			MolView.setLayer("main");
 
 			if(this.i == -1)//try to find a record match
 			{

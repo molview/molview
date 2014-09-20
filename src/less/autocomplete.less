@@ -21,7 +21,7 @@
 #autocomplete-dropdown-wrapper
 {
 	position: absolute;
-	top: @menubar-height;
+	top: @menubar-height + 1;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -32,23 +32,17 @@
 	z-index: 1;
 	position: absolute;
 	top: 0;
-	right: 0;
+	left: 0;
 	width: 100%;
+	max-width: 600px;
 	max-height: 100%;
 
 	background: #eee;
-	border-top: 1px solid @highlight;
+	border-right: 1px solid @contrast;
+	border-bottom: 1px solid @contrast;
 
 	overflow: auto;
 	overflow-x: hidden;
-}
-
-@media all and (min-width: 1300px)
-{
-	#autocomplete-dropdown
-	{
-		width: 722px;
-	}
 }
 
 #autocomplete-dropdown > ul
@@ -62,7 +56,7 @@
 	cursor: pointer;
 	list-style: none;
 	margin: 0;
-	padding: 5px;
+	padding: 5px 10px;
 
 	color: #111;
 }
@@ -70,10 +64,6 @@
 .autocomplete-pubchem { color: #3c763d; background: #dff0d8; border-left: 4px solid #0a0; }
 .autocomplete-macromolecule { color: #a94442; background: #f2dede; border-left: 4px solid #f10; }
 .autocomplete-mineral { color: #31708f; background: #d9edf7; border-left: 4px solid #07f; }
-
-.autocomplete-item.autocomplete-pubchem:last-child { border-bottom: 1px solid #0a0; }
-.autocomplete-item.autocomplete-macromolecule:last-child { border-bottom: 1px solid #f10; }
-.autocomplete-item.autocomplete-mineral:last-child { border-bottom: 1px solid #07f; }
 
 .autocomplete-item-hover
 {

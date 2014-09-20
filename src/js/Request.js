@@ -892,5 +892,13 @@ var Request = {
 				}
 			});
 		}
+	},
+
+	WebMineral:
+	{
+		image: function(mineral)
+		{
+			return "http://webmineral.com/specimens/photos/" + mineral + ".jpg";
+		}
 	}
 };

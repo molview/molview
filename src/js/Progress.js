@@ -74,6 +74,7 @@ var Progress = {
 	alert: function()
 	{
 		document.title = document.title.replace(/ \[loading\]/g, "");
+		this.complete();
 	},
 
 	complete: function()

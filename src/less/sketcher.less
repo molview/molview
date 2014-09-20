@@ -34,7 +34,6 @@
 {
 	position: absolute;
 	background: @light2;
-	cursor: default;
 	overflow: hidden;
 
     -webkit-user-select: none;
@@ -71,11 +70,6 @@
 	line-height: 0;
 }
 
-.tool-button-horizontal
-{
-	float: left;
-}
-
 .tool-button-selected
 {
 	opacity: 1.0;
@@ -99,16 +93,15 @@
 
 .horizontal-separator
 {
-	margin: 5px 5px 0 5px;
+	margin: 5px;
 	width: 0;
 	height: @toolbar-size - 10px;
-	float: left;
 	border-right: 1px solid @contrast;
 }
 
 .vertical-separator
 {
-	margin: 5px 0 5px 5px;
+	margin: 5px;
 	width: @toolbar-size - 10px;
 	height: 0;
 	border-bottom: 1px solid @contrast;
@@ -148,7 +141,6 @@
 	min-width: 1px;
 	min-height: 1px;
 
-	cursor: default;
 	overflow: hidden;
 	background: #fff;
 
@@ -193,7 +185,6 @@
 	line-height: @toolbar-size;
 	font-size: @toolbar-fontsize - 4pt;
 	font-weight: bold;
-	text-align: right;
 
 	color: #f50;
 }

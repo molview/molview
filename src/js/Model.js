@@ -38,6 +38,9 @@ var Model = {
 		jmol: "[0,0,0]",
 		html: "rgb(0,0,0)"
 	},
+	fg: {
+		html: "rgb(255,255,255)"
+	},
 
 	engine: undefined,//"GLmol", "JSmol", "CDW"
 	GLmol: GLmolPlugin,
@@ -205,7 +208,7 @@ var Model = {
 
 		if(this.isGLmol()) this.GLmol.setBackground(this.bg.hex);
 		else if(this.isJSmol()) this.JSmol.setBackground(this.bg.jmol);
-		else if(this.isCDW()) this.CDW.setBackground(this.bg.rgb, this.bg.html);
+		else if(this.isCDW()) this.CDW.setBackground(this.bg.rgb, this.bg.html, this.fg.html);
 
 		/* if loadContent returns true, the render engine
 		has updated the representation already */
@@ -355,6 +358,9 @@ var Model = {
 		this.bg.rgb = [this.bg.hex >> 16, this.bg.hex >> 8 & 0xFF, this.bg.hex & 0xFF];
 		this.bg.jmol = "[" + this.bg.rgb.join() + "]";
 		this.bg.html = "rgb(" + this.bg.rgb.join() + ")";
+		this.fg.html = "rgb(" + (255 - this.bg.rgb[0]) + ","
+							  + (255 - this.bg.rgb[0]) + ","
+							  + (255 - this.bg.rgb[0]) + ")";
 
 		$(".model-bg").removeClass("checked");
 		$("#model-bg-" + color).addClass("checked");
@@ -362,7 +368,7 @@ var Model = {
 
 		if(this.isGLmol()) return this.GLmol.setBackground(this.bg.hex);
 		else if(this.isJSmol()) return this.JSmol.setBackground(this.bg.jmol);
-		else if(this.isCDW()) return this.CDW.setBackground(this.bg.rgb, this.bg.html);
+		else if(this.isCDW()) return this.CDW.setBackground(this.bg.rgb, this.bg.html, this.fg.html);
 	},
 
 	/**

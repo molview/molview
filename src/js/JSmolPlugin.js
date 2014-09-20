@@ -38,7 +38,8 @@ var JmolScripts = {
 		ss: "color atoms cpk;\
 color ribbon [xcccccc]; color backbone [xcccccc];\
 select helix; color ribbon [xcc00cc]; color backbone [xcc00cc];\
-select sheet; color ribbon [x00cccc]; color backbone [x00cccc];",
+select sheet; color ribbon [x00cccc]; color backbone [x00cccc];\
+select nucleic; color ribbon red; color backbone red;",
 		spectrum: "color atoms group; color ribbon group; color backbone group;",
 		chain: "color atoms chain; color ribbon chain; color backbone chain;",
 		residue: "color atoms amino; color ribbon amino; color backbone amino;",

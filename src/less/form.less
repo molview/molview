@@ -17,6 +17,7 @@
  */
 
 @import (reference) "vars";
+@import (reference) "global";
 
 .form-box(@bg: @light3)
 {
@@ -48,39 +49,92 @@
 	box-shadow: inset 0 3px 10px @light-shadow;
 }
 
+/* input */
+.input-wrapper
+{
+	position: relative;
+	height: 40px;
+	font-size: 0 !important;
+	white-space: nowrap;
+}
+
+.input-wrapper > input, .input-wrapper > button
+{
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	min-width: 40px;
+	height: 40px;
+
+	vertical-align: top;
+	font-size: normal;
+	font-size: initial;
+
+	background: @light2;
+	border: 0;
+}
+
+.input-wrapper > button:focus
+{
+	outline: none;
+}
+
+.input-focus
+{
+	display: block;
+	position: absolute;
+	top: 30px;
+	right: 5px;
+	left: 5px;
+	height: 5px;
+
+	background: transparent;
+	border-style: solid;
+	border-color: @contrast;
+	border-width: 0 0 1px 0;
+}
+
 input[type="text"]
 {
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
 
-	margin: 0;
-	padding: 10px 15px;
-	min-width: 200px;
-
 	font-family: 'Open Sans', sans-serif;
-	background-color: @light2;
-	border: 1px solid @contrast;
 }
 
 input[type="text"]:focus
 {
 	outline: none;
-	background-color: @light;
+}
+
+input[type="text"]:focus + .input-focus
+{
+	border-color: @highlight;
+	border-width: 0 1px 1px 1px;
+}
+
+input[type="text"].alert + .input-focus
+{
+	border-color: @error !important;
+}
+
+.input
+{
+	.form-box;
+
+	width: 100%;
+	padding: 5px 10px;
+	background: @light2;
+	border: 1px solid @contrast;
+}
+
+.input:focus
+{
 	border-color: @highlight;
 }
 
-input[type="text"].alert
-{
-	border-color: @error !important;
-	background-color: @error-light !important;
-}
-
-input[type="text"].expand
-{
-	width: 100%;
-}
-
+/* select */
 select
 {
 	.form-box;
@@ -91,11 +145,17 @@ select
 	max-width: 100%;
 }
 
+/* button */
+button
+{
+	cursor: pointer;
+	display: inline-block;
+}
+
 .btn
 {
 	.form-box;
 
-	cursor: pointer;
 	display: inline-block;
 	margin: 10px 0 0 10px;
 	padding: 5px 15px;
@@ -127,12 +187,6 @@ select
 .close-btn:after
 {
 	content: '\00D7';
-}
-
-.form-bar input, .form-bar div, .form-bar button
-{
-	float: left;
-	margin: 0;
 }
 
 .btn-group

@@ -42,8 +42,7 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 
 <!--
 Query parameters:
-- q = search query
-- search = fast || pubchem || rcsb || cod
+- q = search query (lookup using CIR)
 - smiles = resolve SMILES string
 - cid = load CID
 - pdbid = load PDBID
@@ -205,10 +204,28 @@ Query parameters:
 			<div class="progress-part" style="width: 0; opacity: 0;"></div>
 		</div>
 		<div id="menu" class="no-select menu swipeable">
-			<div class="inner">
-				<ul id="main-menu" class="menu-brick menu-bar">
+			<div class="inner vstack">
+				<div id="brand"></div>
+				<form id="search" class="vstack" action="index.php">
+					<div class="input-wrapper">
+						<button><i class="fa fa-search"></i></button>
+						<input id="search-input" name="q" type="text" autocomplete="off" spellcheck="false" />
+						<div class="input-focus"></div>
+					</div>
+					<div id="search-dropdown" class="dropdown">
+						<a class="dropdown-toggle"></a>
+						<ul class="dropdown-menu dropdown-left">
+							<li class="menu-item"><a id="show-search-layer">Show last search results</a></li>
+							<li class="menu-header">Advanced search</li>
+							<li class="menu-item"><a id="pubchem-search">PubChem Compounds</a></li>
+							<li class="menu-item"><a id="rcsb-search">RCSB Protein Data Bank</a></li>
+							<li class="menu-item"><a id="cod-search">Crystallography Open Database</a></li>
+						</ul>
+					</div>
+				</form>
+				<ul id="main-menu" class="vstack">
 					<li class="dropdown">
-						<a class="dropdown-toggle brand">MolView</a>
+						<a class="dropdown-toggle">MolView</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Layout</li>
 							<li id="layout-menu">
@@ -291,37 +308,22 @@ Query parameters:
 					<li class="dropdown">
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="jmol-clean" class="jmol-script">Clean</a></li>
 							<li class="menu-item"><a id="jmol-hq" class="checked">High Quality</a></li>
-							<li class="menu-header">Calculations</li>
+							<li class="menu-item"><a id="jmol-clean" class="jmol-script">Clean</a></li>
+							<li class="menu-header jmol-script">Calculations</li>
 							<li class="menu-item"><a id="mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
 							<li class="menu-item"><a id="mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
 							<li class="menu-item"><a id="jmol-charge" class="jmol-script jmol-calc">Charge</a></li>
 							<li class="menu-item"><a id="bond-dipoles" class="jmol-script jmol-calc">Bond dipoles</a></li>
 							<li class="menu-item"><a id="net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
 							<li class="menu-item"><a id="jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
-							<li class="menu-header">Measurement</li>
+							<li class="menu-header jmol-script">Measurement</li>
 							<li class="menu-item"><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
 							<li class="menu-item"><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
 							<li class="menu-item"><a id="measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
 						</ul>
 					</li>
 				</ul>
-				<form id="search" class="menu-brick form-bar" action="javascript:void(0)">
-					<div id="search-input-wrap">
-						<input id="search-input" name="q" type="text"
-							placeholder="Name, InChiKey, SMILES &hellip;"
-							autocomplete="off" spellcheck="false" />
-					</div>
-					<div id="search-buttons">
-						<button id="fast-search" class="btn btn-search" type="submit" title="Fast search"><i class="fa fa-search"></i></button>
-						<button id="pubchem-search" class="btn btn-search" type="button" title="Find compounds via PubChem">Compounds</button>
-						<button id="rcsb-search" class="btn btn-search" type="button" title="Find macromolecules via RCSB">Macromolecules</button>
-						<button id="cod-search" class="btn btn-search" type="button" title="Find crystals via COD">Crystals</button>
-						<button id="show-search-layer" class="btn btn-search last" type="button" title="Show results" style="display: block;"><i class="fa fa-eye"></i></button>
-						<button id="hide-search-layer" class="btn btn-search last" type="button" title="Hide results" style="display: none;"><i class="fa fa-eye-slash"></i></button>
-					</div>
-				</form>
 			</div>
 		</div>
 		<div id="content">
@@ -349,6 +351,15 @@ Query parameters:
 						&& !MolView.query.layout
 						&& MolView.layout != "model") Actions.window_hsplit();
 
+					if($(window).width() < 380 && $(window).width() < $(window).height())
+					{
+						$("#search-input").css("width", $(window).width() - 80);
+					}
+					if($(window).height() < 380 && $(window).height() < $(window).width())
+					{
+						$("#search-input").css("width", $(window).height() - 80);
+					}
+
 					if(MolView.touch) $("#theme-touch").addClass("checked");
 					else $("#theme-desktop").addClass("checked");
 				</script>
@@ -374,7 +385,7 @@ Query parameters:
 							</div>
 						</div>
 						<div id="edit-tools" class="toolbar swipeable">
-							<div class="inner">
+							<div class="inner vstack">
 								<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
 								<div class="horizontal-separator"></div>
@@ -467,21 +478,29 @@ Query parameters:
 						</thead>
 						<tbody>
 							<tr id="prop-sysname-title"><th>Systematic name</th></tr>
-							<tr id="prop-sysname-wrapper"><td><input type="text" id="prop-sysname" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-sysname-wrapper">
+								<td><input type="text" id="prop-sysname" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-canonicalsmiles-title"><th>Canonical SMILES</th></tr>
-							<tr id="prop-canonicalsmiles-wrapper"><td><input type="text" id="prop-canonicalsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-canonicalsmiles-wrapper">
+								<td><input type="text" id="prop-canonicalsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-isomericsmiles-title"><th>Isomeric SMILES</th></tr>
-							<tr id="prop-isomericsmiles-wrapper"><td><input type="text" id="prop-isomericsmiles" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-isomericsmiles-wrapper">
+								<td><input type="text" id="prop-isomericsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-inchikey-title"><th>InChiKey</th></tr>
-							<tr id="prop-inchikey-wrapper"><td><input type="text" id="prop-inchikey" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-inchikey-wrapper">
+								<td><input type="text" id="prop-inchikey" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-inchi-title"><th>InChi</th></tr>
-							<tr id="prop-inchi-wrapper"><td><input type="text" id="prop-inchi" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-inchi-wrapper">
+								<td><input type="text" id="prop-inchi" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-cas-title"><th>CAS Number</th></tr>
-							<tr id="prop-cas-wrapper"><td><input type="text" id="prop-cas" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-cas-wrapper">
+								<td><input type="text" id="prop-cas" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-csid-title"><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr id="prop-csid-wrapper"><td><input type="text" id="prop-csid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-csid-wrapper">
+								<td><input type="text" id="prop-csid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 							<tr id="prop-cid-title"><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr id="prop-cid-wrapper"><td><input type="text" id="prop-cid" class="chemprop" autocomplete="off" spellcheck="false" /></td></tr>
+							<tr id="prop-cid-wrapper">
+								<td><input type="text" id="prop-cid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -601,7 +620,7 @@ Query parameters:
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.png" alt="Left toolbar" /></p>
 								<p class="image-note"><i>Left toolbar (rotated), from left to right: single bond, double bond, triple bond, up/down bond, benzene, cyclopropane/butane/pentane/hexane/heptane, chain, charge+, charge-</i></p>
 								<h4>Right toolbar</h4>
-								<p>The right toolbar contains some common elements and a periodic table tool in case you want to use another element. You can select an atom and click an existing atom in order to replace it with the selected atom. Note that you can only replace existing atoms. In order to add an atom, you will first have to add a new bond using the tools from the left toolbar.</p>
+								<p>The right toolbar contains some common elements and a periodic table tool in case you want to pick another element. You can select an atom and click an existing atom in order to replace it with the selected atom. Note that you can only replace existing atoms. In order to add an atom, you will first have to add a new bond using the tools from the left toolbar.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.png" alt="Right toolbar" /></p>
 								<p class="image-note"><i>Right toolbar (rotated), from left to right: hydrogen, carbon, nitrogen, oxygen, sulfur, phosphorus, fluorine, iodine, chlorine, bromine, table of elements, info (about dialog)</i></p>
 							</div>
@@ -609,16 +628,15 @@ Query parameters:
 						<div class="expandable">
 							<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
 							<div class="expandable-content">
-								<p>You can load structures from large databases like PubChem via the search bar located on the right side of the menubar. Just type what you are looking for and find it in the autocomplete dropdown or click one of the search categories listed below to perform a more extensive search.</p>
+								<p>You can load molecules from large databases like PubChem and RCSB using the search form located on the left side of the menu-bar. Just type what you are looking for and a list of available molecules will appear.</p>
+								<p>You can also click on the dropdown button next to the search field to select a specific database. This will perform a more extensive search on the selected database. Currently, three big databases are supported:</p>
 								<ul>
-									<li><b>Compounds:</b> small molecules from the PubChem database</li>
-									<li><b>Macromolecules:</b> biological macromolecules from the RCSB database</li>
-									<li><b>Crystals:</b> crystal structures from the Open Crystallography Database</li>
+									<li><b>PubChem</b></li>
+									<li><b>The RCSB Protein Data Bank</b></li>
+									<li><b>The Crystallography Open Database</b></li>
 								</ul>
-								<p>You can also enter a PubChem CID via <i>Compounds</i>, a PDB ID via <i>Macromolecules</i> or a COD ID via <i>Crystals</i>. It is also possible to enter a SMILES, InChi or InChiKey string in the search field.</p>
-								<p>You can show or hide search results using the leftmost button. Note that <i>Macromolecules</i> search is absent on mobile browsers which do not support WebGL since they can't display macromolecules anyway.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.png" alt="Search bar" /></p>
-								<p class="image-note"><i>Search bar, from left to right: input field, fast search, compounds search (PubChem), macromolecules search (RCSB) and crystals search (COD)</i></p>
+								<p class="image-note"><i>The search form</i></p>
 							</div>
 						</div>
 						<div class="expandable">
@@ -774,7 +792,7 @@ Query parameters:
 							<div class="share share-twitter"></div>
 							<div class="share share-googleplus"></div>
 						</div>
-						<input id="share-link" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
+						<input id="share-link" class="input" type="text" autocomplete="off" spellcheck="false" />
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
 						</div>
@@ -786,11 +804,11 @@ Query parameters:
 							<span id="embed-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model is embedded)</span>
 						</div>
 						<h4>Width</h3>
-						<input id="embed-width" class="contrast expand" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
+						<input id="embed-width" class="input" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
 						<h4>Height</h4>
-						<input id="embed-height" class="contrast expand" type="text" value="300px" autocomplete="off" spellcheck="false" />
+						<input id="embed-height" class="input" type="text" value="300px" autocomplete="off" spellcheck="false" />
 						<h4>HTML code</h4>
-						<input id="embed-code" class="contrast expand" type="text" autocomplete="off" spellcheck="false" />
+						<input id="embed-code" class="input" type="text" autocomplete="off" spellcheck="false" />
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
 						</div>
