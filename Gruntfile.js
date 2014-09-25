@@ -88,6 +88,7 @@ module.exports = function(grunt)
 					'src/js/JSmolPlugin.js',
 					'src/js/CDWPlugin.js',
 					'src/js/Model.js',
+					'src/js/SearchGrid.js',
 					'src/js/Request.js',
 					'src/js/Loader.js',
 					'src/js/Actions.js',
@@ -247,7 +248,20 @@ module.exports = function(grunt)
 					'src/less/mobile.less'
 				],
 				dest: 'build\/<%= pkg.name %>.mobile.min.css'
-			}
+			},
+			page:
+			{
+				options:
+				{
+					compress: true,
+					cleancss: true
+				},
+				src: [
+					'src/less/vars.less',
+					'src/less/page.less'
+				],
+				dest: 'build/<%= pkg.name %>.page.min.css'
+			},
 		},
 		svgmin:
 		{

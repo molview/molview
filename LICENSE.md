@@ -22,7 +22,7 @@ Third party licenses
 ====================
 Below is a full list of all third party code used in MolView.
 If you believe your code is used in MolView but not contained in this list,
-please contact me via info@molview.org
+please contact me via <info@molview.org>
 
 ## JSmol
 ```
@@ -112,7 +112,7 @@ v. 1.2.4
 See: https://www.molsoft.com/moledit.html
 
 *The editor is free for academic and personal use.
-Please contact info@molsoft.com about commercial use.*
+Please contact <info@molsoft.com> about commercial use.*
 
 (**Only** MolView has explicit permission from MolSoft to
 modify and distribute MolEdit in a non-profit context!)
@@ -133,13 +133,20 @@ Date: 2014-01-23T21:10Z
 ```
 See: http://jquery.com/
 
+## Parsedown
+```
+The MIT License (MIT)
+Copyright (c) 2013 Emanuil Rusev, erusev.com
+```
+See: https://github.com/erusev/parsedown
+
 ## FileSaver.js and Blob.js
 ```
 Copyright (c) 2014 [Eli Grey](http://eligrey.com)
 MIT License
 ```
-See: https://github.com/eligrey/FileSaver.js/
-and https://github.com/eligrey/Blob.js/
+See: https://github.com/eligrey/FileSaver.js
+and https://github.com/eligrey/Blob.js
 
 ## PeriodicTable
 See: https://github.com/diniska/chemistry/blob/master/PeriodicalTable/periodicTable.json
@@ -149,8 +156,8 @@ See: https://github.com/jeresig/jquery.hotkeys
 
 Full licenses
 =============
-- **GPL3**: see /licenses/gpl.txt
-- **AGPL3**: see /licenses/agpl.txt
-- **LGPL3**: see /licenses/lgpl.txt
-- **MIT**: see /licenses/mit.txt
-- **Apache License 2.0**: see /licenses/apache-license-2.0.txt
+- **GPL3**: see [licenses/gpl.txt](licenses/gpl.txt)
+- **AGPL3**: see [licenses/agpl.txt](licenses/agpl.txt)
+- **LGPL3**: see [licenses/lgpl.txt](licenses/lgpl.txt)
+- **MIT**: see [licenses/mit.txt](licenses/mit.txt)
+- **Apache License 2.0**: see [licenses/apache-license-2.0.txt](licenses/apache-license-2.0.txt)

@@ -176,13 +176,10 @@ var MolView = {
 		//initialize
 		Request.init();
 		Sketcher.init();
+		SearchGrid.init();
 
 		if(this.loadDefault) Progress.increment();
-
-		if(this.touch && !Detector.webgl)
-		{
-			Model.JSmol.setQuality(false);
-		}
+		if(this.touch && !Detector.webgl) Model.JSmol.setQuality(false);
 
 		//actions
 		$("#window-sketcher").on(this.trigger, Actions.window_sketcher);

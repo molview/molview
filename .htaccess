@@ -1,9 +1,19 @@
 Options +FollowSymlinks
 RewriteEngine on
 
-RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
-RewriteRule ^(.*)$ http://molview.org/$1 [R=301]
+ErrorDocument 400 /page.php?id=400
+ErrorDocument 401 /page.php?id=401
+ErrorDocument 403 /page.php?id=403
+ErrorDocument 404 /page.php?id=404
+ErrorDocument 500 /page.php?id=500
 
-RewriteRule ^thanks$ pages/thanks.html [L]
-RewriteRule ^nosupport$ pages/nosupport.html [L]
+RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
+RewriteRule ^(.*)$ http://molview.org/$1 [L,R=301]
+
+RewriteRule ^thanks$ page.php?id=thanks [L]
+RewriteRule ^nosupport$ page.php?id=nosupport [L]
+RewriteRule ^changelog$ page.php?id=changelog [L]
+RewriteRule ^license$ page.php?id=license [L]
+RewriteRule ^legal$ page.php?id=legal [L]
+
 RewriteRule ^embed$ embed.php [L]

@@ -7,8 +7,9 @@
 - Redesigned logo
 - Added AGPL license
 - Added build script (fetch libs, run grunt, render SVG)
-+ Add Tems of Use
-+ Add testing procedure
+- Added Tems of Use
+- Added testing procedure
+- Added internal pages using Markdown renderer
 
 ### Bugfixes
 
@@ -56,7 +57,8 @@
 + Add CAS lookup method using PubChem (CIR as fallback)
 
 #### UI concept
-+ Wrap search results in <a> in order to support opening in new tab
+- Added open in new tab support for search results
+- Added auto search results loading when scrolling to the bottom of the page
 + Create smart crystal search display by removing duplicate results
 + Remove identifier search from Advanced search functions
 + Add *Don't show me again* option to Messages alerts

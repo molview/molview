@@ -15,6 +15,9 @@ rm -r jsmol.zip
 rm Jmol.zip
 
 # Download some third party code
+wget https://raw.githubusercontent.com/erusev/parsedown/master/Parsedown.php
+mv Parsedown.php php/Parsedown.php
+
 wget http://code.jquery.com/jquery-1.11.1.min.js
 mv jquery-1.11.1.min.js src/js/lib/jquery.min.js
 

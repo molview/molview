@@ -46,6 +46,10 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 ```
 See LICENSE.md for more details about third party code.
 
+Contribute
+----------
+...How you can contribute...
+
 Build
 -----
 Instructions:
@@ -53,3 +57,23 @@ Instructions:
 1. Copy all files to a server with PHP and .htaccess support
 2. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
 3. Run `./build.sh`
+
+Test
+----
+Below are all test instructions you have to pass before commiting changes
+
+### Unstable build
+1. Successfully run the build script
+2. Verify for chances mentioned in CHANGELOG.md:
+   1. Expected behaviour in Chrome and Firefox
+   2. Expected layout and design on desktops (test Chrome and Firefox) and touch devices
+
+### Stable build
+1. Successful unstable build
+2. Verify for all functions mentioned in docs/manual.pdf:
+   1. Expected behaviour on desktops (test Chrome and Firefox), touch devices and mobile devices
+   2. Expected layout and design on desktops (test Chrome and Firefox), touch devices and mobile devices
+3. Verify for chances mentioned in CHANGELOG.md:
+   1. Behaviour on desktops (test Chrome and Firefox), touch devices and mobile devices is "as designed"
+   2. Layout and design on desktops (test Chrome and Firefox), touch devices and mobile devices is "as designed"
+4. Make sure all internal pages are up-to-date

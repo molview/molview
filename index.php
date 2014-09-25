@@ -111,8 +111,8 @@ Query parameters:
 		?>
 
 		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
 
 		<!-- JS -->
@@ -159,6 +159,7 @@ Query parameters:
 		<script type="text/javascript" src="src/js/JSmolPlugin.js"></script>
 		<script type="text/javascript" src="src/js/CDWPlugin.js"></script>
 		<script type="text/javascript" src="src/js/Model.js"></script>
+		<script type="text/javascript" src="src/js/SearchGrid.js"></script>
 		<script type="text/javascript" src="src/js/Request.js"></script>
 		<script type="text/javascript" src="src/js/Loader.js"></script>
 		<script type="text/javascript" src="src/js/Actions.js"></script>
@@ -527,6 +528,7 @@ Query parameters:
 					<div class="dialog" id="start-dialog">
 						<h1>Welcome to MolView</h1>
 						<p>MolView is a modern webapp for chemistry education around the world!</p>
+						<a class="gray" href="legal" target="_blank">Terms of Use</a>
 						<div class="btn-group">
 							<button id="start-help" class="btn btn-large">Getting started</button>
 							<button class="btn close btn-large btn-primary">Continue</button>
@@ -570,25 +572,27 @@ Query parameters:
 						</ul>
 						<p id="about-links">
 							MolView v2.2.0
+							&nbsp;+&nbsp;
+							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
 							Copyright &copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
-							&nbsp;|&nbsp;
-							<a class="link" href="CHANGELOG.md" target="_blank">Changelog</a>
-							&nbsp;|&nbsp;
-							<a class="link" href="LICENSE.md" target="_blank">License</a>
-							&nbsp;|&nbsp;
+							&nbsp;+&nbsp;
+							<a class="link" href="changelog" target="_blank">Changelog</a>
+							&nbsp;+&nbsp;
+							<a class="link" href="license" target="_blank">License</a>
+							&nbsp;+&nbsp;
 							<a class="link" href="https://github.com/molview" target="_blank">GitHub</a>
 							<br/>
 							<a class="link" target="_blank" title="Chrome App" href="https://chrome.google.com/webstore/detail/molview/nogcacamdkipgkfpfiakaoamdnihinnm">Chrome Web Store</a>
-							&nbsp;|&nbsp;
+							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
-							&nbsp;|&nbsp;
+							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
-							&nbsp;|&nbsp;
+							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
-							&nbsp;|&nbsp;
+							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization" rel="publisher">Google+</a>
-							&nbsp;|&nbsp;
+							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
 						</p>
 						<div class="footer">

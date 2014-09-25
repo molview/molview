@@ -43,11 +43,6 @@ li
 	margin: 10px 0;
 }
 
-ul ul, ol ul
-{
-	list-style-type: square;
-}
-
 img
 {
 	display: block;
@@ -62,28 +57,26 @@ table
 a
 {
 	cursor: pointer;
+	text-decoration: none;
 }
 
 a.link
 {
-	color: #06c;
 	cursor: pointer;
+	color: #06c;
 	border-bottom: 0px solid @highlight;
 	transition: border .1s linear;
 }
 
 a.link:hover
 {
-	text-decoration: none;
 	color: @highlight;
-	border-bottom: 2px solid @highlight;
+	text-decoration: underline;
 }
 
 a.link:active
 {
-	text-decoration: none;
 	color: @active;
-	border-bottom: 2px solid @active;
 }
 
 a.a
@@ -95,17 +88,39 @@ a.a
 
 a.a:visited
 {
-	color: #333;
+	color: @foreground-less;
 }
 
 a.a:hover
 {
-	color: #f50;
+	color: @highlight;
+	text-decoration: underline;
 }
 
 a.a:active
 {
-	color: #f10;
+	color: @active;
+}
+
+a.gray
+{
+	color: #aaa;
+	cursor: pointer;
+}
+
+a.gray:visited
+{
+	color: #aaa;
+}
+
+a.gray:hover
+{
+	color: #888;
+}
+
+a.gray:active
+{
+	color: #333;
 }
 
 .no-select

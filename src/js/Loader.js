@@ -65,43 +65,6 @@ var Loader = {
 		loading: false,
 		ssli: 1000,//structure search lookup interval
 
-		write: function(data)
-		{
-			/*
-			Search output:
-			<div class="search-result">
-				<div class="search-result-title"><span>Name</span></div>
-				<div class="search-result-img-wrap><div class="search-result-img" style="background-image: url(image.png)"/></div>
-			</div>
-			*/
-
-			var result = $('<div class="search-result search-result-notext"></div>');
-
-			$("<div class='search-result-img'></div>").css("background-image",
-				"url(" + Request.PubChem.image(data.CID) + ")")
-				.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
-
-			result.appendTo("#search-layer .container");
-
-			if(data.Title)
-			{
-				var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
-				result.append(title);
-				title.textfill({ maxFontPixels: 30 });
-			}
-
-			result.data("cid", data.CID);
-			result.data("title", ucfirst(humanize(data.Title)));
-			result.on("click", function()
-			{
-				if(window.getSelection().type != "Range")
-				{
-					MolView.setLayer("main");
-					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
-				}
-			});
-		},
-
 		loadCIDS: function(cids)
 		{
 			if(cids.length === 0) return;
@@ -109,14 +72,13 @@ var Loader = {
 			Request.PubChem.description(cids, function(data)
 			{
 				for(var i = 0; i < data.InformationList.Information.length; i++)
-					Loader.PubChem.write(data.InformationList.Information[i]);
+				{
+					SearchGrid.addEntry(data.InformationList.Information[i]);
+				}
 
-				if(Loader.PubChem.i >= Request.PubChem.data.length)
-					$(".load-more").css("display", "none");
+				if(Loader.PubChem.i >= Request.PubChem.data.length) $(".load-more").css("display", "none");
 				else $("#load-more-pubchem").removeClass("load-more-progress");
-
 				Loader.PubChem.loading = false;
-
 				Progress.complete();
 			},
 			function()
@@ -146,34 +108,24 @@ var Loader = {
 		{
 			var text = $("#search-input").val();
 
-			if(!isNaN(text))//is number
+			Progress.clear();
+			Progress.setSteps(3);
+
+			Request.PubChem.search(text, function()
 			{
-				Loader.PubChem.loadCID(text);
-			}
-			else
+				Messages.clear();
+				Actions.show_search_layer();
+
+				SearchGrid.setDatabase("pubchem");
+				SearchGrid.clear();
+
+				Loader.PubChem.i = 0;
+				Loader.PubChem.loadNextSet();
+			},
+			function()
 			{
-				Progress.clear();
-				Progress.setSteps(3);
-
-				Request.PubChem.search(text, function()
-				{
-					Messages.clear();
-
-					$("#load-more-pubchem").css("display", "block");
-					$("#load-more-rcsb").css("display", "none");
-					$("#load-more-cod").css("display", "none");
-
-					$("#search-layer .container").empty();
-					Actions.show_search_layer();
-
-					Loader.PubChem.i = 0;
-					Loader.PubChem.loadNextSet();
-				},
-				function()
-				{
-					Messages.alert("search_fail");
-				});
-			}
+				Messages.alert("search_fail");
+			});
 		},
 
 		structureSearch: function(query, value, type)
@@ -349,44 +301,6 @@ var Loader = {
 		step: 10,
 		loading: false,
 
-		write: function(data)
-		{
-			/*
-			Search output:
-			<div class="search-result search-result-imgdesc">
-				<div class="search-result-description">structureTitle</div>
-				<div class="search-result-title"><span>structureId</span></div>
-				<div class="search-result-img-wrap><div class="search-result-img" style="background-image: url(image.png)"/></div>
-			</div>
-			*/
-
-			var result = $('<div class="search-result search-result-imgdesc"></div>');
-
-			var img = $('<div class="search-result-img"></div>').css("background-image",
-				"url(" + Request.RCSB.image(data.structureId) + ")");
-			img.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
-
-			result.appendTo("#search-layer .container");
-
-			var title = $('<div class="search-result-title"><span>' + data.structureId + "</span></div>");
-			result.append(title);
-			title.textfill({ maxFontPixels: 30 });
-
-			var desc = $('<div class="search-result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
-			result.append(desc);
-
-			var clickable = title;
-			clickable.data("pdbid", data.structureId);
-			clickable.on("click", function()
-			{
-				if(window.getSelection().type != "Range")
-				{
-					MolView.setLayer("main");
-					Loader.RCSB.loadPDBID($(this).data("pdbid"));
-				}
-			});
-		},
-
 		loadPDBIDS: function(pdbids)
 		{
 			if(pdbids.length === 0) return;
@@ -394,16 +308,14 @@ var Loader = {
 			Request.RCSB.information(pdbids, function(data)
 			{
 				for(var i = 0; i < data.dataset.length; i++)
-					Loader.RCSB.write(data.dataset[i]);
+				{
+					SearchGrid.addEntry(data.dataset[i]);
+				}
 
-				if(Loader.RCSB.i >= Request.RCSB.data.length)
-					$(".load-more").css("display", "none");
+				if(Loader.RCSB.i >= Request.RCSB.data.length) $(".load-more").css("display", "none");
 				else $("#load-more-rcsb").removeClass("load-more-progress");
-
 				Loader.RCSB.loading = false;
-
 				Progress.complete();
-				Progress.hide();
 			},
 			function()
 			{
@@ -433,34 +345,24 @@ var Loader = {
 
 			var text = $("#search-input").val();
 
-			if(text.length == 4 && parseInt(text[0]) > 0)//could be PDBID
+			Progress.clear();
+			Progress.setSteps(3);
+
+			Request.RCSB.search(text, function()
 			{
-				Loader.RCSB.loadPDBID(text);
-			}
-			else
+				Messages.clear();
+				Actions.show_search_layer();
+
+				SearchGrid.setDatabase("rcsb");
+				SearchGrid.clear();
+
+				Loader.RCSB.i = 0;
+				Loader.RCSB.loadNextSet();
+			},
+			function()
 			{
-				Progress.clear();
-				Progress.setSteps(3);
-
-				Request.RCSB.search(text, function()
-				{
-					Messages.clear();
-
-					$("#load-more-pubchem").css("display", "none");
-					$("#load-more-rcsb").css("display", "block");
-					$("#load-more-cod").css("display", "none");
-
-					$("#search-layer .container").empty();
-					Actions.show_search_layer();
-
-					Loader.RCSB.i = 0;
-					Loader.RCSB.loadNextSet();
-				},
-				function()
-				{
-					Messages.alert("search_fail");
-				});
-			}
+				Messages.alert("search_fail");
+			});
 		},
 
 		loadPDBID: function(pdbid, name)
@@ -538,49 +440,6 @@ var Loader = {
 		step: 10,
 		loading: false,
 
-		write: function(data)
-		{
-			/*
-			Search output:
-			<div class="search-result">
-				<div class="search-result-title"><span>title</span></div>
-				<div class="search-result-description">description</div>
-			</div>
-			*/
-
-			var result = $('<div class="search-result"></div>').appendTo("#search-layer .container");
-
-			data.formula = chemFormulaFormat(data.formula);
-			var title_str = (data.mineral || data.commonname || data.chemname || data.formula || "?");
-
-			var title = $('<div class="search-result-title"><span>' + title_str + "</span></div>");
-			result.append(title);
-			title.textfill({ maxFontPixels: 30 });
-
-			var description = "";
-
-			if(data.commonname && data.commonname != title_str) description += "<b>Common name:</b> " + data.commonname + "<br/>";
-			if(data.chemname && data.chemname != title_str) description += "<b>Chemical name:</b> " + data.chemname + "<br/>";
-			if(data.formula && data.formula != title_str) description += "<b>Formula:</b> " + data.formula + "<br/>";
-
-			description += data.title;
-
-			var desc = $('<div class="search-result-description">' + description + "</div>");
-			result.append(desc);
-
-			var clickable = title;
-			clickable.data("codid", data.codid);
-			clickable.data("title", (data.mineral || data.commonname || data.chemname || ("COD: " + data.codid)));
-			clickable.on("click", function()
-			{
-				if(window.getSelection().type != "Range")
-				{
-					MolView.setLayer("main");
-					Loader.COD.loadCODID($(this).data("codid"), $(this).data("title"));
-				}
-			});
-		},
-
 		loadCODIDS: function(codids)
 		{
 			if(codids.length === 0) return;
@@ -588,14 +447,13 @@ var Loader = {
 			Request.COD.information(codids, function(data)
 			{
 				for(var i = 0; i < data.records.length; i++)
-					Loader.COD.write(data.records[i]);
+				{
+					SearchGrid.addEntry(data.records[i]);
+				}
 
-				if(Loader.COD.i >= Request.COD.data.length)
-					$(".load-more").css("display", "none");
+				if(Loader.COD.i >= Request.COD.data.length) $(".load-more").css("display", "none");
 				else $("#load-more-cod").removeClass("load-more-progress");
-
 				Loader.COD.loading = false;
-
 				Progress.complete();
 			},
 			function()
@@ -625,34 +483,24 @@ var Loader = {
 		{
 			var text = $("#search-input").val();
 
-			if(!isNaN(text) && text.length == 7)//is number with 7 digits
+			Progress.clear();
+			Progress.setSteps(3);
+
+			Request.COD.search(text, function()
 			{
-				Loader.COD.loadCODID(text);
-			}
-			else
+				Messages.clear();
+				Actions.show_search_layer();
+
+				SearchGrid.setDatabase("cod");
+				SearchGrid.clear();
+
+				Loader.COD.i = 0;
+				Loader.COD.loadNextSet();
+			},
+			function()
 			{
-				Progress.clear();
-				Progress.setSteps(3);
-
-				Request.COD.search(text, function()
-				{
-					Messages.clear();
-
-					$("#load-more-pubchem").css("display", "none");
-					$("#load-more-rcsb").css("display", "none");
-					$("#load-more-cod").css("display", "block");
-
-					$("#search-layer .container").empty();
-					Actions.show_search_layer();
-
-					Loader.COD.i = 0;
-					Loader.COD.loadNextSet();
-				},
-				function()
-				{
-					Messages.alert("search_fail");
-				});
-			}
+				Messages.alert("search_fail");
+			});
 		},
 
 		/**

@@ -346,6 +346,8 @@ var Autocomplete = {
 				$('<span class="autocomplete-type"></span>').html("Compound").appendTo(li);
 			}
 
+			$('<div style="clear: both;"></div>').appendTo(li);
+
 			li.data("i", i);
 			li.on(MolView.trigger, function()
 			{
