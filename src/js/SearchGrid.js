@@ -87,7 +87,7 @@ var SearchGrid = {
 			{
 				var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
 				result.append(title);
-				title.textfill({ maxFontPixels: 30 });
+				title.textfill({ maxFontPoints: 26 });
 			}
 
 			result.data("cid", data.CID);
@@ -126,7 +126,7 @@ var SearchGrid = {
 			var title = $('<a class="search-result-title"><span>' + data.structureId + "</span></a>")
 					.attr("href", "?pdbid=" + data.structureId);;
 			result.append(title);
-			title.textfill({ maxFontPixels: 30 });
+			title.textfill({ maxFontPoints: 26 });
 
 			var desc = $('<div class="search-result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
 			result.append(desc);
@@ -152,7 +152,7 @@ var SearchGrid = {
 			</div>
 			*/
 
-            if(!data.codid || !data.title) return;
+            if(!data.codid) return;
 
 			var result = $('<div class="search-result"></div>').appendTo("#search-layer .container");
 
@@ -163,7 +163,7 @@ var SearchGrid = {
 			var title = $('<a class="search-result-title"><span>' + title_str + "</span></a>")
 					.attr("href", "?codid=" + data.codid);
 			result.append(title);
-			title.textfill({ maxFontPixels: 30 });
+			title.textfill({ maxFontPoints: 26 });
 
 			var description = "";
 
@@ -174,10 +174,11 @@ var SearchGrid = {
 			if(data.formula && data.formula != title_str) description
 					+= "<b>Formula:</b> " + data.formula + "<br/>";
 
-			description += data.title;
+			if(data.title) description += data.title;
 
-			var desc = $('<div class="search-result-description">' + description + "</div>");
+			var desc = $('<div class="search-result-description"><span>' + description + "</span></div>");
 			result.append(desc);
+			desc.textfill({ maxFontPoints: 12 });
 
 			title.data("codid", data.codid);
 			title.data("title", title_str);

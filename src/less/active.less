@@ -29,7 +29,7 @@ form
 
 select:active
 {
-	.form-box-active;
+	background: @light3;
 }
 
 .btn:active
@@ -58,18 +58,15 @@ menu
 /*
 sketcher
 */
-.tool-button:not(.tool-button-disabled):active
+.tool-button:not(.tool-button-selected):not(.tool-button-disabled):active
 {
-	opacity: 1.0 !important;
-	background-color: @light3 !important;
-	box-shadow: inset 0 3px 10px @contrast3;
+	background-color: @contrast;
 }
 
 /* periodictable */
 .pt-element:active
 {
-	background-color: @light2;
-	box-shadow: inset 0 3px 10px @contrast2;
+	background-color: @light3;
 }
 
 /*
@@ -85,8 +82,7 @@ search
 */
 .search-result-title:active, .search-result-notext:active > .search-result-title, .load-more:active
 {
-	background: @light2;
-	box-shadow: inset 0 3px 10px @light-shadow;
+	background: @light3;
 }
 
 .load-more:active
@@ -108,6 +104,5 @@ messages
 */
 .message-close-btn:active
 {
-	background: #222;
-	box-shadow: inset 0 3px 10px #000;
+	background: @foreground-less;;
 }

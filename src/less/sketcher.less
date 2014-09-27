@@ -50,11 +50,15 @@
 	margin: 0;
 	padding: 0;
 
+	color: #000;
+	line-height: @toolbar-size;
+	text-align: center;
+	font-size: @toolbar-fontsize;
+
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: @toolbar-iconsize;
 	cursor: pointer;
-	opacity: 0.8;
 
     -webkit-user-select: none;
      -khtml-user-select: none;
@@ -72,23 +76,25 @@
 
 .tool-button-selected
 {
-	opacity: 1.0;
-	background-color: @highlight;
+	background-color: @highlight-light !important;
+}
+
+#chem-tools > .inner > .tool-button-selected, #elem-tools > .inner > .tool-button-selected
+{
+	border-left: 3px solid @highlight;
+	width: 37px;
+}
+
+#edit-tools > .inner > .tool-button-selected
+{
+	border-bottom: 3px solid @highlight;
+	height: 37px;
 }
 
 .tool-button-disabled
 {
 	opacity: 0.3;
 	cursor: default;
-}
-
-.tool-button
-{
-	color: #000;
-	line-height: @toolbar-size;
-	text-align: center;
-	font-size: @toolbar-fontsize;
-	font-weight: bold;
 }
 
 .horizontal-separator

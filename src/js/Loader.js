@@ -440,42 +440,22 @@ var Loader = {
 		step: 10,
 		loading: false,
 
-		loadCODIDS: function(codids)
-		{
-			if(codids.length === 0) return;
-
-			Request.COD.information(codids, function(data)
-			{
-				for(var i = 0; i < data.records.length; i++)
-				{
-					SearchGrid.addEntry(data.records[i]);
-				}
-
-				if(Loader.COD.i >= Request.COD.data.length) $(".load-more").css("display", "none");
-				else $("#load-more-cod").removeClass("load-more-progress");
-				Loader.COD.loading = false;
-				Progress.complete();
-			},
-			function()
-			{
-				Messages.alert("search_fail");
-			});
-		},
-
 		loadNextSet: function()
 		{
+			$("#load-more-cod").addClass("load-more-progress");
 			if(this.loading) return;
 			if(this.i < Request.COD.data.length)
 			{
-				this.loading = true;
-				var start = this.i;
-				var end = this.i + this.step;
-				if(end > Request.COD.data.length) end = Request.COD.data.length;
+				for(var end = this.i + this.step;
+					this.i < Request.COD.data.length && this.i < end; this.i++)
+				{
+					SearchGrid.addEntry(Request.COD.data[this.i]);
+				}
 
-				this.loadCODIDS(Request.COD.data.slice(start, end));
-				this.i = end;
-
-				$("#load-more-cod").addClass("load-more-progress");
+				if(this.i >= Request.COD.data.length) $(".load-more").css("display", "none");
+				else $("#load-more-cod").removeClass("load-more-progress");
+				this.loading = false;
+				Progress.complete();
 			}
 		},
 

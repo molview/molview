@@ -722,6 +722,78 @@ var Request = {
 		}
 	},
 
+	COD:
+	{
+		data: {records:[]},
+
+		search: function(text, success, error)
+		{
+			if(text === "")
+			{
+				if(error) error();
+				return;
+			}
+
+			Request.translation(text, function(translated)
+			{
+				Progress.increment();
+
+				text = translated;
+
+				if(xhr !== undefined) xhr.abort();
+				xhr = AJAX({
+					dataType: "json",
+					url: "php/cod.php?type=search&q=" + encodeURIComponent(text),
+					success: function(data)
+					{
+						Progress.increment();
+						if(data.records.length > 0)
+						{
+							Request.COD.data = data.records;
+							success();
+						}
+						else if(error) error();
+					},
+					error: function(jqXHR, textStatus)
+					{
+						if(textStatus != "error") return;
+						if(error) error();
+					}
+				});
+			});
+		},
+
+		SMILES: function(codids, success, error)
+		{
+			if(xhr !== undefined) xhr.abort();
+			xhr = AJAX({
+				dataType: "json",
+				url: "php/cod.php?type=smiles&codids=" + codids,
+				success: success,
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
+			});
+		},
+
+		CIF: function(codid, success, error)
+		{
+			if(xhr !== undefined) xhr.abort();
+			xhr = AJAX({
+				dataType: "text",
+				url: "php/cif.php?codid=" + codid,
+				success: success,
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
+			});
+		}
+	},
+
 	NMRdb:
 	{
 		prediction: function(smiles, success, error)
@@ -804,101 +876,6 @@ var Request = {
 					if(error) error();
 				}
 			});
-		}
-	},
-
-	COD:
-	{
-		data: [],
-
-		search: function(text, success, error)
-		{
-			if(text === "")
-			{
-				if(error) error();
-				return;
-			}
-
-			Request.translation(text, function(translated)
-			{
-				Progress.increment();
-
-				text = translated;
-
-				if(xhr !== undefined) xhr.abort();
-				xhr = AJAX({
-					dataType: "json",
-					url: "php/cod.php?type=search&q=" + encodeURIComponent(text),
-					success: function(data)
-					{
-						Progress.increment();
-						if(data.records.length > 0)
-						{
-							Request.COD.data = data.records;
-							success();
-						}
-						else if(error) error();
-					},
-					error: function(jqXHR, textStatus)
-					{
-						if(textStatus != "error") return;
-						if(error) error();
-					}
-				});
-			});
-		},
-
-		information: function(codids, success, error)
-		{
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
-				dataType: "json",
-				url: "php/cod.php?type=information&codids=" + codids,
-				success: success,
-				error: function(jqXHR, textStatus)
-				{
-					if(textStatus != "error") return;
-					if(error) error();
-				}
-			});
-		},
-
-		SMILES: function(codids, success, error)
-		{
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
-				dataType: "json",
-				url: "php/cod.php?type=smiles&codids=" + codids,
-				success: success,
-				error: function(jqXHR, textStatus)
-				{
-					if(textStatus != "error") return;
-					if(error) error();
-				}
-			});
-		},
-
-		CIF: function(codid, success, error)
-		{
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
-				dataType: "text",
-				url: "php/cif.php?codid=" + codid,
-				success: success,
-				error: function(jqXHR, textStatus)
-				{
-					if(textStatus != "error") return;
-					if(error) error();
-				}
-			});
-		}
-	},
-
-	WebMineral:
-	{
-		image: function(mineral)
-		{
-			return "http://webmineral.com/specimens/photos/" + mineral + ".jpg";
 		}
 	}
 };

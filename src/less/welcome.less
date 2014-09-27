@@ -20,9 +20,11 @@
 
 #start-dialog
 {
-    max-width: 800px;
+    padding: 20px 10px;
     text-align: center;
     background: @light2;
+    border-left: 3px solid @highlight;
+    border-right: 3px solid @highlight;
 }
 
 @media all and (min-width: 700px)
@@ -35,9 +37,10 @@
 
 #start-dialog > h1
 {
-    /* text-shadow: 1px 0px 0 #fff, 0px 1px 0 #fff, -1px 0px 0 #fff, 0px -1px 0 #fff, 2px 2px 0 #aaa, 3px 3px 0 #aaa; */
+    margin: 0;
     font-size: 40pt;
     font-weight: lighter;
+    color: @highlight;
 }
 
 #donate-msg

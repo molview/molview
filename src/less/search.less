@@ -68,6 +68,7 @@
 {
 	background: @pubchem-pngbg !important;
 	border-color: @pubchem-pngbg !important;
+	box-shadow: none !important;
 }
 
 .load-more-progress:before
@@ -92,9 +93,17 @@ Search output:
 
 	text-align: center;
 	text-decoration: none;
+	text-overflow: ellipsis;
+
 	color: @foreground;
 	background: @light2;
 	border-bottom: 1px solid @contrast;
+	overflow: hidden;
+}
+
+.search-result-title > span
+{
+	white-space: nowrap;
 }
 
 .search-result-description

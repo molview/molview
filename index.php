@@ -205,9 +205,9 @@ Query parameters:
 			<div class="progress-part" style="width: 0; opacity: 0;"></div>
 		</div>
 		<div id="menu" class="no-select menu swipeable">
-			<div class="inner vstack">
+			<div class="inner hstack">
 				<div id="brand"></div>
-				<form id="search" class="vstack" action="index.php">
+				<form id="search" class="hstack" action="index.php">
 					<div class="input-wrapper">
 						<button><i class="fa fa-search"></i></button>
 						<input id="search-input" name="q" type="text" autocomplete="off" spellcheck="false" />
@@ -224,7 +224,7 @@ Query parameters:
 						</ul>
 					</div>
 				</form>
-				<ul id="main-menu" class="vstack">
+				<ul id="main-menu" class="hstack">
 					<li class="dropdown">
 						<a class="dropdown-toggle">MolView</a>
 						<ul class="dropdown-menu">
@@ -386,7 +386,7 @@ Query parameters:
 							</div>
 						</div>
 						<div id="edit-tools" class="toolbar swipeable">
-							<div class="inner vstack">
+							<div class="inner hstack">
 								<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
 								<div class="horizontal-separator"></div>
@@ -540,7 +540,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 						</div>
-						<p id="donate-msg">We believe MolView should be accessible for free to everyone. Since MolView is non-profit and there is no budget behind its development and maintenance we need your support!<br/>This way we can continue to add more awesome features to MolView.</p>
+						<p id="donate-msg">We believe MolView should be accessible for free for everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it free!<br/>This way we can continue to add more awesome features to MolView.</p>
 						<a class="btn" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">Donate</a>
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
@@ -605,7 +605,7 @@ Query parameters:
 						<script type="text/javascript">
 							if(isTouchDevice())
 							{
-								document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in you screen.</div>');
+								document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in your screen.</div>');
 							}
 						</script>
 						<p><a class="link" href="docs/manual.pdf" target="_blank">PDF version</a></p>

@@ -114,19 +114,19 @@ https://github.com/jquery-textfill/jquery-textfill
 {
 	jQuery.fn.textfill = function (options)
 	{
-		var fontSize = options.maxFontPixels;
+		var fontSize = options.maxFontPoints;
 		var ourText = jQuery("span:visible:first", this);
 		var maxHeight = jQuery(this).height();
 		var maxWidth = jQuery(this).width();
 		var textHeight;
 		var textWidth;
 		do {
-			ourText.css("font-size", fontSize);
+			ourText.css("font-size", "" + fontSize + "pt");
 			textHeight = ourText.height();
 			textWidth = ourText.width();
 			fontSize = fontSize - 1;
 		}
-		while ((textHeight > maxHeight || textWidth > maxWidth) && fontSize > 3);
+		while ((textHeight > maxHeight || textWidth > maxWidth) && fontSize > 6);
 		return this;
 	}
 })(jQuery);

@@ -12,9 +12,10 @@ Wishlist
 - Create Touch menu drawer
 - Functional groups support in Sketcher
 - MolView home website (pages: features, about, manual, changelog, license, feedback)
+- Improve COD search display by condensing duplicate results
+- Integrate COD image API
 - Integrate Smorf viewer (carved crystals)
 - Integrate MinData.org data
-- Integrate COD image API
 - Build COD archive mirror
 - MolView for Android and iOS using CocoonJS
 - Backend services using CDK and the Google Cloud Platform

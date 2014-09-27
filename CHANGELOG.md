@@ -24,10 +24,10 @@
 ### Revisions
 
 #### Data loading
-- Revised Information loading sequence
-- Replaced COD deep search with fuzzy name search
-+ Revise COD SQL search logic
-+ Merge all COD search data traffic into one request
+- Revised InfoCard loading sequence
+- Removed COD text search
+- Revised COD search SQL logic
+- Merged all COD search data into one request
 
 #### UI concept
 - Replaced Jmol render-mode menu with hq switch
@@ -59,7 +59,6 @@
 #### UI concept
 - Added open in new tab support for search results
 - Added auto search results loading when scrolling to the bottom of the page
-+ Create smart crystal search display by removing duplicate results
 + Remove identifier search from Advanced search functions
 + Add *Don't show me again* option to Messages alerts
 + Add user preferences storage using HTML5 Web Storage

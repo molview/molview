@@ -31,7 +31,6 @@
 	&:focus
 	{
 		outline: none;
-		background-color: @light !important;
 		border-color: @highlight !important;
 	}
 }
@@ -44,9 +43,8 @@
 
 .form-box-active
 {
-	background: @light2;
-	border-color: @contrast3;
-	box-shadow: inset 0 3px 10px @light-shadow;
+	background: @light3;
+	border-color: @contrast3 !important;
 }
 
 /* input */
@@ -97,6 +95,7 @@
 input[type="text"]
 {
 	cursor: text;
+	margin: 0;
 
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
@@ -145,6 +144,16 @@ select
 	margin: 10px 0 0 10px;
 	padding: 4px;
 	max-width: 100%;
+}
+
+select:focus
+{
+	background: @light;
+}
+
+option
+{
+	background: @light;
 }
 
 /* button */
