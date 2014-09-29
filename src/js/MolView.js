@@ -32,35 +32,60 @@ var MolView = {
 	 */
 	init: function()
 	{
-		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
-		{
-			this.loadDefault = false;
-		}
-
-		this.height = window.innerHeight;
-
-		if(this.mobile && !Detector.webgl)
-		{
-			this.macromolecules = false;
-		}
-
 		Progress.init();
-		if(this.loadDefault)
-		{
-			Progress.clear();
-			Progress.setSteps(2);
-		}
-
 		History.init();
 		Link.init();
 		Spectroscopy.init();
 		Autocomplete.init();
+		Request.init();
+		Sketcher.init();
+		SearchGrid.init();
+
+		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
+		{
+			this.loadDefault = false;
+		}
+		else
+		{
+			Progress.clear();
+			Progress.setSteps(2);
+			Progress.increment();
+		}
+
+		if(this.touch && !Detector.webgl)
+		{
+			this.macromolecules = false;
+			Model.JSmol.setQuality(false);
+		}
+
+		this.height = window.innerHeight;
+		$(".dropdown-menu").css("max-height", $("#content").height() - 10);
 
 		//window events
 		$(window).on("resize", function()
 		{
 			//don't resize when content is hidden
 			if($("#main-layer").is(":hidden")) return;
+
+			$(".dropdown-menu").css("max-height", $("#content").height() - 10);
+
+			//compact menu bar
+			if($(window).width() < 1100 && !MolView.touch)
+			{
+				$("#search").css("margin", 0);
+				$("#search-input").css("width", 100);
+				$("#brand").hide();
+				$("#search-dropdown .dropdown-menu").removeClass("dropdown-left");
+				$("#jmol-dropdown .dropdown-menu").addClass("dropdown-left");
+			}
+			else
+			{
+				$("#search").css("margin", "");
+				$("#search-input").css("width", "");
+				$("#brand").show();
+				$("#search-dropdown .dropdown-menu").addClass("dropdown-left");
+				$("#jmol-dropdown .dropdown-menu").removeClass("dropdown-left");
+			}
 
 			//don't resize for virtual keyboard (common on touch devices)
 			if(!(document.activeElement.id == "search-input" && MolView.touch))
@@ -70,8 +95,7 @@ var MolView = {
 			}
 			else//virtual keyboard
 			{
-				if(window.innerHeight > MolView.height)
-				//virtual keyboard is closed
+				if(window.innerHeight > MolView.height)//virtual keyboard is closed
 				{
 					$("#search-input").blur();
 				}
@@ -86,22 +110,15 @@ var MolView = {
 			e.stopPropagation();
 			Autocomplete.hide();
 			$(".dropdown-toggle").not(this).parent().removeClass("open");
-
-			if($(this).parent().toggleClass("open").hasClass("open"))
-			{
-				$("#menu").addClass("open");
-			}
-			else
-			{
-				$("#menu").removeClass("open");
-			}
+			$("#menu").toggleClass("menu-open",
+				$(this).parent().toggleClass("open").hasClass("open"));
 		});
 
 		if(!this.touch)
 		{
 			$(".dropdown-toggle").hover(function(e)
 			{
-				if($(".dropdown").hasClass("open"))
+				if($("#menu").hasClass("menu-open"))
 				{
 					e.stopPropagation();
 					$(".dropdown").removeClass("open");
@@ -119,8 +136,7 @@ var MolView = {
 			else
 			{
 				$(".dropdown-toggle").not(this).parent().removeClass("open");
-				$("#menu").removeClass("open");
-				$("#menu").scrollTop(0);
+				$("#menu").removeClass("menu-open");
 			}
 		});
 
@@ -131,11 +147,9 @@ var MolView = {
 
 			if(!container.is(e.target) && container.has(e.target).length === 0)
 			{
-				window.setTimeout(function()
-				{
-					container.parent().removeClass("open");
-					$("#menu").removeClass("open");
-				}, 100);
+				e.stopPropagation();
+				$("#menu").removeClass("menu-open");
+				$(".dropdown").removeClass("open");
 			}
 
 			if(!searchInput.is(e.target) && searchInput.has(e.target).length === 0
@@ -172,14 +186,6 @@ var MolView = {
 		{
 			$(this).parent().toggleClass("open");
 		});
-
-		//initialize
-		Request.init();
-		Sketcher.init();
-		SearchGrid.init();
-
-		if(this.loadDefault) Progress.increment();
-		if(this.touch && !Detector.webgl) Model.JSmol.setQuality(false);
 
 		//actions
 		$("#window-sketcher").on(this.trigger, Actions.window_sketcher);

@@ -53,6 +53,8 @@ if($type == "search" && isset($q))
 
 	header("Content-Type: application/json");
 
+	$q = strtolower($q);
+
 	$query =
 'SELECT file,mineral,commonname,chemname,formula,title FROM (
 	SELECT file,mineral,commonname,chemname,formula,title FROM data

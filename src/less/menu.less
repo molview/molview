@@ -17,39 +17,39 @@
  */
 
 @import (reference) "vars";
+@import (reference) "global";
 
-.menu
+#menu
 {
 	display: block;
 	position: relative;
 	margin: 0;
 	padding: 0;
-
-	/* swipe trick */
 	height: @menubar-height + 1;
+
+	overflow: hidden;
+	overflow-x: auto;
+
+	.no-select;
 }
 
-.menu > .inner
+#menu-bar
 {
-	height: @menubar-height;
-}
-
-/* swipe trick: display menu on top of page */
-.menu:not(.open)
-{
-	overflow-x: auto !important;
-	overflow-y: hidden !important;
-}
-
-.menu:not(.open) > .inner
-{
+	position: absolute;
+	top: 0;
+	background: @light3;
+	border-bottom: 1px solid @contrast;
 	overflow: hidden;
 }
 
-.menu.open
+.menu-open
 {
-	height: auto;
-	bottom: 0;
+	height: 100% !important;
+}
+
+.menu-open > #menu-bar
+{
+	overflow: visible;
 }
 
 #main-menu, #layout-menu, .dropdown, .menu-item, .menu-header, .menu-divider

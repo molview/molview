@@ -16,16 +16,17 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@import (reference) "global";
+
 .share
 {
 	cursor: pointer;
 	display: inline-block;
 	position: relative;
 	margin: 5px;
-	padding-left: 48px;
 	overflow: hidden;
 
-	border-radius: 4px;
+	.no-select;
 }
 
 .share:hover > span:after
@@ -57,11 +58,10 @@
 
 .share:before
 {
-	display: block;
-	position: absolute;
-	top: 9px;
+	display: inline-block;
 	left: 0;
 	width: 48px;
+	vertical-align: sub;
 
 	font-family: FontAwesome;
 	font-size: 22pt;

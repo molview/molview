@@ -18,11 +18,11 @@ a similar webapplication.
 **Databases/REST API's**
 
   - [NCI/CADD Chemical Identifier Resolver](http://cactus.nci.nih.gov/chemical/structure)
-  - [RCSB Protein Databank](http://www.rcsb.org/pdb/software/rest.do)
-  - [The PubChem Project](https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html)
-  - [Crystallography Open Database](http://www.crystallography.net/)
+  - [RCSB Protein Databank](http://www.rcsb.org/pdb/software/rest.do) (~100.000 macromolecules)
+  - [The PubChem Project](https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html) (~51 million compounds)
+  - [Crystallography Open Database](http://www.crystallography.net/) (~300.000 crystals)
+  - [NIST Chemistry WebBook](http://webbook.nist.gov/chemistry) (~30.000 spectra)
   - [NMR Database](http://www.nmrdb.org/)
-  - [NIST Chemistry WebBook](http://webbook.nist.gov/chemistry)
   - [MyMemory translation API](http://mymemory.translated.net/doc/spec.php)
 
 License

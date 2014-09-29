@@ -16,6 +16,7 @@ Wishlist
 - Integrate COD image API
 - Integrate Smorf viewer (carved crystals)
 - Integrate MinData.org data
+- Build COD search index
 - Build COD archive mirror
 - MolView for Android and iOS using CocoonJS
 - Backend services using CDK and the Google Cloud Platform

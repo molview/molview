@@ -143,14 +143,11 @@ var Loader = {
 					function()//success
 					{
 						Progress.increment();
-
 						Messages.clear();
-
-						$("#load-more-pubchem").css("display", "block");
-						$("#load-more-rcsb").css("display", "none");
-
-						$("#search-layer .container").empty();
 						Actions.show_search_layer();
+
+						SearchGrid.setDatabase("pubchem");
+						SearchGrid.clear();
 
 						Loader.PubChem.i = 0;
 						Loader.PubChem.loadNextSet();

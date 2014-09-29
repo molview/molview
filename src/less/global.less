@@ -116,6 +116,7 @@ a.gray:visited
 a.gray:hover
 {
 	color: #888;
+	text-decoration: underline;
 }
 
 a.gray:active
@@ -132,10 +133,19 @@ a.gray:active
             user-select: none;
 }
 
-.expand
+.progress-cursor
 {
-    width: 100%;
-    height: 100%;
+	cursor: progress;
+}
+
+.alert-bar
+{
+	display: block;
+	margin: 5px 5px 10px 5px;
+	padding: 10px;
+
+	background: @error-light;
+	border-left: 4px solid @error;
 }
 
 .hstack
@@ -150,19 +160,4 @@ a.gray:active
 	vertical-align: top;
 	font-size: normal;
 	font-size: initial;
-}
-
-.progress-cursor
-{
-	cursor: progress;
-}
-
-.alert-bar
-{
-	display: block;
-	margin: 5px 5px 10px 5px;
-	padding: 10px;
-
-	background: @error-light;
-	border-left: 4px solid @error;
 }

@@ -29,10 +29,11 @@
 - Revised COD search SQL logic
 - Merged all COD search data into one request
 
-#### UI concept
+#### Functionality
 - Replaced Jmol render-mode menu with hq switch
 - Removed auto layout-model onload crystals
 - Removed embed warning about slow, non-WebGL devices
+- Remove identifier search from Advanced search functions
 
 #### Design
 - Redesigned messages
@@ -40,8 +41,10 @@
 - Redesigned search form (align left)
 - Redesigned general UI components (flat and light)
 - Redesigned sketcher selection style
+- Improved menu overflow scrolling
+- Added menu compact layout
 
-#### Structural
+#### Invisible
 - Revised CSS efficiency
 - Migrated CSS to LESS
 - Renamed Loader modules
@@ -56,10 +59,18 @@
 + Add SMILES 3D conformation method using PubChem (CIR as fallback)
 + Add CAS lookup method using PubChem (CIR as fallback)
 
-#### UI concept
+#### Functionality
++ Added Autocomplete for compound, mineral and macromolecule names and a range of identifiers
+- Added protein chain representation and color scheme settings
+- Added bio-assembly function
+- Added MolView themes menu (desktop and touch)
+- Added Model background color menu
+- Added transparency to exported images
 - Added open in new tab support for search results
 - Added auto search results loading when scrolling to the bottom of the page
-+ Remove identifier search from Advanced search functions
++ Add external references to Information card (Chemicalize, Google, PDB, COD)
++ Add scientific reference to the NIST Chemistry WebBook for spectra
++ Add percent composition table to Information card
 + Add *Don't show me again* option to Messages alerts
 + Add user preferences storage using HTML5 Web Storage
 
@@ -69,17 +80,6 @@
 - Added menu-item icons
 - Added welcome dialog
 - Added dialog close buttons
-
-#### Functionality
-+ Added Autocomplete for compound, mineral and macromolecule names and a range of identifiers
-- Added protein chain representation and color scheme settings
-- Added bio-assembly function
-- Added MolView themes menu (desktop and touch)
-- Added Model background color menu
-- Added transparency to exported images
-+ Add external references to Information card (Chemicalize, Google, PDB, COD)
-+ Add scientific reference to the NIST Chemistry WebBook for spectra
-+ Add percent composition table to Information card
 
 #### Analytics
 + Track user interaction via analytics.js

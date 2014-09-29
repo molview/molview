@@ -201,11 +201,11 @@ Query parameters:
 		</script>
 	</head>
 	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
-		<div id="progress" class="no-select progress-bar">
+		<div id="progress" class="progress-bar">
 			<div class="progress-part" style="width: 0; opacity: 0;"></div>
 		</div>
-		<div id="menu" class="no-select menu swipeable">
-			<div class="inner hstack">
+		<div id="menu">
+			<div id="menu-bar" class="hstack">
 				<div id="brand"></div>
 				<form id="search" class="hstack" action="index.php">
 					<div class="input-wrapper">
@@ -225,7 +225,7 @@ Query parameters:
 					</div>
 				</form>
 				<ul id="main-menu" class="hstack">
-					<li class="dropdown">
+					<li id="molview-dropdown" class="dropdown">
 						<a class="dropdown-toggle">MolView</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Layout</li>
@@ -243,7 +243,7 @@ Query parameters:
 							<li class="menu-item"><a id="mv-about">About</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li id="tools-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Tools</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Link</li>
@@ -262,7 +262,7 @@ Query parameters:
 							<li class="menu-item"><a id="search-superstructure">Superstructure</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li id="model-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Model</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="model-reset">Reset</a></li>
@@ -286,7 +286,7 @@ Query parameters:
 							<li class="menu-item"><a id="cif-1x3x3-cell">Load 1&times;3&times;3 supercell</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li id="protein-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Protein</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="bio-assembly">Biological assembly</a></li>
@@ -306,7 +306,7 @@ Query parameters:
 							<li class="menu-item"><a id="chain-color-bfactor" class="chain-color">B-factor</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li id="jmol-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="jmol-hq" class="checked">High Quality</a></li>
@@ -361,13 +361,23 @@ Query parameters:
 						$("#search-input").css("width", $(window).height() - 80);
 					}
 
+					//compact menu bar
+					if($(window).width() < 1100 && !MolView.touch)
+					{
+						$("#search").css("margin", 0);
+						$("#search-input").css("width", 100);
+						$("#brand").hide();
+						$("#search-dropdown .dropdown-menu").removeClass("dropdown-left");
+						$("#jmol-dropdown .dropdown-menu").addClass("dropdown-left");
+					}
+
 					if(MolView.touch) $("#theme-touch").addClass("checked");
 					else $("#theme-desktop").addClass("checked");
 				</script>
 				<div id="sketcher">
 					<div id="moledit" class="sketcher">
-						<div id="chem-tools" class="toolbar swipeable">
-							<div class="inner">
+						<div id="chem-tools" class="toolbar">
+							<div class="toolbar-inner">
 								<div id="me-single" class="tool-button mode tool-button-selected" title="Single bond"></div>
 								<div id="me-double" class="tool-button mode" title="Double bond"></div>
 								<div id="me-triple" class="tool-button mode" title="Triple bond"></div>
@@ -385,8 +395,8 @@ Query parameters:
 								<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>-</sup></div>
 							</div>
 						</div>
-						<div id="edit-tools" class="toolbar swipeable">
-							<div class="inner hstack">
+						<div id="edit-tools" class="toolbar">
+							<div class="toolbar-inner hstack">
 								<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
 								<div class="horizontal-separator"></div>
@@ -404,8 +414,8 @@ Query parameters:
 								<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
 							</div>
 						</div>
-						<div id="elem-tools" class="toolbar swipeable">
-							<div class="inner">
+						<div id="elem-tools" class="toolbar">
+							<div class="toolbar-inner">
 								<div id="me-atom-h" class="tool-button mode" title="Hydrogen">H</div>
 								<div id="me-atom-c" class="tool-button mode" title="Carbon">C</div>
 								<div id="me-atom-n" class="tool-button mode" title="Nitrogen">N</div>
@@ -561,11 +571,11 @@ Query parameters:
 							<li>Databases/REST API's
 								<ul>
 									<li><a class="link" href="http://cactus.nci.nih.gov/chemical/structure" target="_blank" title="NCI/CADD Chemical Identifier Resolver API">NCI/CADD Chemical Identifier Resolver</a></li>
-									<li><a class="link" href="http://www.rcsb.org/pdb/software/rest.do" target="_blank" title="RCSB Protein Databank API">RCSB Protein Data Bank</a></li>
-									<li><a class="link" href="https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html" target="_blank" title="The PubChem Project API">The PubChem Project</a></li>
-									<li><a class="link" href="http://www.crystallography.net/" target="_blank" title="COD">Crystallography Open Database</a></li>
+									<li><a class="link" href="http://www.rcsb.org/pdb/software/rest.do" target="_blank" title="RCSB Protein Databank API">RCSB Protein Data Bank</a> (~100.000 macromolecules)</li>
+									<li><a class="link" href="https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html" target="_blank" title="The PubChem Project API">The PubChem Project</a> (~51 million compounds)</li>
+									<li><a class="link" href="http://www.crystallography.net/" target="_blank" title="COD">Crystallography Open Database</a> (~300.000 crystals)</li>
+									<li><a class="link" href="http://webbook.nist.gov/chemistry" target="_blank" title="NIST Chemistry WebBook Reference">NIST Chemistry WebBook</a> (~30.000 spectra)</li>
 									<li><a class="link" href="http://www.nmrdb.org/" target="_blank" title="NMRdb.org">NMR Database</a></li>
-									<li><a class="link" href="http://webbook.nist.gov/chemistry" target="_blank" title="NIST Chemistry WebBook Reference">NIST Chemistry WebBook</a></li>
 									<li><a class="link" href="http://mymemory.translated.net/doc/spec.php" target="_blank" title="MyMemory API">MyMemory translation API</a></li>
 								</ul>
 							</li>
@@ -791,7 +801,7 @@ Query parameters:
 						<div class="alert-box">
 							<span id="share-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model is shared)</span>
 						</div>
-						<div id="share-dialog-social" class="social no-select">
+						<div id="share-dialog-social" class="social">
 							<div class="share share-facebook"></div>
 							<div class="share share-twitter"></div>
 							<div class="share share-googleplus"></div>
@@ -820,7 +830,7 @@ Query parameters:
 					<div class="dialog" id="elements-dialog" style="display: none;">
 						<h2>Periodic Table</h2>
 						<div class="dialog-close-btn"></div>
-						<div id="periodictable" class="no-select"></div>
+						<div id="periodictable"></div>
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
 						</div>

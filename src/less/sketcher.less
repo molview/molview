@@ -17,6 +17,7 @@
  */
 
 @import (reference) "vars";
+@import (reference) "global";
 
 .sketcher
 {
@@ -34,13 +35,9 @@
 {
 	position: absolute;
 	background: @light2;
-	overflow: hidden;
+	overflow: auto;
 
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-         -o-user-select: none;
-            user-select: none;
+    .no-select;
 }
 
 .tool-button
@@ -79,13 +76,13 @@
 	background-color: @highlight-light !important;
 }
 
-#chem-tools > .inner > .tool-button-selected, #elem-tools > .inner > .tool-button-selected
+#chem-tools > .toolbar-inner > .tool-button-selected, #elem-tools > .toolbar-inner > .tool-button-selected
 {
 	border-left: 3px solid @highlight;
 	width: 37px;
 }
 
-#edit-tools > .inner > .tool-button-selected
+#edit-tools > .toolbar-inner > .tool-button-selected
 {
 	border-bottom: 3px solid @highlight;
 	height: 37px;

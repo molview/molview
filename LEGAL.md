@@ -2,7 +2,7 @@ Terms of Use
 ============
 Welcome to MolView!
 These are the Terms of Use ("Terms") of molview.org ("This Site", "MolView")
-This site contains the latest stable release of the MolView Open-Source project
+This site contains the latest stable release of the MolView Open-Source Project
 ("The MolView Open-Source Project", "The MolView Project")
 
 By accessing and using this site, you accept and agree to be bound by the terms

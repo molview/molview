@@ -84,12 +84,21 @@ Search output:
 </div>
 */
 
+.search-result
+{
+	width: 300px;
+	height: 350px;
+}
+
 .search-result-title
 {
 	cursor: pointer;
 	position: absolute;
+	padding: 10px 20px;
 	left: 0;
 	right: 0;
+	height: 30px;
+	line-height: 30px;
 
 	text-align: center;
 	text-decoration: none;
@@ -104,14 +113,19 @@ Search output:
 .search-result-title > span
 {
 	white-space: nowrap;
+	text-decoration: none;
+	border-bottom: 2px solid #111;
 }
 
 .search-result-description
 {
 	position: absolute;
+	padding: 10px;
+	top: 51px;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	font-size: 12pt;
 
 	word-wrap: break-word;
 	text-align: left;
@@ -122,8 +136,10 @@ Search output:
 .search-result-img-wrap
 {
 	position: absolute;
+	top: 50px;
 	left: 0;
 	bottom: 0;
+	width: 300px;
 
 	background-image: url(../img/misc/spinner.svg);
 	background-repeat: no-repeat;
@@ -144,44 +160,12 @@ Search output:
 
 }
 
-.search-result
-{
-	width: 300px;
-	height: 350px;
-}
-
 .search-result-imgdesc
 {
 	width: 620px;
 }
 
-.search-result-title
-{
-	height: 30px;
-	line-height: 30px;
-	padding: 10px 20px;
-}
-
-.search-result-title > span
-{
-	text-decoration: none;
-	border-bottom: 2px solid #111;
-}
-
-.search-result-description
-{
-	top: 51px;
-	padding: 10px;
-	font-size: 12pt;
-}
-
 .search-result-imgdesc > .search-result-description
 {
 	left: 300px;
-}
-
-.search-result-img-wrap
-{
-	top: 50px;
-	width: 300px;
 }

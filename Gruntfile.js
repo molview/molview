@@ -181,7 +181,6 @@ module.exports = function(grunt)
 					'src/less/search.less',
 					'src/less/messages.less',
 					'src/less/progress.less',
-					'src/less/swipeable.less',
 					'src/less/dialogs.less',
 					'src/less/help.less',
 					'src/less/share.less',
@@ -260,6 +259,39 @@ module.exports = function(grunt)
 					'src/less/vars.less',
 					'src/less/page.less'
 				],
+				dest: 'build/<%= pkg.name %>.page.min.css'
+			},
+		},
+		cssmin:
+		{
+			index:
+			{
+				src: 'build/<%= pkg.name %>.min.css',
+				dest: 'build/<%= pkg.name %>.min.css'
+			},
+			embed:
+			{
+				src: 'build/<%= pkg.name %>.embed.min.css',
+				dest: 'build/<%= pkg.name %>.embed.min.css'
+			},
+			desktop:
+			{
+				src: 'build/<%= pkg.name %>.desktop.min.css',
+				dest: 'build/<%= pkg.name %>.desktop.min.css'
+			},
+			touch:
+			{
+				src: 'build/<%= pkg.name %>.touchmin.css',
+				dest: 'build/<%= pkg.name %>.touchmin.css'
+			},
+			mobile:
+			{
+				src: 'build/<%= pkg.name %>.mobile.min.css',
+				dest: 'build/<%= pkg.name %>.mobile.min.css'
+			},
+			page:
+			{
+				src: 'build/<%= pkg.name %>.page.min.css',
 				dest: 'build/<%= pkg.name %>.page.min.css'
 			},
 		},
