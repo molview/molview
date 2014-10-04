@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -94,11 +94,11 @@ var SearchGrid = {
 			result.data("title", ucfirst(humanize(data.Title)));
 			result.on("click", function(e)
 			{
-				if(window.getSelection().type != "Range" && e.which != 2)
+				if(e.which != 2)
 				{
 					MolView.setLayer("main");
 					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
-					return false;//prevent href
+                    return false;
 				}
 			});
         }
@@ -134,11 +134,11 @@ var SearchGrid = {
 			title.data("pdbid", data.structureId);
 			title.on("click", function(e)
 			{
-				if(window.getSelection().type != "Range" && e.which != 2)
+				if(e.which != 2)
 				{
 					MolView.setLayer("main");
 					Loader.RCSB.loadPDBID($(this).data("pdbid"));
-					return false;//prevent href
+                    return false;
 				}
 			});
         }
@@ -156,7 +156,7 @@ var SearchGrid = {
 
 			var result = $('<div class="search-result"></div>').appendTo("#search-layer .container");
 
-			data.formula = chemFormulaFormat(data.formula);
+			data.formula = formatMFormula(data.formula);
 			var title_str = (data.mineral || data.commonname || data.chemname
 					|| data.formula || data.codid);
 
@@ -165,30 +165,36 @@ var SearchGrid = {
 			result.append(title);
 			title.textfill({ maxFontPoints: 26 });
 
-			var description = "";
+			var desc = $('<div class="search-result-description"></div>').appendTo(result);
 
-			if(data.commonname && data.commonname != title_str) description
-					+= "<b>Common name:</b> " + data.commonname + "<br/>";
-			if(data.chemname && data.chemname != title_str) description
-					+= "<b>Chemical name:</b> " + data.chemname + "<br/>";
-			if(data.formula && data.formula != title_str) description
-					+= "<b>Formula:</b> " + data.formula + "<br/>";
+            if(data.title)
+            {
+                $('<div class="expandable"><div class="expandable-title"><span>Details</span></div><div class="expandable-content">'
+                        + formatHTMLLinks(formatMFormula(data.title)) + "</div></div>")
+                        .appendTo(desc).children(".expandable-title").on(MolView.trigger, function(e)
+        		{
+        			$(this).parent().toggleClass("open");
+        		});
+            }
 
-			if(data.title) description += data.title;
-
-			var desc = $('<div class="search-result-description"><span>' + description + "</span></div>");
-			result.append(desc);
-			desc.textfill({ maxFontPoints: 12 });
+            if(data.mineral) $('<p><b>Mineral name</b><br/><span>'
+                    + data.mineral + "</span></p>").appendTo(desc);
+            if(data.commonname) $('<p><b>Common name</b><br/><span>'
+                    + data.commonname + "</span></p>").appendTo(desc);
+            if(data.chemname) $('<p><b>Chemical name</b><br/><span>'
+                    + data.chemname + "</span></p>").appendTo(desc);
+            if(data.formula) $('<p><b>Molecular formula</b><br/><span>'
+                    + formatMFormula(data.formula.replace(/-/g, "").replace(/\s/g, "")) + "</span></p>").appendTo(desc);
 
 			title.data("codid", data.codid);
 			title.data("title", title_str);
 			title.on("click", function(e)
 			{
-				if(window.getSelection().type != "Range" && e.which != 2)
+				if(e.which != 2)
 				{
 					MolView.setLayer("main");
 					Loader.COD.loadCODID($(this).data("codid"), $(this).data("title"));
-					return false;//prevent href
+                    return false;
 				}
 			});
         }

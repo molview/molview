@@ -5,7 +5,7 @@
 /*===========================================================================*/
 
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -254,9 +254,18 @@ function ChemicalView(parent, canvas)
 	});
 
 	//shortcuts
-	jQuery(document).bind("keydown", "ctrl+z", function(e){ e.preventDefault(); that.undo(); });
-	jQuery(document).bind("keydown", "ctrl+shift+z", function(e){ e.preventDefault(); that.redo(); });
-	jQuery(document).bind("keydown", "ctrl+y", function(e){ e.preventDefault(); that.redo(); });
+	if(navigator.platform.toLowerCase().indexOf("mac") != -1)
+	{
+		jQuery(document).bind("keydown", "meta+z", function(e){ e.preventDefault(); that.undo(); });
+		jQuery(document).bind("keydown", "meta+shift+z", function(e){ e.preventDefault(); that.redo(); });
+		jQuery(document).bind("keydown", "meta+y", function(e){ e.preventDefault(); that.redo(); });
+	}
+	else
+	{
+		jQuery(document).bind("keydown", "ctrl+z", function(e){ e.preventDefault(); that.undo(); });
+		jQuery(document).bind("keydown", "ctrl+shift+z", function(e){ e.preventDefault(); that.redo(); });
+		jQuery(document).bind("keydown", "ctrl+y", function(e){ e.preventDefault(); that.redo(); });
+	}
 
 	//zooming with mousewheel
 	this.zoomSpeed = 0.08;

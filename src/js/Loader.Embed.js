@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -25,8 +25,7 @@ var Loader = {
 			return;
 		}
 
-		Progress.clear();
-		Progress.setSteps(3);
+		Progress.reset(3);
 
 		var name = $("#search-input").val();
 
@@ -49,8 +48,7 @@ var Loader = {
 	{
 		loadCID: function(cid, name)
 		{
-			Progress.clear();
-			Progress.setSteps(3);
+			Progress.reset(3);
 
 			name = name.charAt(0).toUpperCase() + name.slice(1);
 
@@ -102,8 +100,7 @@ var Loader = {
 	{
 		loadPDBID: function(pdbid, name)
 		{
-			Progress.clear();
-			Progress.setSteps(2);
+			Progress.reset(2);
 
 			function finish()
 			{
@@ -165,8 +162,7 @@ var Loader = {
 	{
 		loadCODID: function(codid, name)
 		{
-			Progress.clear();
-			Progress.setSteps(2);
+			Progress.reset(2);
 
 			Messages.process(function()
 			{
@@ -197,8 +193,7 @@ var Loader = {
 			return;
 		}
 
-		Progress.clear();
-		Progress.setSteps(2);
+		Progress.reset(2);
 
 		document.title = "MolView";
 

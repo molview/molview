@@ -4,7 +4,7 @@ error_reporting(0);
 
 if(is_below_IE10())
 {
-	header('Location: http://molview.org/nosupport');
+	header('Location: internetExplorer');
 	exit;
 }
 
@@ -17,7 +17,7 @@ parse_str(str_replace("+", "%2B", $_SERVER["QUERY_STRING"]));
 <html itemscope itemtype="http://schema.org/Thing">
 
 <!--
-This file is part of MolView (http://molview.org)
+This file is part of MolView (https://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 
 MolView is free software: you can redistribute it and/or modify
@@ -68,6 +68,27 @@ Query parameters:
 		<!-- JS -->
 		<script type="text/javascript" src="build/molview.embed.min.js"></script>
 
+		<script type="text/javascript">
+			if(!Detector.canvas)
+			{
+				window.location = window.location.origin + window.location.pathname + "htmlCanvas";
+			}
+			else
+			{
+				Request.ChemicalIdentifierResolver.available = true;
+				Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
+				Request.HTTP_CLIENT_IP = <?php
+				echo '"';
+				if(isset($_SERVER["HTTP_CLIENT_IP"]))
+					echo $_SERVER["HTTP_CLIENT_IP"];
+				else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
+					echo $_SERVER["HTTP_X_FORWARDED_FOR"];
+				else echo $_SERVER["REMOTE_ADDR"];
+				echo '"';
+				?>;
+			}
+		</script>
+
 		<!-- Google Analytics -->
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -76,23 +97,6 @@ Query parameters:
 			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 			ga('create', 'UA-49088779-3', 'molview.org');
 			ga('send', 'pageview');
-		</script>
-
-		<script type="text/javascript">
-			Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
-			Request.HTTP_CLIENT_IP = <?php
-			echo '"';
-			if(isset($_SERVER["HTTP_CLIENT_IP"]))
-				echo $_SERVER["HTTP_CLIENT_IP"];
-			else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-				echo $_SERVER["HTTP_X_FORWARDED_FOR"];
-			else echo $_SERVER["REMOTE_ADDR"];
-			echo '"';
-			?>;
-
-			Request.ChemicalIdentifierResolver.available = true;/*<?php
-			echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
-			?>;*/
 		</script>
 	</head>
 	<body id="model" <?php

@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -17,70 +17,79 @@
  */
 
 var Progress = {
-	value: 0.0,//0.0 - 1.0
+	value: 0.0,
 	steps: 0,
-	bar: undefined,
-	part: undefined,
+	opacity: 0.0,
+	ready: true,
+
+	animatedValue: 0.0,
+	canvas: undefined,
+	ctx: undefined,
 
 	init: function()
 	{
-		this.bar = $("#progress");
-		this.part = $("#progress > .progress-part");
+		this.canvas = document.getElementById("progress-canvas");
+		if(this.canvas)
+		{
+			this.resize();
+			this.draw();
+		}
 	},
 
-	setValue: function(val)
+	resize: function()
 	{
-		if(this.steps == 0) return;
-		if(val > 1) val = 1;
-		//var delta = val - this.value;
-		this.value = val;
-		this.part.stop().animate({"width": "" + (this.value * 100) + "%"}, 800, "swing");
+		if(Progress.canvas)
+		{
+			Progress.canvas.width = $(window).width();
+			Progress.canvas.height = 3;
+			Progress.ctx = Progress.canvas.getContext("2d");
+		}
 	},
 
-	clear: function()
+	draw: function()
 	{
-		this.value = 0;
-		this.part.stop().css({ "width": 0, "opacity": 1 });
+    	if(Progress.canvas)
+		{
+			if(!(Progress.ready && Progress.opacity <= 0))
+			{
+				requestAnimationFrame(Progress.draw);
+
+				if(Progress.ready)
+				{
+					Progress.opacity -= 0.01;
+				}
+
+				Progress.animatedValue += (Progress.value - Progress.animatedValue) / 16;
+
+				Progress.ctx.fillStyle = "rgba(255,0,0," + Progress.opacity + ")";
+				Progress.ctx.clearRect(0, 0, Progress.canvas.width, Progress.canvas.height);
+				Progress.ctx.fillRect(0, 0, Progress.canvas.width * Progress.animatedValue, Progress.canvas.height);
+			}
+		}
 	},
 
-	add: function(val)
+	reset: function(steps)
 	{
-		this.setValue(this.value + val);
-	},
-
-	setSteps: function(s)
-	{
-		this.steps = s + 1;
+		this.value = this.animatedValue = 0;
+		this.steps = steps + 1;
 		this.increment();
+		this.opacity = 1;
+		this.ready = false;
+
 		document.title = document.title.replace(/ \[loading\]/g, "");
 		document.title += " [loading]";
+		this.draw();
 	},
 
 	increment: function()
 	{
-		this.add(1.0 / this.steps);
-	},
-
-	hide: function()
-	{
-		Progress.part.animate({
-			"opacity": 0
-		}, 1000, "swing", function()
-		{
-			Progress.part.css("width", 0);
-		});
-	},
-
-	alert: function()
-	{
-		document.title = document.title.replace(/ \[loading\]/g, "");
-		this.complete();
+		this.value += 1.0 / this.steps;
 	},
 
 	complete: function()
 	{
-		this.setValue(1);
-		this.hide();
+		this.value = 1;
+		this.ready = true;
 		document.title = document.title.replace(/ \[loading\]/g, "");
 	}
 };

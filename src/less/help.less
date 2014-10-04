@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
  */
 
 @import (reference) "form";
+@import (reference) "global";
 
 .image-note
 {
@@ -43,27 +44,31 @@
 	font-weight: bold;
 
 	.form-box(@light2);
+
+	.no-select;
 }
 
-.expandable-title i.fa
+.expandable-title > span
+{
+	margin-right: 30px;
+}
+
+.expandable-title:after
 {
 	float: right;
-	padding: 3px;
+	padding: 2px;
+	font-family: FontAwesome;
+	font-size: 14pt;
 }
 
-.expandable-title > i.fa:before
+.expandable-title:after
 {
-	content: '\f078';
+	content: '\f107';
 }
 
-.expandable-title > i.fa:before
+.expandable.open > .expandable-title:after
 {
-	content: '\f078';
-}
-
-.expandable.open > .expandable-title > i.fa:before
-{
-	content: '\f077';
+	content: '\f106';
 }
 
 .expandable-content

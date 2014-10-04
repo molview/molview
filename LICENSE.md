@@ -1,7 +1,7 @@
 License
 =======
 ```
-MolView (http://molview.org)
+MolView (https://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 
 MolView is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 
 Third party licenses
 ====================
-Below is a full list of all third party code used in MolView.
-If you believe your code is used in MolView but not contained in this list,
-please contact me via <info@molview.org>
+Below is a list of all third party libraries used in MolView.
+If you believe your code is used in MolView and should be contained in this list,
+please contact me via <support@molview.org>
 
 ## JSmol
 ```

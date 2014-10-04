@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -192,6 +192,8 @@ var Request = {
 
 	ChemicalIdentifierResolver:
 	{
+		available: false,
+
 		search: function(text, flat, success, error)
 		{
 			if(!Request.ChemicalIdentifierResolver.available)
@@ -747,17 +749,21 @@ var Request = {
 					success: function(data)
 					{
 						Progress.increment();
-						if(data.records.length > 0)
+						if(data.error)
+						{
+							if(error) error(true);
+						}
+						else if(data.records && data.records.length > 0)
 						{
 							Request.COD.data = data.records;
 							success();
 						}
-						else if(error) error();
+						else if(error) error(false);
 					},
 					error: function(jqXHR, textStatus)
 					{
 						if(textStatus != "error") return;
-						if(error) error();
+						if(error) error(true);
 					}
 				});
 			});

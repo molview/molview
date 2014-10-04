@@ -7,17 +7,17 @@ Wishlist
 - Add protein solvents display
 - Add electron density maps for macromolecules
 - Add dotted H-bonds and SS-bonds for proteins
-- Create interactive macromolecule exploration
+- Create interactive macromolecule exploration mode
 
-- Create Touch menu drawer
-- Functional groups support in Sketcher
-- MolView home website (pages: features, about, manual, changelog, license, feedback)
+- Add touch menu drawer
+- Add mobile friendly search results layout
+- Add functional groups support in Sketcher=
+- Add MolView home website (pages: features, about, manual, changelog, license, feedback)
 - Improve COD search display by condensing duplicate results
 - Integrate COD image API
 - Integrate Smorf viewer (carved crystals)
 - Integrate MinData.org data
-- Build COD search index
-- Build COD archive mirror
-- MolView for Android and iOS using CocoonJS
-- Backend services using CDK and the Google Cloud Platform
+- Build COD mirror
+- Add backend services using CDK and the Google Cloud Platform
+- Create MolView for Android and iOS using CocoonJS
 - Investigate Mathematica features

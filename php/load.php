@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	//description
 	$description = "Advanced, web-based chemistry application for free!";
 	if(isset($q) || isset($smiles) || isset($cid))
-		$description = "View this molecule at http://molview.org";
+		$description = "View this molecule at https://molview.org";
 	else if(isset($pdbid))
-		$description = "View this macromolecule at http://molview.org";
+		$description = "View this macromolecule at https://molview.org";
 
 	//keywords
 	$keywords = "molview,free,chemistry,app,molecules,proteins,crystals,spectroscopy";
@@ -49,7 +49,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		$same_as = "//www.rcsb.org/pdb/explore/explore.do?structureId=".$pdbid;
 
 	//image
-	$image_url = "http://molview.org/img/image.png";
+	$image_url = "https://molview.org/img/image.png";
 	$pubchem_query = null;
 	$pubchem_value = null;
 	if(isset($cid))

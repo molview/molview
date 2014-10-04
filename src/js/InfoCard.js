@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -281,7 +281,7 @@ var InfoCard = {
 				{
 					if(id == "formula")
 					{
-						InfoCard.data["formula"] = chemFormulaFormat(data);
+						InfoCard.data["formula"] = formatMFormula(data);
 					}
 					else if(id == "sysname")
 					{
@@ -338,7 +338,7 @@ var InfoCard = {
 			{
 				if(id == "formula")
 				{
-					InfoCard.data[id] = chemFormulaFormat(
+					InfoCard.data[id] = formatMFormula(
 						InfoCard.PubChem_cache[PubChemProps[id]]);
 				}
 				else

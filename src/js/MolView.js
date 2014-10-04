@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -35,11 +35,6 @@ var MolView = {
 		Progress.init();
 		History.init();
 		Link.init();
-		Spectroscopy.init();
-		Autocomplete.init();
-		Request.init();
-		Sketcher.init();
-		SearchGrid.init();
 
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
 		{
@@ -47,10 +42,14 @@ var MolView = {
 		}
 		else
 		{
-			Progress.clear();
-			Progress.setSteps(2);
-			Progress.increment();
+			Progress.reset(1);
 		}
+
+		Spectroscopy.init();
+		Autocomplete.init();
+		Request.init();
+		Sketcher.init();
+		SearchGrid.init();
 
 		if(this.touch && !Detector.webgl)
 		{
@@ -64,8 +63,6 @@ var MolView = {
 		//window events
 		$(window).on("resize", function()
 		{
-			//don't resize when content is hidden
-			if($("#main-layer").is(":hidden")) return;
 
 			$(".dropdown-menu").css("max-height", $("#content").height() - 10);
 
@@ -87,20 +84,25 @@ var MolView = {
 				$("#jmol-dropdown .dropdown-menu").removeClass("dropdown-left");
 			}
 
-			//don't resize for virtual keyboard (common on touch devices)
-			if(!(document.activeElement.id == "search-input" && MolView.touch))
-			{
-				Sketcher.resize();
-				Model.resize();
-			}
-			else//virtual keyboard
-			{
-				if(window.innerHeight > MolView.height)//virtual keyboard is closed
-				{
-					$("#search-input").blur();
-				}
+			Progress.resize();
 
-				MolView.height = window.innerHeight;
+			if(!$("#main-layer").is(":hidden"))
+			{
+				//don't resize for virtual keyboard (common on touch devices)
+				if(!(document.activeElement.id == "search-input" && MolView.touch))
+				{
+					Sketcher.resize();
+					Model.resize();
+				}
+				else//virtual keyboard
+				{
+					if(window.innerHeight > MolView.height)//virtual keyboard is closed
+					{
+						$("#search-input").blur();
+					}
+
+					MolView.height = window.innerHeight;
+				}
 			}
 		});
 
@@ -285,7 +287,6 @@ var MolView = {
 			if(this.loadDefault)
 			{
 				Progress.complete();
-				Progress.hide();
 			}
 
 			//execute query commands

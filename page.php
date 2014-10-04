@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -24,26 +24,44 @@ parse_str($_SERVER["QUERY_STRING"]);
 
 $map = array(
     "thanks" => "pages/thanks.md",
-    "nosupport" => "pages/nosupport.md",
+    "iesupport" => "pages/iesupport.md",
+    "htmlcanvas" => "pages/htmlcanvas.md",
     "changelog" => "CHANGELOG.md",
     "license" => "LICENSE.md",
     "legal" => "LEGAL.md",
+    "400" => "pages/400.md",
+    "401" => "pages/401.md",
+    "403" => "pages/403.md",
+    "404" => "pages/404.md",
+    "500" => "pages/500.md",
 );
 
 $titleMap = array(
     "thanks" => "Thanks!",
-    "nosupport" => "No support",
+    "iesupport" => "No support",
+    "htmlcanvas" => "No support",
     "changelog" => "Changelog",
     "license" => "License",
     "legal" => "Legal",
+    "400" => "Bad request",
+    "401" => "Authorization required",
+    "403" => "Forbidden",
+    "404" => "Not found",
+    "500" => "Internal server error",
 );
 
 $copyrightMap = array(
     "thanks" => false,
-    "nosupport" => false,
+    "iesupport" => false,
+    "htmlcanvas" => false,
     "changelog" => false,
     "license" => true,
     "legal" => true,
+    "400" => false,
+    "401" => false,
+    "403" => false,
+    "404" => false,
+    "500" => false,
 );
 
 $md = file_get_contents($map[$id]);
@@ -60,17 +78,17 @@ $renderer = new Parsedown();
 		<link rel="shortcut icon" href="favicon-32x32.png" />
 		<meta name="author" content="Herman Bergwerf" />
 
-		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
+		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview.page.min.css" />
     </head>
     <body>
-        <header>
+        <div id="header">
             <img id="brand" src="img/logo.png"/>
             <span id="brand-label">MolView</span>
-        </header>
+        </div>
         <div id="content">
             <?php echo $renderer->text($md); ?>
         </div>
-        <?php if($copyrightMap[$id]) echo '<footer>Copyright &copy; 2014 Herman Bergwerf</footer>'; ?>
+        <?php if($copyrightMap[$id]) echo '<div id="footer">Copyright &copy; 2014 Herman Bergwerf</div>'; ?>
     </body>
 </html>

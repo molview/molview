@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -40,8 +40,7 @@ var MolView = {
 		Progress.init();
 		if(this.loadDefault)
 		{
-			Progress.clear();
-			Progress.setSteps(2);
+			Progress.reset(2);
 		}
 
 		//initialize

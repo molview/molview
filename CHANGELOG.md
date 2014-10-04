@@ -2,15 +2,6 @@
 
 ## 2.2.x
 
-### Project
-
-- Redesigned logo
-- Added AGPL license
-- Added build script (fetch libs, run grunt, render SVG)
-- Added Tems of Use
-- Added testing procedure
-- Added internal pages using Markdown renderer
-
 ### Bugfixes
 
 - Added CIF validation in cif.php mirror
@@ -33,7 +24,8 @@
 - Replaced Jmol render-mode menu with hq switch
 - Removed auto layout-model onload crystals
 - Removed embed warning about slow, non-WebGL devices
-- Remove identifier search from Advanced search functions
+- Removed identifier search from Advanced search functions
+- Added meta key support for Mac
 
 #### Design
 - Redesigned messages
@@ -42,7 +34,8 @@
 - Redesigned general UI components (flat and light)
 - Redesigned sketcher selection style
 - Improved menu overflow scrolling
-- Added menu compact layout
+- Added compact menu layout
+- Added canvas based Progress bar
 
 #### Invisible
 - Revised CSS efficiency
@@ -55,12 +48,15 @@
 ### Features
 
 #### Data loading
+- Added server-side COD search sorting
+- Added JSON format for COD search errors
 - Added crystal 2D depiction fallbacks
 + Add SMILES 3D conformation method using PubChem (CIR as fallback)
 + Add CAS lookup method using PubChem (CIR as fallback)
 
 #### Functionality
-+ Added Autocomplete for compound, mineral and macromolecule names and a range of identifiers
+- Added Autocomplete for compound, mineral and macromolecule names
++ Added Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
 - Added protein chain representation and color scheme settings
 - Added bio-assembly function
 - Added MolView themes menu (desktop and touch)
@@ -73,6 +69,7 @@
 + Add percent composition table to Information card
 + Add *Don't show me again* option to Messages alerts
 + Add user preferences storage using HTML5 Web Storage
+- Added deuterium support to the Sketcher (without UI binding)
 
 #### Design
 - Added UI layer framework (layers: main, search, infocard, spectra)
@@ -84,6 +81,16 @@
 #### Analytics
 + Track user interaction via analytics.js
 + Debug via analytics.js
+
+### Miscellaneous
+
+- Redesigned logo
+- Added AGPL license
+- Added build script (fetch libs, run grunt, render SVG)
+- Added Tems of Use
+- Added testing procedure
+- Added markdown renderer for markdown files (thanks, changelog, license, legal)
+- Added markdown based error pages (internetExplorer, htmlCanvas, HTTP errors)
 
 ## 2.1.3 (2014-07-07)
 

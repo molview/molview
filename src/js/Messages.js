@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ var Messages = {
 
 	//support
 	no_webgl_support: Detector.getWebGLErrorMessage(),
-	no_canvas_support: "Your browser doesn't support this web application, try <a class='link' href='//google.com/chrome' title='A modern browser'>Google Chrome</a> instead.",
 	sketcher_no_macromolecules: "Macromolecules cannot be displayed in the sketcher",
 	mobile_old_no_macromolecules: "Macromolecules cannot be viewed on your device",
 	no_glmol_crystals: "You cannot view crystals using GLmol",
@@ -52,6 +51,7 @@ var Messages = {
 	smiles_load_error_force: "Failed to load structure from sketcher",
 	load_fail: "Failed to load structure",
 	search_fail: "Structure cannot be found",
+	search_noreach: "Remote database is not reachable",
 	structure_search_fail: "Failed to execute structure search",
 	resolve_fail: "Structure cannot be resolved",
 	clean_fail: "Structure cannot be cleaned",
@@ -136,6 +136,7 @@ var Messages = {
 		- smiles_load_error_force
 		- load_fail
 		- search_fail
+		- search_noreach
 		- structure_search_fail
 		- resolve_fail
 		- clean_fail
@@ -145,6 +146,12 @@ var Messages = {
 
 		//ignored causes
 		if(cause == "sketcher_no_macromolecules") return;
+
+		if(cause == "no_canvas_support")
+		{
+			window.location = window.location.origin + window.location.pathname + "htmlCanvas";
+			return;
+		}
 
 		$("body").removeClass("progress-cursor");
 
@@ -171,7 +178,7 @@ var Messages = {
 		}
 
 		this.clear();
-		Progress.alert();
+		Progress.complete();
 	},
 
 	/**

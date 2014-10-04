@@ -11,7 +11,7 @@
  ***************************************************************************/
 
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -107,6 +107,9 @@ chem.Element = function (label, period, group, putHydrogenOnTheLeft, color, ypos
 
 chem.Element.elements = new util.Map(
 {
+	//deuterium
+	113: new chem.Element('2H', 1, 1, false, '#333333', 1, 1),
+	//common elements
 	1: new chem.Element('H', 1, 1, false, '#000000', 1, 1),
 	2: new chem.Element('He', 1, 8, false, '#d9ffff', 1, 18),
 	3: new chem.Element('Li', 2, 1, false, '#cc80ff', 2, 1),
@@ -206,20 +209,19 @@ chem.Element.elements = new util.Map(
 	97: new chem.Element('Bk', 7, 3, false, '#8a4fe3', 9, 11),
 	98: new chem.Element('Cf', 7, 3, false, '#a136d4', 9, 12),
 	99: new chem.Element('Es', 7, 3, false, '#b31fd4', 9, 13),
-	// TODO need to fix colors for the elements below
-	100: new chem.Element('Fm', 7, 3, false, '#000000', 9, 14),
-	101: new chem.Element('Md', 7, 3, false, '#000000', 9, 15),
-	102: new chem.Element('No', 7, 3, false, '#000000', 9, 16),
-	103: new chem.Element('Lr', 7, 3, false, '#000000', 9, 17),
-	104: new chem.Element('Rf', 7, 4, false, '#4dc2ff', 7, 4),
-	105: new chem.Element('Db', 7, 5, false, '#4da6ff', 7, 5),
-	106: new chem.Element('Sg', 7, 6, false, '#2194d6', 7, 6),
-	107: new chem.Element('Bh', 7, 7, false, '#267dab', 7, 7),
-	108: new chem.Element('Hs', 7, 8, false, '#266696', 7, 8),
-	109: new chem.Element('Mt', 7, 8, false, '#175487', 7, 9),
-	110: new chem.Element('Ds', 7, 8, false, '#d1d1e0', 7, 10),
-	111: new chem.Element('Rg', 7, 1, false, '#ffd124', 7, 11),
-	112: new chem.Element('Cn', 7, 2, false, '#b8b8d1', 7, 12)
+	100: new chem.Element('Fm', 7, 3, false, '#B31FBA', 9, 14),
+	101: new chem.Element('Md', 7, 3, false, '#B30DA6', 9, 15),
+	102: new chem.Element('No', 7, 3, false, '#BD0D87', 9, 16),
+	103: new chem.Element('Lr', 7, 3, false, '#C70066', 9, 17),
+	104: new chem.Element('Rf', 7, 4, false, '#CC0059', 7, 4),
+	105: new chem.Element('Db', 7, 5, false, '#D1004F', 7, 5),
+	106: new chem.Element('Sg', 7, 6, false, '#D90045', 7, 6),
+	107: new chem.Element('Bh', 7, 7, false, '#E00038', 7, 7),
+	108: new chem.Element('Hs', 7, 8, false, '#E6002E', 7, 8),
+	109: new chem.Element('Mt', 7, 8, false, '#EB0026', 7, 9),
+	110: new chem.Element('Ds', 7, 8, false, '#9595a0', 7, 10),
+	111: new chem.Element('Rg', 7, 1, false, '#b9981a', 7, 11),
+	112: new chem.Element('Cn', 7, 2, false, '#9595a9', 7, 12),
 });
 
 chem.Element.labelMap = null;

@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -31,8 +31,7 @@ var Loader = {
 			return;
 		}
 
-		Progress.clear();
-		Progress.setSteps(3);
+		Progress.reset(3);
 
 		var query = $("#search-input").val();
 
@@ -83,7 +82,7 @@ var Loader = {
 			},
 			function()
 			{
-				Messages.alert("search_fail");
+				Messages.alert("search_noreach");
 			});
 		},
 
@@ -108,8 +107,7 @@ var Loader = {
 		{
 			var text = $("#search-input").val();
 
-			Progress.clear();
-			Progress.setSteps(3);
+			Progress.reset(3);
 
 			Request.PubChem.search(text, function()
 			{
@@ -130,8 +128,7 @@ var Loader = {
 
 		structureSearch: function(query, value, type)
 		{
-			Progress.clear();
-			Progress.setSteps(3);
+			Progress.reset(3);
 
 			Request.PubChem.structureSearch(query, value, type, function(listkey)
 			{
@@ -173,8 +170,7 @@ var Loader = {
 
 		loadName: function(name)
 		{
-			Progress.clear();
-			Progress.setSteps(5);
+			Progress.reset(5);
 
 			Messages.process(function()
 			{
@@ -191,8 +187,7 @@ var Loader = {
 
 		loadCID: function(cid, name)
 		{
-			Progress.clear();
-			Progress.setSteps(4);
+			Progress.reset(4);
 
 			name = ucfirst(name);
 
@@ -316,7 +311,7 @@ var Loader = {
 			},
 			function()
 			{
-				Messages.alert("search_fail");
+				Messages.alert("search_noreach");
 			});
 		},
 
@@ -342,8 +337,7 @@ var Loader = {
 
 			var text = $("#search-input").val();
 
-			Progress.clear();
-			Progress.setSteps(3);
+			Progress.reset(3);
 
 			Request.RCSB.search(text, function()
 			{
@@ -364,8 +358,7 @@ var Loader = {
 
 		loadPDBID: function(pdbid, name)
 		{
-			Progress.clear();
-			Progress.setSteps(2);
+			Progress.reset(2);
 
 			function finish()
 			{
@@ -440,28 +433,31 @@ var Loader = {
 		loadNextSet: function()
 		{
 			$("#load-more-cod").addClass("load-more-progress");
-			if(this.loading) return;
-			if(this.i < Request.COD.data.length)
-			{
-				for(var end = this.i + this.step;
-					this.i < Request.COD.data.length && this.i < end; this.i++)
-				{
-					SearchGrid.addEntry(Request.COD.data[this.i]);
-				}
 
-				if(this.i >= Request.COD.data.length) $(".load-more").css("display", "none");
-				else $("#load-more-cod").removeClass("load-more-progress");
-				this.loading = false;
-				Progress.complete();
-			}
+			window.setTimeout(function()
+			{
+				if(this.loading) return;
+				if(this.i < Request.COD.data.length)
+				{
+					for(var end = this.i + this.step;
+						this.i < Request.COD.data.length && this.i < end; this.i++)
+					{
+						SearchGrid.addEntry(Request.COD.data[this.i]);
+					}
+
+					if(this.i >= Request.COD.data.length) $(".load-more").css("display", "none");
+					else $("#load-more-cod").removeClass("load-more-progress");
+					this.loading = false;
+					Progress.complete();
+				}
+			}.bind(this), 300);
 		},
 
 		search: function()
 		{
 			var text = $("#search-input").val();
 
-			Progress.clear();
-			Progress.setSteps(3);
+			Progress.reset(3);
 
 			Request.COD.search(text, function()
 			{
@@ -474,9 +470,9 @@ var Loader = {
 				Loader.COD.i = 0;
 				Loader.COD.loadNextSet();
 			},
-			function()
+			function(offline)
 			{
-				Messages.alert("search_fail");
+				Messages.alert(offline ? "search_noreach" : "search_fail");
 			});
 		},
 
@@ -489,8 +485,7 @@ var Loader = {
 		 */
 		loadCODID: function(codid, name, cid, PubChem_name)
 		{
-			Progress.clear();
-			Progress.setSteps(2);
+			Progress.reset(4);
 
 			MolView.makeModelVisible();
 
@@ -514,6 +509,8 @@ var Loader = {
 					{
 						Model.loadCIF(cif, [1, 1, 1], function()
 						{
+							Progress.increment();
+
 							if(cid)
 							{
 								Request.PubChem.sdf(cid, true, function(mol2d)
@@ -534,6 +531,8 @@ var Loader = {
 							{
 								Request.COD.SMILES(codid, function(data)
 								{
+									Progress.increment();
+
 									if(data.records[0].smiles == "")
 									{
 										finish();
@@ -579,17 +578,19 @@ var Loader = {
 
 			Messages.process(function()
 			{
-				Progress.increment();
-
 				if(PubChem_name)
 				{
 					//only use PubChem_name if it's the compounds primary name
 					Request.PubChem.primaryName(PubChem_name, function(name)
 					{
+						Progress.increment();
+
 						if(name.toLowerCase() == PubChem_name.toLowerCase())
 						{
 							Request.PubChem.nameToCID(PubChem_name, function(_cid)
 							{
+								Progress.increment();
+
 								cid = _cid;
 								load();
 							}, load);
@@ -621,8 +622,7 @@ var Loader = {
 
 		var updated = $("#resolve").hasClass("resolve-updated");
 
-		Progress.clear();
-		Progress.setSteps(2);
+		Progress.reset(2);
 
 		var smiles;
 		try
@@ -662,8 +662,7 @@ var Loader = {
 			return;
 		}
 
-		Progress.clear();
-		Progress.setSteps(2);
+		Progress.reset(2);
 
 		var smiles;
 		try
@@ -711,8 +710,7 @@ var Loader = {
 			return;
 		}
 
-		Progress.clear();
-		Progress.setSteps(2);
+		Progress.reset(2);
 
 		document.title = title || "MolView";
 

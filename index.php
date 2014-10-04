@@ -5,7 +5,7 @@ error_reporting(0);
 
 if(is_below_IE10())
 {
-	header('Location: nosupport');
+	header('Location: internetExplorer');
 	exit;
 }
 
@@ -23,7 +23,7 @@ else if(isset($pdbid)) $contentClass = "layout-model";
 <html itemscope itemtype="http://schema.org/Thing">
 
 <!--
-This file is part of MolView (http://molview.org)
+This file is part of MolView (https://molview.org)
 Copyright (c) 2014, Herman Bergwerf
 
 MolView is free software: you can redistribute it and/or modify
@@ -111,8 +111,8 @@ Query parameters:
 		?>
 
 		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-		<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
+		<link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
 
 		<!-- JS -->
@@ -120,22 +120,22 @@ Query parameters:
 		<script type="text/javascript" src="src/js/lib/jquery.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
 		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
-        <script type="text/javascript" src="src/js/m2s/prototype.js"></script>
-        <script type="text/javascript" src="src/js/m2s/util/common.js"></script>
-        <script type="text/javascript" src="src/js/m2s/util/vec2.js"></script>
-        <script type="text/javascript" src="src/js/m2s/util/set.js"></script>
-        <script type="text/javascript" src="src/js/m2s/util/map.js"></script>
-        <script type="text/javascript" src="src/js/m2s/util/pool.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/element.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/struct.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/molfile.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/sgroup.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/struct_valence.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/dfs.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/cis_trans.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/stereocenters.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/smiles.js"></script>
-        <script type="text/javascript" src="src/js/m2s/chem/inchi.js"></script>
+		<script type="text/javascript" src="src/js/m2s/prototype.js"></script>
+		<script type="text/javascript" src="src/js/m2s/util/common.js"></script>
+		<script type="text/javascript" src="src/js/m2s/util/vec2.js"></script>
+		<script type="text/javascript" src="src/js/m2s/util/set.js"></script>
+		<script type="text/javascript" src="src/js/m2s/util/map.js"></script>
+		<script type="text/javascript" src="src/js/m2s/util/pool.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/element.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/struct.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/molfile.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/sgroup.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/struct_valence.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/dfs.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/cis_trans.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/stereocenters.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/smiles.js"></script>
+		<script type="text/javascript" src="src/js/m2s/chem/inchi.js"></script>
 		<script type="text/javascript" src="src/js/moledit/Constants.js"></script>
 		<script type="text/javascript" src="src/js/moledit/Objects.js"></script>
 		<script type="text/javascript" src="src/js/moledit/Chemical.js"></script>
@@ -174,19 +174,26 @@ Query parameters:
 
 		<!-- Dynamic CSS -->
 		<script type="text/javascript">
-			MolView.touch = isTouchDevice();
-			MolView.mobile = isMobile();
-			if(MolView.touch)
+			if(!Detector.canvas)
 			{
-				document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />');
+				window.location = window.location.origin + window.location.pathname + "htmlCanvas";
 			}
 			else
 			{
-				document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />');
-			}
-			if(MolView.mobile)
-			{
-				document.write('<link type="text/css" rel="stylesheet" href="build/molview.mobile.min.css" media="screen" />');
+				MolView.touch = isTouchDevice();
+				MolView.mobile = isMobile();
+				if(MolView.touch)
+				{
+					document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />');
+				}
+				else
+				{
+					document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />');
+				}
+				if(MolView.mobile)
+				{
+					document.write('<link type="text/css" rel="stylesheet" href="build/molview.mobile.min.css" media="screen" />');
+				}
 			}
 		</script>
 
@@ -201,8 +208,8 @@ Query parameters:
 		</script>
 	</head>
 	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
-		<div id="progress" class="progress-bar">
-			<div class="progress-part" style="width: 0; opacity: 0;"></div>
+		<div id="progress">
+			<canvas id="progress-canvas"></canvas>
 		</div>
 		<div id="menu">
 			<div id="menu-bar" class="hstack">
@@ -330,6 +337,7 @@ Query parameters:
 		<div id="content">
 			<div id="main-layer" <?php echo 'class="layer '.$contentClass.'"' ?>>
 				<script type="text/javascript">
+					Request.ChemicalIdentifierResolver.available = true;
 					Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
 					Request.HTTP_CLIENT_IP = <?php
 					echo '"';
@@ -340,10 +348,6 @@ Query parameters:
 					else echo $_SERVER["REMOTE_ADDR"];
 					echo '"';
 					?>;
-
-					Request.ChemicalIdentifierResolver.available = true;/*<?php
-					echo is_available("http://cactus.nci.nih.gov/chemical/structure/C/smiles") ? "true" : "false";
-					?>;*/
 
 					MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 					MolView.query = getQuery();
@@ -585,7 +589,7 @@ Query parameters:
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
-							Copyright &copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="http://hermanbergwerf.com">Herman Bergwerf</a>
+							Copyright &copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="https://hermanbergwerf.com">Herman Bergwerf</a>
 							&nbsp;+&nbsp;
 							<a class="link" href="changelog" target="_blank">Changelog</a>
 							&nbsp;+&nbsp;
@@ -622,7 +626,7 @@ Query parameters:
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 						<h3>Subjects</h3>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Drawing structural formulas</b></div>
+							<div class="expandable-title"><span>Drawing structural formulas</span></div>
 							<div class="expandable-content">
 								<p>You can draw structural formulas using the Sketcher component.</p>
 								<h4>Top toolbar</h4>
@@ -640,7 +644,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Finding structures</b></div>
+							<div class="expandable-title"><span>Finding structures</span></div>
 							<div class="expandable-content">
 								<p>You can load molecules from large databases like PubChem and RCSB using the search form located on the left side of the menu-bar. Just type what you are looking for and a list of available molecules will appear.</p>
 								<p>You can also click on the dropdown button next to the search field to select a specific database. This will perform a more extensive search on the selected database. Currently, three big databases are supported:</p>
@@ -654,7 +658,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Tools</b></div>
+							<div class="expandable-title"><span>Tools</span></div>
 							<div class="expandable-content">
 								<p>The <b>Tools</b> menu contains several utility functions which are listed below.</p>
 								<h4>Link</h4>
@@ -682,7 +686,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Spectroscopy</b></div>
+							<div class="expandable-title"><span>Spectroscopy</span></div>
 							<div class="expandable-content">
 								<p>You can open the Spectroscopy view via <b>Tools > Spectrocopy</b>. You can view three kinds of molecular spectra.</p>
 								<ol>
@@ -699,7 +703,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>3D model</b></div>
+							<div class="expandable-title"><span>3D model</span></div>
 							<div class="expandable-content">
 								<p>The <b>Model</b> menu contains some general functions for the 3D model.</p>
 								<h4>Reset</h4>
@@ -730,7 +734,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Protein display</b></div>
+							<div class="expandable-title"><span>Protein display</span></div>
 							<div class="expandable-content">
 								<p>Proteins can be displayed in a number of different ways including different color types and different chain  representations. These settings are located under the <b>Protein</b> menu in the menubar.</p>
 								<h4>Biological assembly</h4>
@@ -756,7 +760,7 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><i class="fa"></i><b>Advanced Jmol operations</b></div>
+							<div class="expandable-title"><span>Advanced Jmol operations</span></div>
 							<div class="expandable-content">
 								<p>Jmol offers some advanced functions. You can find them in the <b>Jmol</b> menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
 								<h4>Clear</h4>

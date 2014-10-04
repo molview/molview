@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ parse_str($_SERVER["QUERY_STRING"]);
 
 //connect to COD MySQL
 $cod = new mysqli("www.crystallography.net", "cod_reader", "", "cod");
-if($cod -> connect_errno > 0) die("Unable to connect to COD [".$cod -> connect_error."]");
+if($cod -> connect_errno > 0) die('{"error":"Unable to connect to COD ['.$cod -> connect_error.']"}');
 
 if($type == "search" && isset($q))
 {
@@ -49,6 +49,11 @@ if($type == "search" && isset($q))
 			}
 		]
 	}
+
+	Or, in case of an error:
+	{
+		"error": "Error message"
+	}
 	*/
 
 	header("Content-Type: application/json");
@@ -56,52 +61,125 @@ if($type == "search" && isset($q))
 	$q = strtolower($q);
 
 	$query =
-'SELECT file,mineral,commonname,chemname,formula,title FROM (
-	SELECT file,mineral,commonname,chemname,formula,title FROM data
-	WHERE mineral LIKE "%'.addslashes($q).'%"
-	ORDER BY CHAR_LENGTH(mineral), mineral ASC
-	LIMIT 100
-) ALIAS
-
-UNION
-
-SELECT file,mineral,commonname,chemname,formula,title FROM (
-	SELECT file,mineral,commonname,chemname,formula,title FROM data
-	WHERE commonname LIKE "%'.addslashes($q).'%"
-	ORDER BY CHAR_LENGTH(commonname), commonname ASC
-	LIMIT 100
-) ALIAS1
-
-UNION
-
-SELECT file,mineral,commonname,chemname,formula,title FROM (
-	SELECT file,mineral,commonname,chemname,formula,title FROM data
-	WHERE chemname LIKE "%'.addslashes($q).'%"
-	ORDER BY CHAR_LENGTH(chemname), chemname ASC
-	LIMIT 100
-) ALIAS2';
+'SELECT file,mineral,commonname,chemname,formula,title FROM data
+WHERE (mineral LIKE "%'.addslashes($q).'%" OR commonname LIKE "%'.addslashes($q).'%" OR chemname LIKE "%'.addslashes($q).'%") LIMIT 500';
 
 	if($result = $cod -> query($query))
 	{
-		echo '{"records":[';
-		$first_record = true;
-		while($row = $result -> fetch_row())//print JSON
+		$records = array();
+
+		while($row = $result -> fetch_row())
 		{
-			if($first_record) $first_record = false;
-			else echo ",";
+			$record = array();
+
+			$record["codid"] = utf8_encode($row[0]);
+			if(isset($row[1])) if($row[1] != "?" && $row[1] != "" && !is_null($row[1]))
+				$record["mineral"] = utf8_encode($row[1]);
+			if(isset($row[2])) if($row[2] != "?" && $row[2] != "" && !is_null($row[2]))
+				$record["commonname"] = utf8_encode($row[2]);
+			if(isset($row[3])) if($row[3] != "?" && $row[3] != "" && !is_null($row[3]))
+				$record["chemname"] = utf8_encode($row[3]);
+			if(isset($row[4])) if($row[4] != "?" && $row[4] != "" && !is_null($row[4]))
+				$record["formula"] = utf8_encode($row[4]);
+			if(isset($row[5])) if($row[5] != "?" && $row[5] != "" && !is_null($row[5]))
+				$record["title"] = utf8_encode($row[5]);
+
+			array_push($records, $record);
+		}
+
+		usort($records, function($a, $b)
+		{
+			if(isset($a["mineral"]))
+			{
+				$key = "mineral";
+				if(isset($b[$key]))
+				{
+					if(strlen($a[$key]) == strlen($b[$key]))
+					{
+						if(strtolower($a[$key]) == strtolower($b[$key]))
+						{
+							$key = "formula";
+							return strlen($a[$key]) - strlen($b[$key]);
+						}
+						else
+						{
+							$array = array($a[$key], $b[$key]);
+							sort($array);
+							return $array[0] == $a[$key] ? -1 : 1;
+						}
+					}
+					else return strlen($a[$key]) - strlen($b[$key]);
+				}
+				else return -1;
+			}
+			else if(isset($b["mineral"])) return 1;
+			else if(isset($a["commonname"]))
+			{
+				$key = "commonname";
+				if(isset($b[$key]))
+				{
+					if(strlen($a[$key]) == strlen($b[$key]))
+					{
+						if(strtolower($a[$key]) == strtolower($b[$key]))
+						{
+							$key = "formula";
+							return strlen($a[$key]) - strlen($b[$key]);
+						}
+						else
+						{
+							$array = array($a[$key], $b[$key]);
+							sort($array);
+							return $array[0] == $a[$key] ? -1 : 1;
+						}
+					}
+					else return strlen($a[$key]) - strlen($b[$key]);
+				}
+				else return -1;
+			}
+			else if(isset($b["commonname"])) return 1;
+			else if(isset($a["chemname"]))
+			{
+				$key = "chemname";
+				if(isset($b[$key]))
+				{
+					if(strlen($a[$key]) == strlen($b[$key]))
+					{
+						if(strtolower($a[$key]) == strtolower($b[$key]))
+						{
+							$key = "formula";
+							return strlen($a[$key]) - strlen($b[$key]);
+						}
+						else
+						{
+							$array = array($a[$key], $b[$key]);
+							sort($array);
+							return $array[0] == $a[$key] ? -1 : 1;
+						}
+					}
+					else return strlen($a[$key]) - strlen($b[$key]);
+				}
+				else return -1;
+			}
+			else return 1;
+		});
+
+		echo '{"records":[';
+		for($i = 0; $i < count($records); $i++)
+		{
+			if($i > 0) echo ",";
 
 			echo "{";
-			echo '"codid":'.json_encode($row[0]);
-			if(isset($row[1])) if($row[1] != "?" && $row[1] != "")
-				echo ',"mineral":'.json_encode(utf8_encode($row[1]));
-			if(isset($row[2])) if($row[2] != "?" && $row[2] != "")
-				echo ',"commonname":'.json_encode(utf8_encode($row[2]));
-			if(isset($row[3])) if($row[3] != "?" && $row[3] != "")
-				echo ',"chemname":'.json_encode(utf8_encode($row[3]));
-			if(isset($row[4])) if($row[4] != "?" && $row[4] != "")
-				echo ',"formula":'.json_encode(utf8_encode($row[4]));
-			if(isset($row[5])) if($row[5] != "?" && $row[5] != "")
-				echo ',"title":'.json_encode(utf8_encode($row[5]));
+			echo '"codid":'.json_encode($records[$i]["codid"]);
+			if(isset($records[$i]["mineral"]))
+				echo ',"mineral":'.json_encode($records[$i]["mineral"]);
+			if(isset($records[$i]["commonname"]))
+				echo ',"commonname":'.json_encode($records[$i]["commonname"]);
+			if(isset($records[$i]["chemname"]))
+				echo ',"chemname":'.json_encode($records[$i]["chemname"]);
+			if(isset($records[$i]["formula"]))
+				echo ',"formula":'.json_encode($records[$i]["formula"]);
+			if(isset($records[$i]["title"]))
+				echo ',"title":'.json_encode($records[$i]["title"]);
 			echo "}";
 		}
 		echo "]}";

@@ -10,7 +10,7 @@ module.exports = function(grunt)
 				options:
 				{
 					banner: '/**\n\
- * This file is part of MolView (http://molview.org)\n\
+ * This file is part of MolView (https://molview.org)\n\
  * Copyright (c) 2014, Herman Bergwerf\n\
  *\n\
  * MolView is free software: you can redistribute it and/or modify\n\
@@ -106,7 +106,7 @@ module.exports = function(grunt)
 				options:
 				{
 					banner:'/**\n\
- * This file is part of MolView (http://molview.org)\n\
+ * This file is part of MolView (https://molview.org)\n\
  * Copyright (c) 2014, Herman Bergwerf\n\
  *\n\
  * MolView is free software: you can redistribute it and/or modify\n\
@@ -180,7 +180,6 @@ module.exports = function(grunt)
 					'src/less/model.less',
 					'src/less/search.less',
 					'src/less/messages.less',
-					'src/less/progress.less',
 					'src/less/dialogs.less',
 					'src/less/help.less',
 					'src/less/share.less',

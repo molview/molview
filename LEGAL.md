@@ -21,7 +21,7 @@ The MolView Project is Open-Source and the source code is released under the
 GNU AGPL license. All MolView redistributions are subject to
 The MolView Open-Source Project and it's respective license.
 You can find the latest MolView Project source release at:
-http://github.com/molview
+https://github.com/molview
 
 ## 2. Site Content
 This site is frequently updated with new releases from the MolView Project.
@@ -59,7 +59,7 @@ This site does not store any personal information on it's own server.
 
 This sites uses Google Analytics in order to analyze user interaction.
 This service is subject to the Google Analytics Terms which can be found at:
-http://www.google.com/analytics/terms/us.html
+https://www.google.com/analytics/terms/us.html
 
 This site uses a client-side local storage technology (WebStorage)
 in order to save user preferences. You can find the full specification of this

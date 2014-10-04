@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (http://molview.org)
+ * This file is part of MolView (https://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
@@ -26,16 +26,35 @@ function humanize(str)
 {
 	if(str === undefined) return str;
 	//reverse case for all words with uppercase characters only
-	else return str.replace(/(\b[A-Z]+\b)/g, function (word)
+	else return str.replace(/(\b[A-Z]+\b)/g, function(word)
 	{
 		return word.toLowerCase();
 	});
 }
 
-function chemFormulaFormat(str)
+function formatMFormula(str)
 {
-	if(str) return str.replace(/-/g, "").replace(/\s/g, "").replace(/[\d,.][\d,.]*/g, "<sub>$&</sub>");
+	var regex = /^((?:[A-Z][a-z]?)+[\d,.]*)*/;
+	if(str)
+	{
+		return str.replace(/[a-zA-Z0-9.,]+/g, function(word)
+		{
+			if(regex.exec(word)[0] == word)
+			{
+				return word.replace(/[\d,.][\d,.]*/g, "<sub>$&</sub>");
+			}
+			else return word;
+		});
+	}
 	else return undefined;
+}
+
+function formatHTMLLinks(str)
+{
+	return str.replace(/(http|https):\/\/[^\s]+/g, function(link)
+	{
+		return '<a class="link" href="' + link + '" target="_blank">' + link + "</a>";
+	});
 }
 
 function oneOf(obj, array)
@@ -115,18 +134,19 @@ https://github.com/jquery-textfill/jquery-textfill
 	jQuery.fn.textfill = function (options)
 	{
 		var fontSize = options.maxFontPoints;
-		var ourText = jQuery("span:visible:first", this);
+		var text = this.children();
 		var maxHeight = jQuery(this).height();
 		var maxWidth = jQuery(this).width();
 		var textHeight;
 		var textWidth;
-		do {
-			ourText.css("font-size", "" + fontSize + "pt");
-			textHeight = ourText.height();
-			textWidth = ourText.width();
+		do
+		{
+			text.css("font-size", "" + fontSize + "pt");
+			textHeight = text.height();
+			textWidth = text.width();
 			fontSize = fontSize - 1;
 		}
-		while ((textHeight > maxHeight || textWidth > maxWidth) && fontSize > 6);
+		while((textHeight > maxHeight || textWidth > maxWidth) && fontSize > 6);
 		return this;
 	}
 })(jQuery);
@@ -198,17 +218,51 @@ function AJAX(obj)
 }
 
 /* Test if DOM Element dimensions have changed */
-$.fn.sizeChanged = function()
+(function (jQuery)
 {
-	return !(this.data("savedWidth") ==  this.width()
-		  && this.data("savedHeight") ==  this.height());
-}
+	$.fn.sizeChanged = function()
+	{
+		return !(this.data("savedWidth") ==  this.width()
+			  && this.data("savedHeight") ==  this.height());
+	}
 
-$.fn.saveSize = function()
-{
-	this.data("savedWidth", this.width());
-	this.data("savedHeight", this.height());
-}
+	$.fn.saveSize = function()
+	{
+		this.data("savedWidth", this.width());
+		this.data("savedHeight", this.height());
+	}
+})(jQuery);
+
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+// requestAnimationFrame polyfill by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
+
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
 
 /* PHP similar_text JavaScript implementation
 see: http://phpjs.org/functions/similar_text/ */
