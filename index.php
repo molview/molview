@@ -263,6 +263,7 @@ Query parameters:
 							<li class="menu-header">Chemical data</li>
 							<li class="menu-item"><a id="data-infocard">Information card</a></li>
 							<li class="menu-item"><a id="data-spectra">Spectroscopy</a></li>
+							<li class="menu-item"><a id="data-3d-source" class="disabled" target="_blank">3D model resource</a></li>
 							<li class="menu-header">Advanced search</li>
 							<li class="menu-item"><a id="search-similarity">Similarity</a></li>
 							<li class="menu-item"><a id="search-substructure">Substructure</a></li>
@@ -477,47 +478,52 @@ Query parameters:
 								<h3 id="molecule-title"></h3>
 								<p id="molecule-description"></p>
 							</div>
-							<table id="common-chem-props" class="light-table">
-								<tbody>
-									<tr id="prop-formula-wrapper"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
-									<tr id="prop-mw-wrapper"><td>Molecular weight</td><td id="prop-mw" class="chemprop"></td></tr>
-									<tr id="prop-donors-wrapper"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
-									<tr id="prop-acceptors-wrapper"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
-								</tbody>
+							<table id="common-chem-props">
+								<tr id="prop-formula-wrapper"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
+								<tr id="prop-mw-wrapper"><td>Molecular weight</td><td id="prop-mw" class="chemprop"></td></tr>
+								<tr id="prop-donors-wrapper"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
+								<tr id="prop-acceptors-wrapper"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
 							</table>
+							<h3 id="percent-composition-title">Percent composition</h3>
+							<table id="percent-composition-table"></table>
 						</div>
 					</div>
-					<table id="chem-identifiers" class="input-table">
-						<thead>
-							<tr><th>Identifiers</th></tr>
-						</thead>
-						<tbody>
-							<tr id="prop-sysname-title"><th>Systematic name</th></tr>
-							<tr id="prop-sysname-wrapper">
-								<td><input type="text" id="prop-sysname" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-canonicalsmiles-title"><th>Canonical SMILES</th></tr>
-							<tr id="prop-canonicalsmiles-wrapper">
-								<td><input type="text" id="prop-canonicalsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-isomericsmiles-title"><th>Isomeric SMILES</th></tr>
-							<tr id="prop-isomericsmiles-wrapper">
-								<td><input type="text" id="prop-isomericsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-inchikey-title"><th>InChiKey</th></tr>
-							<tr id="prop-inchikey-wrapper">
-								<td><input type="text" id="prop-inchikey" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-inchi-title"><th>InChi</th></tr>
-							<tr id="prop-inchi-wrapper">
-								<td><input type="text" id="prop-inchi" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-cas-title"><th>CAS Number</th></tr>
-							<tr id="prop-cas-wrapper">
-								<td><input type="text" id="prop-cas" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-csid-title"><th>Chemspider ID&nbsp;&nbsp;<a id="chemspider-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr id="prop-csid-wrapper">
-								<td><input type="text" id="prop-csid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-							<tr id="prop-cid-title"><th>PubChem Compound ID&nbsp;&nbsp;<a id="pubchem-external-link" class="a" target="_blank"><i class="fa fa-external-link"></i></a></th></tr>
-							<tr id="prop-cid-wrapper">
-								<td><input type="text" id="prop-cid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" /></td></tr>
-						</tbody>
-					</table>
+					<div id="prop-sysname-wrapper" class="chem-identifier">
+						<label for="prop-sysname">Systematic name</label>
+						<input type="text" id="prop-sysname" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-canonicalsmiles-wrapper" class="chem-identifier">
+						<label for="prop-canonicalsmiles">Canonical SMILES</label>
+						<input type="text" id="prop-canonicalsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-isomericsmiles-wrapper" class="chem-identifier">
+						<label for="prop-isomericsmiles">Isomeric SMILES</label>
+						<input type="text" id="prop-isomericsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-inchikey-wrapper" class="chem-identifier">
+						<label for="prop-inchikey">InChiKey</label>
+						<input type="text" id="prop-inchikey" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-inchi-wrapper" class="chem-identifier">
+						<label for="prop-inchi">InChi</label>
+						<input type="text" id="prop-inchi" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-cas-wrapper" class="chem-identifier">
+						<label for="cas-sysname">CAS Number</label>
+						<input type="text" id="prop-cas" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-csid-wrapper" class="chem-identifier">
+						<label for="prop-csid">Chemspider ID
+							<a id="chemspider-link" class="link chem-link" target="_blank"><i class="fa fa-external-link"></i></a>
+						</label>
+						<input type="text" id="prop-csid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
+					<div id="prop-cid-wrapper" class="chem-identifier">
+						<label for="prop-cid">PubChem Compound ID
+							<a id="pubchem-link" class="link chem-link" target="_blank"><i class="fa fa-external-link"></i></a>
+						</label>
+						<input type="text" id="prop-cid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+					</div>
 				</div>
 			</div>
 			<div id="spectra-layer" class="layer data-layer" style="display: none;">
@@ -526,6 +532,7 @@ Query parameters:
 					<select id="spectrum-select"></select>
 					<button id="png-current-spectrum" class="btn"><i class="fa fa-download"></i> Download PNG image</button>
 					<button id="jcamp-current-spectrum" class="btn"><i class="fa fa-download"></i> Download JCAMP data</button>
+					<a id="spectrum-nist-source" class="btn" target="_blank"><i class="fa fa-link"></i> NIST source</a>
 				</div>
 				<div id="spectrum-wrapper">
 					<canvas id="spectrum-canvas"></canvas>
@@ -662,7 +669,7 @@ Query parameters:
 							<div class="expandable-content">
 								<p>The <b>Tools</b> menu contains several utility functions which are listed below.</p>
 								<h4>Link</h4>
-								<p>You can embed or share a specific compound, biomolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the address bar in order to link to the current structure.</p>
+								<p>You can embed or share a specific compound, macromolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the address bar in order to link to the current structure.</p>
 								<h4>Export</h4>
 								<p>Export options in the Export menu:</p>
 								<ul>
@@ -673,9 +680,11 @@ Query parameters:
 									<li><b>CIF file:</b> exports a Crystallographic Information File from the 3D model <b>(crystal structures)</b></li>
 								</ul>
 								<h4>Information card</h4>
-								<p>This function collects and displays information about the structural formula.</p>
+								<p>This collects and displays information about the structural formula.</p>
 								<h4>Spectroscopy</h4>
-								<p>This function shows a new layer where you can view molecular spectra of the current structural formula (loaded from the Sketcher) More details are covered in the Spectroscopy chapter.</p>
+								<p>This shows a new layer where you can view molecular spectra of the current structural formula (loaded from the Sketcher) More details are covered in the Spectroscopy chapter.</p>
+								<h4>3D model resource</h4>
+								<p>This redirects you to the web-page for the current 3D model on the website of its source database (except when the model is resolved using the Chemical Identifier Resolver)</p>
 								<h4>Advanced search</h4>
 								<p>These functions allow you to perform some advanced searches through the PubChem database using the structural formula from the sketcher.</p>
 								<ol>
@@ -688,7 +697,7 @@ Query parameters:
 						<div class="expandable">
 							<div class="expandable-title"><span>Spectroscopy</span></div>
 							<div class="expandable-content">
-								<p>You can open the Spectroscopy view via <b>Tools > Spectrocopy</b>. You can view three kinds of molecular spectra.</p>
+								<p>You can open the Spectroscopy view via <b>Tools > Spectroscopy</b>. You can view three kinds of molecular spectra.</p>
 								<ol>
 									<li>Mass spectrum</li>
 									<li>IR spectrum</li>
@@ -719,7 +728,7 @@ Query parameters:
 									<li><b>GLmol</b> if you load macromolecules (due to significant higher performance)</li>
 									<li><b>ChemDoodle</b> if you load a crystal structure (GLmol cannot render crystal structures)</li>
 								</ol>
-								<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoole since GLmol has a better performance.</p>
+								<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoodle since GLmol has a better performance.</p>
 								<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
 								<h4>Model transformation</h4>
 								<p>You can rotate, pan and zoom the 3D model. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model with one finger and scale the model using two fingers.</p>
@@ -738,7 +747,7 @@ Query parameters:
 							<div class="expandable-content">
 								<p>Proteins can be displayed in a number of different ways including different color types and different chain  representations. These settings are located under the <b>Protein</b> menu in the menubar.</p>
 								<h4>Biological assembly</h4>
-								<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biololgical unit) This function allows you to view the full biological unit.</p>
+								<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biological unit) This function allows you to view the full biological unit.</p>
 								<h4>Chain representation</h4>
 								<p>You can choose from four different chain representations. You can also view the full chain structure by enabling the <b>Bonds</b> option.</p>
 								<ol>
@@ -773,8 +782,8 @@ Query parameters:
 									<li><b>MEP surface lucent/opaque:</b> calculates and projects molecular electrostatic potential on a translucent or opaque van der Waals surface</li>
 									<li><b>Charge:</b> calculates and projects atomic charge as text label and white to atom color gradient</li>
 									<li><b>Bond dipoles:</b> calculates and draws individual bond dipoles</li>
-									<li><b>Overall dipole:</b> calculates and draws netto bond dipole</li>
-									<li><b>Energy minimization:</b> executes an interactive MMFF94 energy minimization<br/><i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
+									<li><b>Overall dipole:</b> calculates and draws net bond dipole</li>
+									<li><b>Energy minimization:</b> executes an interactive MMFF94 energy minimization <i>(note that this function only executes a maximum of 100 minimization steps at a time)</i></li>
 								</ul>
 								<h4>Measurement</h4>
 								<p>You can measure distance, angle and torsion using Jmol. You can activate and deactivate one of these measurement types via the Jmol menu.</p>

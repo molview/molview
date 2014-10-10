@@ -36,8 +36,9 @@
 - Improved menu overflow scrolling
 - Added compact menu layout
 - Added canvas based Progress bar
++ Add server-side device detection script for custom CSS using MobileDetect
 
-#### Invisible
+#### Refactoring
 - Revised CSS efficiency
 - Migrated CSS to LESS
 - Renamed Loader modules
@@ -56,7 +57,6 @@
 
 #### Functionality
 - Added Autocomplete for compound, mineral and macromolecule names
-+ Added Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
 - Added protein chain representation and color scheme settings
 - Added bio-assembly function
 - Added MolView themes menu (desktop and touch)
@@ -64,12 +64,14 @@
 - Added transparency to exported images
 - Added open in new tab support for search results
 - Added auto search results loading when scrolling to the bottom of the page
-+ Add external references to Information card (Chemicalize, Google, PDB, COD)
-+ Add scientific reference to the NIST Chemistry WebBook for spectra
-+ Add percent composition table to Information card
++ Add local MOL, PDB or CIF file viewing support
 + Add *Don't show me again* option to Messages alerts
 + Add user preferences storage using HTML5 Web Storage
 - Added deuterium support to the Sketcher (without UI binding)
++ Add hydrogen stripping switch to Sketcher
+- Added 3D model source reference to Tool menu
+- Added NIST Chemistry WebBook page reference
+- Added percent composition table to Information card
 
 #### Design
 - Added UI layer framework (layers: main, search, infocard, spectra)
@@ -77,10 +79,11 @@
 - Added menu-item icons
 - Added welcome dialog
 - Added dialog close buttons
+- Added CODID to COD advanced search results
 
 #### Analytics
-+ Track user interaction via analytics.js
-+ Debug via analytics.js
++ Add user interaction tracker using analytics.js
++ Add debugging using analytics.js
 
 ### Miscellaneous
 

@@ -149,6 +149,7 @@ var SearchGrid = {
 			<div class="search-result">
 				<div class="search-result-title"><span>title</span></div>
 				<div class="search-result-description">description</div>
+                <div class="search-result-codid">codid</div>
 			</div>
 			*/
 
@@ -165,7 +166,7 @@ var SearchGrid = {
 			result.append(title);
 			title.textfill({ maxFontPoints: 26 });
 
-			var desc = $('<div class="search-result-description"></div>').appendTo(result);
+			var desc = $('<div class="search-result-description search-result-description-cod"></div>').appendTo(result);
 
             if(data.title)
             {
@@ -186,7 +187,9 @@ var SearchGrid = {
             if(data.formula) $('<p><b>Molecular formula</b><br/><span>'
                     + formatMFormula(data.formula.replace(/-/g, "").replace(/\s/g, "")) + "</span></p>").appendTo(desc);
 
-			title.data("codid", data.codid);
+			$('<div class="search-result-codid">' + data.codid + '</div>').appendTo(result);
+
+            title.data("codid", data.codid);
 			title.data("title", title_str);
 			title.on("click", function(e)
 			{

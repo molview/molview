@@ -25,6 +25,7 @@ var Progress = {
 	animatedValue: 0.0,
 	canvas: undefined,
 	ctx: undefined,
+	oldTime: 0,
 
 	init: function()
 	{
@@ -32,7 +33,6 @@ var Progress = {
 		if(this.canvas)
 		{
 			this.resize();
-			this.draw();
 		}
 	},
 
@@ -52,18 +52,25 @@ var Progress = {
 		{
 			if(!(Progress.ready && Progress.opacity <= 0))
 			{
-				requestAnimationFrame(Progress.draw);
+				var delta = (new Date().getTime()) - Progress.oldTime;
+				if(delta == 0) delta = 40;
+				window.setTimeout(function()
+				{
+					requestAnimationFrame(Progress.draw);
+				}, 40);
 
 				if(Progress.ready)
 				{
-					Progress.opacity -= 0.01;
+					Progress.opacity -= 1 / delta;
+					Progress.ctx.clearRect(0, 0, Progress.canvas.width, Progress.canvas.height);
 				}
 
-				Progress.animatedValue += (Progress.value - Progress.animatedValue) / 16;
+				Progress.animatedValue += (Progress.value - Progress.animatedValue) / delta * 10;
 
 				Progress.ctx.fillStyle = "rgba(255,0,0," + Progress.opacity + ")";
-				Progress.ctx.clearRect(0, 0, Progress.canvas.width, Progress.canvas.height);
 				Progress.ctx.fillRect(0, 0, Progress.canvas.width * Progress.animatedValue, Progress.canvas.height);
+
+				Progress.oldTime = new Date().getTime();
 			}
 		}
 	},
@@ -78,6 +85,7 @@ var Progress = {
 
 		document.title = document.title.replace(/ \[loading\]/g, "");
 		document.title += " [loading]";
+		this.oldTime = new Date().getTime();
 		this.draw();
 	},
 

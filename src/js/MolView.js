@@ -206,7 +206,7 @@ var MolView = {
 
 		$("#export-2d").on(this.trigger, Actions.export_2D);
 		$("#export-3d").on(this.trigger, Actions.export_3D);
-		$("#save-local-3d").on(this.trigger, function(){ Actions.save_local_3D(Loader.lastQuery.name); });
+		$("#save-local-3d").on(this.trigger, Actions.save_local_3D);
 
 		$("#data-infocard").on(this.trigger, Actions.data_infocard);
 		$("#data-spectra").on(this.trigger, Actions.data_spectra);

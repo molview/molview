@@ -69,6 +69,7 @@ var Spectroscopy = {
         this.data = {};
         this.data["smiles"] = smiles;
 
+        $("#spectrum-nist-source").hide();
         $("#spectrum").addClass("loading");
         $("#spectrum-select").html('<option value="loading" selected>Loading&hellip;</option>').val("loading");
         this.print("No spectrum selected");
@@ -106,6 +107,7 @@ var Spectroscopy = {
                 $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
 
                 $("#spectrum-select").val("default");
+                $("#spectrum-nist-source").attr("href", data.url).show();
                 $("#spectrum").removeClass("loading");
             }, noSpectra);
         }, noSpectra);

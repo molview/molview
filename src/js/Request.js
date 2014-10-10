@@ -582,6 +582,11 @@ var Request = {
 				}
 			});
 		},
+
+		staticURL: function(cid)
+		{
+			return "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=" + cid;
+		}
 	},
 
 	RCSB:
@@ -721,6 +726,11 @@ var Request = {
 					if(error) error();
 				}
 			});
+		},
+
+		staticURL: function(pdbid)
+		{
+			return "http://www.rcsb.org/pdb/explore/explore.do?structureId=" + pdbid;
 		}
 	},
 
@@ -797,6 +807,11 @@ var Request = {
 					if(error) error();
 				}
 			});
+		},
+
+		staticURL: function(codid)
+		{
+			return "http://www.crystallography.net/" + codid + ".html";
 		}
 	},
 
@@ -831,6 +846,7 @@ var Request = {
 				{
 					//data postprocessing
 					var output = [];
+					output.url = data.url;
 					output.mass = data.mass;
 					output.uvvis = data.uvvis;
 					output.ir = new Array();

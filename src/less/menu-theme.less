@@ -73,14 +73,18 @@
 
 .disabled
 {
-	color: @foreground-disabled;
-	border-color: @light2;
+	color: @foreground-disabled !important;
 	cursor: default;
 }
 
 /*
 Menu-item icons
 */
+*
+.menu-item > a
+{
+	color: @foreground;
+}
 
 .menu-item > a:before
 {
@@ -99,9 +103,9 @@ Menu-item icons
 	content: '\f00c';
 }
 
-.menu-item > a.disabled.checked:before
+.menu-item > a.disabled:before
 {
-	color: @foreground-disabled;
+	color: @foreground-disabled !important;
 }
 
 #mv-help:before { content: '\f1cd'; }
@@ -113,6 +117,7 @@ Menu-item icons
 #save-local-3d:before { content: '\f019'; }
 #data-infocard:before { content: '\f1ec'; }
 #data-spectra:before { content: '\f1fe'; }
+#data-3d-source:before { content: '\f1c0'; }
 #search-similarity:before { content: '\2248'; font-weight: bold; }
 #search-substructure:before { content: '\2282'; font-weight: bold; }
 #search-superstructure:before { content: '\2283'; font-weight: bold; }

@@ -118,12 +118,6 @@
 	margin: 0;
 }
 
-#chem-identifiers
-{
-	width: 100%;
-	margin: 10px 0;
-}
-
 #spectrum-wrapper
 {
 	overflow: auto;
@@ -149,14 +143,27 @@ Chemprops
 	background-position: center;
 }
 
-.loading
-{
-	cursor: progress;
-}
-
 input.chemprop-unavailable
 {
 	border-color: @error;
 	background-color: @error-light;
 	pointer-events: none;
+}
+
+.chem-identifier
+{
+	text-align: left;
+}
+
+.chem-identifier > label
+{
+	display: inline-block;
+	margin-top: 10px;
+	padding: 5px;
+	font-weight: bold;
+}
+
+.chem-link
+{
+	margin: 0 5px;
 }

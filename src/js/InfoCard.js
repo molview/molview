@@ -67,6 +67,8 @@ var InfoCard = {
 	 */
 	data: {},
 
+	percentCompositionPrecision: 5,
+
 	/**
 	 * Updates content of InfoCard card
 	 * @param {String} smiles SMILES string
@@ -81,8 +83,10 @@ var InfoCard = {
 			$("#molecule-info").hide();
 			$("#molecule-title").text("");
 			$("#molecule-description").text("");
+			$("#percent-composition-table, #percent-composition-title").hide();
 			$("#common-chem-props tr").show();
-			$("#chem-identifiers tr").show();
+			$(".chem-identifier").show();
+			$(".chem-link").hide();
 
 			this.PubChem_cache = undefined;
 			this.PubChem_queue = [];
@@ -99,29 +103,41 @@ var InfoCard = {
 			{
 				if(cid)
 				{
-					$("#pubchem-external-link").attr("href",
-						"https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid="
-						+ cid).show();
+					$("#pubchem-link").attr("href", Request.PubChem.staticURL(cid)).show();
 				}
 
 				//load properties
-				InfoCard.loadProperty("isomericsmiles");//first in order to use isomericsmiles ASAP
 				InfoCard.loadProperty("formula");
 				InfoCard.loadProperty("mw");
 				InfoCard.loadProperty("donors");
 				InfoCard.loadProperty("acceptors");
 				InfoCard.loadProperty("sysname");
 				InfoCard.loadProperty("canonicalsmiles");
+				InfoCard.loadProperty("isomericsmiles", function(smiles)
+				{
+					/* if(smiles)
+					{
+						$("#chemicalize-link").attr("href",
+							"http://www.chemicalize.org/structure?mol=" + smiles).show();
+					} */
+				});
 				InfoCard.loadProperty("inchikey");
-				InfoCard.loadProperty("inchi");
+				InfoCard.loadProperty("inchi", function(inchi)
+				{
+					/* if(inchi)
+					{
+						$("#google-link").attr("href",
+							"http://www.google.nl/search?q=" + encodeURIComponent(inchi)).show();
+					} */
+				});
 				InfoCard.loadProperty("cas");
 				InfoCard.loadProperty("csid", function(csid)
 				{
 					if(csid)
 					{
-						$("#chemspider-external-link").attr("href",
+						$("#chemspider-link").attr("href",
 							"http://www.chemspider.com/Chemical-Structure."
-							+ csid + ".html");
+							+ csid + ".html").show();
 					}
 				});
 
@@ -141,6 +157,44 @@ var InfoCard = {
 				}
 			});
 		}
+	},
+
+	/**
+	 * Process molecular formula string and fill the percent composition table
+	 * @param  {String} formula Molecular formula
+	 * @return {String} formatted molecular formula
+	 */
+	processFormula: function(formula)
+	{
+		//parse molecule
+		this.data.molecule = {};
+		regex = /((?:[A-Z][a-z]?))([\d,.]*)/g;
+		var match;
+		while((match = regex.exec(formula)) !== null)
+		{
+		    this.data.molecule[match[1]] = parseFloat(match[2]) || 1;
+		}
+
+		//fill percent composition table
+		$("#percent-composition-title").show();
+		$("#percent-composition-table").empty().show();
+		var totalMass = 0;
+		jQuery.each(this.data.molecule, function(key, value)
+		{
+			totalMass += ElementsMolarTable[key] * value;
+		});
+
+		jQuery.each(this.data.molecule, function(key, value)
+		{
+			$("#percent-composition-table").append("<tr>\
+				<td>" + key + "</td>\
+				<td>" + ElementsMolarTable[key] + " u &times; " + value + "</td>\
+				<td>" + (ElementsMolarTable[key] * value / totalMass * 100)
+					.toPrecision(InfoCard.percentCompositionPrecision) + " %</td>\
+			</tr>");
+		});
+
+		return formatMFormula(formula);
 	},
 
 	/**
@@ -186,7 +240,6 @@ var InfoCard = {
 			if(cb) cb(prop);
 		}, function()
 		{
-			$("#prop-" + id + "-title").hide();
 			$("#prop-" + id + "-wrapper").hide();
 
 			if(cb) cb();
@@ -281,7 +334,7 @@ var InfoCard = {
 				{
 					if(id == "formula")
 					{
-						InfoCard.data["formula"] = formatMFormula(data);
+						InfoCard.data["formula"] = InfoCard.processFormula(data);
 					}
 					else if(id == "sysname")
 					{
@@ -338,7 +391,7 @@ var InfoCard = {
 			{
 				if(id == "formula")
 				{
-					InfoCard.data[id] = formatMFormula(
+					InfoCard.data[id] = InfoCard.processFormula(
 						InfoCard.PubChem_cache[PubChemProps[id]]);
 				}
 				else

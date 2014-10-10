@@ -16,6 +16,23 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Utility functions to check if a certain string
+ * is a certain chemical identifier
+ * @type {Object}
+ */
+var ChemIdentifiers = {
+	regex: {
+		formula: /^((?:[A-Z][a-z]?)+[\d,.]*)*/
+	},
+
+	isFormula: function(str)
+	{
+		return this.regex.formula.exec(str)[0] == str;
+	}
+}
+
+/* string modification */
 function ucfirst(str)
 {
 	if(str === undefined) return str;
@@ -32,16 +49,16 @@ function humanize(str)
 	});
 }
 
+/* string formatting */
 function formatMFormula(str)
 {
-	var regex = /^((?:[A-Z][a-z]?)+[\d,.]*)*/;
 	if(str)
 	{
 		return str.replace(/[a-zA-Z0-9.,]+/g, function(word)
 		{
-			if(regex.exec(word)[0] == word)
+			if(ChemIdentifiers.isFormula(word))
 			{
-				return word.replace(/[\d,.][\d,.]*/g, "<sub>$&</sub>");
+				return word.replace(/[\d,.]*/g, "<sub>$&</sub>");
 			}
 			else return word;
 		});
@@ -57,15 +74,7 @@ function formatHTMLLinks(str)
 	});
 }
 
-function oneOf(obj, array)
-{
-	for(var i = 0; i < array.length; i++)
-	{
-		if(obj == array[i]) return true;
-	}
-	return false;
-}
-
+/* device feature detection */
 function isTouchDevice()
 {
 	return !!('ontouchstart' in window) || (!!('onmsgesturechange' in window) && !!window.navigator.maxTouchPoints);
@@ -81,37 +90,16 @@ function isMobile()
 	return check;
 }
 
-function isIE()
-{
-	var ua = window.navigator.userAgent;
-	var msie = ua.indexOf('MSIE ');
-	var trident = ua.indexOf('Trident/');
-
-	if(msie > 0)
-	{
-		//IE 10 or older => return version number
-		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-	}
-
-	if(trident > 0)
-	{
-		//IE 11 (or newer) => return version number
-		var rv = ua.indexOf('rv:');
-		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-	}
-
-	//other browser
-	return -1;
-}
-
-//http://www.developerdrive.com/2013/08/turning-the-querystring-into-a-json-object-using-javascript/
+/**
+ * @return {Object} JS object containing current query parameters
+ */
 function getQuery()
 {
 	if(location.search === "") return {};
 
 	var pairs = location.search.slice(1).split("&");
 	var result = {};
-	pairs.forEach(function (pair)
+	pairs.forEach(function(pair)
 	{
 		pair = pair.split(/=(.+)?/);
 		result[pair[0]] = decodeURIComponent(pair[1] || "");
@@ -120,15 +108,23 @@ function getQuery()
 	return result;
 }
 
+/**
+ * Replacement for encodeURIComponent()
+ * This function makes sure the MolView server can read the whole query
+ * string with minimal changes.
+ * Note: a '+' character is NOT converted into a space in the backend
+ *
+ * @param {[type]} str [description]
+ */
 function specialEncodeURIComponent(str)
 {
 	return str.replace(/&/g, "%26").replace(/#/g, "%23");
 }
 
-/*
-jQuery Textfill plugin
-https://github.com/jquery-textfill/jquery-textfill
-*/
+/**
+ * jQuery Textfill plugin
+ * https://github.com/jquery-textfill/jquery-textfill
+ */
 (function (jQuery)
 {
 	jQuery.fn.textfill = function (options)
@@ -151,23 +147,29 @@ https://github.com/jquery-textfill/jquery-textfill
 	}
 })(jQuery);
 
-/* Fullscreen */
-function launchFullscreen(element)
+/**
+ * jQuery plugin which tests if DOM Element dimensions have changed
+ */
+(function (jQuery)
 {
-	if(element.requestFullscreen) element.requestFullscreen();
-	else if(element.mozRequestFullScreen) element.mozRequestFullScreen();
-	else if(element.webkitRequestFullscreen) element.webkitRequestFullscreen();
-	else if(element.msRequestFullscreen) element.msRequestFullscreen();
-}
+	$.fn.sizeChanged = function()
+	{
+		return !(this.data("savedWidth") ==  this.width()
+			&& this.data("savedHeight") ==  this.height());
+	}
 
-function exitFullscreen()
-{
-	if(document.exitFullscreen) document.exitFullscreen();
-	else if(document.mozCancelFullScreen) document.mozCancelFullScreen();
-	else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-}
+	$.fn.saveSize = function()
+	{
+		this.data("savedWidth", this.width());
+		this.data("savedHeight", this.height());
+	}
+})(jQuery);
 
-/* Open images using Blobs */
+/**
+ * Converts dataURI to a Blob
+ * @param {String} dataURI
+ * @return {Blob}
+ */
 function dataURItoBlob(dataURI)
 {
 	try
@@ -200,45 +202,36 @@ function dataURItoBlob(dataURI)
 	}
 }
 
-function openDataURL(dataURL)
+/**
+ * Open dataURI in new tab
+ * @param {String} dataURI
+ */
+function openDataURI(dataURI)
 {
-	var blob = dataURItoBlob(dataURL);
+	var blob = dataURItoBlob(dataURI);
 	var windowURL = window.URL || window.webkitURL || undefined;
 	if(blob != null && windowURL != undefined)
 	{
 		window.open(windowURL.createObjectURL(blob));
 	}
-	else window.open(dataURL);
+	else window.open(dataURI);
 }
 
-/* AJAX wrapper */
+/**
+ * Wrapper for jQuery.ajax
+ * @param {Object} obj jQuery.ajax parameter
+ */
 function AJAX(obj)
 {
 	return $.ajax(obj);
 }
 
-/* Test if DOM Element dimensions have changed */
-(function (jQuery)
-{
-	$.fn.sizeChanged = function()
-	{
-		return !(this.data("savedWidth") ==  this.width()
-			  && this.data("savedHeight") ==  this.height());
-	}
-
-	$.fn.saveSize = function()
-	{
-		this.data("savedWidth", this.width());
-		this.data("savedHeight", this.height());
-	}
-})(jQuery);
-
-// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-
-// requestAnimationFrame polyfill by Erik Möller
-// fixes from Paul Irish and Tino Zijdel
-
+/**
+ * requestAnimationFrame polyfill by Erik Möller
+ * fixes from Paul Irish and Tino Zijdel
+ * http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+ * http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+ */
 (function() {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -264,8 +257,15 @@ function AJAX(obj)
         };
 }());
 
-/* PHP similar_text JavaScript implementation
-see: http://phpjs.org/functions/similar_text/ */
+/**
+ * PHP similar_text JavaScript implementation
+ * see: http://phpjs.org/functions/similar_text/
+ *
+ * @param  {String}  first   String to compare with
+ * @param  {String}  second  String to compare
+ * @param  {Boolean} percent Indicates whether similairity percentage should be returned
+ * @return {Float}           [description]
+ */
 function similar_text(first, second, percent)
 {
 	//  discuss at: http://phpjs.org/functions/similar_text/
@@ -333,6 +333,6 @@ function similar_text(first, second, percent)
 	}
 	else
 	{
-		return(sum * 200) / (firstLength + secondLength);
+		return (sum * 200) / (firstLength + secondLength);
 	}
 }

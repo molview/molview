@@ -10,8 +10,9 @@ Wishlist
 - Create interactive macromolecule exploration mode
 
 - Add touch menu drawer
-- Add mobile friendly search results layout
-- Add functional groups support in Sketcher=
+- Add functional groups support in Sketcher
+- Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
+- Add mobile friendly search results layout (100% width, one scrollbar always)
 - Add MolView home website (pages: features, about, manual, changelog, license, feedback)
 - Improve COD search display by condensing duplicate results
 - Integrate COD image API

@@ -74,9 +74,10 @@ if($type == "lookup")
 	$nist_page = file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?Mask=80&ID=".$cas);
 
 	echo "{";
-	echo '"mass":'.(strrpos($nist_page, "Mass spectrum (electron ionization)") === false ? "false" : "true").",";
-	echo '"uvvis":'.(strrpos($nist_page, "UV/Visible spectrum") === false ? "false" : "true").",";
-	echo '"ir":[';
+	echo '"url":'.json_encode(utf8_encode("http://webbook.nist.gov/cgi/cbook.cgi?ID=".$cas));
+	echo ',"mass":'.(strrpos($nist_page, "Mass spectrum (electron ionization)") === false ? "false" : "true");
+	echo ',"uvvis":'.(strrpos($nist_page, "UV/Visible spectrum") === false ? "false" : "true");
+	echo ',"ir":[';
 
 	//if there is only one records (Index=0) the result is directly embeded into the webpage (see caffeine)
 	preg_match_all('/<th align="left" valign="top">State<\/th><td align="left" valign="top">([^<]*)<\/td>/', $nist_page, $records);

@@ -132,7 +132,7 @@ input[type="text"].alert + .input-focus
 .input:focus
 {
 	border-color: @highlight;
-	background: @light;
+	background-color: @light;
 }
 
 /* select */
@@ -143,7 +143,7 @@ select
 	cursor: pointer;
 	margin: 10px 0 0 10px;
 	padding: 4px;
-	max-width: 100%;
+	max-width: 300px;
 }
 
 select:focus
@@ -222,40 +222,31 @@ table
 	border-collapse: collapse;
 }
 
-.light-table td, .light-table th
+td, th
 {
 	padding: 5px 20px 5px 5px;
 	min-width: 32px;
 	border: 1px solid @contrast;
 }
 
-table > thead > tr > th
+td
 {
-	background: @foreground;
-	color: @light2;
+	background-color: @light2;
+}
+
+tr:nth-child(even) > td
+{
+	background-color: @light3;
+}
+
+th
+{
+	background: @light;
 	font-weight: bold;
 	text-align: center;
 }
 
-.light-table > tbody > tr > td:first-child
+td:first-child
 {
 	font-weight: bold;
-}
-
-.light-table td { background-color: @light2; }
-.light-table > tbody > tr:nth-child(even) > td { background-color: @light3; }
-
-.input-table td { padding: 0; }
-.input-table th { padding: 5px 20px 5px 5px; }
-
-.input-table input
-{
-	width: 100%;
-}
-
-.input-table > tbody > tr > th
-{
-	background-color: #ccc;
-	font-weight: bold;
-	text-align: left;
 }

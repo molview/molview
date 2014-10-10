@@ -1859,3 +1859,14 @@ var PeriodicTable =
 		}
 	]
 };
+
+var ElementsMolarTable = {};
+for(var group = 0; group < PeriodicTable.table.length; group++)
+{
+	for(var i = 0; i < PeriodicTable.table[group].elements.length; i++)
+	{
+		var element = PeriodicTable.table[group].elements[i];
+		if(element.name == "") continue;
+		ElementsMolarTable[element.small] = element.molar;
+	}
+}

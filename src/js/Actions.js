@@ -74,10 +74,10 @@ var Actions = {
 		if(blob !== null) saveAs(blob, document.title + " (model).png");
 	},
 
-	save_local_3D: function(name)
+	save_local_3D: function()
 	{
 		var blob = Model.getFileBlob();
-		saveAs(blob, (name || document.title) + "." + (Model.getFileExstension().toLowerCase()));
+		saveAs(blob, document.title + "." + (Model.getFileExstension().toLowerCase()));
 	},
 
 	data_infocard: function()

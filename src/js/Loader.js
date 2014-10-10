@@ -19,8 +19,21 @@
 var Loader = {
 	lastQuery: {
 		type: "",//q || cid || pdbid || codid || smiles
-		content: "",
-		name: "",
+		content: ""
+	},
+
+	setQuery: function(type, content)
+	{
+		content = String(content);
+		this.lastQuery.type = type;
+		this.lastQuery.content = content;
+		History.push(type, content);
+
+		$("#data-3d-source").removeClass("disabled");
+		if(type == "q" || type == "smiles") $("#data-3d-source").removeAttr().addClass("disabled");
+		else if(type == "cid") $("#data-3d-source").attr("href", Request.PubChem.staticURL(content));
+		else if(type == "pdbid") $("#data-3d-source").attr("href", Request.RCSB.staticURL(content));
+		else if(type == "codid") $("#data-3d-source").attr("href", Request.COD.staticURL(content));
 	},
 
 	CIRsearch: function()
@@ -48,9 +61,7 @@ var Loader = {
 			Progress.complete();
 			Messages.clear();
 
-			Loader.lastQuery.type = "q";
-			Loader.lastQuery.content = text;
-			History.push("q", text);
+			Loader.setQuery("q", text);
 		}, function()
 		{
 			Messages.alert("search_fail");
@@ -213,11 +224,8 @@ var Loader = {
 				{
 					Model.loadMOL(mol3d);
 
-					Loader.lastQuery.type = "cid";
-					Loader.lastQuery.content = "" + cid;
-
 					document.title = name || "MolView";
-					History.push("cid", cid);
+					Loader.setQuery("cid", cid);
 
 					Progress.complete();
 					Messages.clear();
@@ -236,11 +244,8 @@ var Loader = {
 						Model.loadMOL(mol2d);
 						Sketcher.markUpdated();
 
-						Loader.lastQuery.type = "cid";
-						Loader.lastQuery.content = "" + cid;
-
 						document.title = name || "MolView";
-						History.push("cid", cid);
+						Loader.setQuery("cid", cid);
 
 						Progress.complete();
 						Messages.clear();
@@ -255,11 +260,8 @@ var Loader = {
 						Model.loadMOL(mol3d);
 						Sketcher.markUpdated();
 
-						Loader.lastQuery.type = "cid";
-						Loader.lastQuery.content = "" + cid;
-
 						document.title = name || "MolView";
-						History.push("cid", cid);
+						Loader.setQuery("cid", cid);
 
 						Progress.complete();
 						Messages.clear();
@@ -269,11 +271,8 @@ var Loader = {
 						Model.loadMOL(mol2d);
 						Sketcher.markUpdated();
 
-						Loader.lastQuery.type = "cid";
-						Loader.lastQuery.content = "" + cid;
-
 						document.title = name || "MolView";
-						History.push("cid", cid);
+						Loader.setQuery("cid", cid);
 
 						Progress.complete();
 						Messages.clear();
@@ -370,9 +369,7 @@ var Loader = {
 				Messages.clear();
 				Messages.alert("sketcher_no_macromolecules");
 
-				Loader.lastQuery.type = "pdbid";
-				Loader.lastQuery.content = "" + pdbid;
-				History.push("pdbid", pdbid);
+				Loader.setQuery("pdbid", pdbid);
 			}
 
 			MolView.setLayout("model");
@@ -496,9 +493,7 @@ var Loader = {
 				Progress.complete();
 				Messages.clear();
 
-				Loader.lastQuery.type = "codid";
-				Loader.lastQuery.content = "" + codid;
-				History.push("codid", codid);
+				Loader.setQuery("codid", codid);
 			}
 
 			function load()
@@ -687,9 +682,7 @@ var Loader = {
 			Progress.complete();
 			Messages.clear();
 
-			Loader.lastQuery.type = "smiles";
-			Loader.lastQuery.content = smiles;
-			History.push("smiles", smiles);
+			Loader.setQuery("smiles", smiles);
 		},
 		function()
 		{
@@ -725,9 +718,7 @@ var Loader = {
 				Sketcher.loadMOL(mol2d);
 				Sketcher.markUpdated();
 
-				Loader.lastQuery.type = "smiles";
-				Loader.lastQuery.content = smiles;
-				History.push("smiles", smiles);
+				Loader.setQuery("smiles", smiles);
 
 				Progress.complete();
 				Messages.clear();

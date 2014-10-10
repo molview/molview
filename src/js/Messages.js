@@ -20,7 +20,7 @@ var Messages = {
 	//notifications
 	cir_down: "The Chemical Identifier Resolver is offline, some functions might be unavailable.",
 	cir_func_down: "This function is unavailable because the Chemical Identifier Resolver is offline.",
-	crystal_2d_unreliable: "This structural formula might not fully match the crystal structure",
+	crystal_2d_unreliable: "The structural formula might not fully represent the crystal structure",
 
 	//progress
 	switch_engine: "Loading engine&hellip;",
