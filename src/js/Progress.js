@@ -62,9 +62,9 @@ var Progress = {
 				if(Progress.ready)
 				{
 					Progress.opacity -= 1 / delta;
-					Progress.ctx.clearRect(0, 0, Progress.canvas.width, Progress.canvas.height);
 				}
 
+				Progress.ctx.clearRect(0, 0, Progress.canvas.width, Progress.canvas.height);
 				Progress.animatedValue += (Progress.value - Progress.animatedValue) / delta * 10;
 
 				Progress.ctx.fillStyle = "rgba(255,0,0," + Progress.opacity + ")";

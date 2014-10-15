@@ -281,7 +281,7 @@ var Actions = {
 	/*
 	Protein menu
 	*/
-	bio_assembly:          function() { Model.setBioAssembly(!$("#bio-assembly").hasClass("checked")); },
+	bio_assembly:          function() { Model.setBioAssembly(!Model.displayBU); },
 	chain_type_ribbon:     function() { Model.setChainType(!$("#chain-type-ribbon").hasClass("checked") ? "ribbon" : "none"); },
 	chain_type_cylinders:  function() { Model.setChainType(!$("#chain-type-cylinders").hasClass("checked") ? "cylinders" : "none"); },
 	chain_type_btube:      function() { Model.setChainType(!$("#chain-type-btube").hasClass("checked") ? "btube" : "none"); },

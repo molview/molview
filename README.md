@@ -11,7 +11,7 @@ a similar webapplication.
   - [MolEdit v1.2.4](https://www.molsoft.com/moledit.html): structural formula sketcher
   - [Ketcher](http://ggasoftware.com/opensource/ketcher): Molfile to SMILES conversion
   - [GLmol v0.47](http://webglmol.sourceforge.jp/index-en.html): primary 3D render engine
-  - [JSmol v14.3.7](http://sourceforge.net/projects/jsmol/): 3D render engine
+  - [JSmol v14.3.8](http://sourceforge.net/projects/jsmol/): 3D render engine
   - [ChemDoodle Web Components v6.0.1](http://web.chemdoodle.com/): 3D render engine
     and spectrum display
 

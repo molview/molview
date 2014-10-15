@@ -313,7 +313,7 @@ ChemicalView.prototype.drawMol = function()
 		this.ctx.textAlign = "center";
 		if((lbl = this.atomLabel(at)).length)
 		{
-			var color = MolEdit_AtomColors[ElementNames[at.cd]];
+			var color = JmolAtomColorsCSS[ElementNames[at.cd]];
 			if(typeof color == "undefined") color = "#000000";
 			this.ctx.strokeStyle = color;
 			this.ctx.fillStyle = color;

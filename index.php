@@ -116,6 +116,7 @@ Query parameters:
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
 
 		<!-- JS -->
+		<script type="text/javascript" src="src/js/Data.js"></script>
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
@@ -149,8 +150,9 @@ Query parameters:
 		<script type="text/javascript" src="src/js/lib/Blob.js"></script>
 		<script type="text/javascript" src="src/js/lib/FileSaver.js"></script>
 		<script type="text/javascript" src="src/js/lib/PeriodicTable.js"></script>
+		<script type="text/javascript" src="src/datasets/PDBNames.js"></script>
+		<script type="text/javascript" src="src/datasets/MineralNames.js"></script>
 		<script type="text/javascript" src="src/js/Utility.js"></script>
-		<script type="text/javascript" src="src/js/Data.js"></script>
 		<script type="text/javascript" src="src/js/History.js"></script>
 		<script type="text/javascript" src="src/js/Progress.js"></script>
 		<script type="text/javascript" src="src/js/Messages.js"></script>
@@ -189,10 +191,6 @@ Query parameters:
 				else
 				{
 					document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />');
-				}
-				if(MolView.mobile)
-				{
-					document.write('<link type="text/css" rel="stylesheet" href="build/molview.mobile.min.css" media="screen" />');
 				}
 			}
 		</script>
@@ -297,7 +295,7 @@ Query parameters:
 					<li id="protein-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Protein</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="bio-assembly">Biological assembly</a></li>
+							<li class="menu-item"><a id="bio-assembly">Show bio assembly</a></li>
 							<li class="menu-header">Chain representation</li>
 							<li class="menu-item"><a id="chain-type-ribbon" class="chain-type checked">Ribbon</a></li>
 							<li class="menu-item"><a id="chain-type-cylinders" class="chain-type">Cylinder and plate</a></li>
@@ -357,23 +355,13 @@ Query parameters:
 						&& !MolView.query.layout
 						&& MolView.layout != "model") Actions.window_hsplit();
 
-					if($(window).width() < 380 && $(window).width() < $(window).height())
+					//compact menu bar
+					MolView.setMenuLayout($(window).width() < 1100, !MolView.touch);
+
+					//fit search-input in touchscreen
+					if($(window).width() < 380 && MolView.touch)
 					{
 						$("#search-input").css("width", $(window).width() - 80);
-					}
-					if($(window).height() < 380 && $(window).height() < $(window).width())
-					{
-						$("#search-input").css("width", $(window).height() - 80);
-					}
-
-					//compact menu bar
-					if($(window).width() < 1100 && !MolView.touch)
-					{
-						$("#search").css("margin", 0);
-						$("#search-input").css("width", 100);
-						$("#brand").hide();
-						$("#search-dropdown .dropdown-menu").removeClass("dropdown-left");
-						$("#jmol-dropdown .dropdown-menu").addClass("dropdown-left");
 					}
 
 					if(MolView.touch) $("#theme-touch").addClass("checked");
@@ -455,7 +443,7 @@ Query parameters:
 					<div id="glmol" class="render-engine" style="display: none;"></div>
 				</div>
 			</div>
-			<div id="search-layer" class="layer search-results" style="display: none;">
+			<div id="search-layer" class="layer" style="display: none;">
 				<div class="btn-group-bar">
 					<button class="btn close btn-primary "><i class="fa fa-arrow-left"></i> Return</button>
 				</div>
@@ -575,7 +563,7 @@ Query parameters:
 									<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4</a>: structural formula sketcher</li>
 									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Molfile to SMILES conversion</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
-									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.7</a>: 3D render engine</li>
+									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.8</a>: 3D render engine</li>
 									<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1</a>: 3D render engine and spectrum display</li>
 								</ul>
 							</li>
@@ -626,10 +614,11 @@ Query parameters:
 						<script type="text/javascript">
 							if(isTouchDevice())
 							{
+								//TODO: replace with PHP
 								document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in your screen.</div>');
 							}
 						</script>
-						<p><a class="link" href="docs/manual.pdf" target="_blank">PDF version</a></p>
+						<p>PDF version: <a class="link" href="docs/manual.pdf" target="_blank">docs/manual.pdf</a></p>
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 						<h3>Subjects</h3>
 						<div class="expandable">
@@ -746,8 +735,8 @@ Query parameters:
 							<div class="expandable-title"><span>Protein display</span></div>
 							<div class="expandable-content">
 								<p>Proteins can be displayed in a number of different ways including different color types and different chain  representations. These settings are located under the <b>Protein</b> menu in the menubar.</p>
-								<h4>Biological assembly</h4>
-								<p>Some macromolecules are only a small unit (asymmetric unit) from a much larger structure (biological unit) This function allows you to view the full biological unit.</p>
+								<h4>Show bio assembly</h4>
+								<p>When loading a protein structure, MolView shows the asymmetric unit by default. This function allows you to view the full biological unit instead.</p>
 								<h4>Chain representation</h4>
 								<p>You can choose from four different chain representations. You can also view the full chain structure by enabling the <b>Bonds</b> option.</p>
 								<ol>

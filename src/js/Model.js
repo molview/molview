@@ -47,6 +47,8 @@ var Model = {
 	JSmol: JSmolPlugin,
 	CDW: CDWPlugin,
 
+	pixelMult: 1,
+
 	/**
 	 * Initializes 3D model view
 	 * @param  {Function} cb  Called when intialization is ready
@@ -54,6 +56,8 @@ var Model = {
 	 */
 	init: function(cb, rnd)
 	{
+		this.pixelMult = MolView.devicePixelRatio;
+
 		if(this.GLmol && this.JSmol && this.CDW)//all plugins are loaded
 		{
 			if(MolView.loadDefault)
@@ -382,7 +386,7 @@ var Model = {
 		{
 			if(this.isPDB())
 			{
-				$("#bio-assembly").toggleClass("checked", on);
+				$("#bio-assembly").text(on ? "Show assymetic unit" : "Show bio assembly");
 				this.displayBU = on;
 
 				var shown = Messages.process(function()
@@ -478,7 +482,7 @@ var Model = {
 		/* always disable BU when loading a PDB file into a render engine
 		in order to prevent unwanted CPU load */
 		this.displayBU = false;
-		$("#bio-assembly").removeClass("checked");
+		$("#bio-assembly").text("Show bio assembly");
 
 		if(this.isGLmol()) return this.GLmol.loadPDB(pdb);
 		else if(this.isJSmol()) return this.JSmol.loadPDB(pdb);

@@ -83,20 +83,20 @@ var Autocomplete = {
 	 */
 	init: function()
 	{
-		for(var i = 0; i < commonMacromolecules.macromolecules.length; i++)
+		for(var i = 0; i < PDBNames.macromolecules.length; i++)
 		{
-			commonMacromolecules.macromolecules[i].label =
-				commonMacromolecules.macromolecules[i].name;
+			PDBNames.macromolecules[i].label =
+				PDBNames.macromolecules[i].name;
 		}
 
-		for(var i = 0; i < mineralNames.minerals.length; i++)
+		for(var i = 0; i < MineralNames.records.length; i++)
 		{
-			mineralNames.minerals[i].label =
-				ucfirst(mineralNames.minerals[i].name);
+			MineralNames.records[i].label =
+				ucfirst(MineralNames.records[i].name);
 		}
 
-		this.macromolecules = new AutocompleteBuilder(commonMacromolecules.macromolecules, "name");
-		this.minerals = new AutocompleteBuilder(mineralNames.minerals, "name");
+		this.macromolecules = new AutocompleteBuilder(PDBNames.macromolecules, "name");
+		this.minerals = new AutocompleteBuilder(MineralNames.records, "name");
 
 		$("#search-input")[0].addEventListener("input", Autocomplete.refresh.bind(Autocomplete));
 		$("#search-input").on("keydown", Autocomplete.keydown.bind(Autocomplete));
@@ -333,7 +333,7 @@ var Autocomplete = {
 			if(records[i].pdbids)//macromolecule
 			{
 				li.addClass("autocomplete-macromolecule");
-				$('<span class="autocomplete-type"></span>').html(commonMacromolecules.types[records[i].type]).appendTo(li);
+				$('<span class="autocomplete-type"></span>').html(PDBNames.types[records[i].type]).appendTo(li);
 			}
 			else if(records[i].codid)//mineral
 			{
@@ -370,7 +370,11 @@ var Autocomplete = {
 		$(".autocomplete-item").removeClass("autocomplete-item-hover");
 		$("#autocomplete-dropdown-wrapper").show();
 		$("#autocomplete-dropdown").hide();
-		$("#menu").scrollLeft(55);
+
+		if($("#brand").is(":visible"))
+		{
+			$("#menu").scrollLeft(55);
+		}
 	},
 
 	/**

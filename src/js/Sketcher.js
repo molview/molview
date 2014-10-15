@@ -32,7 +32,7 @@ var Sketcher = {
 
 		if(Detector.canvas)
 		{
-			this.moledit = new ChemicalView(document.getElementById("moledit-area"), document.getElementById("moledit-canvas"));
+			this.moledit = new ChemicalView(document.getElementById("moledit-area"), document.getElementById("moledit-canvas"), MolView.devicePixelRatio);
 
 			if(MolView.loadDefault)
 			{

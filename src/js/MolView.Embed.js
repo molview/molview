@@ -19,6 +19,7 @@
 var MolView = {
 	touch: false,
 	mobile: false,
+	devicePixelRatio: 1.0,
 	trigger: "click",
 	query: {},
 	loadDefault: true,
@@ -27,15 +28,13 @@ var MolView = {
 
 	init: function()
 	{
-		this.query = getQuery();
+		MolView.devicePixelRatio = window.devicePixelRatio || (MolView.mobile ? 1.5 : 1.0);
 
+		this.query = getQuery();
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
 		{
 			this.loadDefault = false;
 		}
-
-		this.touch = isTouchDevice();
-		this.mobile = isMobile();
 
 		Progress.init();
 		if(this.loadDefault)

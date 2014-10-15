@@ -75,6 +75,9 @@ Query parameters:
 			}
 			else
 			{
+				MolView.touch = isTouchDevice();
+				MolView.mobile = isMobile();
+
 				Request.ChemicalIdentifierResolver.available = true;
 				Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
 				Request.HTTP_CLIENT_IP = <?php

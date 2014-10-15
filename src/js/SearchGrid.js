@@ -74,21 +74,20 @@ var SearchGrid = {
 
             if(!data.CID) return;
 
-			var result = $('<a class="search-result search-result-notext"></a>')
-					.attr("href", "?cid=" + data.CID);
+			var result = $('<a class="search-result search-result-pubchem"></a>')
+					.attr("href", "?cid=" + data.CID)
+                    .appendTo("#search-layer .container");
+
+            if(data.Title)
+            {
+                var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
+                result.append(title);
+                title.textfill({ maxFontPoints: 26 });
+            }
 
 			$("<div class='search-result-img'></div>").css("background-image",
 				"url(" + Request.PubChem.image(data.CID) + ")")
 				.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
-
-			result.appendTo("#search-layer .container");
-
-			if(data.Title)
-			{
-				var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
-				result.append(title);
-				title.textfill({ maxFontPoints: 26 });
-			}
 
 			result.data("cid", data.CID);
 			result.data("title", ucfirst(humanize(data.Title)));
@@ -115,18 +114,16 @@ var SearchGrid = {
 
             if(!data.structureId || !data.structureTitle) return;
 
-			var result = $('<div class="search-result search-result-imgdesc"></div>');
+			var result = $('<div class="search-result"></div>').appendTo("#search-layer .container");
+
+            var title = $('<a class="search-result-title"><span>' + data.structureId + "</span></a>")
+                    .attr("href", "?pdbid=" + data.structureId);;
+            result.append(title);
+            title.textfill({ maxFontPoints: 26 });
 
 			var img = $('<div class="search-result-img"></div>').css("background-image",
 				"url(" + Request.RCSB.image(data.structureId) + ")");
 			img.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
-
-			result.appendTo("#search-layer .container");
-
-			var title = $('<a class="search-result-title"><span>' + data.structureId + "</span></a>")
-					.attr("href", "?pdbid=" + data.structureId);;
-			result.append(title);
-			title.textfill({ maxFontPoints: 26 });
 
 			var desc = $('<div class="search-result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
 			result.append(desc);
@@ -166,6 +163,8 @@ var SearchGrid = {
 			result.append(title);
 			title.textfill({ maxFontPoints: 26 });
 
+            $('<div class="search-result-codid">' + data.codid + '</div>').appendTo(result);
+
 			var desc = $('<div class="search-result-description search-result-description-cod"></div>').appendTo(result);
 
             if(data.title)
@@ -186,8 +185,6 @@ var SearchGrid = {
                     + data.chemname + "</span></p>").appendTo(desc);
             if(data.formula) $('<p><b>Molecular formula</b><br/><span>'
                     + formatMFormula(data.formula.replace(/-/g, "").replace(/\s/g, "")) + "</span></p>").appendTo(desc);
-
-			$('<div class="search-result-codid">' + data.codid + '</div>').appendTo(result);
 
             title.data("codid", data.codid);
 			title.data("title", title_str);

@@ -108,6 +108,11 @@ function getQuery()
 	return result;
 }
 
+function oneOf(nail, haystack)
+{
+	return haystack.indexOf(nail) != -1;
+}
+
 /**
  * Replacement for encodeURIComponent()
  * This function makes sure the MolView server can read the whole query
@@ -138,8 +143,8 @@ function specialEncodeURIComponent(str)
 		do
 		{
 			text.css("font-size", "" + fontSize + "pt");
-			textHeight = text.height();
-			textWidth = text.width();
+			textHeight = text.outerHeight();
+			textWidth = text.outerWidth();
 			fontSize = fontSize - 1;
 		}
 		while((textHeight > maxHeight || textWidth > maxWidth) && fontSize > 6);

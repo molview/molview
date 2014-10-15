@@ -40,14 +40,10 @@ Modifications:
   - this.getSelectedAtoms()
 */
 
-function ChemicalView(parent, canvas)
+function ChemicalView(parent, canvas, devicePixelRatio)
 {
-	//use this to fix low DPI on mobile
-	this.mobile = isMobile();
-	this.android = navigator.userAgent.match(/Android/i);
-	this.iOS = navigator.userAgent.match(/iPhone|iPad|iPod/i);
 	this.touch = isTouchDevice();
-	this.scaleFactor = this.mobile ? 1.5 : 1.0;
+	this.scaleFactor = devicePixelRatio;
 
 	this.bondThicknessHalf = 0.2;
 

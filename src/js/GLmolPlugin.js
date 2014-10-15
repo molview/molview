@@ -28,7 +28,7 @@ var GLmolPlugin = {
 	{
 		if(Detector.canvas)
 		{
-			this.view = new GLmol("glmol", !Detector.webgl, MolView.mobile ? 1.5 : 1.0);
+			this.view = new GLmol("glmol", !Detector.webgl, Model.pixelMult);
 
 			this.view.defineRepresentation = function()
 			{
@@ -195,7 +195,13 @@ var GLmolPlugin = {
 
 	loadPDB: function(pdb)
 	{
-		if(this.currentModel == pdb) return;
+		if(this.currentModel == pdb)
+		{
+			//make sure to overwrite current matrix
+			this.view.protein.appliedMatrix = undefined;
+			this.view.zoomInto(this.view.getAllAtoms());
+			return;
+		}
 
 		if(this.view)
 		{

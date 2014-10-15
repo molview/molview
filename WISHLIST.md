@@ -12,13 +12,15 @@ Wishlist
 - Add touch menu drawer
 - Add functional groups support in Sketcher
 - Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
-- Add mobile friendly search results layout (100% width, one scrollbar always)
 - Add MolView home website (pages: features, about, manual, changelog, license, feedback)
+
 - Improve COD search display by condensing duplicate results
 - Integrate COD image API
 - Integrate Smorf viewer (carved crystals)
 - Integrate MinData.org data
 - Build COD mirror
+
+- Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Add backend services using CDK and the Google Cloud Platform
 - Create MolView for Android and iOS using CocoonJS
 - Investigate Mathematica features

@@ -20,7 +20,8 @@ var MolView = {
 	layout: "",
 	touch: false,
 	mobile: false,
-	height: 0,//used to detect virtual keyboard
+	devicePixelRatio: 1.0,
+
 	trigger: "click",
 	query: {},
 	loadDefault: true,
@@ -32,6 +33,8 @@ var MolView = {
 	 */
 	init: function()
 	{
+		MolView.devicePixelRatio = window.devicePixelRatio || (MolView.mobile ? 1.5 : 1.0);
+
 		Progress.init();
 		History.init();
 		Link.init();
@@ -66,43 +69,24 @@ var MolView = {
 
 			$(".dropdown-menu").css("max-height", $("#content").height() - 10);
 
-			//compact menu bar
-			if($(window).width() < 1100 && !MolView.touch)
+			if($(window).width() < 380 && MolView.touch)
 			{
-				$("#search").css("margin", 0);
-				$("#search-input").css("width", 100);
-				$("#brand").hide();
-				$("#search-dropdown .dropdown-menu").removeClass("dropdown-left");
-				$("#jmol-dropdown .dropdown-menu").addClass("dropdown-left");
+				$("#search-input").css("width", $(window).width() - 80);
 			}
 			else
 			{
-				$("#search").css("margin", "");
 				$("#search-input").css("width", "");
-				$("#brand").show();
-				$("#search-dropdown .dropdown-menu").addClass("dropdown-left");
-				$("#jmol-dropdown .dropdown-menu").removeClass("dropdown-left");
 			}
+
+			//compact menu bar
+			MolView.setMenuLayout($(window).width() < 1100, !MolView.touch);
 
 			Progress.resize();
 
 			if(!$("#main-layer").is(":hidden"))
 			{
-				//don't resize for virtual keyboard (common on touch devices)
-				if(!(document.activeElement.id == "search-input" && MolView.touch))
-				{
-					Sketcher.resize();
-					Model.resize();
-				}
-				else//virtual keyboard
-				{
-					if(window.innerHeight > MolView.height)//virtual keyboard is closed
-					{
-						$("#search-input").blur();
-					}
-
-					MolView.height = window.innerHeight;
-				}
+				Sketcher.resize();
+				Model.resize();
 			}
 		});
 
@@ -434,6 +418,37 @@ var MolView = {
 		this.layout = layout;
 
 		this.setLayer("main");
+	},
+
+	/**
+	 * Sets main menu layout
+	 * @param {Boolean} compact Indicates use of compact layout
+	 * @param {Boolean} collapse Collapse search-input and brand
+	 */
+	setMenuLayout: function(compact, collapse)
+	{
+		if(compact)
+		{
+			if(collapse)
+			{
+				$("#search").css("margin", 0);
+				$("#search-input").css("width", 100);
+				$("#brand").hide();
+				$("#search-dropdown .dropdown-menu").removeClass("dropdown-left");
+			}
+
+			$("#search-dropdown .dropdown-menu").addClass("dropdown-compact");
+			$("#jmol-dropdown .dropdown-menu, #protein-dropdown .dropdown-menu").addClass("dropdown-left");
+		}
+		else
+		{
+			$("#search").css("margin", "");
+			$("#search-input").css("width", "");
+			$("#brand").show();
+
+			$("#search-dropdown .dropdown-menu").addClass("dropdown-left").removeClass("dropdown-compact");
+			$("#jmol-dropdown .dropdown-menu, #protein-dropdown .dropdown-menu").removeClass("dropdown-left");
+		}
 	},
 
 	/**

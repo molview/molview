@@ -29,6 +29,8 @@ module.exports = function(grunt)
 					compress: { drop_console: true }
 				},
 				src: [
+					'src/js/Data.js',
+
 					'src/js/lib/JSmol.min.js',
 
 					//Misc
@@ -77,9 +79,12 @@ module.exports = function(grunt)
 					//Periodic Table
 					'src/js/lib/PeriodicTable.js',
 
+					//MolView data
+					'src/datasets/PDBNames.js',
+					'src/datasets/MineralNames.js',
+
 					//MolView source
 					'src/js/Utility.js',
-					'src/js/Data.js',
 					'src/js/History.js',
 					'src/js/Progress.js',
 					'src/js/Messages.js',
@@ -234,18 +239,6 @@ module.exports = function(grunt)
 					'src/less/active.less'
 				],
 				dest: 'build\/<%= pkg.name %>.touch.min.css'
-			},
-			mobile:
-			{
-				options:
-				{
-					compress: true,
-					cleancss: true
-				},
-				src: [
-					'src/less/mobile.less'
-				],
-				dest: 'build\/<%= pkg.name %>.mobile.min.css'
 			},
 			page:
 			{

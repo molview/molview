@@ -1,4 +1,4 @@
-{
+var PDBNames = {
 	"types": [
 		"Digestive Enzymes",
 		"Blood Plasma Proteins",

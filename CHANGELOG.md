@@ -45,6 +45,7 @@
 - Renamed protein to biomolecule
 - Moved metadata lookup to separate PHP file
 - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
+- Added COD MineralNames auto-update script
 
 ### Features
 
@@ -64,7 +65,6 @@
 - Added transparency to exported images
 - Added open in new tab support for search results
 - Added auto search results loading when scrolling to the bottom of the page
-+ Add local MOL, PDB or CIF file viewing support
 + Add *Don't show me again* option to Messages alerts
 + Add user preferences storage using HTML5 Web Storage
 - Added deuterium support to the Sketcher (without UI binding)
@@ -80,6 +80,8 @@
 - Added welcome dialog
 - Added dialog close buttons
 - Added CODID to COD advanced search results
+- Added responsive search results layout
+- Added support for devicePixelRatio > 1.0
 
 #### Analytics
 + Add user interaction tracker using analytics.js

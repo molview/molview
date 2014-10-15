@@ -18,37 +18,17 @@
 
 @import (reference) "vars";
 
-.search-results
+#search-layer
 {
 	margin: 0;
-	padding: 10px;
 	text-align: center;
 	background: @pubchem-pngbg;
 	overflow: auto;
 }
 
-.search-results > .container
+#search-layer > .container
 {
 	font-size: 0;
-}
-
-.search-result
-{
-	position: relative;
-	display: inline-block;
-	margin: 10px;
-
-	font-size: medium;
-	font-size: initial;
-	text-decoration: none;
-	color: @foreground;
-	background: @light;
-	border: 1px solid @contrast;
-}
-
-.search-result-notext
-{
-	cursor: pointer;
 }
 
 .load-more
@@ -86,19 +66,40 @@ Search output:
 
 .search-result
 {
-	width: 300px;
-	height: 350px;
+	position: relative;
+	display: block;
+	margin-bottom: 10px;
+	vertical-align: top;
+
+	font-size: medium;
+	font-size: initial;
+	text-decoration: none;
+	color: @foreground;
+	background: @light;
+	border-top: 1px solid @contrast;
+	border-bottom: 1px solid @contrast;
+}
+
+.search-result-pubchem
+{
+	cursor: pointer;
+	background: @pubchem-pngbg;
+}
+
+.search-result-codid
+{
+	line-height: 20px;
+	color: @foreground-light;
+	background: @light3;
 }
 
 .search-result-title
 {
 	cursor: pointer;
-	position: absolute;
-	padding: 10px 20px;
-	left: 0;
-	right: 0;
+	display: block;
 	height: 30px;
 	line-height: 30px;
+	padding: 10px 20px;
 
 	text-align: center;
 	text-decoration: none;
@@ -119,15 +120,14 @@ Search output:
 
 .search-result-description
 {
-	position: absolute;
-	top: 51px;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	padding: 10px;
 	font-size: 11pt;
 
 	word-wrap: break-word;
 	text-align: left;
+	background: @light2;
+	border-top: 1px solid @contrast;
+
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -140,6 +140,7 @@ Search output:
 .search-result-description > .expandable > .expandable-title
 {
 	border: 0;
+	border-bottom: 1px solid @contrast !important;
 }
 
 .search-result-description > p
@@ -149,30 +150,14 @@ Search output:
 
 .search-result-description-cod
 {
-	bottom: 20px;
-}
-
-.search-result-codid
-{
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	height: 20px;
-	line-height: 20px;
-	color: @foreground-light;
-	background: @light2;
-	border-top: 1px solid @contrast;
+	padding: 0;
+	background: @light;
 }
 
 .search-result-img-wrap
 {
-	position: absolute;
-	top: 50px;
-	left: 0;
-	bottom: 0;
-	width: 300px;
-
+	font-size: 0;
+	text-align: center;
 	background-image: url(../img/misc/spinner.svg);
 	background-repeat: no-repeat;
 	background-position: center;
@@ -180,24 +165,28 @@ Search output:
 
 .search-result-img
 {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	display: inline-block;
+	width: 300px;
+	height: 300px;
 
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: cover;
+	background-size: 300px;
 
 }
 
-.search-result-imgdesc
+@media all and (min-width: 680px)
 {
-	width: 620px;
-}
+	#search-layer
+	{
+		padding: 10px;
+	}
 
-.search-result-imgdesc > .search-result-description
-{
-	left: 300px;
+	.search-result
+	{
+		display: inline-block;
+		margin: 10px;
+		width: 300px;
+		border: 1px solid @contrast;
+	}
 }

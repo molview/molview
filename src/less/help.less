@@ -39,7 +39,9 @@
 .expandable-title
 {
 	cursor: pointer;
+	position: relative;
 	padding: 7px 15px;
+	padding-left: 45px;
 
 	font-weight: bold;
 
@@ -48,25 +50,27 @@
 	.no-select;
 }
 
-.expandable-title > span
+.expandable-title:before
 {
-	margin-right: 30px;
-}
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	padding: 0 12px;
 
-.expandable-title:after
-{
-	float: right;
-	padding: 2px;
-	font-family: FontAwesome;
+	line-height: 38px;
 	font-size: 14pt;
+	font-family: FontAwesome;
+	border-right: 1px solid @contrast;
 }
 
-.expandable-title:after
+.expandable-title:before
 {
 	content: '\f107';
 }
 
-.expandable.open > .expandable-title:after
+.expandable.open > .expandable-title:before
 {
 	content: '\f106';
 }

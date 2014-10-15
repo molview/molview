@@ -31,7 +31,9 @@ var CDWPlugin = {
 
 		if(Detector.webgl)
 		{
-			this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width(), $("#model").height());
+			var mult = MolView.mobile ? 1.5 : 1.5;
+			this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width() * Model.pixelMult, $("#model").height() * Model.pixelMult);
+			$("#chemdoodle-canvas").css({ width: $("#model").width(), height: $("#model").height() });
 			this.view.specs.macromolecules_ribbonCartoonize = this.view.specs.proteins_ribbonCartoonize = true;
 			this.view.specs.backgroundColor = Model.bg.html;
 			this.view.specs.crystals_unitCellColor = Model.fg.html;
@@ -52,7 +54,8 @@ var CDWPlugin = {
 		if(this.view && $("#chemdoodle").sizeChanged())
 		{
 			$("#chemdoodle").saveSize();
-			this.view.resize($("#model").width(), $("#model").height());
+			this.view.resize( $("#model").width() * Model.pixelMult, $("#model").height() * Model.pixelMult);
+			$("#chemdoodle-canvas").css({ width: $("#model").width(), height: $("#model").height() });
 			if(this.molecule !== undefined) this.view.loadMolecule(this.molecule);
 		}
 	},
