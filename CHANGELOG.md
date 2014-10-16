@@ -19,9 +19,10 @@
 - Removed COD text search
 - Revised COD search SQL logic
 - Merged all COD search data into one request
+- Removed MyMemory translation from PubChem, RCSB and COD search
 
 #### Functionality
-- Replaced Jmol render-mode menu with hq switch
+- Replaced Jmol render-mode menu with HQ switch
 - Removed auto layout-model onload crystals
 - Removed embed warning about slow, non-WebGL devices
 - Removed identifier search from Advanced search functions
@@ -36,7 +37,7 @@
 - Improved menu overflow scrolling
 - Added compact menu layout
 - Added canvas based Progress bar
-+ Add server-side device detection script for custom CSS using MobileDetect
+- Added server-side device detection using MobileDetect
 
 #### Refactoring
 - Revised CSS efficiency

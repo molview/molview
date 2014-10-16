@@ -18,6 +18,9 @@ rm Jmol.zip
 wget https://raw.githubusercontent.com/erusev/parsedown/master/Parsedown.php
 mv Parsedown.php php/Parsedown.php
 
+wget https://raw.githubusercontent.com/serbanghita/Mobile-Detect/master/Mobile_Detect.php
+mv Mobile_Detect.php php/Mobile_Detect.php
+
 wget http://code.jquery.com/jquery-1.11.1.min.js
 mv jquery-1.11.1.min.js src/js/lib/jquery.min.js
 

@@ -341,28 +341,23 @@ var Request = {
 				return;
 			}
 
-			Request.translation(text, function(translated)
-			{
-				Progress.increment();
+			Progress.increment();
 
-				text = translated;
-
-				if(xhr !== undefined) xhr.abort();
-				xhr = AJAX({
-					dataType: "json",
-					url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + encodeURIComponent(text) + "/cids/json?name_type=word",
-					success: function(data)
-					{
-						Progress.increment();
-						Request.PubChem.data = data.IdentifierList.CID.reverse();
-						success();
-					},
-					error: function(jqXHR, textStatus)
-					{
-						if(textStatus != "error") return;
-						if(error) error();
-					}
-				});
+			if(xhr !== undefined) xhr.abort();
+			xhr = AJAX({
+				dataType: "json",
+				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + encodeURIComponent(text) + "/cids/json?name_type=word",
+				success: function(data)
+				{
+					Progress.increment();
+					Request.PubChem.data = data.IdentifierList.CID.reverse();
+					success();
+				},
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
 			});
 		},
 
@@ -605,41 +600,37 @@ var Request = {
 				return;
 			}
 
-			Request.translation(text, function(translated)
-			{
-				Progress.increment();
+			Progress.increment();
 
-				text = translated;
-				text = text.replace(/\s/g, "|");
+			text = text.replace(/\s/g, "|");
 
-				if(xhr !== undefined) xhr.abort();
-				xhr = AJAX({
-					type: "POST",
-					data: "<orgPdbQuery>\
+			if(xhr !== undefined) xhr.abort();
+			xhr = AJAX({
+				type: "POST",
+				data: "<orgPdbQuery>\
 <queryType>org.pdb.query.simple.AdvancedKeywordQuery</queryType>\
 <description>Text search for: " + text + "(molview.org)</description>\
 <keywords>" + text + "</keywords>\
 </orgPdbQuery>",
-					contentType: "application/x-www-form-urlencoded",
-					dataType: "text",
-					url: "http://www.rcsb.org/pdb/rest/search?sortfield=rank",
-					success: function(data)
-					{
-						Progress.increment();
+				contentType: "application/x-www-form-urlencoded",
+				dataType: "text",
+				url: "http://www.rcsb.org/pdb/rest/search?sortfield=rank",
+				success: function(data)
+				{
+					Progress.increment();
 
-						Request.RCSB.data = data.split(/\n/);
-						Request.RCSB.data = Request.RCSB.data.filter(function(a){ return a !== ""; });
-						Request.RCSB.data.reverse();
+					Request.RCSB.data = data.split(/\n/);
+					Request.RCSB.data = Request.RCSB.data.filter(function(a){ return a !== ""; });
+					Request.RCSB.data.reverse();
 
-						if(Request.RCSB.data.length > 0) success();
-						else if(error) error();
-					},
-					error: function(jqXHR, textStatus)
-					{
-						if(textStatus != "error") return;
-						if(error) error();
-					}
-				});
+					if(Request.RCSB.data.length > 0) success();
+					else if(error) error();
+				},
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
 			});
 		},
 
@@ -750,36 +741,31 @@ var Request = {
 				return;
 			}
 
-			Request.translation(text, function(translated)
-			{
-				Progress.increment();
+			Progress.increment();
 
-				text = translated;
-
-				if(xhr !== undefined) xhr.abort();
-				xhr = AJAX({
-					dataType: "json",
-					url: "php/cod.php?type=search&q=" + encodeURIComponent(text),
-					success: function(data)
+			if(xhr !== undefined) xhr.abort();
+			xhr = AJAX({
+				dataType: "json",
+				url: "php/cod.php?type=search&q=" + encodeURIComponent(text),
+				success: function(data)
+				{
+					Progress.increment();
+					if(data.error)
 					{
-						Progress.increment();
-						if(data.error)
-						{
-							if(error) error(true);
-						}
-						else if(data.records && data.records.length > 0)
-						{
-							Request.COD.data = data.records;
-							success();
-						}
-						else if(error) error(false);
-					},
-					error: function(jqXHR, textStatus)
-					{
-						if(textStatus != "error") return;
 						if(error) error(true);
 					}
-				});
+					else if(data.records && data.records.length > 0)
+					{
+						Request.COD.data = data.records;
+						success();
+					}
+					else if(error) error(false);
+				},
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error(true);
+				}
 			});
 		},
 

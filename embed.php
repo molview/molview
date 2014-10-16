@@ -2,6 +2,9 @@
 include("php/utility.php");
 error_reporting(0);
 
+$detect = new Mobile_Detect;
+$touch = $detect -> isMobile() || $detect -> isTablet();
+
 if(is_below_IE10())
 {
 	header('Location: internetExplorer');
@@ -68,27 +71,27 @@ Query parameters:
 		<!-- JS -->
 		<script type="text/javascript" src="build/molview.embed.min.js"></script>
 
+		<!-- PHP data injection -->
 		<script type="text/javascript">
+			MolView.touch = <?php echo ($touch) ? "true" : "false"; ?>;
+			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
+			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
+
+			Request.ChemicalIdentifierResolver.available = true;
+			Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
+			Request.HTTP_CLIENT_IP = <?php
+			echo '"';
+			if(isset($_SERVER["HTTP_CLIENT_IP"]))
+				echo $_SERVER["HTTP_CLIENT_IP"];
+			else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
+				echo $_SERVER["HTTP_X_FORWARDED_FOR"];
+			else echo $_SERVER["REMOTE_ADDR"];
+			echo '"';
+			?>;
+
 			if(!Detector.canvas)
 			{
 				window.location = window.location.origin + window.location.pathname + "htmlCanvas";
-			}
-			else
-			{
-				MolView.touch = isTouchDevice();
-				MolView.mobile = isMobile();
-
-				Request.ChemicalIdentifierResolver.available = true;
-				Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
-				Request.HTTP_CLIENT_IP = <?php
-				echo '"';
-				if(isset($_SERVER["HTTP_CLIENT_IP"]))
-					echo $_SERVER["HTTP_CLIENT_IP"];
-				else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-					echo $_SERVER["HTTP_X_FORWARDED_FOR"];
-				else echo $_SERVER["REMOTE_ADDR"];
-				echo '"';
-				?>;
 			}
 		</script>
 

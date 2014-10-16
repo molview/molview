@@ -1,7 +1,12 @@
 <?php
 include("php/utility.php");
 include("php/load.php");
+include("php/Mobile_Detect.php");
+
 error_reporting(0);
+
+$detect = new Mobile_Detect;
+$touch = $detect -> isMobile() || $detect -> isTablet();
 
 if(is_below_IE10())
 {
@@ -115,6 +120,17 @@ Query parameters:
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
 
+		<?php
+			if($touch)
+			{
+				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />';
+			}
+			else
+			{
+				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />';
+			}
+		?>
+
 		<!-- JS -->
 		<script type="text/javascript" src="src/js/Data.js"></script>
 		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
@@ -174,24 +190,27 @@ Query parameters:
 
 		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
 
-		<!-- Dynamic CSS -->
+		<!-- PHP data injection -->
 		<script type="text/javascript">
+			MolView.touch = <?php echo ($touch) ? "true" : "false"; ?>;
+			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
+			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
+
+			Request.ChemicalIdentifierResolver.available = true;
+			Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
+			Request.HTTP_CLIENT_IP = <?php
+			echo '"';
+			if(isset($_SERVER["HTTP_CLIENT_IP"]))
+				echo $_SERVER["HTTP_CLIENT_IP"];
+			else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
+				echo $_SERVER["HTTP_X_FORWARDED_FOR"];
+			else echo $_SERVER["REMOTE_ADDR"];
+			echo '"';
+			?>;
+
 			if(!Detector.canvas)
 			{
 				window.location = window.location.origin + window.location.pathname + "htmlCanvas";
-			}
-			else
-			{
-				MolView.touch = isTouchDevice();
-				MolView.mobile = isMobile();
-				if(MolView.touch)
-				{
-					document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />');
-				}
-				else
-				{
-					document.write('<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />');
-				}
 			}
 		</script>
 
@@ -241,8 +260,8 @@ Query parameters:
 								<a id="window-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
 							<li class="menu-header">Theme</li>
-							<li class="menu-item"><a id="theme-desktop">Desktop</a></li>
-							<li class="menu-item"><a id="theme-touch">Touch</a></li>
+							<li class="menu-item"><a id="theme-desktop" <?php if(!$touch) echo 'class="checked"'; ?>>Desktop</a></li>
+							<li class="menu-item"><a id="theme-touch" <?php if($touch) echo 'class="checked"'; ?>>Touch</a></li>
 							<li class="menu-header">Information</li>
 							<li class="menu-item"><a id="mv-help">Help</a></li>
 							<li class="menu-item"><a id="mv-about">About</a></li>
@@ -335,20 +354,8 @@ Query parameters:
 		</div>
 		<div id="content">
 			<div id="main-layer" <?php echo 'class="layer '.$contentClass.'"' ?>>
+				<!-- Dynamic onload layout -->
 				<script type="text/javascript">
-					Request.ChemicalIdentifierResolver.available = true;
-					Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
-					Request.HTTP_CLIENT_IP = <?php
-					echo '"';
-					if(isset($_SERVER["HTTP_CLIENT_IP"]))
-						echo $_SERVER["HTTP_CLIENT_IP"];
-					else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-						echo $_SERVER["HTTP_X_FORWARDED_FOR"];
-					else echo $_SERVER["REMOTE_ADDR"];
-					echo '"';
-					?>;
-
-					MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 					MolView.query = getQuery();
 
 					if($(window).height() > $(window).width()
@@ -363,9 +370,6 @@ Query parameters:
 					{
 						$("#search-input").css("width", $(window).width() - 80);
 					}
-
-					if(MolView.touch) $("#theme-touch").addClass("checked");
-					else $("#theme-desktop").addClass("checked");
 				</script>
 				<div id="sketcher">
 					<div id="moledit" class="sketcher">

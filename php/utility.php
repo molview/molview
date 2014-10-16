@@ -19,7 +19,7 @@
 
 function is_below_IE10()
 {
-	return preg_match('/(?i)msie [0-9]/',$_SERVER['HTTP_USER_AGENT']);
+	return preg_match('/(?i)msie [0-9]/', $_SERVER['HTTP_USER_AGENT']);
 }
 
 function humanize($str)
