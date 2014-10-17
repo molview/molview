@@ -60,7 +60,8 @@ Below are all test instructions you have to pass before commiting changes
 
 ### Unstable build
 1. Successfully run the build script
-2. Verify for chances mentioned in CHANGELOG.md:
+2. Check if `/embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw` still works as expected
+3. Verify for chances mentioned in CHANGELOG.md:
     1. Expected behaviour in Chrome and Firefox
     2. Expected layout and design on desktops (test Chrome and Firefox) and touch devices
 

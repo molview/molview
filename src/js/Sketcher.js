@@ -30,6 +30,14 @@ var Sketcher = {
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
+		$("#hstrip").on(MolView.trigger, function()
+		{
+			if($(this).toggleClass("tool-button-selected").hasClass("tool-button-selected"))
+			{
+				Sketcher.moledit.removeImplicitHydrogen();
+			}
+		});
+
 		if(Detector.canvas)
 		{
 			this.moledit = new ChemicalView(document.getElementById("moledit-area"), document.getElementById("moledit-canvas"), MolView.devicePixelRatio);
@@ -132,7 +140,11 @@ var Sketcher = {
 		if(this.moledit)
 		{
 			this.moledit.loadMOL(mol);
-			this.moledit.removeImplicitHydrogen();
+
+			if($("#hstrip").hasClass("tool-button-selected"))
+			{
+				this.moledit.removeImplicitHydrogen();
+			}
 		}
 	},
 

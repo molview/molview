@@ -140,6 +140,13 @@ Copyright (c) 2013 Emanuil Rusev, erusev.com
 ```
 See: https://github.com/erusev/parsedown
 
+## MobileDetect
+```
+Code and contributions have 'MIT License'
+More details: https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
+```
+See: https://github.com/serbanghita/Mobile-Detect/
+
 ## FileSaver.js and Blob.js
 ```
 Copyright (c) 2014 [Eli Grey](http://eligrey.com)

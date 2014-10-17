@@ -40,7 +40,7 @@ var Loader = {
 			Messages.clear();
 		}, function()
 		{
-			Messages.alert("search_fail");
+			Messages.alert("load_fail");
 		});
 	},
 

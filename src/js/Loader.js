@@ -64,7 +64,7 @@ var Loader = {
 			Loader.setQuery("q", text);
 		}, function()
 		{
-			Messages.alert("search_fail");
+			Messages.alert("load_fail");
 		});
 	},
 

@@ -66,10 +66,10 @@
 - Added transparency to exported images
 - Added open in new tab support for search results
 - Added auto search results loading when scrolling to the bottom of the page
-+ Add *Don't show me again* option to Messages alerts
-+ Add user preferences storage using HTML5 Web Storage
++ Add Preferences interface using HTML5 Web Storage
++ Add "Don't show again" hide option to Messages alerts
 - Added deuterium support to the Sketcher (without UI binding)
-+ Add hydrogen stripping switch to Sketcher
+- Added implicit hydrogen stripping switch to Sketcher
 - Added 3D model source reference to Tool menu
 - Added NIST Chemistry WebBook page reference
 - Added percent composition table to Information card

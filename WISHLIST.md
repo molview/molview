@@ -10,6 +10,7 @@ Wishlist
 - Create interactive macromolecule exploration mode
 
 - Add touch menu drawer
+- Add Preferences to Model and Sketcher
 - Add functional groups support in Sketcher
 - Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
 - Add MolView home website (pages: features, about, manual, changelog, license, feedback)

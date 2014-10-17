@@ -407,7 +407,8 @@ Query parameters:
 								<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
 								<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
 								<div class="horizontal-separator"></div>
-								<div id="me-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
+								<div id="hstrip" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Toggle hydrogen stripping"></div>
+								<div id="clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
 								<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
 							</div>
 						</div>
@@ -425,7 +426,7 @@ Query parameters:
 								<div id="me-atom-br" class="tool-button mode" title="Bromine">Br</div>
 								<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
 								<div class="vertical-separator"></div>
-								<div id="me-info" class="tool-button" title="Information"></div>
+								<div id="info" class="tool-button" title="Information"></div>
 							</div>
 						</div>
 						<div id="moledit-area" class="edit-area">
@@ -630,9 +631,9 @@ Query parameters:
 							<div class="expandable-content">
 								<p>You can draw structural formulas using the Sketcher component.</p>
 								<h4>Top toolbar</h4>
-								<p>The top toolbar contains all general editing tools. The <i>2D to 3D</i> tool converts the structural formula into a 3D molecule which is displayed in the model window.</p>
+								<p>The top toolbar contains all general editing tools. The 2D to 3D tool converts the structural formula into a 3D molecule which is displayed in the model window. If you don't want that implicit hydrogen atoms are stripped from the structural formula after loading, you have to toggle the hydrogen stripping button off (third from right)</p>
 								<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.png" alt="Top toolbar" /></p>
-								<p class="image-note"><i>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, clean structural formula, 2D to 3D conversion</i></p>
+								<p class="image-note"><i>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, toggle hydrogen stripping, clean structural formula, 2D to 3D conversion</i></p>
 								<h4>Left toolbar</h4>
 								<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. You can draw a carbon chain using the chain tool. Just click a start point or atom and drag a chain.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.png" alt="Left toolbar" /></p>

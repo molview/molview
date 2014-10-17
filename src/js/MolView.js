@@ -257,9 +257,9 @@ var MolView = {
 		$("#load-more-rcsb").on(this.trigger, Actions.load_more_rcsb);
 		$("#load-more-cod").on(this.trigger, Actions.load_more_cod);
 
-		$("#me-clean").on(this.trigger, Actions.clean);
+		$("#clean").on(this.trigger, Actions.clean);
 		$("#resolve").on(this.trigger, Actions.resolve);
-		$("#me-info").on(this.trigger, Actions.about);
+		$("#info").on(this.trigger, Actions.about);
 
 		$("#start-help").on(this.trigger, Actions.help);
 

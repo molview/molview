@@ -1,5 +1,7 @@
 <?php
 include("php/utility.php");
+include("php/Mobile_Detect.php");
+
 error_reporting(0);
 
 $detect = new Mobile_Detect;

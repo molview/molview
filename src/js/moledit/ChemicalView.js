@@ -523,13 +523,16 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 		}
 	}
 
-	this.undoPush();
+	if(implicit_h.length > 0)
+	{
+		this.undoPush();
 
-	this.chem.removeAtoms(implicit_h);
+		this.chem.removeAtoms(implicit_h);
 
-	this.h_bond = this.h_atom = -1;
-	this.updateZoom = true;
-	this.drawMol();
+		this.h_bond = this.h_atom = -1;
+		this.updateZoom = true;
+		this.drawMol();
+	}
 }
 
 ChemicalView.prototype.removeAllHydrogen = function()
@@ -544,13 +547,16 @@ ChemicalView.prototype.removeAllHydrogen = function()
 		}
 	}
 
-	this.undoPush();
+	if(hydrogen.length > 0)
+	{
+		this.undoPush();
 
-	this.chem.removeAtoms(hydrogen);
+		this.chem.removeAtoms(hydrogen);
 
-	this.h_bond = this.h_atom = -1;
-	this.updateZoom = true;
-	this.drawMol();
+		this.h_bond = this.h_atom = -1;
+		this.updateZoom = true;
+		this.drawMol();
+	}
 }
 
 ChemicalView.prototype.deselectAll = function()
