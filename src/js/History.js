@@ -22,6 +22,9 @@
  * @type {Object}
  */
 var History = {
+	/**
+	 * Initialize History API
+	 */
 	init: function()
 	{
 		window.addEventListener('popstate', function(event)
@@ -36,7 +39,14 @@ var History = {
 		});
 	},
 
-	push: function(id, value)
+	/**
+	 * Push new URL into web History
+	 * This URL only contains one parameter
+	 * @param  {String}  key          Parameter key
+	 * @param  {String}  value        Parameter value
+	 * @param  {Boolean} forceReplace Force usage of replaceState
+	 */
+	push: function(id, value, forceReplace)
 	{
 		value = "" + value;
 		MolView.query = {};
@@ -46,7 +56,7 @@ var History = {
 		if(history && history.replaceState && history.pushState &&
 				location.search.indexOf(query) == -1)
 		{
-			if(location.search == "")
+			if(location.search == "" || forceReplace)
 			{
 				history.replaceState(null, document.title, "?" + query);
 			}

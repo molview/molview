@@ -23,7 +23,7 @@
 var Loader = {
 	CIRsearch: function()
 	{
-		if(!Request.ChemicalIdentifierResolver.available)
+		if(!Request.CIR.available)
 		{
 			Messages.alert("cir_down");
 			return;
@@ -76,7 +76,7 @@ var Loader = {
 					{
 						Progress.increment();
 
-						Request.ChemicalIdentifierResolver.resolve3d(data.PropertyTable.Properties[0].IsomericSMILES,
+						Request.CIR.resolve(data.PropertyTable.Properties[0].IsomericSMILES, false,
 						function(mol3d)
 						{
 							Model.loadMOL(mol3d);
@@ -191,7 +191,7 @@ var Loader = {
 
 	loadSMILES: function(smiles)
 	{
-		if(!Request.ChemicalIdentifierResolver.available)
+		if(!Request.CIR.available)
 		{
 			Messages.alert("cir_down");
 			return;
@@ -201,7 +201,7 @@ var Loader = {
 
 		document.title = "MolView";
 
-		Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol)
+		Request.resolve(smiles, 0, false, function(mol, cid)
 		{
 			Model.loadMOL(mol);
 			Progress.complete();

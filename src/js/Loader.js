@@ -23,17 +23,27 @@
  * @type {Object}
  */
 var Loader = {
+	/**
+	 * Last queried chemical identifier
+	 * @type {Object}
+	 */
 	lastQuery: {
 		type: "",//q || cid || pdbid || codid || smiles
 		content: ""
 	},
 
-	setQuery: function(type, content)
+	/**
+	 * Set last queried chemical identifier
+	 * @param {String}  type         q || cid || pdbid || codid || smiles
+	 * @param {String}  content      Content string for type
+	 * @param {Boolean} forceReplace Indicates if History should use replaceState
+	 */
+	setQuery: function(type, content, forceReplace)
 	{
 		content = String(content);
 		this.lastQuery.type = type;
 		this.lastQuery.content = content;
-		History.push(type, content);
+		History.push(type, content, forceReplace);
 
 		$("#data-3d-source").removeClass("disabled");
 		if(type == "q" || type == "smiles") $("#data-3d-source").removeAttr().addClass("disabled");
@@ -42,9 +52,12 @@ var Loader = {
 		else if(type == "codid") $("#data-3d-source").attr("href", Request.COD.staticURL(content));
 	},
 
+	/**
+	 * Resolve structure identifier from the #search-input using the CIR
+	 */
 	CIRsearch: function()
 	{
-		if(!Request.ChemicalIdentifierResolver.available)
+		if(!Request.CIR.available)
 		{
 			Messages.alert("cir_func_down");
 			return;
@@ -261,7 +274,7 @@ var Loader = {
 
 					Progress.increment();
 
-					Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol3d)
+					Request.CIR.resolve(smiles, false, function(mol3d)
 					{
 						Model.loadMOL(mol3d);
 						Sketcher.markUpdated();
@@ -513,7 +526,7 @@ var Loader = {
 					}
 					else
 					{
-						Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
+						Request.CIR.resolve(data.records[0].smiles, true,
 						function(mol2d)
 						{
 							cb(mol2d, data.records[0].smiles);
@@ -644,15 +657,7 @@ var Loader = {
 	 */
 	clean: function()
 	{
-		if(!Request.ChemicalIdentifierResolver.available)
-		{
-			Messages.alert("cir_func_down");
-			return;
-		}
-
-		var updated = $("#resolve").hasClass("resolve-updated");
-
-		Progress.reset(1);
+		Progress.reset(4);
 
 		var smiles;
 		try
@@ -665,17 +670,17 @@ var Loader = {
 			return;
 		}
 
-		Request.ChemicalIdentifierResolver.resolve2d(smiles, function(mol)
+		Request.resolve(smiles, 0, true, function(mol, cid)
 		{
 			Sketcher.loadMOL(mol);
-			if(updated) Sketcher.markUpdated();
+			Sketcher.markUpdated();
 
 			Progress.complete();
 			Messages.clear();
 		},
 		function()
 		{
-			Messages.alert("remote_noreach");
+			Messages.alert("load_fail");
 		});
 	},
 
@@ -684,13 +689,7 @@ var Loader = {
 	 */
 	resolve: function()
 	{
-		if(!Request.ChemicalIdentifierResolver.available)
-		{
-			Messages.alert("cir_func_down");
-			return;
-		}
-
-		Progress.reset(1);
+		Progress.reset(4);
 
 		var smiles;
 		try
@@ -703,21 +702,29 @@ var Loader = {
 			return;
 		}
 
-		Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol)
+		Request.resolve(smiles, 0, false, function(mol, cid)
 		{
 			Model.loadMOL(mol);
 			Sketcher.markUpdated();
 
-			document.title = "MolView";
+			if(cid > 0)
+			{
+				Sketcher.metadata.cid = cid;
+				Loader.setQuery("cid", cid, true);
+			}
+			else
+			{
+				Loader.setQuery("smiles", smiles);
+			}
 
 			Progress.complete();
 			Messages.clear();
 
-			Loader.setQuery("smiles", smiles);
+			document.title = "MolView";
 		},
 		function()
 		{
-			Messages.alert("remote_noreach");
+			Messages.alert("load_fail");
 		});
 	},
 
@@ -728,28 +735,30 @@ var Loader = {
 	 */
 	loadSMILES: function(smiles, title)
 	{
-		if(!Request.ChemicalIdentifierResolver.available)
-		{
-			Messages.alert("cir_func_down");
-			return;
-		}
-
-		Progress.reset(2);
+		Progress.reset(4);
 
 		document.title = title || "MolView";
 
-		Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol3d)
+		Request.resolve(smiles, 0, false, function(mol3d, cid)
 		{
 			Progress.increment();
 
 			Model.loadMOL(mol3d);
 
-			Request.ChemicalIdentifierResolver.resolve2d(smiles, function(mol2d)
+			Request.resolve(smiles, cid, true, function(mol2d, cid)
 			{
 				Sketcher.loadMOL(mol2d);
 				Sketcher.markUpdated();
 
-				Loader.setQuery("smiles", smiles);
+				if(cid > 0)
+				{
+					Sketcher.metadata.cid = cid;
+					Loader.setQuery("cid", cid, true);
+				}
+				else
+				{
+					Loader.setQuery("smiles", smiles);
+				}
 
 				Progress.complete();
 				Messages.clear();

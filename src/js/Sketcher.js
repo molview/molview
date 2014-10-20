@@ -42,7 +42,7 @@ var Sketcher = {
 		{
 			if($(this).toggleClass("tool-button-selected").hasClass("tool-button-selected"))
 			{
-				Sketcher.moledit.removeImplicitHydrogen();
+				Sketcher.moledit.removeImplicitHydrogen(true);
 			}
 
 			Preferences.set("sketcher", "hstrip", $(this).hasClass("tool-button-selected"))

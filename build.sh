@@ -2,36 +2,41 @@
 
 # Build entire MolView project
 
-# Download and unzip JSmol
-wget http://chemapps.stolaf.edu/jmol/zip/Jmol.zip
-unzip Jmol.zip jsmol.zip jsmol.zip
-unzip jsmol.zip
-mv jsmol/JSmol.min.js src/js/lib/JSmol.min.js
-rm -r jmol
-mkdir jmol
-mv jsmol/j2s jmol/j2s
-rm -r jsmol
-rm -r jsmol.zip
-rm Jmol.zip
+if [[ $1 == "fetch" ]]
+	then
 
-# Download some third party code
-wget https://raw.githubusercontent.com/erusev/parsedown/master/Parsedown.php
-mv Parsedown.php php/Parsedown.php
+	# Download and unzip JSmol
+	wget http://chemapps.stolaf.edu/jmol/zip/Jmol.zip
+	unzip Jmol.zip jsmol.zip jsmol.zip
+	unzip jsmol.zip
+	mv jsmol/JSmol.min.js src/js/lib/JSmol.min.js
+	rm -r jmol
+	mkdir jmol
+	mv jsmol/j2s jmol/j2s
+	rm -r jsmol
+	rm -r jsmol.zip
+	rm Jmol.zip
 
-wget https://raw.githubusercontent.com/serbanghita/Mobile-Detect/master/Mobile_Detect.php
-mv Mobile_Detect.php php/Mobile_Detect.php
+	# Download some third party code
+	wget https://raw.githubusercontent.com/erusev/parsedown/master/Parsedown.php
+	mv Parsedown.php php/Parsedown.php
 
-wget http://code.jquery.com/jquery-1.11.1.min.js
-mv jquery-1.11.1.min.js src/js/lib/jquery.min.js
+	wget https://raw.githubusercontent.com/serbanghita/Mobile-Detect/master/Mobile_Detect.php
+	mv Mobile_Detect.php php/Mobile_Detect.php
 
-wget https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js
-mv jquery.hotkeys.js src/js/lib/jquery.hotkeys.js
+	wget http://code.jquery.com/jquery-1.11.1.min.js
+	mv jquery-1.11.1.min.js src/js/lib/jquery.min.js
 
-wget https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js
-mv FileSaver.js src/js/lib/FileSaver.js
+	wget https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js
+	mv jquery.hotkeys.js src/js/lib/jquery.hotkeys.js
 
-wget https://raw.githubusercontent.com/eligrey/Blob.js/master/Blob.js
-mv Blob.js src/js/lib/Blob.js
+	wget https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js
+	mv FileSaver.js src/js/lib/FileSaver.js
+
+	wget https://raw.githubusercontent.com/eligrey/Blob.js/master/Blob.js
+	mv Blob.js src/js/lib/Blob.js
+
+fi
 
 # Install node modules and run grunt
 npm install

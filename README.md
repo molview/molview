@@ -52,7 +52,7 @@ Instructions:
 
 1. Copy all files to a server with PHP and .htaccess support
 2. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
-3. Run `./build.sh`
+3. Run `./build.sh fetch`
 
 Test
 ----
@@ -60,7 +60,11 @@ Below are all test instructions you have to pass before commiting changes
 
 ### Unstable build
 1. Successfully run the build script
-2. Check if `/embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw` still works as expected
+2. Check if the following relative URLs are still working as expected:
+    1. `/embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw&bg=white`
+    2. `/embed?smiles=O=C([C@@]([H])1C=C2C3C=CC=C4C=3C(=CN4[H])C[C@@]2([H])N(C)C1)N(CC)CC`
+    3. `/embed?cid=5761&mode=wireframe`
+    4. `/embed?codid=5000115&mode=stick`
 3. Verify for chances mentioned in CHANGELOG.md:
     1. Expected behaviour in Chrome and Firefox
     2. Expected layout and design on desktops (test Chrome and Firefox) and touch devices

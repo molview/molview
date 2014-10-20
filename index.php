@@ -197,7 +197,7 @@ Query parameters:
 			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
 			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 
-			Request.ChemicalIdentifierResolver.available = true;
+			Request.CIR.available = true;
 			Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
 			Request.HTTP_CLIENT_IP = <?php
 			echo '"';
@@ -569,8 +569,13 @@ Query parameters:
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 						</div>
-						<p id="donate-msg">We believe MolView should be accessible for free for everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it free!<br/>This way we can continue to add more awesome features to MolView.</p>
-						<a class="btn" title="Support MolView!" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=88QDZTWLV9GXG">Donate</a>
+						<p id="donate-msg">We believe MolView should be accessible for free for everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it free! This way we can continue to add more awesome features to MolView.</p>
+						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+							<input type="hidden" name="cmd" value="_s-xclick" />
+							<input type="hidden" name="hosted_button_id" value="88QDZTWLV9GXG" />
+							<input id="donate-btn" type="submit" value="Donate" name="submit" title="PayPal - The safer, easier way to pay online!" />
+							<img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1" />
+						</form>
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>

@@ -381,12 +381,11 @@ MolEdit.prototype.toolButtonClicked = function(button)
 	}
 }
 
-MolEdit.prototype.changed = function(not_changed)
+MolEdit.prototype.changed = function()
 {
 	this.isChanged = true;
 
-	if(this.onChanged !== undefined && !not_changed)
-		this.onChanged();
+	if(this.onChanged !== undefined) this.onChanged();
 
 	if(this.undoStack.length > 0)
 		 jQuery("#me-undo").removeClass("tool-button-disabled");
@@ -402,10 +401,16 @@ MolEdit.prototype.isEmpty = function()
 	return this.chem.atoms.length == 0;
 }
 
-MolEdit.prototype.undoPush = function(not_changed)
+MolEdit.prototype.undoPush = function()
 {
 	this.undoStack.push(clone_object(this.chem));
-	this.changed(not_changed);
+	this.changed();
+}
+
+MolEdit.prototype.undoReplace = function()
+{
+	this.undoStack[this.undoStack.length - 1] = clone_object(this.chem);
+	this.changed();
 }
 
 MolEdit.prototype.loadMOL = function(mol)
@@ -465,7 +470,7 @@ MolEdit.prototype.redo = function()
 	}
 }
 
-MolEdit.prototype.removeImplicitHydrogen = function()
+MolEdit.prototype.removeImplicitHydrogen = function(addUndoEntry)
 {
 	var implicit_h = [];
 
@@ -523,7 +528,10 @@ MolEdit.prototype.removeImplicitHydrogen = function()
 
 	if(implicit_h.length > 0)
 	{
-		this.undoPush();
+		if(addUndoEntry)
+		{
+			this.undoPush();
+		}
 
 		this.chem.removeAtoms(implicit_h);
 

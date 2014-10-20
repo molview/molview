@@ -103,6 +103,8 @@ var Request = {
 
 	/**
 	 * Retrieve 2D and 3D molfile using a text string (CIR identifier)
+	 * Max calls to Progress.increment: 3
+	 *
 	 * @param {String}   text    Input text string
 	 * @param {Function} success Called as (2D, 3D, tranlated_text) when AJAX is finished
 	 * @param {Function} error   Called when request has failed
@@ -116,10 +118,10 @@ var Request = {
 		}
 
 		//try CIR
-		Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
+		Request.CIR.resolve(text, false, function(mol3d)
 		{
 			Progress.increment();
-			Request.ChemicalIdentifierResolver.search(text, true, function(mol2d)
+			Request.CIR.resolve(text, true, function(mol2d)
 			{
 				success(mol2d, mol3d, text);
 			}, error);
@@ -137,11 +139,11 @@ var Request = {
 				text = translated;
 
 				//try CIR with translated input
-				Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
+				Request.CIR.resolve(text, false, function(mol3d)
 				{
 					Progress.increment();
 
-					Request.ChemicalIdentifierResolver.search(text, true, function(mol2d)
+					Request.CIR.resolve(text, true, function(mol2d)
 					{
 						success(mol2d, mol3d, text);
 					}, error);
@@ -152,11 +154,13 @@ var Request = {
 	},
 
 	/**
-	* Retrieve 3D molfile using a text string (CIR identifier)
-	* @param {String}   text    Input text string
-	* @param {Function} success Called as (3D, tranlated_text) when AJAX is finished
-	* @param {Function} error   Called when request has failed
-	*/
+	 * Retrieve 3D molfile using a text string (CIR identifier)
+	 * Max calls to Progress.increment: 2
+	 *
+	 * @param {String}   text    Input text string
+	 * @param {Function} success Called as (3D, tranlated_text) when AJAX is finished
+	 * @param {Function} error   Called when request has failed
+	 */
 	CIRsearch3D: function(text, success, error)
 	{
 		if(text === "")
@@ -166,7 +170,7 @@ var Request = {
 		}
 
 		//try CIR
-		Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
+		Request.CIR.resolve(text, false, function(mol3d)
 		{
 			Progress.increment();
 			success(mol3d, text);
@@ -184,9 +188,8 @@ var Request = {
 				text = translated;
 
 				//try CIR with translated input
-				Request.ChemicalIdentifierResolver.search(text, false, function(mol3d)
+				Request.CIR.resolve(text, false, function(mol3d)
 				{
-					Progress.increment();
 					success(mol3d, text);
 				}, error);
 			});
@@ -194,18 +197,80 @@ var Request = {
 		}, error);
 	},
 
-	ChemicalIdentifierResolver:
+	/**
+	 * Retrieve 2D or 3D molfile using a SMILES or CID input
+	 * Tries PubChem first and then the Chemical Identifier Resolver
+	 * Max calls to Progress.increment: 3
+	 * Max calls to Progress.increment if CID > 0: 1
+	 * Max calls to Progress.increment if CID = -1: 0
+	 *
+	 * @param  {[type]} smiles  Input SMILES
+	 * @param  {[type]} cid     Input CID (-1 = no CID available, 0 = CID unknown, > 0 = CID)
+	 * @param  {[type]} flat    Indicates if a flat (2D) or a 3D molfile should be retrieved
+	 * @param  {[type]} success Called as (molfile, cid || -1) on success
+	 * @param  {[type]} error   Called when request has failed
+	 */
+	resolve: function(smiles, cid, flat, success, error)
+	{
+		function _resolve(cid)
+		{
+			if(cid > 0)
+			{
+				Request.PubChem.sdf(cid, flat, function(mol)
+				{
+					success(mol, cid);
+				},
+				function()//no coordinates for given CID
+				{
+					Progress.increment();
+					Request.CIR.resolve(smiles, flat, function(mol)
+					{
+						//do not pass CID if no 2D coords for this CID
+						success(mol, flat ? -1 : cid);
+					}, error);
+				});
+			}
+			else
+			{
+				Request.CIR.resolve(smiles, flat, function(mol)
+				{
+					success(mol, -1);
+				}, error);
+			}
+		}
+
+		if(cid == 0)
+		{
+			Request.PubChem.smilesToCID(smiles, function(cid)
+			{
+				Progress.increment();
+				_resolve(cid);
+			},
+			function()//no CID for the given SMILES
+			{
+				Progress.increment();
+				_resolve(-1);
+			});
+		}
+		else
+		{
+			_resolve(cid);
+		}
+	},
+
+	CIR:
 	{
 		available: false,
 
-		search: function(text, flat, success, error)
+		resolve: function(text, flat, success, error)
 		{
-			if(!Request.ChemicalIdentifierResolver.available)
+			if(!Request.CIR.available)
 			{
 				error();
 				return;
 			}
 
+			text = text.replace(/#/g, "%23").replace(/\\/g, "%5C");
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "text",
@@ -213,60 +278,6 @@ var Request = {
 				success: function(response)
 				{
 					if(response == "<h1>Page not found (404)</h1>\n" || response === undefined) error();
-					else success(response);
-				},
-				error: function(jqXHR, textStatus)
-				{
-					if(textStatus != "error") return;
-					if(error) error();
-				}
-			});
-		},
-
-		resolve3d: function(smiles, success, error)
-		{
-			if(!Request.ChemicalIdentifierResolver.available)
-			{
-				error();
-				return;
-			}
-
-			smiles = smiles.replace(/#/g, "%23").replace(/\\/g, "%5C");
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
-				dataType: "text",
-				url: "http://cactus.nci.nih.gov/chemical/structure/" + smiles + "/file?format=sdf&get3d=True",
-				success: function(response)
-				{
-					if(response === "<h1>Page not found (404)</h1>\n" || response === undefined)
-						{ if(error) error(); }
-					else success(response);
-				},
-				error: function(jqXHR, textStatus)
-				{
-					if(textStatus != "error") return;
-					if(error) error();
-				}
-			});
-		},
-
-		resolve2d: function(smiles, success, error)
-		{
-			if(!Request.ChemicalIdentifierResolver.available)
-			{
-				error();
-				return;
-			}
-
-			smiles = smiles.replace(/#/g, "%23").replace(/\\/g, "%5C");
-			if(xhr !== undefined) xhr.abort();
-			xhr = AJAX({
-				dataType: "text",
-				url: "http://cactus.nci.nih.gov/chemical/structure/" + smiles + "/file?format=sdf&get3d=False",
-				success: function(response)
-				{
-					if(response === "<h1>Page not found (404)</h1>\n" || response === undefined)
-						{ if(error) error(); }
 					else success(response);
 				},
 				error: function(jqXHR, textStatus)
@@ -286,7 +297,7 @@ var Request = {
 		 */
 		property: function(smiles, property, success, error)
 		{
-			if(!Request.ChemicalIdentifierResolver.available)
+			if(!Request.CIR.available)
 			{
 				error();
 				return;

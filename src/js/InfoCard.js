@@ -329,7 +329,7 @@ var InfoCard = {
 		{
 			if(InfoCard.data["smiles"] && CIRProps[id] != -1)
 			{
-				Request.ChemicalIdentifierResolver.property(
+				Request.CIR.property(
 					InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],
 					CIRProps[id], function(data)
 				{

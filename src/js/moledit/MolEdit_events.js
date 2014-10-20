@@ -180,7 +180,7 @@ MolEdit.prototype.onMouseDown = function (ev, isTouch)
 				}
 				else
 				{
-					this.undoPush(true);
+					this.undoPush();
 					this.lastPos = p;
 					this.mode = MODE_DRAG_ATOMS;
 					this.dragAtoms = this.getDragAtoms();
@@ -602,7 +602,7 @@ MolEdit.prototype.onMouseUp = function (ev)
 	if(this.dragAtoms.length > 0)
 	{
 		this.chem.gravitateCollisions();
-		this.changed(true);
+		this.changed();
 	}
 	else if(this.mode == MODE_CHAIN)
 	{

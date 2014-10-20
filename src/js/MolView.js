@@ -313,7 +313,7 @@ var MolView = {
 			MolView.executeQuery();
 			Sketcher.markUpdated();
 
-			if(!Request.ChemicalIdentifierResolver.available)
+			if(!Request.CIR.available)
 			{
 				Messages.alert("cir_down");
 			}

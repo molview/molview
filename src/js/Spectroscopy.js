@@ -87,7 +87,7 @@ var Spectroscopy = {
             $("#spectrum").removeClass("loading");
         }
 
-        Request.ChemicalIdentifierResolver.property(this.data["smiles"], "cas",
+        Request.CIR.property(this.data["smiles"], "cas",
         function(cas)
         {
             Spectroscopy.data["cas"] = cas;

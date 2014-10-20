@@ -70,8 +70,14 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		{
 			$same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".
 					$data -> InformationList -> Information[0] -> CID;
-			$pubchem_query = "cid";
-			$pubchem_value = $data -> InformationList -> Information[0] -> CID;
+
+			if($pubchem_query != "cid")//redirect to ?cid
+			{
+				$query = preg_replace("/".$pubchem_query."=[^&]*/", "cid=".
+						($data -> InformationList -> Information[0] -> CID),
+						$_SERVER["QUERY_STRING"]);//remove old compound query
+				header("Location: ?".$query, true, 302);
+			}
 		}
 		if(isset($data -> InformationList -> Information[0] -> Title))
 		{

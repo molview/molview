@@ -79,7 +79,7 @@ Query parameters:
 			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
 			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
 
-			Request.ChemicalIdentifierResolver.available = true;
+			Request.CIR.available = true;
 			Request.HTTP_ACCEPT_LANGUAGE = <?php echo '"'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'"'; ?>;
 			Request.HTTP_CLIENT_IP = <?php
 			echo '"';

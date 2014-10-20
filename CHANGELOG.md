@@ -59,7 +59,9 @@
 - Added server-side COD search sorting
 - Added JSON format for COD search errors
 - Added crystal 2D depiction fallbacks
-+ Add SMILES 3D conformation method using PubChem (CIR as fallback)
+- Added server-side ?cid redirect if ?smiles is a PubChem entry
+- Added client-side ?smiles with ?cid replacement if ?smiles is a PubChem entry
+- Added SMILES resolving using PubChem (CIR as fallback)
 + Add CAS lookup method using PubChem (CIR as fallback)
 
 #### Functionality
