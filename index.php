@@ -137,6 +137,7 @@ Query parameters:
 		<script type="text/javascript" src="src/js/lib/jquery.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
 		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
+		<script type="text/javascript" src="src/js/Utility.js"></script>
 		<script type="text/javascript" src="src/js/m2s/prototype.js"></script>
 		<script type="text/javascript" src="src/js/m2s/util/common.js"></script>
 		<script type="text/javascript" src="src/js/m2s/util/vec2.js"></script>
@@ -153,13 +154,13 @@ Query parameters:
 		<script type="text/javascript" src="src/js/m2s/chem/stereocenters.js"></script>
 		<script type="text/javascript" src="src/js/m2s/chem/smiles.js"></script>
 		<script type="text/javascript" src="src/js/m2s/chem/inchi.js"></script>
-		<script type="text/javascript" src="src/js/moledit/Constants.js"></script>
-		<script type="text/javascript" src="src/js/moledit/Objects.js"></script>
-		<script type="text/javascript" src="src/js/moledit/Chemical.js"></script>
-		<script type="text/javascript" src="src/js/moledit/ChemicalView.js"></script>
-		<script type="text/javascript" src="src/js/moledit/ChemicalViewCore.js"></script>
-		<script type="text/javascript" src="src/js/moledit/ChemicalViewEvents.js"></script>
-		<script type="text/javascript" src="src/js/moledit/Utility.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MolEdit_constants.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MolEdit_objects.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MolEdit_utility.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MEChemical.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MolEdit.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MolEdit_core.js"></script>
+		<script type="text/javascript" src="src/js/moledit/MolEdit_events.js"></script>
 		<script type="text/javascript" src="src/js/lib/three.min.js"></script>
 		<script type="text/javascript" src="src/js/lib/GLmol.js"></script>
 		<script type="text/javascript" src="src/js/lib/ChemDoodleWeb.js"></script>
@@ -168,7 +169,7 @@ Query parameters:
 		<script type="text/javascript" src="src/js/lib/PeriodicTable.js"></script>
 		<script type="text/javascript" src="src/datasets/PDBNames.js"></script>
 		<script type="text/javascript" src="src/datasets/MineralNames.js"></script>
-		<script type="text/javascript" src="src/js/Utility.js"></script>
+		<script type="text/javascript" src="src/js/Preferences.js"></script>
 		<script type="text/javascript" src="src/js/History.js"></script>
 		<script type="text/javascript" src="src/js/Progress.js"></script>
 		<script type="text/javascript" src="src/js/Messages.js"></script>
@@ -256,6 +257,7 @@ Query parameters:
 							<li id="layout-menu">
 								<a id="window-model" <?php if($contentClass == "model") echo 'class="selected"' ?>></a>
 								<a id="window-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>></a>
+								<br/>
 								<a id="window-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
 								<a id="window-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
@@ -358,6 +360,11 @@ Query parameters:
 				<script type="text/javascript">
 					MolView.query = getQuery();
 
+					if(localStorage && localStorage["molview.theme"])
+					{
+						MolView.setTheme(localStorage["molview.theme"]);
+					}
+
 					if($(window).height() > $(window).width()
 						&& !MolView.query.layout
 						&& MolView.layout != "model") Actions.window_hsplit();
@@ -441,6 +448,14 @@ Query parameters:
 							"#000000" : "#cccccc" : "#ffffff").'"';
 					}
 				?>>
+					<!-- Get preferred model background color from localStorage -->
+					<script type="text/javascript">
+						if(localStorage && localStorage["model.background"])
+						{
+							var c = localStorage["model.background"];
+							$("#model").css("background", c == "gray" ? "#ccc" : c);
+						}
+					</script>
 					<div id="chemdoodle" class="render-engine" style="display: none;">
 						<canvas id="chemdoodle-canvas"></canvas>
 					</div>
@@ -654,7 +669,7 @@ Query parameters:
 									<li><b>The RCSB Protein Data Bank</b></li>
 									<li><b>The Crystallography Open Database</b></li>
 								</ul>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.png" alt="Search bar" /></p>
+								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block; border: 1px solid #ccc;" src="img/help/SearchBar.png" alt="Search bar" /></p>
 								<p class="image-note"><i>The search form</i></p>
 							</div>
 						</div>

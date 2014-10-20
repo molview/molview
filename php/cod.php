@@ -23,7 +23,7 @@ PHP script for processing and retrieving data from the Crystallography Open Data
 Parameters:
 - q = {query}
 - codids = {CODID,CODID,CODID}
-- type = search (using query) || smiles (using codids)
+- action = search (using query) || smiles (using codids) || name (using codids)
 */
 
 error_reporting(0);
@@ -33,7 +33,7 @@ parse_str($_SERVER["QUERY_STRING"]);
 $cod = new mysqli("www.crystallography.net", "cod_reader", "", "cod");
 if($cod -> connect_errno > 0) die('{"error":"Unable to connect to COD ['.$cod -> connect_error.']"}');
 
-if($type == "search" && isset($q))
+if($action == "search" && isset($q))
 {
 	/*
 	Returns:
@@ -185,7 +185,7 @@ WHERE (mineral LIKE "%'.addslashes($q).'%" OR commonname LIKE "%'.addslashes($q)
 		echo "]}";
 	}
 }
-else if($type == "smiles" && isset($codids))
+else if($action == "smiles" && isset($codids))
 {
 	/*
 	Returns:
@@ -233,21 +233,48 @@ else if($type == "smiles" && isset($codids))
 		echo "]}";
 	}
 }
+else if($action == "name" && isset($codids))
+{
+	/*
+	Returns:
+	{
+		"records": [
+			{
+				"codid": ...,
+				"name": ...,
+			}
+		]
+	}
+	*/
+
+	header("Content-Type: application/json");
+
+	$query = "SELECT file,mineral,commonname,chemname FROM data WHERE file IN(".$codids.")";
+
+	if($result = $cod -> query($query))
+	{
+		$names = array();
+		while($row = $result -> fetch_row())//read data
+		{
+			$names[$row[0]] = isset($row[1]) ? $row[1] : (isset($row[2]) ? $row[2] : (isset($row[3]) ? $row[3] : ""));
+		}
+
+		echo '{"records":[';
+		$first_record = true;
+		$codids = explode(",", $codids);
+		foreach($codids as $codid)//print JSON
+		{
+			if($first_record) $first_record = false;
+			else echo ",";
+			echo '{"codid":'.json_encode($codid).',"name":'.json_encode(utf8_encode($names[$codid]))."}";
+		}
+		echo "]}";
+	}
+}
+else
+{
+	echo "{}";
+}
 
 //close COD connection
 $cod -> close();
-
-/* ChemSpider ID lookup
-function cscod_search($q)
-{
-	global $cod_csid_search_query;
-
-	$csid = file("http://cactus.nci.nih.gov/chemical/structure/".$q."/chemspider_id");
-	if(count($csid) > 1) $csid = $csid[0];
-	if(isset($csid))
-	{
-		$csid = str_replace("\n", "", $csid);//remove line breaks
-		return cod_search($cod_csid_search_query, $csid, "i", false);
-	}
-	else return false;
-}*/

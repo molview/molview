@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * MolView messages interface wrapper
+ * @type {Object}
+ */
 var Messages = {
 	//notifications
 	cir_down: "The Chemical Identifier Resolver is offline, some functions might be unavailable.",
@@ -37,7 +41,6 @@ var Messages = {
 
 	//support
 	no_webgl_support: Detector.getWebGLErrorMessage(),
-	sketcher_no_macromolecules: "Macromolecules cannot be displayed in the sketcher",
 	mobile_old_no_macromolecules: "Macromolecules cannot be viewed on your device",
 	no_glmol_crystals: "You cannot view crystals using GLmol",
 	glmol_and_jmol_only: "This feature is only available in GLmol and Jmol",
@@ -51,12 +54,23 @@ var Messages = {
 	smiles_load_error_force: "Failed to load structure from sketcher",
 	load_fail: "Failed to load structure",
 	search_fail: "Search has failed",
-	search_noreach: "Remote database is not reachable",
 	structure_search_fail: "Structure search has failed",
-	resolve_fail: "Structure cannot be resolved",
-	clean_fail: "Structure cannot be cleaned",
+	remote_noreach: "Remote database is not reachable",
 	crystal_2d_fail: "Failed to load a structural formula for this crystal structure",
 	no_protein: "The current 3D model is not a protein",
+
+	permDismiss: [
+		"crystal_2d_unreliable"
+	],
+
+	/**
+	 * Sets message with $id to be not shown again
+	 * @param {String} id
+	 */
+	dontShowAgain: function(id)
+	{
+		Preferences.set("messages", "crystal_2d_unreliable", true);
+	},
 
 	/**
 	 * Displays progress message assosiated with $what and call $cb using a
@@ -125,7 +139,6 @@ var Messages = {
 		- no_canvas_support
 		- no_webgl_support
 		- no_glmol_crystals
-		- sketcher_no_macromolecules
 		- glmol_and_jmol_only
 		- glmol_only
 		- no_jmol_chain_type
@@ -136,16 +149,11 @@ var Messages = {
 		- smiles_load_error_force
 		- load_fail
 		- search_fail
-		- search_noreach
+		- remote_noreach
 		- structure_search_fail
-		- resolve_fail
-		- clean_fail
 		- crystal_2d_fail
 		- no_protein
 		*/
-
-		//ignored causes
-		if(cause == "sketcher_no_macromolecules") return;
 
 		if(cause == "no_canvas_support")
 		{
@@ -155,25 +163,28 @@ var Messages = {
 
 		$("body").removeClass("progress-cursor");
 
-		if(error)
+		if(!Preferences.get("messages", cause, false))
 		{
 			var msg =  $("<div/>").addClass("message alert-message");
-			$("<div/>").addClass("message-text")
-				.html(Messages[cause])
-				.append('<span class="error-message">' + (error.message || error.detailMessage || error) + "</span>")
-				.appendTo(msg);
+			var text = $("<div/>").addClass("message-text").html(Messages[cause] || cause);
+
+			if(error)
+			{
+				text.append('<span class="error-message">' +
+						(error.message || error.detailMessage || error) + "</span>");
+			}
+
+			text.appendTo(msg);
+
 			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-				function(){ $(this).parent().remove(); }).appendTo(msg);
-			msg.appendTo($("#messages"));
-		}
-		else
-		{
-			var msg =  $("<div/>").addClass("message alert-message");
-			$("<div/>").addClass("message-text")
-				.html(Messages[cause] || cause)
-				.appendTo(msg);
-			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-				function(){ $(this).parent().remove(); }).appendTo(msg);
+					function(){ $(this).parent().remove(); }).appendTo(msg);
+
+			if(Messages.permDismiss.indexOf(cause) != -1)
+			{
+				$('<button class="message-close-btn">Don\'t show again</button>').on(MolView.trigger,
+						function(){ $(this).parent().remove(); Messages.dontShowAgain(cause); }).appendTo(msg);
+			}
+
 			msg.appendTo($("#messages"));
 		}
 

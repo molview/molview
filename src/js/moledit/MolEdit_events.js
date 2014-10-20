@@ -22,7 +22,7 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-ChemicalView.prototype.canSelect = function (ev)
+MolEdit.prototype.canSelect = function (ev)
 {
 	return (this.h_atom == -1 && this.h_bond == -1
 		&& (!this.activeTool || this.activeTool.toolType != "chain")
@@ -31,7 +31,7 @@ ChemicalView.prototype.canSelect = function (ev)
 		&& this.activeTool.toolType != "atom");//allow to draw multiple single atoms
 }
 
-ChemicalView.prototype.getMousePos = function (ev, isTouch)
+MolEdit.prototype.getMousePos = function (ev, isTouch)
 {
 	var rect = this.canvas.getBoundingClientRect();
 
@@ -42,7 +42,7 @@ ChemicalView.prototype.getMousePos = function (ev, isTouch)
 	};
 }
 
-ChemicalView.prototype.getMousePosArr = function (ev)
+MolEdit.prototype.getMousePosArr = function (ev)
 {
 	var rect = this.canvas.getBoundingClientRect();
 	var res = [];
@@ -58,14 +58,19 @@ ChemicalView.prototype.getMousePosArr = function (ev)
 	return res;
 }
 
-ChemicalView.prototype.onMouseDown = function (ev, isTouch)
+MolEdit.prototype.onMouseDown = function (ev, isTouch)
 {
 	var that = this;
 	this.button = 0;
 
-	if(isTouch && ev.targetTouches.length > 1)
+	if(isTouch && ev.targetTouches.length > 1)//multi-touch
 	{
-		//multi-touch
+		//rewind changes from last single touch
+		if(this.isChanged)
+		{
+			this.undoSimple();
+		}
+
 		this.lastPosArr = this.getMousePosArr(ev);
 		return;
 	}
@@ -75,7 +80,6 @@ ChemicalView.prototype.onMouseDown = function (ev, isTouch)
 	var p = this.getMousePos(ev, isTouch);
 
 	this.newCount = 0;
-
 	this.mode = MODE_NORMAL;
 
 	switch(this.button)
@@ -253,18 +257,18 @@ ChemicalView.prototype.onMouseDown = function (ev, isTouch)
 						}
 						else if(this.activeTool.toolType == "bond")
 						{
-							ch = (new Chemical())
+							ch = (new MEChemical())
 								.makeBond(0, this.activeTool.ty);
 						}
 						else if(this.activeTool.toolType == "atom" && this.activeTool.cd != null)
 						{
-							ch = (new Chemical())
+							ch = (new MEChemical())
 								.makeAtom(Elements[this.activeTool.cd]);
 						}
 						else if(this.activeTool.toolType == "chain")
 						{
-							//ch = (new Chemical()).makeBond(30,this.activeTool.ty);
-							ch = (new Chemical())
+							//ch = (new MEChemical()).makeBond(30,this.activeTool.ty);
+							ch = (new MEChemical())
 								.makeAtom(6);
 						}
 						if(ch != null)
@@ -286,7 +290,7 @@ ChemicalView.prototype.onMouseDown = function (ev, isTouch)
 	}
 }
 
-ChemicalView.prototype.onMouseMove = function (ev, isTouch)
+MolEdit.prototype.onMouseMove = function (ev, isTouch)
 {
 	if(this.button != -1)
 		ev.preventDefault();
@@ -449,8 +453,6 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 		}
 		//console.log(canDrawCheck);
 
-		this.showStatus("Press <b>Alt</b> and move mouse to other atom to close the loop");
-
 		if(d1 > 1.2 && d0 > 1.2 && !this.chem.hasCollisions(connectTo) && canDrawCheck)
 		{
 			//quickfind
@@ -594,9 +596,9 @@ ChemicalView.prototype.onMouseMove = function (ev, isTouch)
 	if(redraw) this.drawMol();
 }
 
-ChemicalView.prototype.onMouseUp = function (ev)
+MolEdit.prototype.onMouseUp = function (ev)
 {
-	this.clearStatus();
+	this.isChanged = false;
 	if(this.dragAtoms.length > 0)
 	{
 		this.chem.gravitateCollisions();
@@ -622,7 +624,7 @@ ChemicalView.prototype.onMouseUp = function (ev)
 	this.drawMol();
 }
 
-ChemicalView.prototype.multiTouch = function (pp1, pp2)
+MolEdit.prototype.multiTouch = function (pp1, pp2)
 {
 	if(pp1.length != pp2.length || pp1.length < 2)
 		return;

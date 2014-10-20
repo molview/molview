@@ -62,6 +62,10 @@ AutocompleteBuilder.prototype.sort = function(str, minsim, length)
 	}).slice(0, length ? length : cpy.length);
 }
 
+/**
+ * Autocomplete UI component
+ * @type {Object}
+ */
 var Autocomplete = {
 	//autocomplete algorithm parameters
 	MIN_SIM: 40,//minimal similarity of records
@@ -431,7 +435,7 @@ var Autocomplete = {
 				else if(this.records[this.i].codid)//COD mineral
 				{
 					Loader.COD.loadCODID(this.records[this.i].codid,
-						this.records[this.i].label, undefined, this.records[this.i].PubChem_name);
+						this.records[this.i].label, this.records[this.i].PubChem_name);
 				}
 				else//PubChem compound
 				{

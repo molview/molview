@@ -145,13 +145,13 @@ var nonPolarResidues = ['GLY', 'PRO', 'ALA', 'VAL', 'LEU', 'ILE', 'MET', 'PHE', 
 
 var GLmol = (function()
 {
-	function GLmol(id, force2d, scaleFactor)
+	function GLmol(id, force2d, scaleFactor, bg)
 	{
-		if(id) this.create(id, force2d, scaleFactor);
+		if(id) this.create(id, force2d, scaleFactor, bg);
 		return true;
 	}
 
-	GLmol.prototype.create = function(id, force2d, scaleFactor)
+	GLmol.prototype.create = function(id, force2d, scaleFactor, bg)
 	{
 		this.nucleotides = ['  G', '  A', '  T', '  C', '  U', ' DG', ' DA', ' DT', ' DC', ' DU'];
 
@@ -173,6 +173,11 @@ var GLmol = (function()
 				alpha: true
 			});
 			this.renderer.sortObjects = false;//hopefully improve performance
+
+			var r = bg >> 16; r /= 255;
+			var g = bg >> 8 & 0xFF; g /= 255;
+			var b = bg & 0xFF; b /= 255;
+			this.renderer.setClearColor({r:r,g:g,b:b}, 1.0);
 
 			this.container.append(this.renderer.domElement);
 			this.renderer.setSize(this.WIDTH, this.HEIGHT);
@@ -208,7 +213,7 @@ var GLmol = (function()
 		this.rotationGroup = null; // which contains modelGroup
 		this.modelGroup = null;
 
-		this.bgColor = 0x000000;
+		this.bgColor = bg;
 		this.bgAlpha = 1;
 		this.fov = 20;
 		this.fogStart = 0.4;

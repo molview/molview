@@ -16,6 +16,11 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Wrapper for the History API
+ * This object is mainly used in Loader.js
+ * @type {Object}
+ */
 var History = {
 	init: function()
 	{
@@ -37,7 +42,18 @@ var History = {
 		MolView.query = {};
 		MolView.query[id] = value;
 		var query = id + "=" + specialEncodeURIComponent(value.replace(/^ /, ""));
-		if(history && history.pushState && location.search.indexOf(query) == -1)
-			history.pushState(null, document.title, "?" + query);
+
+		if(history && history.replaceState && history.pushState &&
+				location.search.indexOf(query) == -1)
+		{
+			if(location.search == "")
+			{
+				history.replaceState(null, document.title, "?" + query);
+			}
+			else
+			{
+				history.pushState(null, document.title, "?" + query);
+			}
+		}
 	}
 }

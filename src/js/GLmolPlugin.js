@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * GLmol wrapper/plugin for Model.js
+ * @type {Object}
+ */
 var GLmolPlugin = {
 	ready: false,
 	view: undefined,
@@ -28,7 +32,7 @@ var GLmolPlugin = {
 	{
 		if(Detector.canvas)
 		{
-			this.view = new GLmol("glmol", !Detector.webgl, Model.pixelMult);
+			this.view = new GLmol("glmol", !Detector.webgl, Model.pixelMult, Model.bg.hex);
 
 			this.view.defineRepresentation = function()
 			{

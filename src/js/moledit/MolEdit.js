@@ -40,9 +40,10 @@ Modifications:
   - this.getSelectedAtoms()
 */
 
-function ChemicalView(parent, canvas, devicePixelRatio)
+function MolEdit(parent, canvas, devicePixelRatio, touchOnly)
 {
 	this.touch = isTouchDevice();
+	this.touchOnly = touchOnly;
 	this.scaleFactor = devicePixelRatio;
 
 	this.bondThicknessHalf = 0.2;
@@ -68,6 +69,7 @@ function ChemicalView(parent, canvas, devicePixelRatio)
 	};
 
 	this.drawSelectedBonds = true;
+	this.isChanged = false;//used to rewind changes after multitouch
 	this.onChanged = undefined;//event called when molecule is changed
 
 	var that = this;
@@ -191,7 +193,7 @@ function ChemicalView(parent, canvas, devicePixelRatio)
 	this.undoStack = [];
 	this.redoStack = [];
 
-	this.chem = new Chemical();
+	this.chem = new MEChemical();
 	this.chemIsReady = true;
 	this.ctx = null;
 	this.dragAtoms = [];
@@ -307,7 +309,7 @@ function ChemicalView(parent, canvas, devicePixelRatio)
 	this.dx = this.dy = 0;
 }
 
-ChemicalView.prototype.resize = function()
+MolEdit.prototype.resize = function()
 {
 	jQuery(this.canvas).css({
 		"width": this.parent.width(),
@@ -321,21 +323,14 @@ ChemicalView.prototype.resize = function()
 	this.drawMol();
 }
 
-ChemicalView.prototype.setElement = function(element)
+MolEdit.prototype.setElement = function(element)
 {
 	this.activeTool.id = "me-elements";
 	this.activeTool.toolType = "atom";
 	this.activeTool.cd = element;
 }
 
-ChemicalView.prototype.showStatus = function(msg)
-{
-}
-ChemicalView.prototype.clearStatus = function()
-{
-}
-
-ChemicalView.prototype.addTool = function(type, id, func)
+MolEdit.prototype.addTool = function(type, id, func)
 {
 	var elm = jQuery("#" + id);
 	elm.data("toolType", type);
@@ -343,21 +338,21 @@ ChemicalView.prototype.addTool = function(type, id, func)
 	return elm;
 }
 
-ChemicalView.prototype.addToolBond = function(type, id, func)
+MolEdit.prototype.addToolBond = function(type, id, func)
 {
 	var elm = this.addTool("bond", id, func);
 	elm.data("ty", type);
 	return elm;
 }
 
-ChemicalView.prototype.addToolAtom = function(type, id, func)
+MolEdit.prototype.addToolAtom = function(type, id, func)
 {
 	var elm = this.addTool("atom", id, func);
 	elm.data("cd", type);
 	return elm;
 }
 
-ChemicalView.prototype.toolButtonClicked = function(button)
+MolEdit.prototype.toolButtonClicked = function(button)
 {
 	if(button === undefined) return;
 
@@ -386,8 +381,10 @@ ChemicalView.prototype.toolButtonClicked = function(button)
 	}
 }
 
-ChemicalView.prototype.changed = function(not_changed)
+MolEdit.prototype.changed = function(not_changed)
 {
+	this.isChanged = true;
+
 	if(this.onChanged !== undefined && !not_changed)
 		this.onChanged();
 
@@ -400,42 +397,42 @@ ChemicalView.prototype.changed = function(not_changed)
 	else jQuery("#me-redo").addClass("tool-button-disabled");
 }
 
-ChemicalView.prototype.isEmpty = function()
+MolEdit.prototype.isEmpty = function()
 {
 	return this.chem.atoms.length == 0;
 }
 
-ChemicalView.prototype.undoPush = function (not_changed)
+MolEdit.prototype.undoPush = function(not_changed)
 {
 	this.undoStack.push(clone_object(this.chem));
 	this.changed(not_changed);
 }
 
-ChemicalView.prototype.loadMOL = function(mol)
+MolEdit.prototype.loadMOL = function(mol)
 {
 	this.undoPush();
 
-	this.chem = new Chemical().parseMol(mol);
+	this.chem = new MEChemical().parseMol(mol);
 	this.last_atom_length = this.chem.atoms.length;
 
 	this.updateZoom = true;
 	this.drawMol();
 }
 
-ChemicalView.prototype.getMOL = function()
+MolEdit.prototype.getMOL = function()
 {
 	return this.chem.toMol();
 }
 
-ChemicalView.prototype.clearMol = function()
+MolEdit.prototype.clearMol = function()
 {
 	this.undoPush();
-	this.chem = new Chemical();
+	this.chem = new MEChemical();
 	this.drawMol();
 	this.changed();
 }
 
-ChemicalView.prototype.undo = function()
+MolEdit.prototype.undo = function()
 {
 	if(this.undoStack.length > 0)
 	{
@@ -447,16 +444,17 @@ ChemicalView.prototype.undo = function()
 	}
 }
 
-ChemicalView.prototype.undoSimple = function()
+MolEdit.prototype.undoSimple = function()
 {
 	if(this.undoStack.length > 0)
 	{
 		this.chem = this.undoStack.pop();
 		this.h_atom = this.h_bond = -1;
+		this.drawMol();
 	}
 }
 
-ChemicalView.prototype.redo = function()
+MolEdit.prototype.redo = function()
 {
 	if(this.redoStack.length > 0)
 	{
@@ -467,7 +465,7 @@ ChemicalView.prototype.redo = function()
 	}
 }
 
-ChemicalView.prototype.removeImplicitHydrogen = function()
+MolEdit.prototype.removeImplicitHydrogen = function()
 {
 	var implicit_h = [];
 
@@ -535,7 +533,7 @@ ChemicalView.prototype.removeImplicitHydrogen = function()
 	}
 }
 
-ChemicalView.prototype.removeAllHydrogen = function()
+MolEdit.prototype.removeAllHydrogens = function()
 {
 	var hydrogen = [];
 
@@ -559,7 +557,7 @@ ChemicalView.prototype.removeAllHydrogen = function()
 	}
 }
 
-ChemicalView.prototype.deselectAll = function()
+MolEdit.prototype.deselectAll = function()
 {
 	for(var i = 0; i < this.chem.atoms.length; i++)
 	{

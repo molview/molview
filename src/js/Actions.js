@@ -16,6 +16,11 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Wrapper for all MolView actions which can be triggered in the UI
+ * All methods are binded in MolView.init
+ * @type {Object}
+ */
 var Actions = {
 	/*
 	MolView menu

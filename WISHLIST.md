@@ -3,22 +3,25 @@ Wishlist
 
 - Add CIF loader to GLmol
 - Add EDTSurf (protein surfaces) implementation to GLmol
-- Add THREE.CanvasRenderer to GLmol (update THREE.js)
+- Add newest THREE.js version to GLmol
+- Add THREE.CanvasRenderer to GLmol
+- Add THREE.RaytracingRenderer to GLmol
 - Add protein solvents display
 - Add electron density maps for macromolecules
 - Add dotted H-bonds and SS-bonds for proteins
 - Create interactive macromolecule exploration mode
 
 - Add touch menu drawer
-- Add Preferences to Model and Sketcher
+- Add "Open in MolView" button
+- Add Preferences dialog
 - Add functional groups support in Sketcher
 - Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
 - Add MolView home website (pages: features, about, manual, changelog, license, feedback)
 
-- Improve COD search display by condensing duplicate results
+- Add dynamic CIF cell size
 - Integrate COD image API
-- Integrate Smorf viewer (carved crystals)
 - Integrate MinData.org data
+- Integrate Smorf viewer (carved crystals)
 - Build COD mirror
 
 - Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)

@@ -17,15 +17,59 @@
  */
 
 var MolView = {
+	/**
+	 * MolView layout content class
+	 * @type {String}
+	 */
 	layout: "",
+
+	/**
+	 * Indicates touch-only devices
+	 * @type {Boolean}
+	 */
 	touch: false,
+
+	/**
+	 * Indicates mobile devices
+	 * @type {Boolean}
+	 */
 	mobile: false,
+
+	/**
+	 * Device pixel ratio used for rendering
+	 * @type {Float}
+	 */
 	devicePixelRatio: 1.0,
 
+	/**
+	 * jQuery.on trigger for buttons
+	 * @type {String}
+	 */
 	trigger: "click",
+
+	/**
+	 * URL query
+	 * @type {Object}
+	 */
 	query: {},
+
+	/**
+	 * Indicates if Model and Sketcher should load the default molecule
+	 * on initialization
+	 * @type {Boolean}
+	 */
 	loadDefault: true,
+
+	/**
+	 * Indicates macromolecule support
+	 * @type {Boolean}
+	 */
 	macromolecules: true,
+
+	/**
+	 * JSmol J2S root path on server
+	 * @type {String}
+	 */
 	JMOL_J2S_PATH: "jmol/j2s",
 
 	/**
@@ -35,6 +79,7 @@ var MolView = {
 	{
 		MolView.devicePixelRatio = window.devicePixelRatio || (MolView.mobile ? 1.5 : 1.0);
 
+		Preferences.init();
 		Progress.init();
 		History.init();
 		Link.init();
@@ -42,10 +87,6 @@ var MolView = {
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
 		{
 			this.loadDefault = false;
-		}
-		else
-		{
-			Progress.reset(1);
 		}
 
 		Spectroscopy.init();
@@ -268,20 +309,15 @@ var MolView = {
 
 		Model.init(function()
 		{
-			if(this.loadDefault)
-			{
-				Progress.complete();
-			}
-
 			//execute query commands
-			this.executeQuery();
+			MolView.executeQuery();
 			Sketcher.markUpdated();
 
 			if(!Request.ChemicalIdentifierResolver.available)
 			{
 				Messages.alert("cir_down");
 			}
-		}.bind(this), (!Detector.webgl && !MolView.touch) ? "JSmol" : "GLmol");
+		}, (!Detector.webgl && !MolView.touch) ? "JSmol" : "GLmol");
 	},
 
 	/**
@@ -458,7 +494,9 @@ var MolView = {
 	 */
 	setTheme: function(theme)
 	{
-		$("#theme-desktop,#theme-touch").removeClass("checked");
+		Preferences.set("molview", "theme", theme);
+
+		$("#theme-desktop, #theme-touch").removeClass("checked");
 		$("#theme-" + theme).addClass("checked");
 		$("#theme-stylesheet").attr("href", "build/molview." + theme + ".min.css");
 	},

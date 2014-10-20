@@ -48,6 +48,10 @@ var CIRProps = {
 	"csid": "chemspider_id"
 };
 
+/**
+ * InfoCard content layer wrapper
+ * @type {Object}
+ */
 var InfoCard = {
 	/**
 	 * Stores last PubChem request in order to load multiple Pubchem
@@ -208,10 +212,7 @@ var InfoCard = {
 		img.onload = function()
 		{
 			$("#molecule-image").attr("src", img.src);
-			if(MolView.mobile)
-			{
-				$("#molecule-image").css("width", 200);
-			}
+			$("#molecule-image").css("width", 300 / MolView.devicePixelRatio);
 
 			$("#molecule-image-wrapper").show();
 		}

@@ -53,6 +53,10 @@ select nucleic; color ribbon red; color backbone red;",
 	clearMolecule: 'isosurface off; echo ""; label ""; select formalCharge <> 0; label %C; select *; dipole bond delete; dipole molecular delete; color cpk;'
 };
 
+/**
+ * JSmol wrapper/plugin for Model.js
+ * @type {Object}
+ */
 var JSmolPlugin = {
 	ready: false,
 	readyCB: undefined,//only used in constructor

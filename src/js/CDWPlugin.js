@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * ChemDoodle Web wrapper/plugin for Model.js
+ * @type {Object}
+ */
 var CDWPlugin = {
 	ready: false,
 	view: undefined,

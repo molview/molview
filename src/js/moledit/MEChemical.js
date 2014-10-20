@@ -22,7 +22,7 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function Chemical()
+function MEChemical()
 {
     this.atoms = [];
     this.bonds = [];
@@ -33,7 +33,7 @@ function Chemical()
     this.rings = [];
 }
 
-Chemical.prototype.processChemical = function ()
+MEChemical.prototype.processChemical = function ()
 {
     this.calcConnectivity();
     this.assignHyb();
@@ -47,7 +47,7 @@ function bondKey(bo)
     return Math.min(bo.fr, bo.to).toString() + "x" + Math.max(bo.fr, bo.to).toString();
 }
 
-Chemical.prototype.centerPoint = function ()
+MEChemical.prototype.centerPoint = function ()
 {
     return {
         x: (this.minx + this.maxx) / 2,
@@ -56,7 +56,7 @@ Chemical.prototype.centerPoint = function ()
     }
 }
 
-Chemical.prototype.calcConnectivity = function ()
+MEChemical.prototype.calcConnectivity = function ()
 {
     for(var i = 0; i < this.atoms.length; i++)
     {
@@ -93,7 +93,7 @@ Chemical.prototype.calcConnectivity = function ()
     for(var i = 0; i < this.atoms.length; i++) this.atoms[i].conn = Math.floor(this.atoms[i].conn);
 }
 
-Chemical.prototype.calcBox = function ()
+MEChemical.prototype.calcBox = function ()
 {
     this.minx = this.miny = Number.MAX_VALUE;
     this.maxx = this.maxy = -Number.MAX_VALUE;
@@ -108,12 +108,12 @@ Chemical.prototype.calcBox = function ()
     }
 }
 
-Chemical.prototype.nbo_all = function (at)
+MEChemical.prototype.nbo_all = function (at)
 {
     return at.bo.length + this.H(at) - at.nHyd;
 }
 
-Chemical.prototype.calc_qfm = function (at)
+MEChemical.prototype.calc_qfm = function (at)
 {
     var S = function (cd)
     {
@@ -123,12 +123,12 @@ Chemical.prototype.calc_qfm = function (at)
     return q >= 0 ? q * S(at.cd) : 0;
 }
 
-Chemical.prototype.get_qfm = function (at)
+MEChemical.prototype.get_qfm = function (at)
 {
     return(at.ms & M_EXPLICT_QFM) ? at.qfm : this.calc_qfm(at);
 }
 
-Chemical.prototype.H = function (at)
+MEChemical.prototype.H = function (at)
 {
     if(at.cd == 1) return 0;
     var v = this.V(at);
@@ -137,7 +137,7 @@ Chemical.prototype.H = function (at)
     return(h < 0) ? 0 : h;
 }
 
-Chemical.prototype.V = function (at)
+MEChemical.prototype.V = function (at)
 {
     switch(at.cd)
     {
@@ -170,7 +170,7 @@ Chemical.prototype.V = function (at)
     }
 }
 
-Chemical.prototype.findPathToRoot = function (node, path, ms)
+MEChemical.prototype.findPathToRoot = function (node, path, ms)
 {
     path.length = 0;
     ms.fill(false);
@@ -185,7 +185,7 @@ Chemical.prototype.findPathToRoot = function (node, path, ms)
     ms[n.at] = true;
 }
 
-Chemical.prototype.findShortestPath = function (node1, node2)
+MEChemical.prototype.findShortestPath = function (node1, node2)
 {
     var dist = new Array();
     var atomsArr = new Array();
@@ -245,7 +245,7 @@ Chemical.prototype.findShortestPath = function (node1, node2)
     return path;
 }
 
-Chemical.prototype.treeFromAtom = function (maxLevel, fr, pv, v, visited)
+MEChemical.prototype.treeFromAtom = function (maxLevel, fr, pv, v, visited)
 {
     var br = Array(2);
     br[0] = Array();
@@ -295,7 +295,7 @@ function cmp_rng(a, b)
     return 0;
 }
 
-Chemical.prototype.findRingFromBond = function (bo, rings)
+MEChemical.prototype.findRingFromBond = function (bo, rings)
 {
     var nat = this.atoms.length;
     var n1 = new Array(nat);
@@ -356,7 +356,7 @@ Chemical.prototype.findRingFromBond = function (bo, rings)
         }
 }
 
-Chemical.prototype.findRings = function ()
+MEChemical.prototype.findRings = function ()
 {
     // build spanning tree and find ring closures
     var that = this;
@@ -581,7 +581,7 @@ Chemical.prototype.findRings = function ()
 
 }
 
-Chemical.prototype.atomsInTheSameRing = function (at1, at2)
+MEChemical.prototype.atomsInTheSameRing = function (at1, at2)
 {
     var minsz, rnum;
     minsz = Number.MAX_VALUE;
@@ -618,7 +618,7 @@ function num_uniq_cip(p)
     return num;
 }
 
-Chemical.prototype.reassign_priorities = function (p, pp)
+MEChemical.prototype.reassign_priorities = function (p, pp)
 {
     var start, end, i, j, k, iSym;
     start = 0;
@@ -638,7 +638,7 @@ Chemical.prototype.reassign_priorities = function (p, pp)
         i = j = j + 1;
     }
 }
-Chemical.prototype.assignHyb = function ()
+MEChemical.prototype.assignHyb = function ()
 {
     var nat = this.atoms.length;
     for(var i = 0; i < nat; i++)
@@ -747,7 +747,7 @@ Chemical.prototype.assignHyb = function ()
     }
 }
 
-Chemical.prototype.assignChirality = function ()
+MEChemical.prototype.assignChirality = function ()
 {
     var signedVolume = function (nei)
     {
@@ -847,7 +847,7 @@ Chemical.prototype.assignChirality = function ()
     }
 }
 
-Chemical.prototype.assignCIP = function ()
+MEChemical.prototype.assignCIP = function ()
 {
     // init
     var p = new Array(this.atoms.length);
@@ -957,7 +957,7 @@ Chemical.prototype.assignCIP = function ()
 }
 
 
-Chemical.prototype.mapAtom = function (func)
+MEChemical.prototype.mapAtom = function (func)
 {
     var res = [];
     for(var i = 0; i < this.atoms.length; i++)
@@ -968,19 +968,19 @@ Chemical.prototype.mapAtom = function (func)
     return res;
 }
 
-Chemical.prototype.bondLength = function ()
+MEChemical.prototype.bondLength = function ()
 {
     return this.bonds.length > 0 ? vectorLength(vesub(this.atoms[this.bonds[0].fr], this.atoms[this.bonds[0].to])) : 1.4;
 }
 
-Chemical.prototype.moveAtoms = function (atli, vect)
+MEChemical.prototype.moveAtoms = function (atli, vect)
 {
     for(var i = 0; i < atli.length; i++)
         vecpy(this.atoms[atli[i]], veadd(this.atoms[atli[i]], vect));
 }
 
 
-Chemical.prototype.updateAtomSelection = function (poly)
+MEChemical.prototype.updateAtomSelection = function (poly)
 {
     for(var i = 0; i < this.atoms.length; i++)
     {
@@ -1001,7 +1001,7 @@ Chemical.prototype.updateAtomSelection = function (poly)
     }
 }
 
-Chemical.prototype.rotateAtomsVector = function (atli, centPoint, vect, gravitateTo)
+MEChemical.prototype.rotateAtomsVector = function (atli, centPoint, vect, gravitateTo)
 {
     if(gravitateTo != -1 && atli.length == 1)
     {
@@ -1031,7 +1031,7 @@ Chemical.prototype.rotateAtomsVector = function (atli, centPoint, vect, gravitat
 
 }
 
-Chemical.prototype.rotateAtomsAround = function (atli, centPoint, angle)
+MEChemical.prototype.rotateAtomsAround = function (atli, centPoint, angle)
 {
     var m = new WMatrix().rotateZAroundPoint(centPoint.x, centPoint.y, angle)
     for(var i = 0; i < atli.length; i++)
@@ -1043,7 +1043,7 @@ Chemical.prototype.rotateAtomsAround = function (atli, centPoint, angle)
     this.calcBox();
 }
 
-Chemical.prototype.setBondLength = function (bl)
+MEChemical.prototype.setBondLength = function (bl)
 {
     if(!this.bonds.length)
         return;
@@ -1058,7 +1058,7 @@ Chemical.prototype.setBondLength = function (bl)
     })
 }
 
-Chemical.prototype.expHydrogenToImp = function ()
+MEChemical.prototype.expHydrogenToImp = function ()
 {
     var hyd = [];
     for(var i = 0; i < this.atoms.length; i++)
@@ -1079,7 +1079,7 @@ Chemical.prototype.expHydrogenToImp = function ()
     return this;
 }
 
-Chemical.prototype.apoFromSelection = function (ms)
+MEChemical.prototype.apoFromSelection = function (ms)
 {
     var apo = []
     var that = this;
@@ -1110,7 +1110,7 @@ Chemical.prototype.apoFromSelection = function (ms)
     }).unique();
 }
 
-Chemical.prototype.makeAtom = function (cd)
+MEChemical.prototype.makeAtom = function (cd)
 {
     this.atoms.push(
     {
@@ -1124,7 +1124,7 @@ Chemical.prototype.makeAtom = function (cd)
     return this;
 }
 
-Chemical.prototype.makeBond = function (angle, ty)
+MEChemical.prototype.makeBond = function (angle, ty)
 {
     var bl = 1.2;
     this.atoms = [];
@@ -1157,7 +1157,7 @@ Chemical.prototype.makeBond = function (angle, ty)
     return this;
 }
 
-Chemical.prototype.makeMacroCycle = function (size)
+MEChemical.prototype.makeMacroCycle = function (size)
 {
     var bl = this.bonds.length ? vectorLength(vector(this.atoms[this.bonds[0].fr], this.atoms[this.bonds[0].to])) : 1.2;
     this.atoms = [];
@@ -1226,7 +1226,7 @@ Chemical.prototype.makeMacroCycle = function (size)
     return this;
 }
 
-Chemical.prototype.makeRing = function (size, aro)
+MEChemical.prototype.makeRing = function (size, aro)
 {
     var bl = this.bonds.length ? vectorLength(vector(this.atoms[this.bonds[0].fr], this.atoms[this.bonds[0].to])) : 1.2;
     var sina2 = Math.sin(Math.PI / size);
@@ -1270,12 +1270,12 @@ Chemical.prototype.makeRing = function (size, aro)
     return this;
 }
 
-Chemical.prototype.atProp = function (at, prop, def)
+MEChemical.prototype.atProp = function (at, prop, def)
 {
     return typeof at.atts != "undefined" && typeof at.atts[prop] != "undefined" && at.atts[prop] ? at.atts[prop] + 1 : 0;
 }
 
-Chemical.prototype.toMol = function ()
+MEChemical.prototype.toMol = function ()
 {
     var molFile;
     var tt = new Date();
@@ -1341,7 +1341,7 @@ Chemical.prototype.toMol = function ()
     return molFile;
 }
 
-Chemical.prototype.parseMol = function (molFile)
+MEChemical.prototype.parseMol = function (molFile)
 {
     var atli = [];
     var boli = [];
@@ -1432,7 +1432,7 @@ Chemical.prototype.parseMol = function (molFile)
     return this;
 }
 
-Chemical.prototype.parseString = function (str, onfinish)
+MEChemical.prototype.parseString = function (str, onfinish)
 {
     if(str.indexOf("M  END") != -1)
     {
@@ -1445,7 +1445,7 @@ Chemical.prototype.parseString = function (str, onfinish)
     }
 }
 
-Chemical.prototype.removeAtoms = function (atli)
+MEChemical.prototype.removeAtoms = function (atli)
 {
     var atmap = new Array(this.atoms.length);
     for(var i = 0; i < atli.length; i++) atmap[atli[i]] = -1;
@@ -1476,7 +1476,7 @@ Chemical.prototype.removeAtoms = function (atli)
     this.processChemical();
 }
 
-Chemical.prototype.removeBonds = function (boli)
+MEChemical.prototype.removeBonds = function (boli)
 {
     boli.sort(function (a, b)
     {
@@ -1486,7 +1486,7 @@ Chemical.prototype.removeBonds = function (boli)
     this.processChemical();
 }
 
-Chemical.prototype.findClosestBond = function (p)
+MEChemical.prototype.findClosestBond = function (p)
 {
     var bo = -1;
     for(var i = 0; i < this.bonds.length; i++)
@@ -1501,7 +1501,7 @@ Chemical.prototype.findClosestBond = function (p)
     return bo;
 }
 
-Chemical.prototype.findClosestAtom = function (p)
+MEChemical.prototype.findClosestAtom = function (p)
 {
     var at = -1;
     for(var i = 0; i < this.atoms.length; i++)
@@ -1515,7 +1515,7 @@ Chemical.prototype.findClosestAtom = function (p)
     return at;
 }
 
-Chemical.prototype.getSelectedAtoms = function (ms)
+MEChemical.prototype.getSelectedAtoms = function (ms)
 {
     var res = [];
     for(var i = 0; i < this.atoms.length; i++)
@@ -1524,7 +1524,7 @@ Chemical.prototype.getSelectedAtoms = function (ms)
 }
 
 
-Chemical.prototype.findClosestAtomLong = function (p)
+MEChemical.prototype.findClosestAtomLong = function (p)
 {
     if(this.atoms.length == 0)
         return -1;
@@ -1542,7 +1542,7 @@ Chemical.prototype.findClosestAtomLong = function (p)
     return tmp;
 }
 
-Chemical.prototype.hasCollisions = function (atnum)
+MEChemical.prototype.hasCollisions = function (atnum)
 {
     for(var j = 0; j < this.atoms.length; j++)
         if(j != atnum && vectorLength(vector(this.atoms[atnum], this.atoms[j])) <= 0.2)
@@ -1550,7 +1550,7 @@ Chemical.prototype.hasCollisions = function (atnum)
     return false;
 }
 
-Chemical.prototype.gravitateCollisions = function ()
+MEChemical.prototype.gravitateCollisions = function ()
 {
     var atli = [];
     var m = new Array(this.atoms.length);
@@ -1621,7 +1621,7 @@ Chemical.prototype.gravitateCollisions = function ()
     return false;
 }
 
-Chemical.prototype.bondToggle = function (bonum, ty)
+MEChemical.prototype.bondToggle = function (bonum, ty)
 {
     var bo = this.bonds[bonum];
     var ms = bo.ms;
@@ -1660,7 +1660,7 @@ Chemical.prototype.bondToggle = function (bonum, ty)
     this.processChemical();
 }
 
-Chemical.prototype.chargeAtom = function (atnum)
+MEChemical.prototype.chargeAtom = function (atnum)
 {
     var at = this.atoms[atnum];
     if(typeof at.tmp == "undefined") at.tmp = 0;
@@ -1690,7 +1690,7 @@ Chemical.prototype.chargeAtom = function (atnum)
     }
 }
 
-Chemical.prototype.changeAtom = function (atnum, cd, atts)
+MEChemical.prototype.changeAtom = function (atnum, cd, atts)
 {
     var at = this.atoms[atnum];
     if(cd != -1) at.cd = cd;
@@ -1699,14 +1699,14 @@ Chemical.prototype.changeAtom = function (atnum, cd, atts)
     this.processChemical();
 }
 
-Chemical.prototype.neibVector2 = function (at, mul)
+MEChemical.prototype.neibVector2 = function (at, mul)
 {
     var v1 = vector(at, this.atoms[at.bo[0]]);
     var v2 = vector(at, this.atoms[at.bo[1]]);
     return vectorSetLength(vemulby(veadd(v1, v2), mul), vectorLength(v1));
 }
 
-Chemical.prototype.ringCenter = function (rnum)
+MEChemical.prototype.ringCenter = function (rnum)
 {
     var v = {
         x: 0,
@@ -1720,7 +1720,7 @@ Chemical.prototype.ringCenter = function (rnum)
     return vemulby(v, 1 / this.rings[rnum].length);
 }
 
-Chemical.prototype.bondOrtho = function (atnum1, atnum2, ty, len)
+MEChemical.prototype.bondOrtho = function (atnum1, atnum2, ty, len)
 {
     var at1 = this.atoms[atnum1];
     var at2 = this.atoms[atnum2];
@@ -1788,7 +1788,7 @@ Chemical.prototype.bondOrtho = function (atnum1, atnum2, ty, len)
     }
 }
 
-Chemical.prototype.placeFragment = function (pos, frag)
+MEChemical.prototype.placeFragment = function (pos, frag)
 {
     var that = this;
     frag = clone_object(frag);
@@ -1814,7 +1814,7 @@ Chemical.prototype.placeFragment = function (pos, frag)
     this.processChemical();
 }
 
-Chemical.prototype.connectToBond = function (bonum, frag)
+MEChemical.prototype.connectToBond = function (bonum, frag)
 {
     var that = this;
     var bo = this.bonds[bonum];
@@ -1877,7 +1877,7 @@ Chemical.prototype.connectToBond = function (bonum, frag)
         this.processChemical();
 }
 
-Chemical.prototype.chainTo = function (atnum, ty, mouseLast, mouseCurrent)
+MEChemical.prototype.chainTo = function (atnum, ty, mouseLast, mouseCurrent)
 {
     var that = this;
     var at = this.atoms[atnum];
@@ -1928,7 +1928,7 @@ Chemical.prototype.chainTo = function (atnum, ty, mouseLast, mouseCurrent)
     return this.atoms.length - 1;
 }
 
-Chemical.prototype.connectTo = function (atnum, ty, frag, toatnum)
+MEChemical.prototype.connectTo = function (atnum, ty, frag, toatnum)
 {
     var that = this;
     var at = this.atoms[atnum];
@@ -2287,11 +2287,11 @@ function angleBetween(a, b)
 }
 
 var Rings = [
-	(new Chemical())
-	.makeRing(6, true), (new Chemical())
-	.makeRing(3, false), (new Chemical())
-	.makeRing(4, false), (new Chemical())
-	.makeRing(5, false), (new Chemical())
-	.makeRing(6, false), (new Chemical())
+	(new MEChemical())
+	.makeRing(6, true), (new MEChemical())
+	.makeRing(3, false), (new MEChemical())
+	.makeRing(4, false), (new MEChemical())
+	.makeRing(5, false), (new MEChemical())
+	.makeRing(6, false), (new MEChemical())
 	.makeRing(7, false)
 ];

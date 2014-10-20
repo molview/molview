@@ -7,7 +7,7 @@
 - Added CIF validation in cif.php mirror
 - Added JSmol middle mouse button dragging
 - Patched Chemical Identifier Resolver lookup failure (pass '/' as '%5C' in SMILES)
-- Patched Firefox mousewheel bug in sketcher (removed jMouseWheel everywhere)
+- Patched Firefox mousewheel bug in MolEdit (removed jMouseWheel everywhere)
 - Patched GLmol.zoomInto bug
 - Fixed GLmol face culling issue
 - Fixed JSmol measure and rotate issue
@@ -26,15 +26,19 @@
 - Removed auto layout-model onload crystals
 - Removed embed warning about slow, non-WebGL devices
 - Removed identifier search from Advanced search functions
+- Added history.replaceState for first History.push
+- Added multi-touch edit lock to MolEdit
 - Added meta key support for Mac
 
 #### Design
 - Redesigned messages
+- Redesigned layout-menu
 - Redesigned search results
+- Redesigned menu overflow scrolling
 - Redesigned search form (align left)
-- Redesigned general UI components (flat and light)
-- Redesigned sketcher selection style
-- Improved menu overflow scrolling
+- Redesigned UI components (flat and light)
+- Redesigned MolEdit selection style
+- Added touchOnly mode to MolEdit
 - Added compact menu layout
 - Added canvas based Progress bar
 - Added server-side device detection using MobileDetect
@@ -44,6 +48,7 @@
 - Migrated CSS to LESS
 - Renamed Loader modules
 - Renamed protein to biomolecule
+- Renamed ChemicalView to MolEdit
 - Moved metadata lookup to separate PHP file
 - Splitted `ChemicalData` into `InfoCard` and `Spectroscopy`
 - Added COD MineralNames auto-update script
@@ -66,9 +71,10 @@
 - Added transparency to exported images
 - Added open in new tab support for search results
 - Added auto search results loading when scrolling to the bottom of the page
-+ Add Preferences interface using HTML5 Web Storage
-+ Add "Don't show again" hide option to Messages alerts
-- Added deuterium support to the Sketcher (without UI binding)
+- Added Preferences interface using HTML5 Web Storage
+- Added molview.theme, sketcher.hstrip and model.background to Preferences
+- Added "Don't show again" Messages and Preferences
+- Added deuterium support to the MolEdit (without UI binding)
 - Added implicit hydrogen stripping switch to Sketcher
 - Added 3D model source reference to Tool menu
 - Added NIST Chemistry WebBook page reference

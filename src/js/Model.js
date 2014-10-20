@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * 3D model wrapper
+ * @type {Object}
+ */
 var Model = {
 	data: {
 		mol: "",
@@ -57,6 +61,8 @@ var Model = {
 	init: function(cb, rnd)
 	{
 		this.pixelMult = MolView.devicePixelRatio;
+
+		this.setBackground(Preferences.get("model", "background", "black"));
 
 		if(this.GLmol && this.JSmol && this.CDW)//all plugins are loaded
 		{
@@ -357,6 +363,8 @@ var Model = {
 	 */
 	setBackground: function(color)
 	{
+		Preferences.set("model", "background", color);
+
 		this.bg.colorName = color;
 		this.bg.hex = color != "white" ? color != "gray" ? 0x000000 : 0xcccccc : 0xffffff;
 		this.bg.rgb = [this.bg.hex >> 16, this.bg.hex >> 8 & 0xFF, this.bg.hex & 0xFF];

@@ -32,6 +32,10 @@ function getISOLanguageCode(str)
 	return str;
 }
 
+/**
+ * Wrapper handling all AJAX calls for loading remote data
+ * @type {Object}
+ */
 var Request = {
 	/**
 	 * Server Environment variables passed to JavaScript using PHP
@@ -557,7 +561,7 @@ var Request = {
 		{
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles="
 					+ encodeURIComponent(smiles) + "&image_size=" + (300 * MolView.devicePixelRatio)
-					+ "x" + (300 * MolView.devicePixelRatio);;
+					+ "x" + (300 * MolView.devicePixelRatio);
 		},
 
 		/**
@@ -746,7 +750,7 @@ var Request = {
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "json",
-				url: "php/cod.php?type=search&q=" + encodeURIComponent(text),
+				url: "php/cod.php?action=search&q=" + encodeURIComponent(text),
 				success: function(data)
 				{
 					Progress.increment();
@@ -769,12 +773,27 @@ var Request = {
 			});
 		},
 
-		SMILES: function(codids, success, error)
+		smiles: function(codids, success, error)
 		{
 			if(xhr !== undefined) xhr.abort();
 			xhr = AJAX({
 				dataType: "json",
-				url: "php/cod.php?type=smiles&codids=" + codids,
+				url: "php/cod.php?action=smiles&codids=" + codids,
+				success: success,
+				error: function(jqXHR, textStatus)
+				{
+					if(textStatus != "error") return;
+					if(error) error();
+				}
+			});
+		},
+
+		name: function(codids, success, error)
+		{
+			if(xhr !== undefined) xhr.abort();
+			xhr = AJAX({
+				dataType: "json",
+				url: "php/cod.php?action=name&codids=" + codids,
 				success: success,
 				error: function(jqXHR, textStatus)
 				{

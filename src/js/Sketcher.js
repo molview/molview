@@ -16,6 +16,11 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * MolView sketcher wrapper
+ * Wraps MolEdit
+ * @type {Object}
+ */
 var Sketcher = {
 	moledit: undefined,
 	metadata: {
@@ -30,17 +35,24 @@ var Sketcher = {
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
-		$("#hstrip").on(MolView.trigger, function()
+		$("#hstrip")
+				.toggleClass("tool-button-selected",
+						Preferences.get("sketcher", "hstrip", true))
+				.on(MolView.trigger, function()
 		{
 			if($(this).toggleClass("tool-button-selected").hasClass("tool-button-selected"))
 			{
 				Sketcher.moledit.removeImplicitHydrogen();
 			}
+
+			Preferences.set("sketcher", "hstrip", $(this).hasClass("tool-button-selected"))
 		});
 
 		if(Detector.canvas)
 		{
-			this.moledit = new ChemicalView(document.getElementById("moledit-area"), document.getElementById("moledit-canvas"), MolView.devicePixelRatio);
+			this.moledit = new MolEdit(document.getElementById("moledit-area"),
+					document.getElementById("moledit-canvas"), MolView.devicePixelRatio,
+					MolView.touch);
 
 			if(MolView.loadDefault)
 			{
@@ -173,9 +185,9 @@ var Sketcher = {
 		else return "";
 	},
 
-	removeAllHydrogen: function()
+	removeAllHydrogens: function()
 	{
-		this.moledit.removeAllHydrogen();
+		this.moledit.removeAllHydrogens();
 	},
 
 	markOutdated: function()

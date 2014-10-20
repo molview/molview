@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Share/embed dialog wrapper
+ * @type {Object}
+ */
 var Link = {
 	embedHTML: "",
 

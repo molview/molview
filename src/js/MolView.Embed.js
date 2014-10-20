@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Lightweight MolView variant for /embed
+ * @type {Object}
+ */
 var MolView = {
 	touch: false,
 	mobile: false,

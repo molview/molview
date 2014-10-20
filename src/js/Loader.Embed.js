@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Lightweight Loader.js variant for /embed
+ * @type {Object}
+ */
 var Loader = {
 	CIRsearch: function()
 	{

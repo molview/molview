@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * MolView spectra layer wrapper
+ * @type {Object}
+ */
 var Spectroscopy = {
     data: {},
     smiles: undefined,

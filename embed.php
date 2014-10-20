@@ -114,6 +114,14 @@ Query parameters:
 				"#000000" : "#cccccc" : "#ffffff").'"';
 		}
 	?>>
+		<!-- Get preferred model background color from localStorage -->
+		<script type="text/javascript">
+			if(localStorage && localStorage["model.background"])
+			{
+				var c = localStorage["model.background"];
+				$("#model").css("background", c == "gray" ? "#ccc" : c);
+			}
+		</script>
 		<input id="search-input" style="display: none" />
 		<div id="chemdoodle" class="render-engine full-cover" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>

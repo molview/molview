@@ -22,7 +22,7 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-ChemicalView.prototype.wtos = function (p)
+MolEdit.prototype.wtos = function (p)
 {
 	return {
 		x: p.x * this.kfc + this.dx,
@@ -31,7 +31,7 @@ ChemicalView.prototype.wtos = function (p)
 	};
 }
 
-ChemicalView.prototype.stow = function (p)
+MolEdit.prototype.stow = function (p)
 {
 	return {
 		x: (p.x - this.dx) / this.kfc,
@@ -40,7 +40,7 @@ ChemicalView.prototype.stow = function (p)
 	};
 }
 
-ChemicalView.prototype.stowd = function (p)
+MolEdit.prototype.stowd = function (p)
 {
 	return {
 		x: p.x / this.kfc,
@@ -49,7 +49,7 @@ ChemicalView.prototype.stowd = function (p)
 	};
 }
 
-ChemicalView.prototype.bondRect = function (bo)
+MolEdit.prototype.bondRect = function (bo)
 {
 	var at1 = this.chem.atoms[bo.fr];
 	var at2 = this.chem.atoms[bo.to];
@@ -63,7 +63,7 @@ ChemicalView.prototype.bondRect = function (bo)
 	return [veadd(veadd(at1, v), dir), veadd(veadd(at2, v), vemulby(dir, -1)), veadd(veadd(at2, vemulby(v, -1)), vemulby(dir, -1)), veadd(veadd(at1, vemulby(v, -1)), dir)];
 }
 
-ChemicalView.prototype.atomRect = function (at, fontSize)
+MolEdit.prototype.atomRect = function (at, fontSize)
 {
 	var p = this.wtos(at);
 	return {
@@ -74,24 +74,24 @@ ChemicalView.prototype.atomRect = function (at, fontSize)
 	}
 }
 
-ChemicalView.prototype.bondOrtho = function (atnum1, atnum2, ty, len)
+MolEdit.prototype.bondOrtho = function (atnum1, atnum2, ty, len)
 {
 	return this.chem.bondOrtho(atnum1, atnum2, ty, len);
 }
 
-ChemicalView.prototype.moveTo = function (p)
+MolEdit.prototype.moveTo = function (p)
 {
 	var p1 = this.wtos(p);
 	this.ctx.moveTo(p1.x, p1.y);
 }
 
-ChemicalView.prototype.lineTo = function (p)
+MolEdit.prototype.lineTo = function (p)
 {
 	var p1 = this.wtos(p);
 	this.ctx.lineTo(p1.x, p1.y);
 }
 
-ChemicalView.prototype.drawLine = function (fr, to)
+MolEdit.prototype.drawLine = function (fr, to)
 {
 	var p1 = this.wtos(fr);
 	var p2 = this.wtos(to);
@@ -101,7 +101,7 @@ ChemicalView.prototype.drawLine = function (fr, to)
 
 //--------------------------------------------------------------Events & Drawing-----------------------------------------------------------------
 
-ChemicalView.prototype.onKeyPress = function (ev)
+MolEdit.prototype.onKeyPress = function (ev)
 {
 	var code = ev.charCode ? ev.charCode : ev.keyCode;
 	var key = String.fromCharCode(code);
@@ -180,7 +180,7 @@ ChemicalView.prototype.onKeyPress = function (ev)
 	}
 }
 
-ChemicalView.prototype.getDragAtoms = function ()
+MolEdit.prototype.getDragAtoms = function ()
 {
 	if(this.h_atom == -1) return [];
 	if(this.chem.atoms[this.h_atom].ms & M_CE)
@@ -193,8 +193,8 @@ ChemicalView.prototype.getDragAtoms = function ()
 	else return [this.h_atom];
 }
 
-//MODIFIED version of ChemicalView.getDragAtoms (doesn't require h_atom)
-ChemicalView.prototype.getSelectedAtoms = function ()
+//MODIFIED version of MolEdit.getDragAtoms (doesn't require h_atom)
+MolEdit.prototype.getSelectedAtoms = function ()
 {
 	var res = [];
 	for(var i = 0; i < this.chem.atoms.length; i++)
@@ -202,7 +202,7 @@ ChemicalView.prototype.getSelectedAtoms = function ()
 	return res;
 }
 
-ChemicalView.prototype.atomLabel = function (at)
+MolEdit.prototype.atomLabel = function (at)
 {
 	var lbl = '';
 	var q = this.chem.get_qfm(at);
@@ -229,7 +229,7 @@ ChemicalView.prototype.atomLabel = function (at)
 	return lbl;
 }
 
-ChemicalView.prototype.updateKfc = function (chem, margin)
+MolEdit.prototype.updateKfc = function (chem, margin)
 {
 	if(chem.maxx - chem.minx != 0 && chem.maxy - chem.miny != 0)
 		this.kfc = Math.min(40., (this.canvas.width - margin * 2) / (chem.maxx - chem.minx), (this.canvas.height - margin * 2) / (chem.maxy - chem.miny));
@@ -242,7 +242,7 @@ ChemicalView.prototype.updateKfc = function (chem, margin)
 	this.updateZoom = false;
 }
 
-ChemicalView.prototype.drawMol = function()
+MolEdit.prototype.drawMol = function()
 {
 	var fontSize = 14 * this.scaleFactor;
 
@@ -321,7 +321,7 @@ ChemicalView.prototype.drawMol = function()
 		}
 
 		/* hover */
-		if(this.h_atom == i)
+		if(this.h_atom == i && !this.touchOnly)
 		{
 			this.ctx.lineWidth = this.hoverStyle.width;
 			this.ctx.strokeStyle = this.hoverStyle.stroke;
@@ -432,7 +432,7 @@ ChemicalView.prototype.drawMol = function()
 	this.ctx.stroke();
 
 	/* hovered bond */
-	if(this.h_bond != -1)
+	if(this.h_bond != -1 && !this.touchOnly)
 	{
 		this.ctx.beginPath();
 
@@ -496,11 +496,11 @@ ChemicalView.prototype.drawMol = function()
 }
 
 var Rings = [
-	(new Chemical())
-	.makeRing(6, true), (new Chemical())
-	.makeRing(3, false), (new Chemical())
-	.makeRing(4, false), (new Chemical())
-	.makeRing(5, false), (new Chemical())
-	.makeRing(6, false), (new Chemical())
+	(new MEChemical())
+	.makeRing(6, true), (new MEChemical())
+	.makeRing(3, false), (new MEChemical())
+	.makeRing(4, false), (new MEChemical())
+	.makeRing(5, false), (new MEChemical())
+	.makeRing(6, false), (new MEChemical())
 	.makeRing(7, false)
 ];

@@ -37,6 +37,7 @@ module.exports = function(grunt)
 					'src/js/lib/jquery.min.js',
 					'src/js/lib/jquery.hotkeys.js',
 					'src/js/lib/Detector.js',
+					'src/js/Utility.js',
 
 					//Ketcher
 					'src/js/m2s/prototype.js',
@@ -57,13 +58,13 @@ module.exports = function(grunt)
 					'src/js/m2s/chem/inchi.js',
 
 					//MolEdit
-					'src/js/moledit/Constants.js',
-					'src/js/moledit/Objects.js',
-					'src/js/moledit/Chemical.js',
-					'src/js/moledit/ChemicalView.js',
-					'src/js/moledit/ChemicalViewCore.js',
-					'src/js/moledit/ChemicalViewEvents.js',
-					'src/js/moledit/Utility.js',
+					'src/js/moledit/MolEdit_constants.js',
+					'src/js/moledit/MolEdit_objects.js',
+					'src/js/moledit/MolEdit_utility.js',
+					'src/js/moledit/MEChemical.js',
+					'src/js/moledit/MolEdit.js',
+					'src/js/moledit/MolEdit_core.js',
+					'src/js/moledit/MolEdit_events.js',
 
 					//GLmol
 					'src/js/lib/three.min.js',
@@ -84,7 +85,7 @@ module.exports = function(grunt)
 					'src/datasets/MineralNames.js',
 
 					//MolView source
-					'src/js/Utility.js',
+					'src/js/Preferences.js',
 					'src/js/History.js',
 					'src/js/Progress.js',
 					'src/js/Messages.js',
@@ -130,6 +131,7 @@ module.exports = function(grunt)
 					compress: { drop_console: true }
 				},
 				src: [
+					'src/js/Data.js',
 					'src/js/lib/JSmol.min.js',
 					'src/js/lib/jquery.min.js',
 					'src/js/lib/Detector.js',
@@ -137,6 +139,7 @@ module.exports = function(grunt)
 					'src/js/lib/GLmol.js',
 					'src/js/lib/ChemDoodleWeb.js',
 					'src/js/Utility.js',
+					'src/js/Preferences.js',
 					'src/js/Progress.js',
 					'src/js/Messages.js',
 					'src/js/GLmolPlugin.js',

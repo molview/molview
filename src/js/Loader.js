@@ -16,6 +16,12 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Loads remote data into MolView
+ * Wrapper of Request.js
+ * Called mainly by Actions.js
+ * @type {Object}
+ */
 var Loader = {
 	lastQuery: {
 		type: "",//q || cid || pdbid || codid || smiles
@@ -93,7 +99,7 @@ var Loader = {
 			},
 			function()
 			{
-				Messages.alert("search_noreach");
+				Messages.alert("remote_noreach");
 			});
 		},
 
@@ -310,7 +316,7 @@ var Loader = {
 			},
 			function()
 			{
-				Messages.alert("search_noreach");
+				Messages.alert("remote_noreach");
 			});
 		},
 
@@ -367,7 +373,6 @@ var Loader = {
 
 				Progress.complete();
 				Messages.clear();
-				Messages.alert("sketcher_no_macromolecules");
 
 				Loader.setQuery("pdbid", pdbid);
 			}
@@ -469,7 +474,7 @@ var Loader = {
 			},
 			function(offline)
 			{
-				Messages.alert(offline ? "search_noreach" : "search_fail");
+				Messages.alert(offline ? "remote_noreach" : "search_fail");
 			});
 		},
 
@@ -480,7 +485,7 @@ var Loader = {
 		 * @param {String} cid          PubChem Compound ID for 2D depiction
 		 * @param {String} PubChem_name PubChem Compound Name for 2D depiction
 		 */
-		loadCODID: function(codid, name, cid, PubChem_name)
+		loadCODID: function(codid, name, PubChem_name)
 		{
 			Progress.reset(4);
 
@@ -496,8 +501,75 @@ var Loader = {
 				Loader.setQuery("codid", codid);
 			}
 
-			function load()
+			function smilesFallback(cb)//cb(mol2d, smiles)
 			{
+				Request.COD.smiles(codid, function(data)
+				{
+					Progress.increment();
+
+					if(data.records[0].smiles == "")
+					{
+						cb(null);
+					}
+					else
+					{
+						Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
+						function(mol2d)
+						{
+							cb(mol2d, data.records[0].smiles);
+						}, function() { cb(null); });
+					}
+				}, function() { cb(null); });
+			}
+
+			function fallback()
+			{
+				smilesFallback(function(mol2d, smiles)
+				{
+					if(mol2d)
+					{
+						Sketcher.metadata.smiles = smiles;
+						Sketcher.loadMOL(mol2d);
+						Sketcher.removeAllHydrogens();
+						Sketcher.markUpdated();
+
+						finish();
+						Messages.alert("crystal_2d_unreliable");
+					}
+					else
+					{
+						finish();
+						Messages.alert("crystal_2d_fail");
+					}
+				});
+			}
+
+			function nameToCID(name)
+			{
+				Request.PubChem.nameToCID(name, function(cid)
+				{
+					Progress.increment();
+
+					Request.PubChem.sdf(cid, true, function(mol2d)
+					{
+						Sketcher.metadata.cid = cid;
+						Sketcher.loadMOL(mol2d);
+						Sketcher.markUpdated();
+
+						finish();
+						Messages.alert("crystal_2d_unreliable");
+					},
+					function()
+					{
+						finish();
+						Messages.alert("crystal_2d_fail");
+					});
+				}, fallback);
+			}
+
+			Messages.process(function()
+			{
+				//load CIF
 				Request.COD.CIF(codid, function(cif)
 				{
 					if(cif.length > 1)
@@ -506,57 +578,51 @@ var Loader = {
 						{
 							Progress.increment();
 
-							if(cid)
-							{
-								Request.PubChem.sdf(cid, true, function(mol2d)
-								{
-									Sketcher.metadata.cid = cid;
-									Sketcher.loadMOL(mol2d);
-									Sketcher.markUpdated();
-									finish();
-									Messages.alert("crystal_2d_unreliable");
-								},
-								function()
-								{
-									finish();
-									Messages.alert("crystal_2d_fail");
-								});
-							}
+							/*
+							load structural formule
+
+							if PubChem_name is defined
+							  - check if PubChem_name is CID primary name
+							  - convert name to PubChem CID
+							  - CID to 2D sdf
 							else
+							  - convert CODID to name
+							  - convert name to PubChem CID
+							  - CID to 2D sdf
+							fallback
+							  - CODID to smiles
+							  - Resolve smiles using CIR
+							*/
+
+							if(PubChem_name != undefined)
 							{
-								Request.COD.SMILES(codid, function(data)
+								//check if PubChem_name is CID primary name
+								Request.PubChem.primaryName(PubChem_name, function(name)
 								{
 									Progress.increment();
 
-									if(data.records[0].smiles == "")
+									if(name.toLowerCase() == PubChem_name.toLowerCase())
 									{
-										finish();
-										Messages.alert("crystal_2d_fail");
+										//convert name to PubChem CID
+										nameToCID(name);
 									}
-									else
-									{
-										Request.ChemicalIdentifierResolver.resolve2d(data.records[0].smiles,
-										function(mol2d)
-										{
-											Sketcher.metadata.smiles = data.records[0].smiles;
-											Sketcher.loadMOL(mol2d);
-											Sketcher.removeAllHydrogen();
-											Sketcher.markUpdated();
-											finish();
-											Messages.alert("crystal_2d_unreliable");
-										},
-										function()
-										{
-											finish();
-											Messages.alert("crystal_2d_fail");
-										});
-									}
-								},
-								function()
+									else fallback();
+								}, fallback);
+							}
+							else
+							{
+								//convert CODID to name
+								Request.COD.name(codid, function(data)
 								{
-									finish();
-									Messages.alert("crystal_2d_fail");
-								});
+									Progress.increment();
+
+									if(data.records[0].name != "")
+									{
+										//convert name to PubChem CID
+										nameToCID(data.records[0].name);
+									}
+									else fallback();
+								}, fallback);
 							}
 						});
 					}
@@ -569,37 +635,6 @@ var Loader = {
 				{
 					Messages.alert("load_fail");
 				});
-			}
-
-			Messages.process(function()
-			{
-				if(PubChem_name)
-				{
-					//only use PubChem_name if it's the compounds primary name
-					Request.PubChem.primaryName(PubChem_name, function(name)
-					{
-						Progress.increment();
-
-						if(name.toLowerCase() == PubChem_name.toLowerCase())
-						{
-							Request.PubChem.nameToCID(PubChem_name, function(_cid)
-							{
-								Progress.increment();
-
-								cid = _cid;
-								load();
-							}, load);
-						}
-						else
-						{
-							load();
-						}
-					}, load);
-				}
-				else
-				{
-					load();
-				}
 			}, "crystal");
 		}
 	},
@@ -617,7 +652,7 @@ var Loader = {
 
 		var updated = $("#resolve").hasClass("resolve-updated");
 
-		Progress.reset(2);
+		Progress.reset(1);
 
 		var smiles;
 		try
@@ -630,8 +665,6 @@ var Loader = {
 			return;
 		}
 
-		Progress.increment();
-
 		Request.ChemicalIdentifierResolver.resolve2d(smiles, function(mol)
 		{
 			Sketcher.loadMOL(mol);
@@ -642,7 +675,7 @@ var Loader = {
 		},
 		function()
 		{
-			Messages.alert("clean_fail");
+			Messages.alert("remote_noreach");
 		});
 	},
 
@@ -657,7 +690,7 @@ var Loader = {
 			return;
 		}
 
-		Progress.reset(2);
+		Progress.reset(1);
 
 		var smiles;
 		try
@@ -669,8 +702,6 @@ var Loader = {
 			Messages.alert("smiles_load_error", error);
 			return;
 		}
-
-		Progress.increment();
 
 		Request.ChemicalIdentifierResolver.resolve3d(smiles, function(mol)
 		{
@@ -686,7 +717,7 @@ var Loader = {
 		},
 		function()
 		{
-			Messages.alert("resolve_fail");
+			Messages.alert("remote_noreach");
 		});
 	},
 
