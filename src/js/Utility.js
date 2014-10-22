@@ -235,11 +235,36 @@ function openDataURI(dataURI)
 
 /**
  * Wrapper for jQuery.ajax
- * @param {Object} obj jQuery.ajax parameter
+ * @param {Object}   obj              jQuery.ajax data + additional data
+ * @param {Boolean}  obj.primary      Mark as primary AJAX call; aborts other primary AJAX calls
+ * @param {Function} obj.defaultError Use default error handler with $defaultError as callback
  */
+var xhr;//store primary AJAX call
 function AJAX(obj)
 {
-	return $.ajax(obj);
+	if(obj.primary && xhr !== undefined)
+	{
+		xhr.abort();
+	}
+
+	if(obj.defaultError !== undefined)
+	{
+		obj.error = function(jqXHR, textStatus)
+		{
+			if(textStatus != "error") return;
+			obj.defaultError();
+		}
+	}
+
+	if(obj.primary)
+	{
+		xhr = $.ajax(obj);
+		return xhr;
+	}
+	else
+	{
+		return $.ajax(obj);
+	}
 }
 
 /**

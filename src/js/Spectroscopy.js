@@ -22,7 +22,6 @@
  */
 var Spectroscopy = {
     data: {},
-    smiles: undefined,
     spectrum: undefined,
     spectrumRatio: 1 / .3,
 
@@ -71,7 +70,7 @@ var Spectroscopy = {
     update: function(smiles)
     {
         this.data = {};
-        this.data["smiles"] = smiles;
+        InfoCard.update(smiles);
 
         $("#spectrum-nist-source").hide();
         $("#spectrum").addClass("loading");
@@ -87,8 +86,7 @@ var Spectroscopy = {
             $("#spectrum").removeClass("loading");
         }
 
-        Request.CIR.property(this.data["smiles"], "cas",
-        function(cas)
+        InfoCard.getProperty("cas", function(cas)
         {
             Spectroscopy.data["cas"] = cas;
             Request.NIST.lookup(Spectroscopy.data["cas"], function(data)
@@ -165,13 +163,16 @@ var Spectroscopy = {
         {
             if(!this.data["nmrdb"])
             {
-                Request.NMRdb.prediction(this.data["smiles"], function(jcamp)
+                InfoCard.getProperty("smiles", function(smiles)
                 {
-                    Spectroscopy.data.nmrdb = jcamp;
-                    displayNMRDB();
-                }, function()
-                {
-                    Spectroscopy.print("Spectrum unavailable");
+                    Request.NMRdb.prediction(smiles, function(jcamp)
+                    {
+                        Spectroscopy.data.nmrdb = jcamp;
+                        displayNMRDB();
+                    }, function()
+                    {
+                        Spectroscopy.print("Spectrum unavailable");
+                    });
                 });
             }
             else displayNMRDB();

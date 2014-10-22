@@ -710,7 +710,7 @@ var Loader = {
 			if(cid > 0)
 			{
 				Sketcher.metadata.cid = cid;
-				Loader.setQuery("cid", cid, true);
+				Loader.setQuery("cid", cid);
 			}
 			else
 			{
@@ -721,6 +721,11 @@ var Loader = {
 			Messages.clear();
 
 			document.title = "MolView";
+
+			if(MolView.layout == "sketcher")
+			{
+				MolView.setLayout("model");
+			}
 		},
 		function()
 		{

@@ -89,7 +89,7 @@ var JSmolPlugin = {
 					allowJavaScript: true,
 					use: "HTML5",
 					j2sPath: MolView.JMOL_J2S_PATH,
-					script: 'unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
+					script: 'unbind _setMeasure; unbind "MIDDLE DRAG" "_rotateZorZoom"; bind "MIDDLE DRAG" "_translate";\
 frank off; set specular off;\
 background ' + Model.bg.jmol + '; color label ' + Model.bg.jmol + ';\
 background echo ' + Model.bg.jmol + '; color echo ' + Model.bg.jmol + ';\
@@ -479,6 +479,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 		Model.JSmol.safeCallback(function()
 		{
+			Model.setRepresentation("balls");
 			Model.JSmol._setMeasure(type, noQualityRestore)
 		});
 	},
@@ -511,7 +512,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 			//JSmol.setQuality will disable picking again
 			Model.JSmol._setQuality(Model.JSmol.hq, true);
-			Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingstyle MEASURE; set picking MEASURE " + type + ";");
+			Model.JSmol.scriptWaitOutput("set picking off; set picking on; set pickingStyle MEASURE ON; set picking MEASURE " + type + ";");
 		}
 	},
 

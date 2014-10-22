@@ -23,12 +23,13 @@ error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
 
 $map = array(
-    "thanks" => "pages/thanks.md",
-    "iesupport" => "pages/iesupport.md",
-    "htmlcanvas" => "pages/htmlcanvas.md",
+    "readme" => "README.md",
     "changelog" => "CHANGELOG.md",
     "license" => "LICENSE.md",
     "legal" => "LEGAL.md",
+    "thanks" => "pages/thanks.md",
+    "iesupport" => "pages/iesupport.md",
+    "htmlcanvas" => "pages/htmlcanvas.md",
     "400" => "pages/400.md",
     "401" => "pages/401.md",
     "403" => "pages/403.md",
@@ -37,12 +38,13 @@ $map = array(
 );
 
 $titleMap = array(
-    "thanks" => "Thanks!",
-    "iesupport" => "No support",
-    "htmlcanvas" => "No support",
+    "readme" => "README",
     "changelog" => "Changelog",
     "license" => "License",
     "legal" => "Legal",
+    "thanks" => "Thanks!",
+    "iesupport" => "No support",
+    "htmlcanvas" => "No support",
     "400" => "Bad request",
     "401" => "Authorization required",
     "403" => "Forbidden",
@@ -51,9 +53,7 @@ $titleMap = array(
 );
 
 $copyrightMap = array(
-    "thanks" => false,
-    "iesupport" => false,
-    "htmlcanvas" => false,
+    "readme" => false,
     "changelog" => false,
     "license" => true,
     "legal" => true,
@@ -62,6 +62,9 @@ $copyrightMap = array(
     "403" => false,
     "404" => false,
     "500" => false,
+    "thanks" => false,
+    "iesupport" => false,
+    "htmlcanvas" => false,
 );
 
 $md = file_get_contents($map[$id]);

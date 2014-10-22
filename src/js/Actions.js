@@ -92,6 +92,7 @@ var Actions = {
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
 		InfoCard.update(smiles);
+		InfoCard.load();
 		MolView.setLayer("infocard");
 	},
 

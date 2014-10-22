@@ -11,6 +11,7 @@
 - Patched GLmol.zoomInto bug
 - Fixed GLmol face culling issue
 - Fixed JSmol measure and rotate issue
+- Fixed JSmol unbind default measuring
 
 ### Revisions
 
@@ -22,6 +23,7 @@
 - Removed MyMemory translation from PubChem, RCSB and COD search
 
 #### Functionality
+- Added audo Ball and Stick mode when performing a Jmol measurement
 - Replaced Jmol render-mode menu with HQ switch
 - Removed auto layout-model onload crystals
 - Removed embed warning about slow, non-WebGL devices
@@ -62,7 +64,7 @@
 - Added server-side ?cid redirect if ?smiles is a PubChem entry
 - Added client-side ?smiles with ?cid replacement if ?smiles is a PubChem entry
 - Added SMILES resolving using PubChem (CIR as fallback)
-+ Add CAS lookup method using PubChem (CIR as fallback)
+- Added CAS lookup using PubChem synonyms (CIR as fallback)
 
 #### Functionality
 - Added Autocomplete for compound, mineral and macromolecule names
@@ -81,6 +83,7 @@
 - Added 3D model source reference to Tool menu
 - Added NIST Chemistry WebBook page reference
 - Added percent composition table to Information card
+- Added auto Model view after 2D to 3D while in Sketcher view
 
 #### Design
 - Added UI layer framework (layers: main, search, infocard, spectra)

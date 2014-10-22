@@ -1,6 +1,7 @@
 Wishlist
 ========
 
+- Add autorotate mode
 - Add CIF loader to GLmol
 - Add EDTSurf (protein surfaces) implementation to GLmol
 - Add newest THREE.js version to GLmol
@@ -29,3 +30,4 @@ Wishlist
 - Add backend services using CDK and the Google Cloud Platform
 - Create MolView for Android and iOS using CocoonJS
 - Investigate Mathematica features
+- Add plugin framework and developer SDK

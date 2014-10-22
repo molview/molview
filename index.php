@@ -581,7 +581,7 @@ Query parameters:
 						<h2>About</h2>
 						<div class="dialog-close-btn"></div>
 						<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
-						This web application is built on top of the JavaScript libraries and online services listed below. I also drew inspration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar webapplication.</p>
+						This web application is built on top of the JavaScript libraries and online services listed below. I also drew inspiration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar web application.</p>
 						<ul>
 							<li>JavaScript libraries
 								<ul>
