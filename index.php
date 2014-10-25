@@ -65,16 +65,12 @@ Query parameters:
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 
-		<meta name="viewport" content="width=device-width, user-scalable=no" />
-
-		<?php echo "<title>".$metadata["title"]."</title>"; ?>
-
 		<link rel="shortcut icon" href="favicon-32x32.png" />
-
+		<?php echo "<title>".$metadata["title"]."</title>"; ?>
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" <?php echo 'content="'.$metadata["keywords"].'"' ?> />
 
@@ -84,42 +80,53 @@ Query parameters:
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="MolView" />
 		<?php
-			echo '<meta name="description" content="'.$metadata["description"].'" />';
-
+			//title
 			echo '<meta name="twitter:title" property="og:title" content="'.$metadata["title"].'" />';
 			echo '<meta itemprop="name" content="'.$metadata["title"].'" />';
 
-			echo '<meta name="twitter:description" property="og:description" content="'.$metadata["description"].'" />';
-			echo '<meta itemprop="description" content="'.$metadata["description"].'" />';
+			//description
+			echo '<meta name="description" content="'.
+			$metadata["description"].'" />';
+			echo '<meta name="twitter:description" property="og:description" content="'.
+			$metadata["description"].'" />';
+			echo '<meta itemprop="description" content="'.
+			$metadata["description"].'" />';
 
-			echo '<meta itemprop="sameAs" content="'.$metadata["same_as"].'" />';
-
+			//image
 			if(isset($metadata["pubchem_query"]))
 			{
 				if($metadata["pubchem_query"] == "smiles")
 				{
-					echo '<meta name="twitter:image:src" property="og:image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles='.urlencode($metadata["pubchem_value"]).'&record_type=2d" />';
-					echo '<meta itemprop="image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles='.urlencode($metadata["pubchem_value"]).'record_type=2d" />';
+					echo '<meta name="twitter:image:src" property="og:image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles='.
+							urlencode($metadata["pubchem_value"]).'&record_type=2d" />';
+					echo '<meta itemprop="image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles='.
+							urlencode($metadata["pubchem_value"]).'record_type=2d" />';
 				}
 				else
 				{
-					echo '<meta name="twitter:image:src" property="og:image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'.$metadata["pubchem_query"].'/'.$metadata["pubchem_value"].'/png?record_type=2d" />';
-					echo '<meta itemprop="image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'.$metadata["pubchem_query"].'/'.$metadata["pubchem_value"].'/png?record_type=2d" />';
+					echo '<meta name="twitter:image:src" property="og:image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'.
+							$metadata["pubchem_query"].'/'.$metadata["pubchem_value"].'/png?record_type=2d" />';
+					echo '<meta itemprop="image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'.
+							$metadata["pubchem_query"].'/'.$metadata["pubchem_value"].'/png?record_type=2d" />';
 				}
 			}
 			else
 
 			{
-				echo '<meta name="twitter:image:src" itemprop="image" property="og:image" content="'.$metadata["image_url"].'" />';
-				echo '<meta itemprop="image" content="'.$metadata["image_url"].'" />';
+				echo '<meta name="twitter:image:src" itemprop="image" property="og:image" content="'.
+						$metadata["image_url"].'" />';
+				echo '<meta itemprop="image" content="'.
+						$metadata["image_url"].'" />';
 			}
+
+			//special metadata
+			echo '<meta itemprop="sameAs" content="'.$metadata["same_as"].'" />';
 		?>
 
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
-
 		<?php
 			if($touch)
 			{
@@ -241,11 +248,11 @@ Query parameters:
 					<div id="search-dropdown" class="dropdown">
 						<a class="dropdown-toggle"></a>
 						<ul class="dropdown-menu dropdown-left">
-							<li class="menu-item"><a id="show-search-layer">Show last search results</a></li>
+							<li class="menu-item"><a id="action-show-search-layer">Show last search results</a></li>
 							<li class="menu-header">Advanced search</li>
-							<li class="menu-item"><a id="pubchem-search">PubChem Compounds</a></li>
-							<li class="menu-item"><a id="rcsb-search">RCSB Protein Data Bank</a></li>
-							<li class="menu-item"><a id="cod-search">Crystallography Open Database</a></li>
+							<li class="menu-item"><a id="action-search-pubchem">PubChem Compounds</a></li>
+							<li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li>
+							<li class="menu-item"><a id="action-search-cod">Crystallography Open Database</a></li>
 						</ul>
 					</div>
 				</form>
@@ -255,100 +262,100 @@ Query parameters:
 						<ul class="dropdown-menu">
 							<li class="menu-header">Layout</li>
 							<li id="layout-menu">
-								<a id="window-model" <?php if($contentClass == "model") echo 'class="selected"' ?>></a>
-								<a id="window-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>></a>
+								<a id="action-layout-model" <?php if($contentClass == "model") echo 'class="selected"' ?>></a>
+								<a id="action-layout-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>></a>
 								<br/>
-								<a id="window-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
-								<a id="window-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
+								<a id="action-layout-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
+								<a id="action-layout-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
 							<li class="menu-header">Theme</li>
-							<li class="menu-item"><a id="theme-desktop" <?php if(!$touch) echo 'class="checked"'; ?>>Desktop</a></li>
-							<li class="menu-item"><a id="theme-touch" <?php if($touch) echo 'class="checked"'; ?>>Touch</a></li>
+							<li class="menu-item"><a id="action-theme-desktop" <?php if(!$touch) echo 'class="checked"'; ?>>Desktop</a></li>
+							<li class="menu-item"><a id="action-theme-touch" <?php if($touch) echo 'class="checked"'; ?>>Touch</a></li>
 							<li class="menu-header">Information</li>
-							<li class="menu-item"><a id="mv-help">Help</a></li>
-							<li class="menu-item"><a id="mv-about">About</a></li>
+							<li class="menu-item"><a id="action-help">Help</a></li>
+							<li class="menu-item"><a id="action-about">About</a></li>
 						</ul>
 					</li>
 					<li id="tools-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Tools</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Link</li>
-							<li class="menu-item"><a id="mv-share">Share</a></li>
-							<li class="menu-item"><a id="mv-embed">Embed</a></li>
+							<li class="menu-item"><a id="action-share">Share</a></li>
+							<li class="menu-item"><a id="action-embed">Embed</a></li>
 							<li class="menu-header">Export</li>
-							<li class="menu-item"><a id="export-2d">Structural formula image</a></li>
-							<li class="menu-item"><a id="export-3d">3D model image</a></li>
-							<li class="menu-item"><a id="save-local-3d">MOL file</a></li>
+							<li class="menu-item"><a id="action-export-sketcher-png">Structural formula image</a></li>
+							<li class="menu-item"><a id="action-export-model-png">3D model image</a></li>
+							<li class="menu-item"><a id="action-export-model">MOL file</a></li>
 							<li class="menu-header">Chemical data</li>
-							<li class="menu-item"><a id="data-infocard">Information card</a></li>
-							<li class="menu-item"><a id="data-spectra">Spectroscopy</a></li>
-							<li class="menu-item"><a id="data-3d-source" class="disabled" target="_blank">3D model resource</a></li>
+							<li class="menu-item"><a id="action-data-infocard">Information card</a></li>
+							<li class="menu-item"><a id="action-data-spectra">Spectroscopy</a></li>
+							<li class="menu-item"><a id="model-source" class="disabled" target="_blank">3D model source</a></li>
 							<li class="menu-header">Advanced search</li>
-							<li class="menu-item"><a id="search-similarity">Similarity</a></li>
-							<li class="menu-item"><a id="search-substructure">Substructure</a></li>
-							<li class="menu-item"><a id="search-superstructure">Superstructure</a></li>
+							<li class="menu-item"><a id="action-search-similarity">Similarity</a></li>
+							<li class="menu-item"><a id="action-search-substructure">Substructure</a></li>
+							<li class="menu-item"><a id="action-search-superstructure">Superstructure</a></li>
 						</ul>
 					</li>
 					<li id="model-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Model</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="model-reset">Reset</a></li>
+							<li class="menu-item"><a id="action-model-reset">Reset</a></li>
 							<li class="menu-header">Representation</li>
-							<li class="menu-item"><a id="model-balls" class="r-mode checked">Ball and Stick</a></li>
-							<li class="menu-item"><a id="model-stick" class="r-mode">Stick</a></li>
-							<li class="menu-item"><a id="model-vdw" class="r-mode">van der Waals Spheres</a></li>
-							<li class="menu-item"><a id="model-wireframe" class="r-mode">Wireframe</a></li>
-							<li class="menu-item"><a id="model-line" class="r-mode">Line</a></li>
+							<li class="menu-item"><a id="action-model-balls" class="r-mode checked">Ball and Stick</a></li>
+							<li class="menu-item"><a id="action-model-stick" class="r-mode">Stick</a></li>
+							<li class="menu-item"><a id="action-model-vdw" class="r-mode">van der Waals Spheres</a></li>
+							<li class="menu-item"><a id="action-model-wireframe" class="r-mode">Wireframe</a></li>
+							<li class="menu-item"><a id="action-model-line" class="r-mode">Line</a></li>
 							<li class="menu-header">Background</li>
-							<li class="menu-item"><a id="model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
-							<li class="menu-item"><a id="model-bg-gray" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
-							<li class="menu-item"><a id="model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
+							<li class="menu-item"><a id="action-model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
+							<li class="menu-item"><a id="action-model-bg-gray" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
+							<li class="menu-item"><a id="action-model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
-							<li class="menu-item"><a id="engine-glmol" class="checked">GLmol</a></li>
-							<li class="menu-item"><a id="engine-jmol">Jmol</a></li>
-							<li class="menu-item"><a id="engine-cdw">ChemDoodle</a></li>
+							<li class="menu-item"><a id="action-engine-glmol" class="checked">GLmol</a></li>
+							<li class="menu-item"><a id="action-engine-jmol">Jmol</a></li>
+							<li class="menu-item"><a id="action-engine-cdw">ChemDoodle</a></li>
 							<li class="menu-header">Crystallography</li>
-							<li class="menu-item"><a id="cif-unit-cell">Load unit cell</a></li>
-							<li class="menu-item"><a id="cif-2x2x2-cell">Load 2&times;2&times;2 supercell</a></li>
-							<li class="menu-item"><a id="cif-1x3x3-cell">Load 1&times;3&times;3 supercell</a></li>
+							<li class="menu-item"><a id="action-cif-unit-cell">Load unit cell</a></li>
+							<li class="menu-item"><a id="action-cif-cubic-supercell">Load 2&times;2&times;2 supercell</a></li>
+							<li class="menu-item"><a id="action-cif-flat-supercell">Load 1&times;3&times;3 supercell</a></li>
 						</ul>
 					</li>
 					<li id="protein-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Protein</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="bio-assembly">Show bio assembly</a></li>
+							<li class="menu-item"><a id="action-bio-assembly">Show bio assembly</a></li>
 							<li class="menu-header">Chain representation</li>
-							<li class="menu-item"><a id="chain-type-ribbon" class="chain-type checked">Ribbon</a></li>
-							<li class="menu-item"><a id="chain-type-cylinders" class="chain-type">Cylinder and plate</a></li>
-							<li class="menu-item"><a id="chain-type-btube" class="chain-type">B-factor tube</a></li>
-							<li class="menu-item"><a id="chain-type-ctrace" class="chain-type">C-alpha trace</a></li>
+							<li class="menu-item"><a id="action-chain-type-ribbon" class="chain-type checked">Ribbon</a></li>
+							<li class="menu-item"><a id="action-chain-type-cylinders" class="chain-type">Cylinder and plate</a></li>
+							<li class="menu-item"><a id="action-chain-type-btube" class="chain-type">B-factor tube</a></li>
+							<li class="menu-item"><a id="action-chain-type-ctrace" class="chain-type">C-alpha trace</a></li>
 							<li class="menu-divider"></li>
-							<li class="menu-item"><a id="chain-type-bonds">Bonds</a></li>
+							<li class="menu-item"><a id="action-chain-type-bonds">Bonds</a></li>
 							<li class="menu-header">Chain color scheme</li>
-							<li class="menu-item"><a id="chain-color-ss" class="chain-color checked">Secondary structure</a></li>
-							<li class="menu-item"><a id="chain-color-spectrum" class="chain-color">Spectrum</a></li>
-							<li class="menu-item"><a id="chain-color-chain" class="chain-color">Chain</a></li>
-							<li class="menu-item"><a id="chain-color-residue" class="chain-color">Residue</a></li>
-							<li class="menu-item"><a id="chain-color-polarity" class="chain-color">Polarity</a></li>
-							<li class="menu-item"><a id="chain-color-bfactor" class="chain-color">B-factor</a></li>
+							<li class="menu-item"><a id="action-chain-color-ss" class="chain-color checked">Secondary structure</a></li>
+							<li class="menu-item"><a id="action-chain-color-spectrum" class="chain-color">Spectrum</a></li>
+							<li class="menu-item"><a id="action-chain-color-chain" class="chain-color">Chain</a></li>
+							<li class="menu-item"><a id="action-chain-color-residue" class="chain-color">Residue</a></li>
+							<li class="menu-item"><a id="action-chain-color-polarity" class="chain-color">Polarity</a></li>
+							<li class="menu-item"><a id="action-chain-color-bfactor" class="chain-color">B-factor</a></li>
 						</ul>
 					</li>
 					<li id="jmol-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="jmol-hq" class="checked">High Quality</a></li>
-							<li class="menu-item"><a id="jmol-clean" class="jmol-script">Clean</a></li>
-							<li class="menu-header jmol-script">Calculations</li>
-							<li class="menu-item"><a id="mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
-							<li class="menu-item"><a id="mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
-							<li class="menu-item"><a id="jmol-charge" class="jmol-script jmol-calc">Charge</a></li>
-							<li class="menu-item"><a id="bond-dipoles" class="jmol-script jmol-calc">Bond dipoles</a></li>
-							<li class="menu-item"><a id="net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
-							<li class="menu-item"><a id="jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
+							<li class="menu-item"><a id="action-jmol-hq" class="checked">High Quality</a></li>
+							<li class="menu-item"><a id="action-jmol-clean" class="jmol-script">Clean</a></li>
+							<li class="menu-header jmol-script jmol-calc">Calculations</li>
+							<li class="menu-item"><a id="action-jmol-mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
+							<li class="menu-item"><a id="action-jmol-mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
+							<li class="menu-item"><a id="action-jmol-charge" class="jmol-script jmol-calc">Charge</a></li>
+							<li class="menu-item"><a id="action-jmol-bond-dipoles" class="jmol-script jmol-calc">Bond dipoles</a></li>
+							<li class="menu-item"><a id="action-jmol-net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
+							<li class="menu-item"><a id="action-jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
 							<li class="menu-header jmol-script">Measurement</li>
-							<li class="menu-item"><a id="measure-distance" class="jmol-script jmol-picking">Distance</a></li>
-							<li class="menu-item"><a id="measure-angle" class="jmol-script jmol-picking">Angle</a></li>
-							<li class="menu-item"><a id="measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
+							<li class="menu-item"><a id="action-jmol-measure-distance" class="jmol-script jmol-picking">Distance</a></li>
+							<li class="menu-item"><a id="action-jmol-measure-angle" class="jmol-script jmol-picking">Angle</a></li>
+							<li class="menu-item"><a id="action-jmol-measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -414,9 +421,9 @@ Query parameters:
 								<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
 								<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
 								<div class="horizontal-separator"></div>
-								<div id="hstrip" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Toggle hydrogen stripping"></div>
-								<div id="clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
-								<div id="resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
+								<div id="action-hstrip" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Toggle hydrogen stripping"></div>
+								<div id="action-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
+								<div id="action-resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
 							</div>
 						</div>
 						<div id="elem-tools" class="toolbar">
@@ -433,7 +440,7 @@ Query parameters:
 								<div id="me-atom-br" class="tool-button mode" title="Bromine">Br</div>
 								<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
 								<div class="vertical-separator"></div>
-								<div id="info" class="tool-button" title="Information"></div>
+								<div id="action-info" class="tool-button" title="Information"></div>
 							</div>
 						</div>
 						<div id="moledit-area" class="edit-area">
@@ -468,9 +475,9 @@ Query parameters:
 					<button class="btn close btn-primary "><i class="fa fa-arrow-left"></i> Return</button>
 				</div>
 				<div class="container"></div>
-				<div id="load-more-pubchem" class="load-more" style="display: none;"></div>
-				<div id="load-more-rcsb" class="load-more" style="display: none;"></div>
-				<div id="load-more-cod" class="load-more" style="display: none;"></div>
+				<div id="action-load-more-pubchem" class="load-more" style="display: none;"></div>
+				<div id="action-load-more-rcsb" class="load-more" style="display: none;"></div>
+				<div id="action-load-more-cod" class="load-more" style="display: none;"></div>
 			</div>
 			<div id="infocard-layer" class="layer data-layer" style="display: none;">
 				<div class="btn-group-bar">
@@ -538,8 +545,8 @@ Query parameters:
 				<div class="btn-group-bar">
 					<button class="btn close btn-primary "><i class="fa fa-arrow-left"></i> Return</button>
 					<select id="spectrum-select"></select>
-					<button id="png-current-spectrum" class="btn"><i class="fa fa-download"></i> Download PNG image</button>
-					<button id="jcamp-current-spectrum" class="btn"><i class="fa fa-download"></i> Download JCAMP data</button>
+					<button id="action-export-spectrum-png" class="btn"><i class="fa fa-download"></i> Download PNG image</button>
+					<button id="action-export-spectrum-jcamp" class="btn"><i class="fa fa-download"></i> Download JCAMP data</button>
 					<a id="spectrum-nist-source" class="btn" target="_blank"><i class="fa fa-link"></i> NIST source</a>
 				</div>
 				<div id="spectrum-wrapper">
@@ -559,7 +566,7 @@ Query parameters:
 						<p>MolView is a modern webapp for chemistry education around the world!</p>
 						<a class="gray" href="legal" target="_blank">Terms of Use</a>
 						<div class="btn-group">
-							<button id="start-help" class="btn btn-large">Getting started</button>
+							<button id="action-start-help" class="btn btn-large">Getting started</button>
 							<button class="btn close btn-large btn-primary">Continue</button>
 						</div>
 						<p>MolView is also on YouTube, Twitter, Facebook and Google Plus to keep you updated about the latest stuff!</p>
@@ -653,15 +660,15 @@ Query parameters:
 								<h4>Top toolbar</h4>
 								<p>The top toolbar contains all general editing tools. The 2D to 3D tool converts the structural formula into a 3D molecule which is displayed in the model window. If you don't want that implicit hydrogen atoms are stripped from the structural formula after loading, you have to toggle the hydrogen stripping button off (third from right)</p>
 								<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.png" alt="Top toolbar" /></p>
-								<p class="image-note"><i>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, toggle hydrogen stripping, clean structural formula, 2D to 3D conversion</i></p>
+								<p class="image-note"><span>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, toggle hydrogen stripping, clean structural formula, 2D to 3D conversion</span></p>
 								<h4>Left toolbar</h4>
 								<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. You can draw a carbon chain using the chain tool. Just click a start point or atom and drag a chain.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.png" alt="Left toolbar" /></p>
-								<p class="image-note"><i>Left toolbar (rotated), from left to right: single bond, double bond, triple bond, up/down bond, benzene, cyclopropane/butane/pentane/hexane/heptane, chain, charge+, charge-</i></p>
+								<p class="image-note"><span>Left toolbar (rotated), from left to right: single bond, double bond, triple bond, up/down bond, benzene, cyclopropane, butane, pentane, hexane, heptane, chain, charge+, charge-</span></p>
 								<h4>Right toolbar</h4>
 								<p>The right toolbar contains some common elements and a periodic table tool in case you want to pick another element. You can select an atom and click an existing atom in order to replace it with the selected atom. Note that you can only replace existing atoms. In order to add an atom, you will first have to add a new bond using the tools from the left toolbar.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.png" alt="Right toolbar" /></p>
-								<p class="image-note"><i>Right toolbar (rotated), from left to right: hydrogen, carbon, nitrogen, oxygen, sulfur, phosphorus, fluorine, iodine, chlorine, bromine, table of elements, info (about dialog)</i></p>
+								<p class="image-note"><span>Right toolbar (rotated), from left to right: hydrogen, carbon, nitrogen, oxygen, sulfur, phosphorus, fluorine, iodine, chlorine, bromine, table of elements, info (about dialog)</span></p>
 							</div>
 						</div>
 						<div class="expandable">
@@ -675,7 +682,7 @@ Query parameters:
 									<li><b>The Crystallography Open Database</b></li>
 								</ul>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block; border: 1px solid #ccc;" src="img/help/SearchBar.png" alt="Search bar" /></p>
-								<p class="image-note"><i>The search form</i></p>
+								<p class="image-note"><span>The search form</span></p>
 							</div>
 						</div>
 						<div class="expandable">
@@ -759,7 +766,7 @@ Query parameters:
 						<div class="expandable">
 							<div class="expandable-title"><span>Protein display</span></div>
 							<div class="expandable-content">
-								<p>Proteins can be displayed in a number of different ways including different color types and different chain  representations. These settings are located under the <b>Protein</b> menu in the menubar.</p>
+								<p>The <b>Protein</b> menu offers a number of protein display settings including different color schemes and different chain representations.</p>
 								<h4>Show bio assembly</h4>
 								<p>When loading a protein structure, MolView shows the asymmetric unit by default. This function allows you to view the full biological unit instead.</p>
 								<h4>Chain representation</h4>
@@ -783,9 +790,9 @@ Query parameters:
 							</div>
 						</div>
 						<div class="expandable">
-							<div class="expandable-title"><span>Advanced Jmol operations</span></div>
+							<div class="expandable-title"><span>Advanced Jmol tools</span></div>
 							<div class="expandable-content">
-								<p>Jmol offers some advanced functions. You can find them in the <b>Jmol</b> menu in the menubar. Note that all functions (except for render modes) are disabled when viewing proteins.</p>
+								<p>The <b>Jmol</b> menu offers some awesome Jmol-only functions and calculations.</p>
 								<h4>Clear</h4>
 								<p>Clears all executed calculations and measurements.</p>
 								<h4>High Quality</h4>
@@ -802,9 +809,9 @@ Query parameters:
 								<h4>Measurement</h4>
 								<p>You can measure distance, angle and torsion using Jmol. You can activate and deactivate one of these measurement types via the Jmol menu.</p>
 								<ul>
-									<li><b>Distance</b> distance between two atoms in <b>nm</b> <i>(select two atoms)</i></li>
-									<li><b>Angle</b> angle between two bonds in <b>deg</b> <i>(select three atoms)</i></li>
-									<li><b>Torsion</b> torsion between four atoms in <b>deg</b> <i>(select four atoms)</i></li>
+									<li><b>Distance</b> distance between two atoms in nm</li>
+									<li><b>Angle</b> angle between two bonds in degrees</li>
+									<li><b>Torsion</b> torsion between four atoms in degrees</li>
 								</ul>
 								<p>Note that the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
 							</div>
@@ -826,13 +833,16 @@ Query parameters:
 						<h2>Share</h2>
 						<div class="dialog-close-btn"></div>
 						<div class="alert-box">
-							<span id="share-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model is shared)</span>
+							<span id="share-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
 						</div>
 						<div id="share-dialog-social" class="social">
 							<div class="share share-facebook"></div>
 							<div class="share share-twitter"></div>
 							<div class="share share-googleplus"></div>
 						</div>
+						<p style="margin: 10px;">
+							You can use the URL or below to link to the current 3D model.
+						</p>
 						<input id="share-link" class="input" type="text" autocomplete="off" spellcheck="false" />
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
@@ -842,13 +852,16 @@ Query parameters:
 						<h2>Embed</h2>
 						<div class="dialog-close-btn"></div>
 						<div class="alert-box">
-							<span id="embed-2d-not-3d" class="alert-bar">The strutural formula is not the same molecule as the 3D model (3D model is embedded)</span>
+							<span id="embed-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
 						</div>
 						<h4>Width</h3>
 						<input id="embed-width" class="input" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
 						<h4>Height</h4>
 						<input id="embed-height" class="input" type="text" value="300px" autocomplete="off" spellcheck="false" />
 						<h4>HTML code</h4>
+						<p style="margin: 10px 0;">
+							You can use the HTML code below to embed the current 3D model in your website.
+						</p>
 						<input id="embed-code" class="input" type="text" autocomplete="off" spellcheck="false" />
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>

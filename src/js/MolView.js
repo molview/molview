@@ -77,6 +77,24 @@ var MolView = {
 	 */
 	init: function()
 	{
+		//exeption tracking
+		window.onerror = function(message, url, row, column)
+		{
+			ga("send", "exception", {
+				"exDescription": url + " " + row + "," + column + ": " + message,
+				"exFatal": false,
+			});
+		};
+
+		$(document).ajaxError(function(e, request, settings)
+		{
+			ga("send", "exception", {
+				"exDescription": "AJAX error: " + settings.type + " " + settings.url + ": " + request.statusText,
+				"exFatal": false
+			});
+		});
+
+		//setup
 		MolView.devicePixelRatio = window.devicePixelRatio || (MolView.mobile ? 1.5 : 1.0);
 
 		Preferences.init();
@@ -206,6 +224,7 @@ var MolView = {
 		$(".layer .btn.close").on(this.trigger, function(e)
 		{
 			MolView.setLayer("main");
+			MolView.pushEvent("button", "click", "layer close", 0);
 		});
 
 		//enable expandable expanding
@@ -215,97 +234,93 @@ var MolView = {
 		});
 
 		//actions
-		$("#window-sketcher").on(this.trigger, Actions.window_sketcher);
-		$("#window-model").on(this.trigger, Actions.window_model);
-		$("#window-vsplit").on(this.trigger, Actions.window_vsplit);
-		$("#window-hsplit").on(this.trigger, Actions.window_hsplit);
+		this.addAction("layout_sketcher", "menu");
+		this.addAction("layout_model", "menu");
+		this.addAction("layout_vsplit", "menu");
+		this.addAction("layout_hsplit", "menu");
+		this.addAction("theme_desktop", "menu");
+		this.addAction("theme_touch", "menu");
+		this.addAction("help", "menu");
+		this.addAction("about", "menu");
 
-		$("#theme-desktop").on(this.trigger, Actions.theme_desktop);
-		$("#theme-touch").on(this.trigger, Actions.theme_touch);
+		this.addAction("share", "menu");
+		this.addAction("embed", "menu");
+		this.addAction("export_sketcher_png", "menu");
+		this.addAction("export_model_png", "menu");
+		this.addAction("export_model", "menu");
+		this.addAction("data_infocard", "menu");
+		this.addAction("data_spectra", "menu");
+		this.addAction("search_substructure", "menu");
+		this.addAction("search_superstructure", "menu");
+		this.addAction("search_similarity", "menu");
 
-		$("#mv-help").on(this.trigger, Actions.help);
-		$("#mv-about").on(this.trigger, Actions.about);
+		this.addAction("model_reset", "menu");
+		this.addAction("model_balls", "menu");
+		this.addAction("model_stick", "menu");
+		this.addAction("model_vdw", "menu");
+		this.addAction("model_wireframe", "menu");
+		this.addAction("model_line", "menu");
+		this.addAction("model_bg_black", "menu");
+		this.addAction("model_bg_gray", "menu");
+		this.addAction("model_bg_white", "menu");
+		this.addAction("engine_glmol", "menu");
+		this.addAction("engine_jmol", "menu");
+		this.addAction("engine_cdw", "menu");
+		this.addAction("cif_unit_cell", "menu");
+		this.addAction("cif_cubic_supercell", "menu");
+		this.addAction("cif_flat_supercell", "menu");
 
-		$("#mv-share").on(this.trigger, Actions.share);
-		$("#mv-embed").on(this.trigger, Actions.embed);
+		this.addAction("bio_assembly", "menu");
+		this.addAction("chain_type_ribbon", "menu");
+		this.addAction("chain_type_cylinders", "menu");
+		this.addAction("chain_type_btube", "menu");
+		this.addAction("chain_type_ctrace", "menu");
+		this.addAction("chain_type_bonds", "menu");
+		this.addAction("chain_color_ss", "menu");
+		this.addAction("chain_color_spectrum", "menu");
+		this.addAction("chain_color_chain", "menu");
+		this.addAction("chain_color_residue", "menu");
+		this.addAction("chain_color_polarity", "menu");
+		this.addAction("chain_color_bfactor", "menu");
 
-		$("#export-2d").on(this.trigger, Actions.export_2D);
-		$("#export-3d").on(this.trigger, Actions.export_3D);
-		$("#save-local-3d").on(this.trigger, Actions.save_local_3D);
+		this.addAction("jmol_hq", "menu");
+		this.addAction("jmol_clean", "menu");
+		this.addAction("jmol_mep_lucent", "menu");
+		this.addAction("jmol_mep_opaque", "menu");
+		this.addAction("jmol_charge", "menu");
+		this.addAction("jmol_bond_dipoles", "menu");
+		this.addAction("jmol_net_dipole", "menu");
+		this.addAction("jmol_minimize", "menu");
+		this.addAction("jmol_measure_distance", "menu");
+		this.addAction("jmol_measure_angle", "menu");
+		this.addAction("jmol_measure_torsion", "menu");
 
-		$("#data-infocard").on(this.trigger, Actions.data_infocard);
-		$("#data-spectra").on(this.trigger, Actions.data_spectra);
+		this.addAction("search_pubchem", "menu");
+		this.addAction("search_rcsb", "menu");
+		this.addAction("search_cod", "menu");
+		this.addAction("show_search_layer", "menu");
+		this.addAction("load_more_pubchem", "button");
+		this.addAction("load_more_rcsb", "button");
+		this.addAction("load_more_cod", "button");
 
-		$("#search-substructure").on(this.trigger, Actions.search_substructure);
-		$("#search-superstructure").on(this.trigger, Actions.search_superstructure);
-		$("#search-similarity").on(this.trigger, Actions.search_similarity);
+		this.addAction("hstrip", "button");
+		this.addAction("clean", "button");
+		this.addAction("resolve", "button");
+		this.addAction("info", "button");
 
-		$("#model-reset").on(this.trigger, Actions.model_reset);
+		this.addAction("start_help", "button");
+		this.addAction("export_spectrum_png", "button");
+		this.addAction("export_spectrum_jcamp", "button");
 
-		$("#model-balls").on(this.trigger, Actions.model_balls);
-		$("#model-stick").on(this.trigger, Actions.model_stick);
-		$("#model-vdw").on(this.trigger, Actions.model_vdw);
-		$("#model-wireframe").on(this.trigger, Actions.model_wireframe);
-		$("#model-line").on(this.trigger, Actions.model_line);
-
-		$("#model-bg-black").on(this.trigger, Actions.model_bg_black);
-		$("#model-bg-gray").on(this.trigger, Actions.model_bg_gray);
-		$("#model-bg-white").on(this.trigger, Actions.model_bg_white);
-
-		$("#cif-unit-cell").on(this.trigger, Actions.cif_unit_cell);
-		$("#cif-2x2x2-cell").on(this.trigger, Actions.cif_2x2x2_cell);
-		$("#cif-1x3x3-cell").on(this.trigger, Actions.cif_1x3x3_cell);
-
-		$("#engine-glmol").on(this.trigger, Actions.engine_glmol);
-		$("#engine-jmol").on(this.trigger, Actions.engine_jmol);
-		$("#engine-cdw").on(this.trigger, Actions.engine_cdw);
-
-		$("#bio-assembly").on(this.trigger, Actions.bio_assembly);
-		$("#chain-type-ribbon").on(this.trigger, Actions.chain_type_ribbon);
-		$("#chain-type-cylinders").on(this.trigger, Actions.chain_type_cylinders);
-		$("#chain-type-btube").on(this.trigger, Actions.chain_type_btube);
-		$("#chain-type-ctrace").on(this.trigger, Actions.chain_type_ctrace);
-		$("#chain-type-bonds").on(this.trigger, Actions.chain_type_bonds);
-
-		$("#chain-color-ss").on(this.trigger, Actions.chain_color_ss);
-		$("#chain-color-spectrum").on(this.trigger, Actions.chain_color_spectrum);
-		$("#chain-color-chain").on(this.trigger, Actions.chain_color_chain);
-		$("#chain-color-residue").on(this.trigger, Actions.chain_color_residue);
-		$("#chain-color-polarity").on(this.trigger, Actions.chain_color_polarity);
-		$("#chain-color-bfactor").on(this.trigger, Actions.chain_color_bfactor);
-
-		$("#jmol-clean").on(this.trigger, Actions.jmol_clean);
-		$("#jmol-hq").on(this.trigger, Actions.jmol_hq);
-
-		$("#mep-lucent").on(this.trigger, Actions.mep_lucent);
-		$("#mep-opaque").on(this.trigger, Actions.mep_opaque);
-		$("#jmol-charge").on(this.trigger, Actions.jmol_charge);
-		$("#bond-dipoles").on(this.trigger, Actions.bond_dipoles);
-		$("#net-dipole").on(this.trigger, Actions.net_dipole);
-		$("#jmol-minimize").on(this.trigger, Actions.jmol_minimize);
-
-		$("#measure-distance").on(this.trigger, Actions.measure_distance);
-		$("#measure-angle").on(this.trigger, Actions.measure_angle);
-		$("#measure-torsion").on(this.trigger, Actions.measure_torsion);
-
-		$("#pubchem-search").on(this.trigger, Actions.pubchem_search);
-		$("#rcsb-search").on(this.trigger, Actions.rcsb_search);
-		$("#cod-search").on(this.trigger, Actions.cod_search);
-
-		$("#show-search-layer").on(this.trigger, Actions.show_search_layer);
-
-		$("#load-more-pubchem").on(this.trigger, Actions.load_more_pubchem);
-		$("#load-more-rcsb").on(this.trigger, Actions.load_more_rcsb);
-		$("#load-more-cod").on(this.trigger, Actions.load_more_cod);
-
-		$("#clean").on(this.trigger, Actions.clean);
-		$("#resolve").on(this.trigger, Actions.resolve);
-		$("#info").on(this.trigger, Actions.about);
-
-		$("#start-help").on(this.trigger, Actions.help);
-
-		$("#png-current-spectrum").on(this.trigger, Actions.png_current_spectrum);
-		$("#jcamp-current-spectrum").on(this.trigger, Actions.jcamp_current_spectrum);
+		//custom event trackers
+		$("#model-source").on(this.trigger, function()
+		{
+			MolView.pushEvent("link", "click", "model source", 0);
+		});
+		$("#spectrum-nist-source").on(this.trigger, function()
+		{
+			MolView.pushEvent("link", "click", "spectrum nist source", 0);
+		});
 
 		Model.init(function()
 		{
@@ -318,6 +333,31 @@ var MolView = {
 				Messages.alert("cir_down");
 			}
 		}, (!Detector.webgl && !MolView.touch) ? "JSmol" : "GLmol");
+	},
+
+	/**
+	 * Bind action using $(#action-id).on(MolView.trigger, Actions[id])
+	 * DOM ID: '_' is replaced with '-'
+	 * Event label: '_' is replaced with ' '
+	 * @param {String} id       Action identifier ([a-z]_)
+	 * @param {String} category Event tracking category (button|menu)
+	 */
+	addAction: function(id, category)
+	{
+		$("#action-" + id.replace(/_/g, "-")).data("id", id).on(this.trigger, function()
+		{
+			var id = $(this).data("id");
+			MolView.pushEvent(category, "click", id.replace(/_/g, " "),
+				Actions[id]() || 0);
+		});
+	},
+
+	/**
+	 * Wrapper for analytics.js
+	 */
+	pushEvent: function(category, action, label, number)
+	{
+		ga("send", "event", category, action, label, number);
 	},
 
 	/**
@@ -440,19 +480,10 @@ var MolView = {
 	 */
 	setLayout: function(layout)
 	{
-		$("#window-sketcher").removeClass("selected");
-		$("#window-model").removeClass("selected");
-		$("#window-vsplit").removeClass("selected");
-		$("#window-hsplit").removeClass("selected");
-
-		if(layout == "sketcher") $("#window-sketcher").addClass("selected");
-		if(layout == "model") $("#window-model").addClass("selected");
-		if(layout == "vsplit") $("#window-vsplit").addClass("selected");
-		if(layout == "hsplit") $("#window-hsplit").addClass("selected");
-
+		$("#layout-menu > a").removeClass("selected");
+		$("#action-layout-" + layout).addClass("selected");
 		$("#main-layer").removeClass("layout-sketcher layout-model layout-vsplit layout-hsplit").addClass("layout-" + layout);
 		this.layout = layout;
-
 		this.setLayer("main");
 	},
 
@@ -496,8 +527,8 @@ var MolView = {
 	{
 		Preferences.set("molview", "theme", theme);
 
-		$("#theme-desktop, #theme-touch").removeClass("checked");
-		$("#theme-" + theme).addClass("checked");
+		$("#action-theme-desktop, #action-theme-touch").removeClass("checked");
+		$("#action-theme-" + theme).addClass("checked");
 		$("#theme-stylesheet").attr("href", "build/molview." + theme + ".min.css");
 	},
 

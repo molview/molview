@@ -45,11 +45,11 @@ var Loader = {
 		this.lastQuery.content = content;
 		History.push(type, content, forceReplace);
 
-		$("#data-3d-source").removeClass("disabled");
-		if(type == "q" || type == "smiles") $("#data-3d-source").removeAttr().addClass("disabled");
-		else if(type == "cid") $("#data-3d-source").attr("href", Request.PubChem.staticURL(content));
-		else if(type == "pdbid") $("#data-3d-source").attr("href", Request.RCSB.staticURL(content));
-		else if(type == "codid") $("#data-3d-source").attr("href", Request.COD.staticURL(content));
+		$("#model-source").removeClass("disabled");
+		if(type == "q" || type == "smiles") $("#model-source").removeAttr().addClass("disabled");
+		else if(type == "cid") $("#model-source").attr("href", Request.PubChem.staticURL(content));
+		else if(type == "pdbid") $("#model-source").attr("href", Request.RCSB.staticURL(content));
+		else if(type == "codid") $("#model-source").attr("href", Request.COD.staticURL(content));
 	},
 
 	/**
@@ -106,7 +106,7 @@ var Loader = {
 				}
 
 				if(Loader.PubChem.i >= Request.PubChem.data.length) $(".load-more").css("display", "none");
-				else $("#load-more-pubchem").removeClass("load-more-progress");
+				else $("#action-load-more-pubchem").removeClass("load-more-progress");
 				Loader.PubChem.loading = false;
 				Progress.complete();
 			},
@@ -129,7 +129,7 @@ var Loader = {
 				this.loadCIDS(Request.PubChem.data.slice(start, end));
 				this.i = end;
 
-				$("#load-more-pubchem").addClass("load-more-progress");
+				$("#action-load-more-pubchem").addClass("load-more-progress");
 			}
 		},
 
@@ -323,7 +323,7 @@ var Loader = {
 				}
 
 				if(Loader.RCSB.i >= Request.RCSB.data.length) $(".load-more").css("display", "none");
-				else $("#load-more-rcsb").removeClass("load-more-progress");
+				else $("#action-load-more-rcsb").removeClass("load-more-progress");
 				Loader.RCSB.loading = false;
 				Progress.complete();
 			},
@@ -346,7 +346,7 @@ var Loader = {
 				this.loadPDBIDS(Request.RCSB.data.slice(start, end));
 				this.i = end;
 
-				$("#load-more-rcsb").addClass("load-more-progress");
+				$("#action-load-more-rcsb").addClass("load-more-progress");
 			}
 		},
 
@@ -447,7 +447,7 @@ var Loader = {
 
 		loadNextSet: function()
 		{
-			$("#load-more-cod").addClass("load-more-progress");
+			$("#action-load-more-cod").addClass("load-more-progress");
 
 			window.setTimeout(function()
 			{
@@ -461,7 +461,7 @@ var Loader = {
 					}
 
 					if(this.i >= Request.COD.data.length) $(".load-more").css("display", "none");
-					else $("#load-more-cod").removeClass("load-more-progress");
+					else $("#action-load-more-cod").removeClass("load-more-progress");
 					this.loading = false;
 					Progress.complete();
 				}
@@ -742,8 +742,6 @@ var Loader = {
 	{
 		Progress.reset(4);
 
-		document.title = title || "MolView";
-
 		Request.resolve(smiles, 0, false, function(mol3d, cid)
 		{
 			Progress.increment();
@@ -767,6 +765,8 @@ var Loader = {
 
 				Progress.complete();
 				Messages.clear();
+
+				document.title = title || "MolView";
 			},
 			function()
 			{

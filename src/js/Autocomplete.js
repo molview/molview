@@ -394,6 +394,8 @@ var Autocomplete = {
 	*/
 	submit: function()
 	{
+		MolView.pushEvent("input", "submit", "autocomplete", 0);
+
 		if($("#search-input").val() === "")
 		{
 			$("#search-input").focus();

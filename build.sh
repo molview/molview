@@ -38,9 +38,14 @@ if [[ $1 == "fetch" ]]
 
 fi
 
-# Install node modules and run grunt
-npm install
-grunt
+if [[ $1 != "render" ]]
+	then
+
+	# Install node modules and run grunt
+	npm install
+	grunt
+
+fi
 
 # Render SVG logos as PNG images
 inkscape src/svg/icon/48.svg --export-png=img/logo.png -w80 -h80

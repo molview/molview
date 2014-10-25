@@ -96,8 +96,9 @@
 - Added support for devicePixelRatio > 1.0
 
 #### Analytics
-+ Add user interaction tracker using analytics.js
-+ Add debugging using analytics.js
+- Added event tracking using Google Analytics
+- Added JavaScript error tracking using Google Analytics
+- Added AJAX error tracking using Google Analytics
 
 ### Miscellaneous
 

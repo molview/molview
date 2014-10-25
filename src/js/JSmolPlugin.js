@@ -319,8 +319,8 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 	 */
 	setQuality: function(hq, measure)
 	{
-		$("#jmol-hq").removeClass("checked");
-		if(hq) $("#jmol-hq").addClass("checked");
+		$("#action-jmol-hq").removeClass("checked");
+		if(hq) $("#action-jmol-hq").addClass("checked");
 
 		this.hq = hq;
 		this._setMeasure("OFF", true);
@@ -508,7 +508,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		}
 		else
 		{
-			$("#measure-" + this.picking).addClass("checked");
+			$("#action-measure-" + this.picking).addClass("checked");
 
 			//JSmol.setQuality will disable picking again
 			Model.JSmol._setQuality(Model.JSmol.hq, true);

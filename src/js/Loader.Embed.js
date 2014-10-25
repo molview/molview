@@ -189,7 +189,7 @@ var Loader = {
 		}
 	},
 
-	loadSMILES: function(smiles)
+	loadSMILES: function(smiles, title)
 	{
 		if(!Request.CIR.available)
 		{
@@ -199,13 +199,12 @@ var Loader = {
 
 		Progress.reset(2);
 
-		document.title = "MolView";
-
 		Request.resolve(smiles, 0, false, function(mol, cid)
 		{
 			Model.loadMOL(mol);
 			Progress.complete();
 			Messages.clear();
+			document.title = title || "MolView";
 		},
 		function()
 		{

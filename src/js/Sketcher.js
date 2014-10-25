@@ -35,18 +35,8 @@ var Sketcher = {
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
-		$("#hstrip")
-				.toggleClass("tool-button-selected",
-						Preferences.get("sketcher", "hstrip", true))
-				.on(MolView.trigger, function()
-		{
-			if($(this).toggleClass("tool-button-selected").hasClass("tool-button-selected"))
-			{
-				Sketcher.moledit.removeImplicitHydrogen(true);
-			}
-
-			Preferences.set("sketcher", "hstrip", $(this).hasClass("tool-button-selected"))
-		});
+		$("#action-hstrip").toggleClass("tool-button-selected",
+				Preferences.get("sketcher", "hstrip", true));
 
 		if(Detector.canvas)
 		{
@@ -62,7 +52,7 @@ var Sketcher = {
 			this.moledit.onChanged = function()
 			{
 				Sketcher.metadata = {};
-				$("#resolve").removeClass("resolve-updated");
+				$("#action-resolve").removeClass("resolve-updated");
 			};
 		}
 		else Messages.alert("no_canvas_support");
@@ -153,7 +143,7 @@ var Sketcher = {
 		{
 			this.moledit.loadMOL(mol);
 
-			if($("#hstrip").hasClass("tool-button-selected"))
+			if($("#action-hstrip").hasClass("tool-button-selected"))
 			{
 				this.moledit.removeImplicitHydrogen();
 			}
@@ -192,12 +182,12 @@ var Sketcher = {
 
 	markOutdated: function()
 	{
-		$("#resolve").removeClass("resolve-updated");
+		$("#action-resolve").removeClass("resolve-updated");
 	},
 
 	markUpdated: function()
 	{
-		$("#resolve").addClass("resolve-updated");
+		$("#action-resolve").addClass("resolve-updated");
 	},
 
 	getImageDataURL: function()

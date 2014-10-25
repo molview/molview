@@ -30,7 +30,7 @@ var Link = {
 
 	updateShareDialog: function()
 	{
-		if(!$("#resolve").hasClass("resolve-updated") && MolView.layout != "model") $("#share-2d-not-3d").show();
+		if(!$("#action-resolve").hasClass("resolve-updated") && MolView.layout != "model") $("#share-2d-not-3d").show();
 		else $("#share-2d-not-3d").hide();
 
 		var url = window.location.origin + window.location.pathname;
@@ -48,7 +48,7 @@ var Link = {
 
 	updateEmbedDialog: function()
 	{
-		if(!$("#resolve").hasClass("resolve-updated") && MolView.layout != "model") $("#embed-2d-not-3d").show();
+		if(!$("#action-resolve").hasClass("resolve-updated") && MolView.layout != "model") $("#embed-2d-not-3d").show();
 		else $("#embed-2d-not-3d").hide();
 
 		var url = window.location.origin + window.location.pathname + "embed?mode=" + Model.representation;

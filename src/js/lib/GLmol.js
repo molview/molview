@@ -235,7 +235,7 @@ var GLmol = (function()
 		this.coilWidth = 0.3;
 		this.helixSheetWidth = 1.3;
 		this.nucleicAcidWidth = 0.8;
-		this.thickness = 0.4;
+		this.thickness = 0.2;
 
 		// UI variables
 		this.cq = new THREE.Quaternion(1, 0, 0, 0);

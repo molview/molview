@@ -25,10 +25,10 @@ var Actions = {
 	/*
 	MolView menu
 	*/
-	window_sketcher: function() { MolView.setLayout("sketcher"); },
-	window_model: function() { MolView.setLayout("model"); },
-	window_vsplit: function() { MolView.setLayout("vsplit"); },
-	window_hsplit: function() { MolView.setLayout("hsplit"); },
+	layout_sketcher: function() { MolView.setLayout("sketcher"); },
+	layout_model: function() { MolView.setLayout("model"); },
+	layout_vsplit: function() { MolView.setLayout("vsplit"); },
+	layout_hsplit: function() { MolView.setLayout("hsplit"); },
 
 	theme_desktop: function()
 	{
@@ -65,21 +65,21 @@ var Actions = {
 		MolView.showDialog("embed");
 	},
 
-	export_2D: function()
+	export_sketcher_png: function()
 	{
 		var dataURL = Sketcher.getImageDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (structural formula).png");
 	},
 
-	export_3D: function()
+	export_model_png: function()
 	{
 		var dataURL = Model.getImageDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (model).png");
 	},
 
-	save_local_3D: function()
+	export_model: function()
 	{
 		var blob = Model.getFileBlob();
 		saveAs(blob, document.title + "." + (Model.getFileExstension().toLowerCase()));
@@ -113,32 +113,6 @@ var Actions = {
 		}
 
 		Spectroscopy.resize();
-	},
-
-	png_current_spectrum: function()
-	{
-		if(!Spectroscopy.data[$("#spectrum-select").val()])
-		{
-			alert("No spectrum selected!");
-			return;
-		}
-
-		var dataURL = document.getElementById("spectrum-canvas").toDataURL("image/png");
-		var blob = dataURItoBlob(dataURL);
-		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".png");
-	},
-
-	jcamp_current_spectrum: function()
-	{
-		if(!Spectroscopy.data[$("#spectrum-select").val()])
-		{
-			alert("No spectrum selected!");
-			return;
-		}
-
-		var blob = new Blob([ Spectroscopy.data[$("#spectrum-select").val()] ],
-			{ type: "chemical/x-jcamp-dx;charset=utf-8" });
-		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".jdx");
 	},
 
 	search_substructure: function()
@@ -260,7 +234,7 @@ var Actions = {
 		}
 	},
 
-	cif_2x2x2_cell: function()
+	cif_cubic_supercell: function()
 	{
 		if(Model.isCIF())
 		{
@@ -272,7 +246,7 @@ var Actions = {
 		}
 	},
 
-	cif_1x3x3_cell: function()
+	cif_flat_supercell: function()
 	{
 		if(Model.isCIF())
 		{
@@ -288,11 +262,11 @@ var Actions = {
 	Protein menu
 	*/
 	bio_assembly:          function() { Model.setBioAssembly(!Model.displayBU); },
-	chain_type_ribbon:     function() { Model.setChainType(!$("#chain-type-ribbon").hasClass("checked") ? "ribbon" : "none"); },
-	chain_type_cylinders:  function() { Model.setChainType(!$("#chain-type-cylinders").hasClass("checked") ? "cylinders" : "none"); },
-	chain_type_btube:      function() { Model.setChainType(!$("#chain-type-btube").hasClass("checked") ? "btube" : "none"); },
-	chain_type_ctrace:     function() { Model.setChainType(!$("#chain-type-ctrace").hasClass("checked") ? "ctrace" : "none"); },
-	chain_type_bonds:      function() { Model.setChainBonds(!$("#chain-type-bonds").hasClass("checked")); },
+	chain_type_ribbon:     function() { Model.setChainType(!$("#action-chain-type-ribbon").hasClass("checked") ? "ribbon" : "none"); },
+	chain_type_cylinders:  function() { Model.setChainType(!$("#action-chain-type-cylinders").hasClass("checked") ? "cylinders" : "none"); },
+	chain_type_btube:      function() { Model.setChainType(!$("#action-chain-type-btube").hasClass("checked") ? "btube" : "none"); },
+	chain_type_ctrace:     function() { Model.setChainType(!$("#action-chain-type-ctrace").hasClass("checked") ? "ctrace" : "none"); },
+	chain_type_bonds:      function() { Model.setChainBonds(!$("#action-chain-type-bonds").hasClass("checked")); },
 
 	chain_color_ss:        function() { Model.setChainColor("ss"); },
 	chain_color_spectrum:  function() { Model.setChainColor("spectrum"); },
@@ -305,36 +279,36 @@ var Actions = {
 	Jmol menu
 	*/
 	jmol_clean:    function() { Model.JSmol.clean(); },
-	jmol_hq:       function() { Model.JSmol.setQuality(!$("#jmol-hq").hasClass("checked")); },
-	mep_lucent:    function() { Model.JSmol.loadMEPSurface(true); },
-	mep_opaque:    function() { Model.JSmol.loadMEPSurface(false); },
+	jmol_hq:       function() { Model.JSmol.setQuality(!$("#action-jmol-hq").hasClass("checked")); },
+	jmol_mep_lucent:    function() { Model.JSmol.loadMEPSurface(true); },
+	jmol_mep_opaque:    function() { Model.JSmol.loadMEPSurface(false); },
 	jmol_charge:   function() { Model.JSmol.displayCharge(); },
-	bond_dipoles:  function() { Model.JSmol.displayDipoles(); },
-	net_dipole:    function() { Model.JSmol.displayNetDipole(); },
+	jmol_bond_dipoles:  function() { Model.JSmol.displayDipoles(); },
+	jmol_net_dipole:    function() { Model.JSmol.displayNetDipole(); },
 	jmol_minimize: function() { Model.JSmol.calculateEnergyMinimization(); },
 
-	measure_distance: function()
+	jmol_measure_distance: function()
 	{
-		Model.JSmol.setMeasure($("#measure-distance").hasClass("checked")
+		Model.JSmol.setMeasure($("#action-measure-distance").hasClass("checked")
 			? "OFF" : "DISTANCE");
 	},
 
-	measure_angle: function()
+	jmol_measure_angle: function()
 	{
-		Model.JSmol.setMeasure($("#measure-angle").hasClass("checked")
+		Model.JSmol.setMeasure($("#action-measure-angle").hasClass("checked")
 			? "OFF" : "ANGLE");
 	},
 
-	measure_torsion: function()
+	jmol_measure_torsion: function()
 	{
-		Model.JSmol.setMeasure($("#measure-torsion").hasClass("checked")
+		Model.JSmol.setMeasure($("#action-measure-torsion").hasClass("checked")
 			? "OFF" : "TORSION");
 	},
 
 	/*
-	Searching
+	Autocomplete
 	*/
-	pubchem_search: function()
+	search_pubchem: function()
 	{
 		if($("#search-input").val() === "")
 		{
@@ -348,7 +322,7 @@ var Actions = {
 		}
 	},
 
-	rcsb_search: function()
+	search_rcsb: function()
 	{
 		if($("#search-input").val() === "")
 		{
@@ -362,7 +336,7 @@ var Actions = {
 		}
 	},
 
-	cod_search: function()
+	search_cod: function()
 	{
 		if($("#search-input").val() === "")
 		{
@@ -396,7 +370,21 @@ var Actions = {
 		Loader.COD.loadNextSet();
 	},
 
-	//sketcher
+	/*
+	Sketcher
+	*/
+	hstrip: function()
+	{
+		if($(this).toggleClass("tool-button-selected").hasClass("tool-button-selected"))
+		{
+			Sketcher.moledit.removeImplicitHydrogen(true);
+		}
+
+		Preferences.set("sketcher", "hstrip", $(this).hasClass("tool-button-selected"));
+
+		return $(this).hasClass("tool-button-selected") ? 1 : 0;
+	},
+
 	clean: function()
 	{
 		Messages.process(Loader.clean, "clean");
@@ -407,7 +395,42 @@ var Actions = {
 		Messages.process(Loader.resolve, "resolve");
 	},
 
-	//misc
-	request_fullscreen: function() { launchFullscreen(document.documentElement); },
-	exit_fullscreen: function() { exitFullscreen(); }
+	info: function()
+	{
+		MolView.showDialog("about");
+	},
+
+	/*
+	Misc
+	*/
+	start_help: function()
+	{
+		MolView.showDialog("help");
+	},
+
+	export_spectrum_png: function()
+	{
+		if(!Spectroscopy.data[$("#spectrum-select").val()])
+		{
+			alert("No spectrum selected!");
+			return;
+		}
+
+		var dataURL = document.getElementById("spectrum-canvas").toDataURL("image/png");
+		var blob = dataURItoBlob(dataURL);
+		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".png");
+	},
+
+	export_spectrum_jcamp: function()
+	{
+		if(!Spectroscopy.data[$("#spectrum-select").val()])
+		{
+			alert("No spectrum selected!");
+			return;
+		}
+
+		var blob = new Blob([ Spectroscopy.data[$("#spectrum-select").val()] ],
+			{ type: "chemical/x-jcamp-dx;charset=utf-8" });
+		if(blob !== null) saveAs(blob, $("#spectrum-select").find("option:selected").text() + ".jdx");
+	}
 };

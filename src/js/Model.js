@@ -192,10 +192,10 @@ var Model = {
 			else if(!this.CDW.init(cb)) return;
 		}
 
-		$("#engine-glmol").removeClass("checked");
-		$("#engine-jmol").removeClass("checked");
-		$("#engine-cdw").removeClass("checked");
-		$("#engine-" + (engine == "GLmol" ?
+		$("#action-engine-glmol").removeClass("checked");
+		$("#action-engine-jmol").removeClass("checked");
+		$("#action-engine-cdw").removeClass("checked");
+		$("#action-engine-" + (engine == "GLmol" ?
 			"glmol" : (engine == "JSmol" ?
 				"jmol" : (engine == "CDW" ?
 					"cdw" : "")))).addClass("checked");
@@ -237,11 +237,11 @@ var Model = {
 	setRepresentation: function(mode)
 	{
 		$(".r-mode").removeClass("checked");
-		if(mode == "balls") $("#model-balls").addClass("checked");
-		else if(mode == "stick") $("#model-stick").addClass("checked");
-		else if(mode == "vdw") $("#model-vdw").addClass("checked");
-		else if(mode == "wireframe") $("#model-wireframe").addClass("checked");
-		else if(mode == "line") $("#model-line").addClass("checked");
+		if(mode == "balls") $("#action-model-balls").addClass("checked");
+		else if(mode == "stick") $("#action-model-stick").addClass("checked");
+		else if(mode == "vdw") $("#action-model-vdw").addClass("checked");
+		else if(mode == "wireframe") $("#action-model-wireframe").addClass("checked");
+		else if(mode == "line") $("action-#model-line").addClass("checked");
 
 		this.representation = mode;
 
@@ -267,7 +267,7 @@ var Model = {
 			|| (this.isCDW() && type == "ribbon"))
 			{
 				$(".chain-type").removeClass("checked");
-				$("#chain-type-" + type).addClass("checked");
+				$("#action-chain-type-" + type).addClass("checked");
 				this.chain.type = type;
 
 				var shown = Messages.process(function()
@@ -301,7 +301,7 @@ var Model = {
 			if(this.isGLmol() || this.isJSmol()
 			|| (this.isCDW() && !on))
 			{
-				$("#chain-type-bonds").toggleClass("checked", on);
+				$("#action-chain-type-bonds").toggleClass("checked", on);
 				this.chain.bonds = on;
 
 				var shown = Messages.process(function()
@@ -335,7 +335,7 @@ var Model = {
 			|| (this.isCDW() && color != "bfactor"))
 			{
 				$(".chain-color").removeClass("checked");
-				$("#chain-color-" + color).addClass("checked");
+				$("#action-chain-color-" + color).addClass("checked");
 				this.chain.color = color;
 
 				var shown = Messages.process(function()
@@ -375,7 +375,7 @@ var Model = {
 							  + (255 - this.bg.rgb[0]) + ")";
 
 		$(".model-bg").removeClass("checked");
-		$("#model-bg-" + color).addClass("checked");
+		$("#action-model-bg-" + color).addClass("checked");
 		$("#model").css("background", this.bg.html);
 
 		if(this.isGLmol()) return this.GLmol.setBackground(this.bg.hex);
@@ -394,7 +394,7 @@ var Model = {
 		{
 			if(this.isPDB())
 			{
-				$("#bio-assembly").text(on ? "Show assymetic unit" : "Show bio assembly");
+				$("#action-bio-assembly").text(on ? "Show assymetic unit" : "Show bio assembly");
 				this.displayBU = on;
 
 				var shown = Messages.process(function()
@@ -434,7 +434,7 @@ var Model = {
 	{
 		this.data.current = "MOL";
 		this.data.mol = mol;
-		$("#save-local-3d").text("MOL file");
+		$("#action-export-model").text("MOL file");
 		$(".jmol-script").removeClass("disabled");
 
 		this._loadMOL(mol);
@@ -461,7 +461,7 @@ var Model = {
 	{
 		this.data.current = "PDB";
 		this.data.pdb = pdb;
-		$("#save-local-3d").text("PDB file");
+		$("#action-export-model").text("PDB file");
 		$(".jmol-script").addClass("disabled");
 
 		this._loadPDB(pdb);
@@ -476,7 +476,7 @@ var Model = {
 	{
 		this.data.current = "PDB";
 		this.data.pdb = pdb;
-		$("#save-local-3d").text("PDB file");
+		$("#action-export-model").text("PDB file");
 		$(".jmol-script").addClass("disabled");
 	},
 
@@ -490,7 +490,7 @@ var Model = {
 		/* always disable BU when loading a PDB file into a render engine
 		in order to prevent unwanted CPU load */
 		this.displayBU = false;
-		$("#bio-assembly").text("Show bio assembly");
+		$("#action-bio-assembly").text("Show bio assembly");
 
 		if(this.isGLmol()) return this.GLmol.loadPDB(pdb);
 		else if(this.isJSmol()) return this.JSmol.loadPDB(pdb);
@@ -508,7 +508,7 @@ var Model = {
 	{
 		this.data.current = "CIF";
 		this.data.cif = cif;
-		$("#save-local-3d").text("CIF file");
+		$("#action-export-model").text("CIF file");
 		$(".jmol-script").removeClass("disabled");
 		$(".jmol-calc").addClass("disabled");
 

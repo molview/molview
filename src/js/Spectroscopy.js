@@ -95,6 +95,7 @@ var Spectroscopy = {
                 $("#spectrum-select").append('<option value="default" disabled selected style="display:none;">Choose a spectrum</option>');
 
                 if(data.mass) $("#spectrum-select").append('<option value="nist-mass">Mass spectrum</option>');
+                //if(data.uvvis) $("#spectrum-select").append('<option value="nist-uvvis">UV-Visible spectrum</option>');
 
                 if(data.ir !== undefined)
                 {
@@ -105,11 +106,13 @@ var Spectroscopy = {
                     }
                 }
 
-                //if(data.uvvis) $("#spectrum-select").append('<option value="nist-uvvis">UV-Visible spectrum</option>');
-                $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
+                $("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>').val("default");
 
-                $("#spectrum-select").val("default");
-                $("#spectrum-nist-source").attr("href", data.url).show();
+                if(data.mass || (data.ir !== undefined && data.ir.length > 0))
+                {
+                    $("#spectrum-nist-source").attr("href", data.url).show();
+                }
+
                 $("#spectrum").removeClass("loading");
             }, noSpectra);
         }, noSpectra);

@@ -56,13 +56,10 @@ Query parameters:
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
 
+		<link rel="shortcut icon" href="favicon-32x32.png" />
 		<title>MolView</title>
-
-		<link rel="icon" href="favicon-32x32.png" />
-
 		<meta name="author" content="Herman Bergwerf" />
 		<meta name="keywords" content="molview,free,chemistry,app,molecules,proteins,crystals,spectroscopy" />
 

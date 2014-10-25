@@ -54,27 +54,28 @@ Instructions:
 2. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
 3. Run `./build.sh fetch`
 
-Test
-----
-Below are all test instructions you have to pass before commiting changes
+Committing
+---------
+Below are all tests you have to pass before committing changes
 
 ### Unstable build
 1. Successfully run the build script
-2. Check if the following relative URLs are still working as expected:
-    1. `/embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw&bg=white`
-    2. `/embed?smiles=O=C([C@@]([H])1C=C2C3C=CC=C4C=3C(=CN4[H])C[C@@]2([H])N(C)C1)N(CC)CC`
-    3. `/embed?cid=5761&mode=wireframe`
-    4. `/embed?codid=5000115&mode=stick`
+2. Check if the following embed features are still working as expected:
+    1. [2POR](embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw) (PDBID loading & protein representation)
+    2. [LSD](embed?smiles=O=C%28[C@@]%28[H]%291C=C2C3C=CC=C4C=3C%28=CN4[H]%29C[C@@]2%28[H]%29N%28C%29C1%29N%28CC%29CC&bg=white) (SMILES resolving & background color)
+    3. [Mustard gas](embed?cid=10461&mode=wireframe) (CID loading & molecule representation)
+    4. [Pyrite](embed?codid=5000115) (CODID loading)
+    4. [Benzene](embed?q=Benzene) (text resolving)
 3. Verify for chances mentioned in CHANGELOG.md:
     1. Expected behaviour in Chrome and Firefox
-    2. Expected layout and design on desktops (test Chrome and Firefox) and touch devices
+    2. Expected layout and design on desktops (test on Chrome and Firefox) and touch devices
 
 ### Stable build
 1. Successful unstable build
 2. Verify for all functions mentioned in docs/manual.pdf:
-    1. Expected behaviour on desktops (test Chrome and Firefox), touch devices and mobile devices
-    2. Expected layout and design on desktops (test Chrome and Firefox), touch devices and mobile devices
+    1. Expected behaviour on desktops (test on Chrome and Firefox), touch devices and mobile devices
+    2. Expected layout and design on desktops (test on Chrome and Firefox), touch devices and mobile devices
 3. Verify for chances mentioned in CHANGELOG.md:
-    1. Behaviour on desktops (test Chrome and Firefox), touch devices and mobile devices is "as designed"
-    2. Layout and design on desktops (test Chrome and Firefox), touch devices and mobile devices is "as designed"
-4. Make sure all pages are up-to-date
+    1. Behaviour on desktops (test on Chrome and Firefox), touch devices and mobile devices is "as designed"
+    2. Layout and design on desktops (test on Chrome and Firefox), touch devices and mobile devices is "as designed"
+4. Verify if all pages are up-to-date

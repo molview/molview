@@ -1,8 +1,15 @@
 Wishlist
 ========
 
-- Add autorotate mode
-- Add CIF loader to GLmol
+- Add touch menu drawer
+- Add "Open in MolView" button
+- Add Preferences dialog
+- Add functional groups support in Sketcher
+- Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
+- Add MolView home website (pages: features, about, manual, changelog, license, feedback)
+
+- Add support for UV/Visable spectra
+- Add Model auto-rotate mode
 - Add EDTSurf (protein surfaces) implementation to GLmol
 - Add newest THREE.js version to GLmol
 - Add THREE.CanvasRenderer to GLmol
@@ -12,18 +19,12 @@ Wishlist
 - Add dotted H-bonds and SS-bonds for proteins
 - Create interactive macromolecule exploration mode
 
-- Add touch menu drawer
-- Add "Open in MolView" button
-- Add Preferences dialog
-- Add functional groups support in Sketcher
-- Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
-- Add MolView home website (pages: features, about, manual, changelog, license, feedback)
-
+- Add CIF loader to GLmol
 - Add dynamic CIF cell size
+- Add COD mirror
 - Integrate COD image API
 - Integrate MinData.org data
 - Integrate Smorf viewer (carved crystals)
-- Build COD mirror
 
 - Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Add client-side structural formula depiction using JavaScript

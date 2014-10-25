@@ -55,9 +55,9 @@ var SearchGrid = {
     setDatabase: function(db)
     {
         this.db = db;
-		$("#load-more-pubchem").css("display", db == "pubchem" ? "block" : "none");
-		$("#load-more-rcsb").css("display", db == "rcsb" ? "block" : "none");
-		$("#load-more-cod").css("display", db == "cod" ? "block" : "none");
+		$("#action-load-more-pubchem").css("display", db == "pubchem" ? "block" : "none");
+		$("#action-load-more-rcsb").css("display", db == "rcsb" ? "block" : "none");
+		$("#action-load-more-cod").css("display", db == "cod" ? "block" : "none");
     },
 
     /**
@@ -99,6 +99,7 @@ var SearchGrid = {
 			{
 				if(e.which != 2)
 				{
+                    MolView.pushEvent("button", "click", "pubchem search", 0);
 					MolView.setLayer("main");
 					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
                     return false;
@@ -137,6 +138,7 @@ var SearchGrid = {
 			{
 				if(e.which != 2)
 				{
+                    MolView.pushEvent("button", "click", "rcsb search", 0);
 					MolView.setLayer("main");
 					Loader.RCSB.loadPDBID($(this).data("pdbid"));
                     return false;
@@ -196,6 +198,7 @@ var SearchGrid = {
 			{
 				if(e.which != 2)
 				{
+                    MolView.pushEvent("button", "click", "cod search", 0);
 					MolView.setLayer("main");
 					Loader.COD.loadCODID($(this).data("codid"), $(this).data("title"));
                     return false;
