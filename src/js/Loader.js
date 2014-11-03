@@ -540,7 +540,6 @@ var Loader = {
 					{
 						Sketcher.metadata.smiles = smiles;
 						Sketcher.loadMOL(mol2d);
-						Sketcher.removeAllHydrogens();
 						Sketcher.markUpdated();
 
 						finish();

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.x
+
+- Replaced MolEdit with MolPad
+- Integrated bower
+
 ## 2.2.x (2014-11-3)
 
 ### Bugfixes

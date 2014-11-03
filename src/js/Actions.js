@@ -67,9 +67,11 @@ var Actions = {
 
 	export_sketcher_png: function()
 	{
-		var dataURL = Sketcher.getImageDataURL();
-		var blob = dataURItoBlob(dataURL);
-		if(blob !== null) saveAs(blob, document.title + " (structural formula).png");
+		Sketcher.getImageDataURL(function(dataURL)
+		{
+			var blob = dataURItoBlob(dataURL);
+			if(blob !== null) saveAs(blob, document.title + " (structural formula).png");
+		});
 	},
 
 	export_model_png: function()
@@ -373,31 +375,19 @@ var Actions = {
 	/*
 	Sketcher
 	*/
-	hstrip: function()
-	{
-		if($("#action-hstrip").toggleClass("tool-button-selected").hasClass("tool-button-selected"))
-		{
-			Sketcher.moledit.removeImplicitHydrogen(true);
-		}
-
-		Preferences.set("sketcher", "hstrip", $("#action-hstrip").hasClass("tool-button-selected"));
-
-		return $("#action-hstrip").hasClass("tool-button-selected") ? 1 : 0;
-	},
-
-	clean: function()
+	mp_clean: function()
 	{
 		Messages.process(Loader.clean, "clean");
+	},
+
+	mp_periodictable: function()
+	{
+		MolView.showDialog("periodictable");
 	},
 
 	resolve: function()
 	{
 		Messages.process(Loader.resolve, "resolve");
-	},
-
-	info: function()
-	{
-		MolView.showDialog("about");
 	},
 
 	/*

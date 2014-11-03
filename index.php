@@ -139,12 +139,11 @@ Query parameters:
 		?>
 
 		<!-- JS -->
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
 		<script type="text/javascript" src="build/molview-base.min.js"></script>
 		<script type="text/javascript" src="build/molview-applib.min.js"></script>
 		<script type="text/javascript" src="build/molview-datasets.min.js"></script>
 		<script type="text/javascript" src="build/molview-core.min.js"></script>
-		<script type="text/javascript" src="build/molview-sketcher.min.js"></script>
+		<script type="text/javascript" src="build/molview-molpad.min.js"></script>
 		<script type="text/javascript" src="build/molview-app.min.js"></script>
 
 		<!-- PHP data injection -->
@@ -331,66 +330,63 @@ Query parameters:
 							$(window).width() < 390 && MolView.touch);
 				</script>
 				<div id="sketcher">
-					<div id="moledit" class="sketcher">
+					<div id="molpad" class="sketcher">
 						<div id="chem-tools" class="toolbar">
 							<div class="toolbar-inner">
-								<div id="me-single" class="tool-button mode tool-button-selected" title="Single bond"></div>
-								<div id="me-double" class="tool-button mode" title="Double bond"></div>
-								<div id="me-triple" class="tool-button mode" title="Triple bond"></div>
-								<div id="me-updown" class="tool-button mode" title="Up/Down bond"></div>
+								<div id="action-mp-bond-single" class="tool-button primary-tool tool-button-selected" title="Single bond"></div>
+								<div id="action-mp-bond-double" class="tool-button primary-tool" title="Double bond"></div>
+								<div id="action-mp-bond-triple" class="tool-button primary-tool" title="Triple bond"></div>
+								<div id="action-mp-bond-wedge" class="tool-button primary-tool" title="Wedge bond"></div>
+								<div id="action-mp-bond-hash" class="tool-button primary-tool" title="Hash bond"></div>
 								<div class="vertical-separator"></div>
-								<div id="me-frag-0" class="tool-button mode" title="Benzene"></div>
-								<div id="me-frag-1" class="tool-button mode" title="Cyclopropane"></div>
-								<div id="me-frag-2" class="tool-button mode" title="Cyclobutane"></div>
-								<div id="me-frag-3" class="tool-button mode" title="Cyclopentane"></div>
-								<div id="me-frag-4" class="tool-button mode" title="Cyclohexane"></div>
-								<div id="me-frag-5" class="tool-button mode" title="Cycloheptane"></div>
+								<div id="action-mp-frag-benzene" class="tool-button primary-tool" title="Benzene"></div>
+								<div id="action-mp-frag-cyclopropane" class="tool-button primary-tool" title="Cyclopropane"></div>
+								<div id="action-mp-frag-cyclobutane" class="tool-button primary-tool" title="Cyclobutane"></div>
+								<div id="action-mp-frag-cyclopentane" class="tool-button primary-tool" title="Cyclopentane"></div>
+								<div id="action-mp-frag-cyclohexane" class="tool-button primary-tool" title="Cyclohexane"></div>
+								<div id="action-mp-frag-cycloheptane" class="tool-button primary-tool" title="Cycloheptane"></div>
 								<div class="vertical-separator"></div>
-								<div id="me-chain" class="tool-button mode" title="Click and drag to draw a chain of carbon atoms"></div>
-								<div id="me-charge-add" class="tool-button mode" title="Charge +">e<sup>+</sup></div>
-								<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>&minus;</sup></div>
+								<div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div>
+								<div id="action-mp-charge-add" class="tool-button primary-tool" title="Charge +">e<sup>+</sup></div>
+								<div id="action-mp-charge-sub" class="tool-button primary-tool" title="Charge -">e<sup>&minus;</sup></div>
 							</div>
 						</div>
 						<div id="edit-tools" class="toolbar">
 							<div class="toolbar-inner hstack">
-								<div id="me-new" class="tool-button tool-button-horizontal" title="Clear all"></div>
-								<div id="me-eraser" class="tool-button tool-button-horizontal mode" title="Erase"></div>
+								<div id="action-mp-clear" class="tool-button tool-button-horizontal" title="Clear all"></div>
+								<div id="action-mp-eraser" class="tool-button tool-button-horizontal primary-tool" title="Erase"></div>
 								<div class="horizontal-separator"></div>
-								<div id="me-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
-								<div id="me-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
+								<div id="action-mp-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
+								<div id="action-mp-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
 								<div class="horizontal-separator"></div>
-								<div id="me-move" class="tool-button tool-button-horizontal mode" title="Move"></div>
-								<div id="me-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
+								<div id="action-mp-move" class="tool-button tool-button-horizontal primary-tool" title="Move"></div>
+								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
 								<div class="horizontal-separator"></div>
-								<div id="me-rect" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Rectangle selection"></div>
-								<div id="me-lasso" class="tool-button tool-button-horizontal mode custom" title="Lasso selection"></div>
-								<div id="me-deselect" class="tool-button tool-button-horizontal" title="Clear selection"></div>
+								<div id="action-mp-rect" class="tool-button tool-button-horizontal selection-tool tool-button-selected" title="Rectangle selection"></div>
+								<div id="action-mp-lasso" class="tool-button tool-button-horizontal selection-tool" title="Lasso selection"></div>
 								<div class="horizontal-separator"></div>
-								<div id="action-hstrip" class="tool-button tool-button-horizontal mode custom tool-button-selected" title="Toggle hydrogen stripping"></div>
-								<div id="action-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
+								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula"></div>
+								<div class="horizontal-separator"></div>
+								<div id="action-mp-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
 								<div id="action-resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
 							</div>
 						</div>
 						<div id="elem-tools" class="toolbar">
 							<div class="toolbar-inner">
-								<div id="me-atom-h" class="tool-button mode" title="Hydrogen">H</div>
-								<div id="me-atom-c" class="tool-button mode" title="Carbon">C</div>
-								<div id="me-atom-n" class="tool-button mode" title="Nitrogen">N</div>
-								<div id="me-atom-o" class="tool-button mode" title="Oxygen">O</div>
-								<div id="me-atom-s" class="tool-button mode" title="Sulfur">S</div>
-								<div id="me-atom-p" class="tool-button mode" title="Phosphorus">P</div>
-								<div id="me-atom-f" class="tool-button mode" title="Fluorine">F</div>
-								<div id="me-atom-i" class="tool-button mode" title="Iodine">I</div>
-								<div id="me-atom-cl" class="tool-button mode" title="Chlorine">Cl</div>
-								<div id="me-atom-br" class="tool-button mode" title="Bromine">Br</div>
-								<div id="me-elements" class="tool-button" title="Periodic Table">...</div>
-								<div class="vertical-separator"></div>
-								<div id="action-info" class="tool-button" title="Information"></div>
+								<div id="action-mp-atom-h" class="tool-button primary-tool" title="Hydrogen">H</div>
+								<div id="action-mp-atom-c" class="tool-button primary-tool" title="Carbon">C</div>
+								<div id="action-mp-atom-n" class="tool-button primary-tool" title="Nitrogen">N</div>
+								<div id="action-mp-atom-o" class="tool-button primary-tool" title="Oxygen">O</div>
+								<div id="action-mp-atom-s" class="tool-button primary-tool" title="Sulfur">S</div>
+								<div id="action-mp-atom-p" class="tool-button primary-tool" title="Phosphorus">P</div>
+								<div id="action-mp-atom-f" class="tool-button primary-tool" title="Fluorine">F</div>
+								<div id="action-mp-atom-i" class="tool-button primary-tool" title="Iodine">I</div>
+								<div id="action-mp-atom-cl" class="tool-button primary-tool" title="Chlorine">Cl</div>
+								<div id="action-mp-atom-br" class="tool-button primary-tool" title="Bromine">Br</div>
+								<div id="action-mp-periodictable" class="tool-button" title="Periodic Table">...</div>
 							</div>
 						</div>
-						<div id="moledit-area" class="edit-area">
-							<canvas id="moledit-canvas"></canvas>
-						</div>
+						<div id="molpad-canvas"></div>
 					</div>
 				</div>
 				<div id="model" <?php
@@ -537,7 +533,6 @@ Query parameters:
 						<ul>
 							<li>JavaScript libraries
 								<ul>
-									<li><a class="link" href="https://www.molsoft.com/moledit.html" target="_blank" title="MolEdit">MolEdit v1.2.4</a>: structural formula sketcher</li>
 									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Molfile to SMILES conversion</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
 									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.8</a>: 3D render engine</li>
@@ -813,7 +808,7 @@ Query parameters:
 							<button class="btn close btn-primary">Close</button>
 						</div>
 					</div>
-					<div class="dialog" id="elements-dialog" style="display: none;">
+					<div class="dialog" id="periodictable-dialog" style="display: none;">
 						<h2>Periodic Table</h2>
 						<div class="dialog-close-btn"></div>
 						<div id="periodictable"></div>

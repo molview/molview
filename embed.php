@@ -68,7 +68,6 @@ Query parameters:
 		<link type="text/css" rel="stylesheet" href="build/molview-embed.min.css" media="screen" />
 
 		<!-- JS -->
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
 		<script type="text/javascript" src="build/molview-base.min.js"></script>
 		<script type="text/javascript" src="build/molview-core.min.js"></script>
 		<script type="text/javascript" src="build/molview-embed.min.js"></script>

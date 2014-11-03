@@ -29,7 +29,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		$title = "COD: ".$codid;
 
 	//description
-	$description = "Advanced, web-based chemistry application for free!";
+	$description = "MolView is an Open-Source, intuitive web-application to make chemistry and biology more awesome!";
 	if(isset($q) || isset($smiles) || isset($cid))
 		$description = "View this molecule at https://molview.org";
 	else if(isset($pdbid))

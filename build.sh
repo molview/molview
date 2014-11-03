@@ -24,22 +24,14 @@ if [[ $1 == "fetch" ]]
 	wget https://raw.githubusercontent.com/serbanghita/Mobile-Detect/master/Mobile_Detect.php
 	mv Mobile_Detect.php php/Mobile_Detect.php
 
-	wget https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js
-	mv jquery.hotkeys.js src/js/lib/jquery.hotkeys.js
-
-	wget https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js
-	mv FileSaver.js src/js/lib/FileSaver.js
-
-	wget https://raw.githubusercontent.com/eligrey/Blob.js/master/Blob.js
-	mv Blob.js src/js/lib/Blob.js
-
 fi
 
 if [[ $1 != "render" ]]
 	then
 
-	# Install node modules and run grunt
+	# Install node modules and run bower and grunt
 	npm install
+	bower install
 	grunt
 
 fi

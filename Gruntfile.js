@@ -2,6 +2,7 @@ var JSUnits = {
 	base:
 	{
 		src: [
+			'bower_components/jquery/dist/jquery.min.js',
 			'src/js/lib/JSmol.min.js',
 			'src/js/lib/Detector.js',
 			'src/js/lib/three.min.js',
@@ -12,9 +13,28 @@ var JSUnits = {
 	applib:
 	{
 		src: [
-			'src/js/lib/jquery.hotkeys.js',
-			'src/js/lib/Blob.js',
-			'src/js/lib/FileSaver.js'
+			'bower_components/jquery.hotkeys/jquery.hotkeys.js',
+			'bower_components/kineticjs/kinetic.min.js',
+			'bower_components/blob/Blob.js',
+			'bower_components/file-saver/FileSaver.min.js',
+
+			//M2S
+			'src/js/m2s/prototype.js',
+			'src/js/m2s/util/common.js',
+			'src/js/m2s/util/vec2.js',
+			'src/js/m2s/util/set.js',
+			'src/js/m2s/util/map.js',
+			'src/js/m2s/util/pool.js',
+			'src/js/m2s/chem/element.js',
+			'src/js/m2s/chem/struct.js',
+			'src/js/m2s/chem/molfile.js',
+			'src/js/m2s/chem/sgroup.js',
+			'src/js/m2s/chem/struct_valence.js',
+			'src/js/m2s/chem/dfs.js',
+			'src/js/m2s/chem/cis_trans.js',
+			'src/js/m2s/chem/stereocenters.js',
+			'src/js/m2s/chem/smiles.js',
+			'src/js/m2s/chem/inchi.js'
 		]
 	},
 	datasets:
@@ -40,35 +60,10 @@ var JSUnits = {
 			'src/js/Request.js'
 		]
 	},
-	sketcher:
+	molpad:
 	{
 		src: [
-			//M2S
-			'src/js/m2s/prototype.js',
-			'src/js/m2s/util/common.js',
-			'src/js/m2s/util/vec2.js',
-			'src/js/m2s/util/set.js',
-			'src/js/m2s/util/map.js',
-			'src/js/m2s/util/pool.js',
-			'src/js/m2s/chem/element.js',
-			'src/js/m2s/chem/struct.js',
-			'src/js/m2s/chem/molfile.js',
-			'src/js/m2s/chem/sgroup.js',
-			'src/js/m2s/chem/struct_valence.js',
-			'src/js/m2s/chem/dfs.js',
-			'src/js/m2s/chem/cis_trans.js',
-			'src/js/m2s/chem/stereocenters.js',
-			'src/js/m2s/chem/smiles.js',
-			'src/js/m2s/chem/inchi.js',
-
-			//MolEdit
-			'src/js/moledit/MolEdit_constants.js',
-			'src/js/moledit/MolEdit_objects.js',
-			'src/js/moledit/MolEdit_utility.js',
-			'src/js/moledit/MEChemical.js',
-			'src/js/moledit/MolEdit.js',
-			'src/js/moledit/MolEdit_core.js',
-			'src/js/moledit/MolEdit_events.js'
+			'src/js/molpad/*.js'
 		]
 	},
 	app:
@@ -141,14 +136,14 @@ module.exports = function(grunt)
 				src: JSUnits.core.src,
 				dest: 'build/molview-core.min.js'
 			},
-			sketcher:
+			molpad:
 			{
 				options:
 				{
 					banner: '/*! MolView JavaScript Sketcher build on <%= grunt.template.today("yyyy-mm-dd") %> */\n'
 				},
-				src: JSUnits.sketcher.src,
-				dest: 'build/molview-sketcher.min.js'
+				src: JSUnits.molpad.src,
+				dest: 'build/molview-molpad.min.js'
 			},
 			app:
 			{
@@ -344,7 +339,7 @@ module.exports = function(grunt)
 			applib: { files: JSUnits.applib.src, tasks: ['uglify:applib'] },
 			datasets: { files: JSUnits.datasets.src, tasks: ['uglify:datasets'] },
 			core: { files: JSUnits.core.src, tasks: ['uglify:core'] },
-			sketcher: { files: JSUnits.sketcher.src, tasks: ['uglify:sketcher'] },
+			molpad: { files: JSUnits.molpad.src, tasks: ['uglify:molpad'] },
 			app: { files: JSUnits.app.src, tasks: ['uglify:app'] },
 			embed: { files: JSUnits.embed.src, tasks: ['uglify:embed'] },
 		}

@@ -296,10 +296,9 @@ var MolView = {
 		this.addAction("load_more_rcsb", "button");
 		this.addAction("load_more_cod", "button");
 
-		this.addAction("hstrip", "button");
-		this.addAction("clean", "button");
+		this.addAction("mp_clean", "button");
+		this.addAction("mp_periodictable", "button");
 		this.addAction("resolve", "button");
-		this.addAction("info", "button");
 
 		this.addAction("start_help", "button");
 		this.addAction("export_spectrum_png", "button");

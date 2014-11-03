@@ -18,11 +18,11 @@
 
 /**
  * MolView sketcher wrapper
- * Wraps MolEdit
+ * Wraps MolPad
  * @type {Object}
  */
 var Sketcher = {
-	moledit: undefined,
+	molpad: undefined,
 	metadata: {
 		cid: undefined,
 		inchi: undefined,
@@ -30,43 +30,53 @@ var Sketcher = {
 		smiles: undefined,
 	},
 
+	/**
+	 * Init sketcher
+	 */
 	init: function()
 	{
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
-		$("#action-hstrip").toggleClass("tool-button-selected",
-				Preferences.get("sketcher", "hstrip", true));
+		$("#action-mp-skeletal-formula").toggleClass("tool-button-active",
+				!Preferences.get("sketcher", "skeletal_formula", true));
 
 		if(Detector.canvas)
 		{
-			this.moledit = new MolEdit(document.getElementById("moledit-area"),
-					document.getElementById("moledit-canvas"), MolView.devicePixelRatio,
-					isTouchDevice(), MolView.touch);
+			this.molpad = new MolPad(document.getElementById("molpad-canvas"));
 
 			if(MolView.loadDefault)
 			{
 				this.loadMOL(defaultMol2D);
 			}
 
-			this.moledit.onChanged = function()
+			this.molpad.onChange(function()
 			{
 				Sketcher.metadata = {};
 				$("#action-resolve").removeClass("resolve-updated");
-			};
+			});
 		}
-		else Messages.alert("no_canvas_support");
+		else
+		{
+			Messages.alert("no_canvas_support");
+		}
 	},
 
+	/**
+	 * Auto resize sketcher
+	 */
 	resize: function()
 	{
-		if(this.moledit)
+		if(this.molpad)
 		{
-			this.moledit.resize();
 			this.resizeToolbars();
+			this.molpad.resize();
 		}
 	},
 
+	/**
+	 * Auto resize sketcher toolbars to fit scrollbar
+	 */
 	resizeToolbars: function()
 	{
 		var top   = 40 + $("#edit-tools").css("height", 40).scrollTop(40).scrollTop();
@@ -84,13 +94,16 @@ var Sketcher = {
 			top: top,
 			width: right
 		});
-		$("#moledit-area").css({
+		$("#molpad-canvas").css({
 			top: top,
 			left: left,
 			right: right,
 		});
 	},
 
+	/**
+	 * Build periodic table in periodictable dialog
+	 */
 	initPeriodicTable: function()
 	{
 		var table = PeriodicTable.table;
@@ -117,67 +130,64 @@ var Sketcher = {
 					.data("nr", element.small)
 					.on(MolView.trigger, function()
 					{
-						$("#moledit .tool-button:not(.custom)").not(this).removeClass("tool-button-selected");
-						$("#me-elements").addClass("tool-button-selected");
+						$("#molpad .primary-tool").removeClass("tool-button-selected");
+						$("#action-mp-periodictable").addClass("tool-button-selected");
 
-						Sketcher.moledit.setElement.call(Sketcher.moledit, $(this).data("nr"));
-						window.setTimeout(MolView.hideDialogs, 0);
+						Sketcher.molpad.setTool("atom", $(this).data("nr"));
+						MolView.hideDialogs();
 					})
 					.appendTo("#periodictable");
+
 				position = element.position;
 			}
 			$("<br/>").appendTo("#periodictable");
 		}
-
-		$("#me-elements").on(MolView.trigger, function()
-		{
-			$("#me-elements").removeClass("tool-button-selected");
-			MolView.showDialog("elements");
-		});
 	},
 
+	/**
+	 * Load molfile into sketcher
+	 * @param {String} mol Molfile
+	 */
 	loadMOL: function(mol)
 	{
-		//load molecule
-		if(this.moledit)
+		if(this.molpad)
 		{
-			this.moledit.loadMOL(mol);
-
-			if($("#action-hstrip").hasClass("tool-button-selected"))
-			{
-				this.moledit.removeImplicitHydrogen();
-			}
+			this.molpad.loadMOL(mol);
 		}
 	},
 
+	/**
+	 * Get molfile from sketcher
+	 * @return {String} molfile
+	 */
 	getMOL: function()
 	{
-		if(this.moledit)
+		if(this.molpad)
 		{
-			return this.moledit.getMOL();
+			return this.molpad.getMOL();
 		}
 		else return "";
 	},
 
+	/**
+	 * Get SMILES from sketcher
+	 * Uses M2S from Ketcher
+	 * @return {String} SMILES
+	 */
 	getSMILES: function()
 	{
 		if(this.metadata.smiles)
 		{
 			return this.metadata.smiles;
 		}
-		else if(this.moledit)
+		else if(this.molpad)
 		{
-			if(this.moledit.chem.atoms.length == 0) throw new Error("No atoms found");
+			if(this.molpad.chem.atoms.length == 0) throw new Error("No atoms found");
 			var molecule = chem.Molfile.parseCTFile(this.getMOL().split("\n"));
 			this.metadata.smiles = new chem.SmilesSaver().saveMolecule(molecule);
 			return this.metadata.smiles;
 		}
 		else return "";
-	},
-
-	removeAllHydrogens: function()
-	{
-		this.moledit.removeAllHydrogens();
 	},
 
 	markOutdated: function()
@@ -190,12 +200,12 @@ var Sketcher = {
 		$("#action-resolve").addClass("resolve-updated");
 	},
 
-	getImageDataURL: function()
+	toDataURL: function(cb)
 	{
-		if(this.moledit)
+		if(this.molpad)
 		{
-			return document.getElementById("moledit-canvas").toDataURL("image/png");
+			return this.molpad.toDataURL(cb);
 		}
-		else return "";
+		else cb("");
 	}
 };
