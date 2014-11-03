@@ -136,7 +136,7 @@ var Progress = {
 	 */
 	draw: function(time)
 	{
-    	if(Progress.canvas && Progress.ctx)
+    	if(Progress.canvas)
 		{
 			if(Progress.resetAnim)
 			{

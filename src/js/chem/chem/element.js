@@ -10,24 +10,6 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  ***************************************************************************/
 
-/**
- * This file is part of MolView (https://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
- *
- * MolView is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * MolView is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 if(!window.util || !util.Vec2)
 	throw new Error("Vec2 should be defined first");
 
@@ -107,8 +89,6 @@ chem.Element = function (label, period, group, putHydrogenOnTheLeft, color, ypos
 
 chem.Element.elements = new util.Map(
 {
-	//deuterium
-	113: new chem.Element('2H', 1, 1, false, '#333333', 1, 1),
 	//common elements
 	1: new chem.Element('H', 1, 1, false, '#000000', 1, 1),
 	2: new chem.Element('He', 1, 8, false, '#d9ffff', 1, 18),

@@ -10,24 +10,6 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  ***************************************************************************/
 
-/**
- * This file is part of MolView (https://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
- *
- * MolView is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * MolView is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 if(!window.chem || !chem.Struct)
 	throw new Error("Vec2 and Molecule should be defined first");
 
@@ -52,7 +34,7 @@ chem.SmilesSaver._Atom = function (h_count)
 	this.parent = -1;
 };
 
-// NB: only loops of length up to 6 are included here 
+// NB: only loops of length up to 6 are included here
 chem.SmilesSaver.prototype.isBondInRing = function (bid)
 {
 	if(util.isUndefined(this.inLoop) || util.isNull(this.inLoop))
@@ -103,7 +85,7 @@ chem.SmilesSaver.prototype.saveMolecule = function (molecule, ignore_errors)
 	}, this);
 
 	// From the SMILES specification:
-	// Please note that only atoms on the following list 
+	// Please note that only atoms on the following list
 	// can be considered aromatic: C, N, O, P, S, As, Se, and * (wildcard).
 	var allowed_lowercase = ['B', 'C', 'N', 'O', 'P', 'S', 'Se', 'As'];
 

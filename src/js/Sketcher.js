@@ -182,9 +182,7 @@ var Sketcher = {
 		}
 		else if(this.molpad)
 		{
-			if(this.molpad.chem.atoms.length == 0) throw new Error("No atoms found");
-			var molecule = chem.Molfile.parseCTFile(this.getMOL().split("\n"));
-			this.metadata.smiles = new chem.SmilesSaver().saveMolecule(molecule);
+			this.metadata.smiles = this.molpad.getSMILES();
 			return this.metadata.smiles;
 		}
 		else return "";

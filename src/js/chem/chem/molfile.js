@@ -10,24 +10,6 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  ***************************************************************************/
 
-/**
- * This file is part of MolView (https://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
- *
- * MolView is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * MolView is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 if(!window.chem || !util.Vec2 || !chem.Struct)
 	throw new Error("Vec2 and Molecule should be defined first");
 
@@ -211,7 +193,7 @@ chem.Molfile.parseAtomLineV3000 = function (line)
 		}
 		else if(label.charAt(0) != "[")
 		{
-			throw "Error: atom list expected, found \'" + label + "\'";
+			throw new Error("Error: atom list expected, found \'" + label + "\'");
 		}
 		else
 		{
@@ -855,7 +837,7 @@ chem.Molfile.splitSGroupDef = function (line)
 		}
 	}
 	if(braceBalance != 0)
-		throw "Brace balance broken. S-group properies invalid!";
+		throw new Error("Brace balance broken. S-group properies invalid!");
 	if(line.length > 0)
 		split.push(line.trim());
 	return split;
@@ -912,7 +894,7 @@ chem.Molfile.v3000parseSGroup = function (ctab, ctabLines, sgroups, atomMap, shi
 			var subsplit = mf.splitonce(split[i], '=');
 			if(subsplit.length != 2)
 			{
-				throw "A record of form AAA=BBB or AAA=(...) expected, got '" + split[i] + "'";
+				throw new Error("A record of form AAA=BBB or AAA=(...) expected, got '" + split[i] + "'");
 			}
 			var name = subsplit[0];
 			if(!(name in props))
@@ -1316,7 +1298,7 @@ chem.MolfileSaver.prototype.writeHeader = function ()
 
 	this.writeCR(); // TODO: write structure name
 	this.writeWhiteSpace(2);
-	this.write('Ketcher');
+	this.write('MolView');
 	this.writeWhiteSpace();
 	this.writeCR((date.getMonth() + 1).toPaddedString(2) + date.getDate().toPaddedString(2) + (date.getFullYear() % 100).toPaddedString(2) +
 		date.getHours().toPaddedString(2) + date.getMinutes().toPaddedString(2) + '2D 1   1.00000     0.00000     0');
@@ -1338,13 +1320,8 @@ chem.MolfileSaver.prototype.writeCR = function (str)
 
 chem.MolfileSaver.prototype.writeWhiteSpace = function (length)
 {
-	if(arguments.length == 0)
-		length = 1;
-
-	length.times(function ()
-	{
-		this.write(' ');
-	}, this);
+	if(arguments.length == 0) length = 1;
+	for(var i = 0; i < length; i++) this.write(' ');
 };
 
 chem.MolfileSaver.prototype.writePadded = function (str, width)

@@ -17,24 +17,21 @@ var JSUnits = {
 			'bower_components/kineticjs/kinetic.min.js',
 			'bower_components/blob/Blob.js',
 			'bower_components/file-saver/FileSaver.min.js',
-
-			//M2S
-			'src/js/m2s/prototype.js',
-			'src/js/m2s/util/common.js',
-			'src/js/m2s/util/vec2.js',
-			'src/js/m2s/util/set.js',
-			'src/js/m2s/util/map.js',
-			'src/js/m2s/util/pool.js',
-			'src/js/m2s/chem/element.js',
-			'src/js/m2s/chem/struct.js',
-			'src/js/m2s/chem/molfile.js',
-			'src/js/m2s/chem/sgroup.js',
-			'src/js/m2s/chem/struct_valence.js',
-			'src/js/m2s/chem/dfs.js',
-			'src/js/m2s/chem/cis_trans.js',
-			'src/js/m2s/chem/stereocenters.js',
-			'src/js/m2s/chem/smiles.js',
-			'src/js/m2s/chem/inchi.js'
+			'src/js/chem/prototype.js',
+			'src/js/chem/util/common.js',
+			'src/js/chem/util/vec2.js',
+			'src/js/chem/util/set.js',
+			'src/js/chem/util/map.js',
+			'src/js/chem/util/pool.js',
+			'src/js/chem/chem/element.js',
+			'src/js/chem/chem/struct.js',
+			'src/js/chem/chem/molfile.js',
+			'src/js/chem/chem/sgroup.js',
+			'src/js/chem/chem/struct_valence.js',
+			'src/js/chem/chem/dfs.js',
+			'src/js/chem/chem/cis_trans.js',
+			'src/js/chem/chem/stereocenters.js',
+			'src/js/chem/chem/smiles.js'
 		]
 	},
 	datasets:
@@ -63,7 +60,11 @@ var JSUnits = {
 	molpad:
 	{
 		src: [
-			'src/js/molpad/*.js'
+			'src/js/molpad/Data.js',
+			'src/js/molpad/MPAtom.js',
+			'src/js/molpad/MPBond.js',
+			'src/js/molpad/MolPad.js',
+			'src/js/molpad/MPEvents.js'
 		]
 	},
 	app:
