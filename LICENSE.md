@@ -18,11 +18,14 @@ You should have received a copy of the GNU Affero General Public License
 along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 ```
 
-Third party licenses
+Third-party licenses
 ====================
-Below is a list of all third party libraries used in MolView.
+Below is a list of all third-party libraries used in MolView.
 If you believe your code is used in MolView and should be contained in this list,
 please contact me via <support@molview.org>
+Included third-party code is **not** subject to the MolView license (AGPL)
+All modifications to third-party code are subject to its respective
+license or agreement.
 
 ## JSmol
 ```
@@ -114,8 +117,8 @@ See: https://www.molsoft.com/moledit.html
 *The editor is free for academic and personal use.
 Please contact <info@molsoft.com> about commercial use.*
 
-(**Only** MolView has explicit permission from MolSoft to
-modify and distribute MolEdit in a non-profit context!)
+**Only** MolView has explicit permission from MolSoft to modify and distribute
+MolEdit in a non-profit context outside of this legal restriction!
 
 ## jQuery
 ```

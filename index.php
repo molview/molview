@@ -126,77 +126,26 @@ Query parameters:
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
-		<link type="text/css" rel="stylesheet" href="build/molview.min.css" />
+		<link type="text/css" rel="stylesheet" href="build/molview-app.min.css" />
 		<?php
 			if($touch)
 			{
-				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.touch.min.css" media="screen" />';
+				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview-touch.min.css" media="screen" />';
 			}
 			else
 			{
-				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview.desktop.min.css" media="screen" />';
+				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview-desktop.min.css" media="screen" />';
 			}
 		?>
 
 		<!-- JS -->
-		<script type="text/javascript" src="src/js/Data.js"></script>
-		<script type="text/javascript" src="src/js/lib/JSmol.min.js"></script>
-		<script type="text/javascript" src="src/js/lib/jquery.min.js"></script>
-		<script type="text/javascript" src="src/js/lib/jquery.hotkeys.js"></script>
-		<script type="text/javascript" src="src/js/lib/Detector.js"></script>
-		<script type="text/javascript" src="src/js/Utility.js"></script>
-		<script type="text/javascript" src="src/js/m2s/prototype.js"></script>
-		<script type="text/javascript" src="src/js/m2s/util/common.js"></script>
-		<script type="text/javascript" src="src/js/m2s/util/vec2.js"></script>
-		<script type="text/javascript" src="src/js/m2s/util/set.js"></script>
-		<script type="text/javascript" src="src/js/m2s/util/map.js"></script>
-		<script type="text/javascript" src="src/js/m2s/util/pool.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/element.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/struct.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/molfile.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/sgroup.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/struct_valence.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/dfs.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/cis_trans.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/stereocenters.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/smiles.js"></script>
-		<script type="text/javascript" src="src/js/m2s/chem/inchi.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MolEdit_constants.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MolEdit_objects.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MolEdit_utility.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MEChemical.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MolEdit.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MolEdit_core.js"></script>
-		<script type="text/javascript" src="src/js/moledit/MolEdit_events.js"></script>
-		<script type="text/javascript" src="src/js/lib/three.min.js"></script>
-		<script type="text/javascript" src="src/js/lib/GLmol.js"></script>
-		<script type="text/javascript" src="src/js/lib/ChemDoodleWeb.js"></script>
-		<script type="text/javascript" src="src/js/lib/Blob.js"></script>
-		<script type="text/javascript" src="src/js/lib/FileSaver.js"></script>
-		<script type="text/javascript" src="src/js/lib/PeriodicTable.js"></script>
-		<script type="text/javascript" src="src/datasets/PDBNames.js"></script>
-		<script type="text/javascript" src="src/datasets/MineralNames.js"></script>
-		<script type="text/javascript" src="src/js/Preferences.js"></script>
-		<script type="text/javascript" src="src/js/History.js"></script>
-		<script type="text/javascript" src="src/js/Progress.js"></script>
-		<script type="text/javascript" src="src/js/Messages.js"></script>
-		<script type="text/javascript" src="src/js/Sketcher.js"></script>
-		<script type="text/javascript" src="src/js/GLmolPlugin.js"></script>
-		<script type="text/javascript" src="src/js/JSmolPlugin.js"></script>
-		<script type="text/javascript" src="src/js/CDWPlugin.js"></script>
-		<script type="text/javascript" src="src/js/Model.js"></script>
-		<script type="text/javascript" src="src/js/SearchGrid.js"></script>
-		<script type="text/javascript" src="src/js/Request.js"></script>
-		<script type="text/javascript" src="src/js/Loader.js"></script>
-		<script type="text/javascript" src="src/js/Actions.js"></script>
-		<script type="text/javascript" src="src/js/Share.js"></script>
-		<script type="text/javascript" src="src/js/Link.js"></script>
-		<script type="text/javascript" src="src/js/InfoCard.js"></script>
-		<script type="text/javascript" src="src/js/Spectroscopy.js"></script>
-		<script type="text/javascript" src="src/js/Autocomplete.js"></script>
-		<script type="text/javascript" src="src/js/MolView.js"></script>
-
-		<!-- <script type="text/javascript" src="build/molview.min.js"></script> -->
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="build/molview-base.min.js"></script>
+		<script type="text/javascript" src="build/molview-applib.min.js"></script>
+		<script type="text/javascript" src="build/molview-datasets.min.js"></script>
+		<script type="text/javascript" src="build/molview-core.min.js"></script>
+		<script type="text/javascript" src="build/molview-sketcher.min.js"></script>
+		<script type="text/javascript" src="build/molview-app.min.js"></script>
 
 		<!-- PHP data injection -->
 		<script type="text/javascript">
@@ -374,16 +323,12 @@ Query parameters:
 
 					if($(window).height() > $(window).width()
 						&& !MolView.query.layout
-						&& MolView.layout != "model") Actions.window_hsplit();
+						&& MolView.layout != "model") Actions.layout_hsplit();
 
 					//compact menu bar
-					MolView.setMenuLayout($(window).width() < 1100, !MolView.touch);
-
-					//fit search-input in touchscreen
-					if($(window).width() < 380 && MolView.touch)
-					{
-						$("#search-input").css("width", $(window).width() - 80);
-					}
+					MolView.setMenuLayout($(window).width() < 1100,
+							$(window).width() < 1100 && !MolView.touch,
+							$(window).width() < 390 && MolView.touch);
 				</script>
 				<div id="sketcher">
 					<div id="moledit" class="sketcher">
@@ -403,7 +348,7 @@ Query parameters:
 								<div class="vertical-separator"></div>
 								<div id="me-chain" class="tool-button mode" title="Click and drag to draw a chain of carbon atoms"></div>
 								<div id="me-charge-add" class="tool-button mode" title="Charge +">e<sup>+</sup></div>
-								<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>-</sup></div>
+								<div id="me-charge-sub" class="tool-button mode" title="Charge -">e<sup>&minus;</sup></div>
 							</div>
 						</div>
 						<div id="edit-tools" class="toolbar">
@@ -562,8 +507,8 @@ Query parameters:
 			<div id="dialog-click-area">
 				<div id="dialog-wrapper">
 					<div class="dialog" id="start-dialog">
-						<h1>Welcome to MolView</h1>
-						<p>MolView is a modern webapp for chemistry education around the world!</p>
+						<h1>Welcome to MolView <a target="_blank" href="http://github.com/molview"><img id="agpl-logo" src="img/agpl.svg" alt="AGPL" /></a></h1>
+						<p>MolView is an Open-Source, intuitive web-application to make chemistry and biology more awesome!</p>
 						<a class="gray" href="legal" target="_blank">Terms of Use</a>
 						<div class="btn-group">
 							<button id="action-start-help" class="btn btn-large">Getting started</button>
@@ -576,7 +521,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 						</div>
-						<p id="donate-msg">We believe MolView should be accessible for free for everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it free! This way we can continue to add more awesome features to MolView.</p>
+						<p id="donate-msg">We believe MolView should be accessible for free for everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it fast and free! This way we can also continue to add more awesome features, which require more resources, to MolView.</p>
 						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 							<input type="hidden" name="cmd" value="_s-xclick" />
 							<input type="hidden" name="hosted_button_id" value="88QDZTWLV9GXG" />
@@ -650,7 +595,8 @@ Query parameters:
 								document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in your screen.</div>');
 							}
 						</script>
-						<p>PDF version: <a class="link" href="docs/manual.pdf" target="_blank">docs/manual.pdf</a></p>
+						<p>Download PDF: <a class="link" href="docs/manual.pdf" target="_blank">docs/manual.pdf</a></p>
+						<p>Download eBook: <a class="link" href="docs/manual.epub" target="_blank">docs/manual.epub</a></p>
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 						<h3>Subjects</h3>
 						<div class="expandable">
@@ -676,11 +622,11 @@ Query parameters:
 							<div class="expandable-content">
 								<p>You can load molecules from large databases like PubChem and RCSB using the search form located on the left side of the menu-bar. Just type what you are looking for and a list of available molecules will appear.</p>
 								<p>You can also click on the dropdown button next to the search field to select a specific database. This will perform a more extensive search on the selected database. Currently, three big databases are supported:</p>
-								<ul>
+								<ol>
 									<li><b>PubChem</b></li>
 									<li><b>The RCSB Protein Data Bank</b></li>
 									<li><b>The Crystallography Open Database</b></li>
-								</ul>
+								</ol>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block; border: 1px solid #ccc;" src="img/help/SearchBar.png" alt="Search bar" /></p>
 								<p class="image-note"><span>The search form</span></p>
 							</div>
@@ -692,7 +638,7 @@ Query parameters:
 								<h4>Link</h4>
 								<p>You can embed or share a specific compound, macromolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the address bar in order to link to the current structure.</p>
 								<h4>Export</h4>
-								<p>Export options in the Export menu:</p>
+								<p>Export options:</p>
 								<ul>
 									<li><b>Structural formula image:</b> sketcher snapshot (PNG with alpha channel)</li>
 									<li><b>3D model image:</b> model snapshot (PNG,  alpha channel in Glmol and ChemDoodle)</li>
@@ -813,7 +759,7 @@ Query parameters:
 									<li><b>Angle</b> angle between two bonds in degrees</li>
 									<li><b>Torsion</b> torsion between four atoms in degrees</li>
 								</ul>
-								<p>Note that the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
+								<p>Note that in some cases, the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
 							</div>
 						</div>
 						<p>

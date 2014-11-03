@@ -131,6 +131,7 @@ MolEdit.prototype.onMouseDown = function (ev, isTouch)
 				if(this.activeTool && !(at.ms & M_CE) && this.activeTool.toolType == "atom")
 				{
 					this.undoPush();
+					this.activeTool.lastAtom = this.h_atom;
 					var atts = {}
 					if(typeof this.activeTool.panel != "undefined") atts = this.activeTool.panel.getSearchAtts();
 					this.chem.changeAtom(this.h_atom, this.activeTool.cd == null ? -1 : Elements[this.activeTool.cd], atts);
@@ -316,9 +317,10 @@ MolEdit.prototype.onMouseMove = function (ev, isTouch)
 	var h_at = this.chem.findClosestAtom(this.stow(p));
 
 	var manhatanD = 0;
-
 	if(this.lastPos != null)
+	{
 		manhatanD = Math.max(Math.abs(p.y - this.lastPos.y), Math.abs(p.x - this.lastPos.x));
+	}
 
 	if(this.button == 1)//mid button translate
 	{
@@ -537,12 +539,10 @@ MolEdit.prototype.onMouseMove = function (ev, isTouch)
 		if(this.activeTool)
 		{
 			var vect = vector(this.chem.atoms[this.connectToAtom], this.stow(p));
-			if(vectorLength(vect) < 0.001)
-				return;
+			if(vectorLength(vect) < 0.001) 	return;
 
 			this.h_atom = this.chem.findClosestAtom(this.stow(p));
-			if(this.h_atom == this.connectToAtom)
-				this.h_atom = -1;
+			if(this.h_atom == this.connectToAtom) this.h_atom = -1;
 
 			this.chem.rotateAtomsVector(this.dragAtoms, this.chem.atoms[this.connectToAtom], vect, this.h_atom);
 		}
@@ -568,13 +568,17 @@ MolEdit.prototype.onMouseMove = function (ev, isTouch)
 	{
 		var apo = this.chem.apoFromSelection(M_CE);
 		if(apo.length == 1)
+		{
 			this.rotateAroundPoint = {
 				x: this.chem.atoms[apo[0]].x,
 				y: this.chem.atoms[apo[0]].y,
 				z: 0
 			};
+		}
 		else if(apo.length == 0)
+		{
 			this.rotateAroundPoint = this.chem.centerPoint();
+		}
 	}
 
 	//or find closest bond
@@ -599,6 +603,7 @@ MolEdit.prototype.onMouseMove = function (ev, isTouch)
 MolEdit.prototype.onMouseUp = function (ev)
 {
 	this.isChanged = false;
+
 	if(this.dragAtoms.length > 0)
 	{
 		this.chem.gravitateCollisions();
@@ -614,6 +619,7 @@ MolEdit.prototype.onMouseUp = function (ev)
 			this.connectToAtom = -1;
 		}
 	}
+
 	this.mode = MODE_NORMAL;
 	this.endPos = this.lastPos = null;
 	this.lastPosArr = [];
@@ -679,4 +685,83 @@ MolEdit.prototype.multiTouch = function (pp1, pp2)
 	//
 	this.updateZoom = false;
 	this.drawMol();
+}
+
+MolEdit.prototype.onKeyPress = function (ev)
+{
+	var code = ev.charCode ? ev.charCode : ev.keyCode;
+	var key = String.fromCharCode(code);
+	if(code == 46 || code == 8)
+	{
+		var sel = this.chem.getSelectedAtoms(M_CE);
+		if(sel.length == 0 && this.h_atom != -1)
+			sel = [this.h_atom];
+
+		if(sel.length)
+		{
+			this.undoPush();
+			this.chem.removeAtoms(sel);
+			this.changed();
+			this.drawMol();
+		}
+	}
+	else if(this.h_atom != -1)
+	{
+		if(key in Elements)
+		{
+			this.undoPush();
+			this.chem.changeAtom(this.h_atom, Elements[key],
+			{});
+			this.changed();
+			this.drawMol();
+		}
+	}
+	else if(this.h_bond != -1)
+	{
+		var ty = -1,
+			ms = 0;
+		var bo = this.chem.bonds[this.h_bond];
+		switch(code)
+		{
+		case 189: // -
+			ty = 1;
+			ms = 0;
+			break;
+		case 187: // =
+			ty = 2;
+			ms = 0;
+			break;
+		case 51: // #
+			if(!(bo.ms & M_RNG))
+			{
+				ty = 3;
+				ms = 0;
+			}
+			break;
+		case 85: // up
+			if(bo.ty == 1)
+			{
+				ty = 1;
+				ms = M_BO_UP;
+			}
+			break;
+		case 68: // dw
+			if(bo.ty == 1)
+			{
+				ty = 1;
+				ms = M_BO_DW;
+			}
+			break;
+		}
+		if(ty != -1)
+		{
+			this.undoPush();
+			bo.ty = ty;
+			bo.ms = (bo.ms & ~(M_BO_UP | M_BO_DW)) | ms;
+			this.chem.processChemical();
+			this.changed();
+			this.drawMol();
+		}
+		//console.log(code);
+	}
 }

@@ -40,9 +40,9 @@ Modifications:
   - this.getSelectedAtoms()
 */
 
-function MolEdit(parent, canvas, devicePixelRatio, touchOnly)
+function MolEdit(parent, canvas, devicePixelRatio, hasTouch, touchOnly)
 {
-	this.touch = isTouchDevice();
+	this.touch = hasTouch;
 	this.touchOnly = touchOnly;
 	this.scaleFactor = devicePixelRatio;
 
@@ -53,14 +53,14 @@ function MolEdit(parent, canvas, devicePixelRatio, touchOnly)
 		stroke: "#111111"
 	};
 	this.hoverStyle = {
-		width: 2,
+		width: 1.5,
 		join: "square",
 		cap: "square",
 		stroke: "#ff1100",
 		radius: 0.3
 	};
 	this.selectionStyle = {
-		width: 2,
+		width: 1.5,
 		fill: "#98fb98",
 		radius: 0.3
 	};
@@ -197,6 +197,7 @@ function MolEdit(parent, canvas, devicePixelRatio, touchOnly)
 	this.chemIsReady = true;
 	this.ctx = null;
 	this.dragAtoms = [];
+	this.startPos = null;
 	this.lastPos = null;
 	this.lastPosArr = [];
 	this.endPos = null;

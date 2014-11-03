@@ -544,11 +544,11 @@ var Request = {
 			});
 		},
 
-		image: function(cid)
+		image: function(cid, width)
 		{
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid
-					+ "/png?record_type=2d&image_size=" + (300 * MolView.devicePixelRatio)
-					+ "x" + (300 * MolView.devicePixelRatio);
+					+ "/png?record_type=2d&image_size=" + ((width || 300) * MolView.devicePixelRatio)
+					+ "x" + ((width || 300) * MolView.devicePixelRatio);
 		},
 
 		smilesToImage: function(smiles)
@@ -578,7 +578,7 @@ var Request = {
 
 		staticURL: function(cid)
 		{
-			return "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=" + cid;
+			return "https://pubchem.ncbi.nlm.nih.gov/compound/" + cid;
 		}
 	},
 

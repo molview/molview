@@ -33,6 +33,7 @@
 
 .load-more
 {
+	cursor: pointer;
 	margin: 10px;
 	padding: 10px;
 	font-size: 20pt;
@@ -46,6 +47,7 @@
 
 .load-more-progress
 {
+	cursor: default !important;
 	background: @pubchem-pngbg !important;
 	border-color: @pubchem-pngbg !important;
 	box-shadow: none !important;
@@ -168,18 +170,19 @@ Search output:
 	display: inline-block;
 	width: 300px;
 	height: 300px;
-
+	max-width: 100%;
+	
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: 300px;
+	background-size: contain;
 
 }
 
-@media all and (min-width: 680px)
+@media all and (min-width: 362px)
 {
 	#search-layer
 	{
-		padding: 10px;
+		padding: 20px 20px 0 20px;
 	}
 
 	.search-result

@@ -99,87 +99,6 @@ MolEdit.prototype.drawLine = function (fr, to)
 	this.ctx.lineTo(p2.x, p2.y);
 }
 
-//--------------------------------------------------------------Events & Drawing-----------------------------------------------------------------
-
-MolEdit.prototype.onKeyPress = function (ev)
-{
-	var code = ev.charCode ? ev.charCode : ev.keyCode;
-	var key = String.fromCharCode(code);
-	if(code == 46 || code == 8)
-	{
-		var sel = this.chem.getSelectedAtoms(M_CE);
-		if(sel.length == 0 && this.h_atom != -1)
-			sel = [this.h_atom];
-
-		if(sel.length)
-		{
-			this.undoPush();
-			this.chem.removeAtoms(sel);
-			this.changed();
-			this.drawMol();
-		}
-	}
-	else if(this.h_atom != -1)
-	{
-		if(key in Elements)
-		{
-			this.undoPush();
-			this.chem.changeAtom(this.h_atom, Elements[key],
-			{});
-			this.changed();
-			this.drawMol();
-		}
-	}
-	else if(this.h_bond != -1)
-	{
-		var ty = -1,
-			ms = 0;
-		var bo = this.chem.bonds[this.h_bond];
-		switch(code)
-		{
-		case 189: // -
-			ty = 1;
-			ms = 0;
-			break;
-		case 187: // =
-			ty = 2;
-			ms = 0;
-			break;
-		case 51: // #
-			if(!(bo.ms & M_RNG))
-			{
-				ty = 3;
-				ms = 0;
-			}
-			break;
-		case 85: // up
-			if(bo.ty == 1)
-			{
-				ty = 1;
-				ms = M_BO_UP;
-			}
-			break;
-		case 68: // dw
-			if(bo.ty == 1)
-			{
-				ty = 1;
-				ms = M_BO_DW;
-			}
-			break;
-		}
-		if(ty != -1)
-		{
-			this.undoPush();
-			bo.ty = ty;
-			bo.ms = (bo.ms & ~(M_BO_UP | M_BO_DW)) | ms;
-			this.chem.processChemical();
-			this.changed();
-			this.drawMol();
-		}
-		//console.log(code);
-	}
-}
-
 MolEdit.prototype.getDragAtoms = function ()
 {
 	if(this.h_atom == -1) return [];
@@ -210,20 +129,18 @@ MolEdit.prototype.atomLabel = function (at)
 	if(at.cd != 6 || at.bo.length == 0 || q || stereo || (at.hasOwnProperty('atts') && count_properties(at.atts)))
 	{
 		lbl = ElementNames[at.cd];
-		if(q)
-		{
-			lbl += (Math.abs(q) == 1 ? '' : Math.abs(q).toString()) + ((q < 0) ? ('-') : ('+'));
-		}
 		if(stereo) lbl += STEREO_LABEL[at.eo];
 		if(at.hasOwnProperty('atts'))
 		{
 			for(var x in at.atts)
+			{
 				if(at.atts.hasOwnProperty(x))
 				{
 					lbl += ';';
 					lbl += x;
 					lbl += at.atts[x];
 				}
+			}
 		}
 	}
 	return lbl;
@@ -318,6 +235,14 @@ MolEdit.prototype.drawMol = function()
 			this.ctx.strokeStyle = color;
 			this.ctx.fillStyle = color;
 			this.ctx.fillText(lbl, p1.x, p1.y);
+
+			var q = this.chem.get_qfm(at);
+			if(q)
+			{
+				this.ctx.textAlign = "left";
+				this.ctx.fillText((Math.abs(q) == 1 ? '' : Math.abs(q).toString()) + ((q < 0) ? ('\u2212') : ('+')),
+						p1.x + 8, p1.y - 8);
+			}
 		}
 
 		/* hover */

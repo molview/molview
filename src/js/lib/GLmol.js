@@ -878,38 +878,23 @@ var GLmol = (function()
 	GLmol.prototype.drawBondsAsStick = function(group, atomlist, bondR, atomR, ignoreNonbonded, multipleBonds, scale)
 	{
 		var sphereGeometry = new THREE.SphereGeometry(1, this.sphereQuality, this.sphereQuality);
-		var nAtoms = atomlist.length,
-			mp;
-		var forSpheres = [];
-		if( !! multipleBonds) bondR /= 2.5;
-		for(var _i = 0; _i < nAtoms; _i++)
+		if(!!multipleBonds) bondR /= 2.5;
+		for(var _i = 0; _i < atomlist.length; _i++)
 		{
 			var i = atomlist[_i];
 			var atom1 = this.atoms[i];
 			if(atom1 == undefined) continue;
-			for(var _j = _i + 1; _j < _i + 30 && _j < nAtoms; _j++)
-			{
-				var j = atomlist[_j];
-				var atom2 = this.atoms[j];
-				if(atom2 == undefined) continue;
-				var order = this.isConnected(atom1, atom2);
-				if(order == 0) continue;
-				atom1.connected = atom2.connected = true;
-				this.drawBondAsStickSub(group, atom1, atom2, bondR,( !! multipleBonds) ? order : 1);
-			}
 			for(var _j = 0; _j < atom1.bonds.length; _j++)
 			{
 				var j = atom1.bonds[_j];
-				if(j < i + 30) continue; // be conservative!
 				if(atomlist.indexOf(j) == -1) continue;
 				var atom2 = this.atoms[j];
 				if(atom2 == undefined) continue;
 				atom1.connected = atom2.connected = true;
-				this.drawBondAsStickSub(group, atom1, atom2, bondR,( !! multipleBonds) ? atom1.bondOrder[_j] : 1);
+				this.drawBondAsStickSub(group, atom1, atom2, bondR, (!!multipleBonds) ? atom1.bondOrder[_j] : 1);
 			}
-			if(atom1.connected) forSpheres.push(i);
 		}
-		this.drawAtomsAsSphere(group, forSpheres, atomR, !scale, scale);
+		this.drawAtomsAsSphere(group, atomlist, atomR, !scale, scale);
 	};
 
 	GLmol.prototype.defineCell = function()

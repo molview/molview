@@ -110,6 +110,7 @@ var Progress = {
 
 		if(this.canvas)
 		{
+			this.ctx = this.canvas.getContext('2d');
 			this.resize();
 			this.draw();
 		}
@@ -125,7 +126,6 @@ var Progress = {
 		{
 			Progress.canvas.width = $(window).width();
 			Progress.canvas.height = 3;
-			Progress.ctx = Progress.canvas.getContext("2d");
 		}
 	},
 
@@ -136,7 +136,7 @@ var Progress = {
 	 */
 	draw: function(time)
 	{
-    	if(Progress.canvas)
+    	if(Progress.canvas && Progress.ctx)
 		{
 			if(Progress.resetAnim)
 			{

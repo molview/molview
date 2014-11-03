@@ -82,7 +82,7 @@ $renderer = new Parsedown();
 		<meta name="author" content="Herman Bergwerf" />
 
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
-		<link type="text/css" rel="stylesheet" href="build/molview.page.min.css" />
+		<link type="text/css" rel="stylesheet" href="build/molview-page.min.css" />
     </head>
     <body>
         <div id="header">

@@ -194,8 +194,7 @@ var Autocomplete = {
 
 				if(this.i >= this.records.length)
 				{
-					this.i = -1;
-					$("#search-input").val(this.oldText)
+					this.i = 0;
 				}
 
 				this.focusRecord(this.i);
@@ -374,11 +373,7 @@ var Autocomplete = {
 		$(".autocomplete-item").removeClass("autocomplete-item-hover");
 		$("#autocomplete-dropdown-wrapper").show();
 		$("#autocomplete-dropdown").hide();
-
-		if($("#brand").is(":visible"))
-		{
-			$("#menu").scrollLeft(55);
-		}
+		$("#menu").scrollLeft($("#brand").is(":visible") ? 55 : 0);
 	},
 
 	/**

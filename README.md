@@ -77,5 +77,5 @@ Below are all tests you have to pass before committing changes
     2. Expected layout and design on desktops (test on Chrome and Firefox), touch devices and mobile devices
 3. Verify for chances mentioned in CHANGELOG.md:
     1. Behaviour on desktops (test on Chrome and Firefox), touch devices and mobile devices is "as designed"
-    2. Layout and design on desktops (test on Chrome and Firefox), touch devices and mobile devices is "as designed"
+    2. Layout and design on desktops (test on Chrome and Firefox), tablets and smartphones is "as designed"
 4. Verify if all pages are up-to-date

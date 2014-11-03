@@ -4,7 +4,8 @@ Wishlist
 - Add touch menu drawer
 - Add "Open in MolView" button
 - Add Preferences dialog
-- Add functional groups support in Sketcher
+- Add functional groups to Sketcher
+- Add Lewis dot structures display to Sketcher
 - Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
 - Add MolView home website (pages: features, about, manual, changelog, license, feedback)
 
@@ -32,3 +33,5 @@ Wishlist
 - Create MolView for Android and iOS using CocoonJS
 - Investigate Mathematica features
 - Add plugin framework and developer SDK
+
+- Create 'A nano tale', an interactive eBook with stunning MolView graphics

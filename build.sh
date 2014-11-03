@@ -24,9 +24,6 @@ if [[ $1 == "fetch" ]]
 	wget https://raw.githubusercontent.com/serbanghita/Mobile-Detect/master/Mobile_Detect.php
 	mv Mobile_Detect.php php/Mobile_Detect.php
 
-	wget http://code.jquery.com/jquery-1.11.1.min.js
-	mv jquery-1.11.1.min.js src/js/lib/jquery.min.js
-
 	wget https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js
 	mv jquery.hotkeys.js src/js/lib/jquery.hotkeys.js
 

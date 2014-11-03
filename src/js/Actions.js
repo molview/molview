@@ -375,14 +375,14 @@ var Actions = {
 	*/
 	hstrip: function()
 	{
-		if($(this).toggleClass("tool-button-selected").hasClass("tool-button-selected"))
+		if($("#action-hstrip").toggleClass("tool-button-selected").hasClass("tool-button-selected"))
 		{
 			Sketcher.moledit.removeImplicitHydrogen(true);
 		}
 
-		Preferences.set("sketcher", "hstrip", $(this).hasClass("tool-button-selected"));
+		Preferences.set("sketcher", "hstrip", $("#action-hstrip").hasClass("tool-button-selected"));
 
-		return $(this).hasClass("tool-button-selected") ? 1 : 0;
+		return $("#action-hstrip").hasClass("tool-button-selected") ? 1 : 0;
 	},
 
 	clean: function()

@@ -105,8 +105,7 @@ var Loader = {
 					SearchGrid.addEntry(data.InformationList.Information[i]);
 				}
 
-				if(Loader.PubChem.i >= Request.PubChem.data.length) $(".load-more").css("display", "none");
-				else $("#action-load-more-pubchem").removeClass("load-more-progress");
+				SearchGrid.endLoading(Loader.PubChem.i >= Request.PubChem.data.length);
 				Loader.PubChem.loading = false;
 				Progress.complete();
 			},
@@ -122,14 +121,14 @@ var Loader = {
 			if(this.i < Request.PubChem.data.length)
 			{
 				this.loading = true;
+				SearchGrid.startLoading();
+
 				var start = this.i;
 				var end = this.i + this.step;
 				if(end > Request.PubChem.data.length) end = Request.PubChem.data.length;
 
 				this.loadCIDS(Request.PubChem.data.slice(start, end));
 				this.i = end;
-
-				$("#action-load-more-pubchem").addClass("load-more-progress");
 			}
 		},
 
@@ -322,8 +321,7 @@ var Loader = {
 					SearchGrid.addEntry(data.dataset[i]);
 				}
 
-				if(Loader.RCSB.i >= Request.RCSB.data.length) $(".load-more").css("display", "none");
-				else $("#action-load-more-rcsb").removeClass("load-more-progress");
+				SearchGrid.endLoading(Loader.RCSB.i >= Request.RCSB.data.length);
 				Loader.RCSB.loading = false;
 				Progress.complete();
 			},
@@ -339,14 +337,14 @@ var Loader = {
 			if(this.i < Request.RCSB.data.length)
 			{
 				this.loading = true;
+				SearchGrid.startLoading();
+
 				var start = this.i;
 				var end = this.i + this.step;
 				if(end > Request.RCSB.data.length) end = Request.RCSB.data.length;
 
 				this.loadPDBIDS(Request.RCSB.data.slice(start, end));
 				this.i = end;
-
-				$("#action-load-more-rcsb").addClass("load-more-progress");
 			}
 		},
 
@@ -447,7 +445,7 @@ var Loader = {
 
 		loadNextSet: function()
 		{
-			$("#action-load-more-cod").addClass("load-more-progress");
+			SearchGrid.startLoading();
 
 			window.setTimeout(function()
 			{
@@ -460,8 +458,7 @@ var Loader = {
 						SearchGrid.addEntry(Request.COD.data[this.i]);
 					}
 
-					if(this.i >= Request.COD.data.length) $(".load-more").css("display", "none");
-					else $("#action-load-more-cod").removeClass("load-more-progress");
+					SearchGrid.endLoading(Loader.COD.i >= Request.COD.data.length);
 					this.loading = false;
 					Progress.complete();
 				}

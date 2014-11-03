@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.x
+## 2.2.x (2014-11-3)
 
 ### Bugfixes
 
@@ -9,6 +9,7 @@
 - Patched Chemical Identifier Resolver lookup failure (pass '/' as '%5C' in SMILES)
 - Patched Firefox mousewheel bug in MolEdit (removed jMouseWheel everywhere)
 - Patched GLmol.zoomInto bug
+- Patched GLmol drawBondAsStick issues
 - Fixed GLmol face culling issue
 - Fixed JSmol measure and rotate issue
 - Fixed JSmol unbind default measuring
@@ -40,12 +41,14 @@
 - Redesigned search form (align left)
 - Redesigned UI components (flat and light)
 - Redesigned MolEdit selection style
+- Redesigned MolEdit charge style
 - Added touchOnly mode to MolEdit
 - Added compact menu layout
 - Added canvas based Progress bar
 - Added server-side device detection using MobileDetect
 
 #### Refactoring
+- Added JS units: base, applib, datasets, core, sketcher, app, embed
 - Revised CSS efficiency
 - Migrated CSS to LESS
 - Renamed Loader modules
@@ -93,7 +96,7 @@
 - Added dialog close buttons
 - Added CODID to COD advanced search results
 - Added responsive search results layout
-- Added support for devicePixelRatio > 1.0
+- Added support for exact devicePixelRatio
 
 #### Analytics
 - Added event tracking using Google Analytics
@@ -103,10 +106,11 @@
 ### Miscellaneous
 
 - Redesigned logo
-- Added AGPL license
-- Added build script (fetch libs, run grunt, render SVG)
 - Added Tems of Use
+- Added eBook manual
+- Added AGPL license
 - Added testing procedure
+- Added build script (fetch libs, run grunt, render SVG)
 - Added markdown renderer for markdown files (thanks, changelog, license, legal)
 - Added markdown based error pages (internetExplorer, htmlCanvas, HTTP errors)
 

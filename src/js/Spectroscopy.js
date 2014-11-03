@@ -207,9 +207,10 @@ var Spectroscopy = {
     {
         var w = $("#spectrum-wrapper").width();
         var h = Math.round(w / Spectroscopy.spectrumRatio);
-        Spectroscopy.spectrum.resize(w * (MolView.mobile ? 3 : 1), h * (MolView.mobile ? 3 : 1));
+        Spectroscopy.spectrum.resize(w * MolView.devicePixelRatio, h * MolView.devicePixelRatio);
         $("#spectrum-canvas").css({
-            "width": w * (MolView.mobile ? 2 : 1), "height": h * (MolView.mobile ? 2 : 1)
+            "width": w * MolView.devicePixelRatio,
+            "height": h * MolView.devicePixelRatio
         });
     },
 };

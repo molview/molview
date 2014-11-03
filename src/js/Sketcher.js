@@ -42,7 +42,7 @@ var Sketcher = {
 		{
 			this.moledit = new MolEdit(document.getElementById("moledit-area"),
 					document.getElementById("moledit-canvas"), MolView.devicePixelRatio,
-					MolView.touch);
+					isTouchDevice(), MolView.touch);
 
 			if(MolView.loadDefault)
 			{

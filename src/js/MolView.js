@@ -125,20 +125,12 @@ var MolView = {
 		//window events
 		$(window).on("resize", function()
 		{
-
 			$(".dropdown-menu").css("max-height", $("#content").height() - 10);
 
-			if($(window).width() < 380 && MolView.touch)
-			{
-				$("#search-input").css("width", $(window).width() - 80);
-			}
-			else
-			{
-				$("#search-input").css("width", "");
-			}
-
 			//compact menu bar
-			MolView.setMenuLayout($(window).width() < 1100, !MolView.touch);
+			MolView.setMenuLayout($(window).width() < 1100,
+					$(window).width() < 1100 && !MolView.touch,
+					$(window).width() < 390 && MolView.touch);
 
 			Progress.resize();
 
@@ -156,7 +148,8 @@ var MolView = {
 			Autocomplete.hide();
 			$(".dropdown-toggle").not(this).parent().removeClass("open");
 			$("#menu").toggleClass("menu-open",
-				$(this).parent().toggleClass("open").hasClass("open"));
+				$(this).parent().toggleClass("open").hasClass("open"))
+				.scrollTop(0);
 		});
 
 		if(!this.touch)
@@ -348,7 +341,7 @@ var MolView = {
 		{
 			var id = $(this).data("id");
 			MolView.pushEvent(category, "click", id.replace(/_/g, " "),
-				Actions[id]() || 0);
+				Actions[id].call(this) || 0);
 		});
 	},
 
@@ -489,38 +482,24 @@ var MolView = {
 
 	/**
 	 * Sets main menu layout
-	 * @param {Boolean} compact Indicates use of compact layout
-	 * @param {Boolean} collapse Collapse search-input and brand
+	 * @param {Boolean} compact   Indicates use of compact layout
+	 * @param {Boolean} collapse  Collapse search-input and brand
+	 * @param {Boolean} fitSearch Fit #search in screen width
 	 */
-	setMenuLayout: function(compact, collapse)
+	setMenuLayout: function(compact, collapse, fitSearch)
 	{
-		if(compact)
-		{
-			if(collapse)
-			{
-				$("#search").css("margin", 0);
-				$("#search-input").css("width", 100);
-				$("#brand").hide();
-				$("#search-dropdown .dropdown-menu").removeClass("dropdown-left");
-			}
-
-			$("#search-dropdown .dropdown-menu").addClass("dropdown-compact");
-			$("#jmol-dropdown .dropdown-menu, #protein-dropdown .dropdown-menu").addClass("dropdown-left");
-		}
-		else
-		{
-			$("#search").css("margin", "");
-			$("#search-input").css("width", "");
-			$("#brand").show();
-
-			$("#search-dropdown .dropdown-menu").addClass("dropdown-left").removeClass("dropdown-compact");
-			$("#jmol-dropdown .dropdown-menu, #protein-dropdown .dropdown-menu").removeClass("dropdown-left");
-		}
+		$("#search").css("margin", collapse ? 0 : "");
+		$("#search-input").css("width", collapse ? 100 : (fitSearch ? $(window).width() - 90 : ""));
+		$("#brand").toggle(!collapse);
+		$("#search-dropdown .dropdown-menu").toggleClass("dropdown-left",
+				$(window).width() >= $("#search-dropdown .dropdown-menu").outerWidth() && !collapse)
+				.toggleClass("dropdown-compact", compact);
+		$("#jmol-dropdown .dropdown-menu, #protein-dropdown .dropdown-menu").toggleClass("dropdown-left", compact);
 	},
 
 	/**
 	 * Sets MolView UI theme by replacing the UI CSS link with
-	 * build/molview.$theme.min.css
+	 * build/molview-$theme.min.css
 	 * @param {String} theme Theme name
 	 */
 	setTheme: function(theme)
@@ -529,7 +508,7 @@ var MolView = {
 
 		$("#action-theme-desktop, #action-theme-touch").removeClass("checked");
 		$("#action-theme-" + theme).addClass("checked");
-		$("#theme-stylesheet").attr("href", "build/molview." + theme + ".min.css");
+		$("#theme-stylesheet").attr("href", "build/molview-" + theme + ".min.css");
 	},
 
 	/**
