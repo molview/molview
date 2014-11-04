@@ -359,12 +359,11 @@ Query parameters:
 								<div id="action-mp-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
 								<div id="action-mp-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
 								<div class="horizontal-separator"></div>
-								<div id="action-mp-move" class="tool-button tool-button-horizontal primary-tool" title="Move"></div>
+								<div id="action-mp-move" class="tool-button tool-button-horizontal bg-tool" title="Move"></div>
+								<div id="action-mp-rect" class="tool-button tool-button-horizontal bg-tool tool-button-selected" title="Rectangle selection"></div>
+								<div id="action-mp-lasso" class="tool-button tool-button-horizontal bg-tool" title="Lasso selection"></div>
+								<div class="horizontal-separator"></div>
 								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
-								<div class="horizontal-separator"></div>
-								<div id="action-mp-rect" class="tool-button tool-button-horizontal selection-tool tool-button-selected" title="Rectangle selection"></div>
-								<div id="action-mp-lasso" class="tool-button tool-button-horizontal selection-tool" title="Lasso selection"></div>
-								<div class="horizontal-separator"></div>
 								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula"></div>
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
@@ -386,7 +385,7 @@ Query parameters:
 								<div id="action-mp-periodictable" class="tool-button" title="Periodic Table">...</div>
 							</div>
 						</div>
-						<div id="molpad-canvas"></div>
+						<div id="molpad-canvas-wrapper"></div>
 					</div>
 				</div>
 				<div id="model" <?php

@@ -14,7 +14,6 @@ var JSUnits = {
 	{
 		src: [
 			'bower_components/jquery.hotkeys/jquery.hotkeys.js',
-			'bower_components/kineticjs/kinetic.min.js',
 			'bower_components/blob/Blob.js',
 			'bower_components/file-saver/FileSaver.min.js',
 			'src/js/chem/prototype.js',
@@ -64,6 +63,8 @@ var JSUnits = {
 			'src/js/molpad/MPAtom.js',
 			'src/js/molpad/MPBond.js',
 			'src/js/molpad/MolPad.js',
+			'src/js/molpad/MPIO.js',
+			'src/js/molpad/MPGraphics.js',
 			'src/js/molpad/MPEvents.js'
 		]
 	},

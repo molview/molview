@@ -47,53 +47,52 @@ MPAtom.prototype.addBond = function(bond)
 }
 
 /**
- * Render methods
+ * Calculations
  */
-
-MPAtom.prototype.destroy = function()
-{
-	if(this.text) this.text.destroy();
-	if(this.rect) this.rect.destroy();
-}
-
-MPAtom.prototype.renderSelectionColor = function(group)
-{
-
-}
-
-MPAtom.prototype.renderLabel = function(group, settings)
+MPAtom.prototype.getBondVertex = function(bid, which)
 {
 	if(!(settings.drawSkeletonFormula && this.element == "C"))
 	{
-		this.text = new Kinetic.Text({
-			x: this.position.x,
-			y: this.position.y,
-			text: this.element,
-			fontSize: settings.fontSize,
-			fontStyle: settings.fontStyle,
-			fontFamily: settings.fontFamily,
-			fill: JmolAtomColorsCSS[this.element]
-		});
+		//TODO: implement skeleton display
+		return this.position;
+	}
+	else
+	{
 
-		this.text.position({
-			x: this.text.position().x - this.text.getWidth() / 2,
-			y: this.text.position().y - this.text.getHeight() / 2
-		});
-
-		this.rect = new Kinetic.Rect({
-			x: this.text.position().x,
-			y: this.text.position().y,
-			width: this.text.getWidth(),
-			height: this.text.getHeight(),
-			fill: "#fff"
-		});
-
-		group.add(this.rect);
-		group.add(this.text);
 	}
 }
 
-MPAtom.prototype.renderSelectionOutline = function(group)
+/**
+ * Render methods
+ */
+
+MPAtom.prototype.drawSelectionColor = function(ctx, settings)
+{
+
+}
+
+MPAtom.prototype.drawLabel = function(ctx, settings, mp)
+{
+	if(!(settings.drawSkeletonFormula && this.element == "C"))
+	{
+		var height = settings.atomLabel.fontSize / (settings.layoutRelative ?
+			1 ://relative height
+			mp.getScale());//constant height
+
+		ctx.beginPath();
+		ctx.arc(this.position.x, this.position.y, height, 0, 2 * Math.PI);
+		ctx.closePath();
+		ctx.fillStyle = "#fff";
+		ctx.fill();
+
+		ctx.fillStyle = JmolAtomColorsCSS[this.element];
+		ctx.font = settings.atomLabel.fontStyle + " " + height + "pt " + settings.atomLabel.fontFamily;
+		var width = ctx.measureText(this.element).width;
+		ctx.fillText(this.element, this.position.x - width / 2, this.position.y + height / 2);
+	}
+}
+
+MPAtom.prototype.drawSelectionOutline = function(ctx, settings)
 {
 
 }

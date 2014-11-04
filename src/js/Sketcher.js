@@ -43,7 +43,8 @@ var Sketcher = {
 
 		if(Detector.canvas)
 		{
-			this.molpad = new MolPad(document.getElementById("molpad-canvas"));
+			this.molpad = new MolPad(document.getElementById("molpad-canvas-wrapper"),
+					MolView.devicePixelRatio);
 
 			if(MolView.loadDefault)
 			{
@@ -94,7 +95,7 @@ var Sketcher = {
 			top: top,
 			width: right
 		});
-		$("#molpad-canvas").css({
+		$("#molpad-canvas-wrapper").css({
 			top: top,
 			left: left,
 			right: right,
@@ -198,12 +199,12 @@ var Sketcher = {
 		$("#action-resolve").addClass("resolve-updated");
 	},
 
-	toDataURL: function(cb)
+	toDataURL: function()
 	{
 		if(this.molpad)
 		{
-			return this.molpad.toDataURL(cb);
+			return this.molpad.toDataURL();
 		}
-		else cb("");
+		else return "";
 	}
 };

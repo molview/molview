@@ -156,6 +156,8 @@ var Progress = {
 				Progress.animValue += (Progress.value - Progress.animValue) / (Progress.valueAnimDev / delta);
 				if(Progress.animValue > Progress.value) Progress.animValue = Progress.value;
 
+				Progress.ctx.beginPath();
+				
 				if(Progress.ready)
 				{
 					Progress.opacity -= Progress.opacityAnimSpeed * delta;
@@ -176,6 +178,8 @@ var Progress = {
 					Progress.ctx.fillStyle = "rgb(255,0,0)";
 					Progress.ctx.fillRect(0, 0, Progress.canvas.width * Progress.animValue, Progress.canvas.height);
 				}
+
+				Progress.ctx.closePath();
 			}
 
 			requestAnimationFrame(Progress.draw);

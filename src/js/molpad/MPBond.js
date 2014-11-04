@@ -51,35 +51,30 @@ MPBond.prototype.setTo = function(to) { this.to = to; }
 * Render methods
 */
 
-MPBond.prototype.destroy = function()
-{
-	if(this.bond) this.bond.destroy();
-}
-
-MPBond.prototype.renderSelectionColor = function(group)
+MPBond.prototype.drawSelectionColor = function(ctx, settings)
 {
 
 }
 
-MPBond.prototype.renderBond = function(group, settings, atoms)
+MPBond.prototype.drawBond = function(ctx, settings, mp)
 {
-	this.bond = new Kinetic.Group();
+	var fromP = mp.molecule.atoms[this.from].getPosition();
+	var toP = mp.molecule.atoms[this.to].getPosition();
 
-	var fromP = atoms[this.from].getPosition();
-	var toP = atoms[this.to].getPosition();
+	ctx.beginPath();
+	ctx.moveTo(fromP.x, fromP.y + .5);//add .5 to fix blurry lines
+	ctx.lineTo(toP.x, toP.y + .5);
+	ctx.closePath();
 
-	var bond = new Kinetic.Line({
-		points: [fromP.x, fromP.y, toP.x, toP.y],
-		stroke: '#000',
-		strokeWidth: 2,
-	});
-
-	this.bond.add(bond);
-
-	group.add(this.bond);
+	ctx.strokeStyle = settings.bondColor;
+	ctx.lineWidth = settings.bondWidth / (settings.layoutRelative ?
+		1 ://relative width
+		mp.getScale());//constant width
+	ctx.lineCap = settings.bondLineCap;
+	ctx.stroke();
 }
 
-MPBond.prototype.renderSelectionOutline = function(group)
+MPBond.prototype.drawSelectionOutline = function(ctx, settings)
 {
 
 }

@@ -147,19 +147,6 @@ See: http://ggasoftware.com/opensource/ketcher
 
 ---
 
-## KineticJS
-```
-KineticJS JavaScript Framework
-http://www.kineticjs.com/
-Copyright 2013, Eric Rowell
-Licensed under the MIT or GPL Version 2 licenses.
-
-Copyright (C) 2011 - 2013 by Eric Rowell
-```
-See: http://kineticjs.com
-
----
-
 ## MobileDetect
 ```
 Code and contributions have 'MIT License'

@@ -18,7 +18,6 @@
   "dependencies": {
     "jquery": "~2.1.1",
     "jquery.hotkeys": "jeresig/jquery.hotkeys#~0.2.0",
-    "kineticjs": "~5.1.0",
     "file-saver": "*",
     "blob": "*"
   }
