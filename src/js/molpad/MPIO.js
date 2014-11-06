@@ -34,8 +34,8 @@ MolPad.prototype.loadMOL = function(mol)
 	{
 		var atom = new MPAtom();
 		atom.setPosition({
-			x: atomData.pp.x * scope.settings.bondLength,
-			y: atomData.pp.y * scope.settings.bondLength
+			x: atomData.pp.x * scope.settings.bond.length,
+			y: atomData.pp.y * scope.settings.bond.length
 		});
 		atom.setElement(atomData.label);
 		atom.setCharge(atomData.charge);
@@ -84,8 +84,8 @@ MolPad.prototype.getKetcherData = function()
 		var pp = this.molecule.atoms[i].getPosition();
 		molecule.atoms.add(new chem.Struct.Atom({
 			pp: {
-				x: pp.x / this.settings.bondLength,
-				y: pp.y / this.settings.bondLength
+				x: pp.x / this.settings.bond.length,
+				y: pp.y / this.settings.bond.length
 			},
 			label: this.molecule.atoms[i].getElement(),
 			charge: this.molecule.atoms[i].getCharge(),

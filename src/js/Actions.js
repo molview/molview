@@ -373,6 +373,11 @@ var Actions = {
 	/*
 	Sketcher
 	*/
+	mp_center: function()
+	{
+		Sketcher.center();
+	},
+
 	mp_clean: function()
 	{
 		Messages.process(Loader.clean, "clean");

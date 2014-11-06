@@ -1,5 +1,6 @@
 var JmolColors = {
 	"hex": {
+		"D": 0xFFFFC0,
 		"H": 0xFFFFFF,
 		"He": 0xD9FFFF,
 		"Li": 0xCC80FF,
@@ -111,6 +112,7 @@ var JmolColors = {
 		"Mt": 0xEB0026
 	},
 	"css": {
+		"D": "#ffffc0",
 		"H": "#000000",
 		"He": "#849b9b",
 		"Li": "#c87efa",

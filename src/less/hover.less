@@ -37,17 +37,7 @@ input:not([disabled])[type="text"]:hover + .input-focus
 	border-width: 0 1px 1px 1px;
 }
 
-.input:hover
-{
-	background-color: @light;
-}
-
-select:hover
-{
-	.form-box-hover;
-}
-
-.btn:hover
+select:hover, .btn:hover
 {
 	.form-box-hover;
 }
@@ -77,12 +67,30 @@ menu
 	background-color: @light2;
 }
 
+.menu-item > a.radio:hover:before, .menu-item > a.check:hover:before
+{
+	color: @foreground-light;
+}
+
 /*
 sketcher
 */
-.tool-button:not(.tool-button-selected):not(.tool-button-disabled):hover
+#chem-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):hover
 {
-	background-color: @light3;
+	border-right: 3px solid @foreground-less;
+	width: 37px;
+}
+
+#elem-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):hover
+{
+	border-left: 3px solid @foreground-less;
+	width: 37px;
+}
+
+#edit-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):hover
+{
+	border-bottom: 3px solid @foreground-less;
+	height: 37px;
 }
 
 /*
@@ -98,7 +106,7 @@ help
 */
 .expandable-title:hover
 {
-	.form-box-hover;
+	background: @light2;
 }
 
 /*

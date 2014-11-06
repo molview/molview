@@ -206,5 +206,10 @@ var Sketcher = {
 			return this.molpad.toDataURL();
 		}
 		else return "";
-	}
+	},
+
+	/**
+	 * MolPad wrapper API
+	 */
+	center: function(){ if(this.molpad) this.molpad.center(); }
 };

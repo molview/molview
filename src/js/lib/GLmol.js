@@ -50,7 +50,7 @@ THREE.Matrix4.prototype.isIdentity = function()
 };
 
 var GLmolElementColors = {
-	"H": 0xFFFFFF,"He": 0xD9FFFF,"Li": 0xCC80FF,"Be": 0xC2FF00,
+	"D": 0xFFFFC0, "H": 0xFFFFFF,"He": 0xD9FFFF,"Li": 0xCC80FF,"Be": 0xC2FF00,
 	"B": 0xFFB5B5,"C": 0x909090,"N": 0x3050F8,"O": 0xFF0D0D,
 	"F": 0x90E050,"Ne": 0xB3E3F5,"Na": 0xAB5CF2,"Mg": 0x8AFF00,
 	"Al": 0xBFA6A6,"Si": 0xF0C8A0,"P": 0xFF8000,"S": 0xFFFF30,
@@ -223,7 +223,6 @@ var GLmol = (function()
 		this.cq = new THREE.Quaternion(1, 0, 0, 0);
 		this.dq = new THREE.Quaternion(1, 0, 0, 0);
 		this.isDragging = false;
-		this.isMultiDragging = false;
 		this.mouseStartX = 0;
 		this.mouseStartY = 0;
 
@@ -237,8 +236,8 @@ var GLmol = (function()
 		this.canvasDetail = 24;//arc segments
 
 		// Multi touch parameters
+		this.multiTouch = false;
 		this.multiTouchD = 0;
-		this.isMultiDragging = false;
 
 		this.currentModelPos = 0;
 		this.cz = 0;
@@ -281,6 +280,7 @@ var GLmol = (function()
 				var dx = t[0].pageX - t[1].pageX;
 				var dy = t[0].pageY - t[1].pageY;
 				me.multiTouchD = Math.sqrt(dx * dx + dy * dy);
+				me.multiTouch = true;
 			}
 
 			if(x == undefined) return;
@@ -324,7 +324,11 @@ var GLmol = (function()
 		jQuery(window).bind('mouseup touchend touchcancel', function(ev)
 		{
 			me.isDragging = false;
-			me.isMultiDragging = false;
+			if(!(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1))
+			{
+				me.multiTouch = false;
+			}
+
 			me.show();
 		});
 
@@ -334,6 +338,7 @@ var GLmol = (function()
 			if(!me.isDragging) return;
 
 			ev.preventDefault();
+			ev.stopImmediatePropagation();
 
 			var x = ev.pageX,
 				y = ev.pageY;
@@ -345,13 +350,11 @@ var GLmol = (function()
 			}
 
 			// Multi touch zoom
-			if(ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
+			if(me.multiTouch && ev.originalEvent.targetTouches && ev.originalEvent.targetTouches.length > 1)
 			{
 				var t = ev.originalEvent.targetTouches;
 				var dx = t[0].pageX - t[1].pageX;
 				var dy = t[0].pageY - t[1].pageY;
-
-				me.isMultiDragging = true;
 
 				var d = Math.sqrt(dx * dx + dy * dy);
 				var ratio = d / me.multiTouchD;
@@ -368,11 +371,11 @@ var GLmol = (function()
 				me.show();
 			}
 
-			if(me.isMultiDragging) return;
+			if(me.multiTouch) return;
 
 			if(x == undefined) return;
-			var dx =(x - me.mouseStartX) / me.WIDTH;
-			var dy =(y - me.mouseStartY) / me.HEIGHT;
+			var dx = (x - me.mouseStartX) / me.WIDTH;
+			var dy = (y - me.mouseStartY) / me.HEIGHT;
 			var r = Math.sqrt(dx * dx + dy * dy);
 
 			if(me.mouseButton == 1 && ev.ctrlKey && ev.shiftKey)
@@ -382,7 +385,7 @@ var GLmol = (function()
 			}
 			else if(me.mouseButton == 2)
 			{ // Translate
-				var scaleFactor =(me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
+				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
 				if(scaleFactor < 20) scaleFactor = 20;
 				if(me.webglFailed)
 				{
@@ -814,18 +817,18 @@ var GLmol = (function()
 		var s = atom1.bonds.indexOf(atom2.serial);
 		if(s != -1) return atom1.bondOrder[s];
 
-		if(this.protein.smallMolecule &&(atom1.hetflag || atom2.hetflag)) return 0; // CHECK: or should I ?
+		if(this.protein.smallMolecule && (atom1.hetflag || atom2.hetflag)) return 0; // CHECK: or should I ?
 
 		var distSquared =(atom1.x - atom2.x) *(atom1.x - atom2.x) +
-			(atom1.y - atom2.y) *(atom1.y - atom2.y) +
-			(atom1.z - atom2.z) *(atom1.z - atom2.z);
+			(atom1.y - atom2.y) * (atom1.y - atom2.y) +
+			(atom1.z - atom2.z) * (atom1.z - atom2.z);
 
 		//if(atom1.altLoc != atom2.altLoc) return false;
 		if(isNaN(distSquared)) return 0;
 		if(distSquared < 0.5) return 0;//maybe duplicate position.
 
-		if(distSquared > 1.3 &&(atom1.elem == 'H' || atom2.elem == 'H' || atom1.elem == 'D' || atom2.elem == 'D')) return 0;
-		if(distSquared < 3.42 &&(atom1.elem == 'S' || atom2.elem == 'S')) return 1;
+		if(distSquared > 1.3 && (atom1.elem == 'H' || atom2.elem == 'H' || atom1.elem == 'D' || atom2.elem == 'D')) return 0;
+		if(distSquared < 3.42 && (atom1.elem == 'S' || atom2.elem == 'S')) return 1;
 		if(distSquared > 2.78) return 0;
 
 		return 1;
@@ -844,22 +847,21 @@ var GLmol = (function()
 		if(order == 1 || order == 3)
 		{
 			this.drawCylinder(group, p1, mp, bondR, atom1.color);
-			this.drawCylinder(group, p2, mp, bondR, atom2.color);
+			//this.drawCylinder(group, p2, mp, bondR, atom2.color);
 		}
 		if(order > 1)
 		{
 			tmp = mp.clone().addSelf(delta);
 			this.drawCylinder(group, p1.clone().addSelf(delta), tmp, bondR, atom1.color);
-			this.drawCylinder(group, p2.clone().addSelf(delta), tmp, bondR, atom2.color);
+			//this.drawCylinder(group, p2.clone().addSelf(delta), tmp, bondR, atom2.color);
 			tmp = mp.clone().subSelf(delta);
 			this.drawCylinder(group, p1.clone().subSelf(delta), tmp, bondR, atom1.color);
-			this.drawCylinder(group, p2.clone().subSelf(delta), tmp, bondR, atom2.color);
+			//this.drawCylinder(group, p2.clone().subSelf(delta), tmp, bondR, atom2.color);
 		}
 	};
 
 	GLmol.prototype.drawBondsAsStick = function(group, atomlist, bondR, atomR, ignoreNonbonded, multipleBonds, scale)
 	{
-		var sphereGeometry = new THREE.SphereGeometry(1, this.sphereQuality, this.sphereQuality);
 		if(!!multipleBonds) bondR /= 2.5;
 		for(var _i = 0; _i < atomlist.length; _i++)
 		{
@@ -958,14 +960,15 @@ var GLmol = (function()
 		}
 		if(!found || Math.abs(dot - 1) < 0.001 || Math.abs(dot + 1) < 0.001)
 		{
-			if(axis.x < 0.01 && axis.y < 0.01)
+			/* if(axis.x < 0.01 && axis.y < 0.01)
 			{
 				delta = new TV3(0, -axis.z, axis.y);
 			}
 			else
 			{
 				delta = new TV3(-axis.y, axis.x, 0);
-			}
+			} */
+			delta = new TV3(-axis.y, axis.x, 0);
 		}
 		delta.normalize().multiplyScalar(sep);
 		return delta;

@@ -33,13 +33,7 @@ form
 	color: @active;
 }
 
-select:active
-{
-	background: @light3;
-	border-color: @contrast3 !important;
-}
-
-.btn:active
+select:active, .btn:active
 {
 	.form-box-active;
 }
@@ -71,15 +65,34 @@ menu
 /*
 sketcher
 */
-.tool-button:not(.tool-button-selected):not(.tool-button-disabled):active
+.tool-button:not(.tool-button-disabled):active
 {
-	background-color: @contrast;
+	background-color: @highlight-light;
+}
+
+#chem-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):active
+{
+	border-right: 3px solid @highlight;
+	width: 37px;
+}
+
+#elem-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):active
+{
+	border-left: 3px solid @highlight;
+	width: 37px;
+}
+
+#edit-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):active
+{
+	border-bottom: 3px solid @highlight;
+	height: 37px;
 }
 
 /* periodictable */
 .pt-element:active
 {
-	background-color: @light3;
+	background-color: @highlight-light;
+	border-color: @highlight;
 }
 
 /*
@@ -87,7 +100,7 @@ help
 */
 .expandable-title:active
 {
-	.form-box-active;
+	background: @contrast;
 }
 
 /*

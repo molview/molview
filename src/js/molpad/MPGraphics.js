@@ -26,6 +26,19 @@ MolPad.prototype.resize = function()
 	this.center();
 }
 
+MolPad.prototype.update = function()
+{
+	this.settings.atom.scale = this.getScale() < this.settings.atom.maxScale ?
+			this.settings.atom.maxScale / this.getScale() : 1;
+	this.settings.bond.scale = this.getScale() < this.settings.bond.maxScale ?
+			this.settings.bond.maxScale / this.getScale() : 1;
+}
+
+MolPad.prototype.setCursor = function(type)
+{
+	this.container.css("cursor", type);
+}
+
 MolPad.prototype.draw = function()
 {
 	//clear
@@ -36,36 +49,26 @@ MolPad.prototype.draw = function()
 	this.ctx.transform(this.matrix[0], this.matrix[1], this.matrix[2],
 					   this.matrix[3], this.matrix[4], this.matrix[5]);
 
-	//draw selection
+	//draw state (hover/active)
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		this.molecule.atoms[i].drawSelectionColor(this.ctx, this.settings);
+		this.molecule.atoms[i].drawStateColor(this);
 	}
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
-		this.molecule.bonds[i].drawSelectionColor(this.ctx, this.settings, this.molecule.atoms);
+		this.molecule.bonds[i].drawStateColor(this);
 	}
 
 	//draw bonds
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
-		this.molecule.bonds[i].drawBond(this.ctx, this.settings, this);
+		this.molecule.bonds[i].drawBond(this);
 	}
 
 	//draw atoms
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		this.molecule.atoms[i].drawLabel(this.ctx, this.settings, this);
-	}
-
-	//draw selection outline
-	for(var i = 0; i < this.molecule.atoms.length; i++)
-	{
-		this.molecule.atoms[i].drawSelectionOutline(this.ctx, this.settings);
-	}
-	for(var i = 0; i < this.molecule.bonds.length; i++)
-	{
-		this.molecule.bonds[i].drawSelectionOutline(this.ctx, this.settings);
+		this.molecule.atoms[i].drawLabel(this);
 	}
 
 	//draw selection tool
@@ -104,6 +107,7 @@ MolPad.prototype.center = function()
 	var s = 1 - 2 * this.settings.relativePadding;
 	this.scaleAbsolute(s, this.width() / 2, this.height() / 2);
 
+	this.update();
 	this.redraw();
 }
 
@@ -113,34 +117,38 @@ MolPad.prototype.getBBox = function()
 
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		var p = this.molecule.atoms[i].getPosition();
+		var l = this.molecule.atoms[i].getCenterLine(this);
+		var px1 = l.area.left !== undefined ? l.area.left.x : l.area.point.x;
+		var px2 = l.area.right !== undefined ? l.area.right.x : l.area.point.x;
+		var py = l.area.left !== undefined ? l.area.left.y : l.area.point.y;
 
 		if(bottomLeft == undefined)
 		{
-			bottomLeft = { x: p.x, y: p.y };
+			bottomLeft = { x: px1, y: py };
 		}
 		else
 		{
-			if(bottomLeft.x > p.x) bottomLeft.x = p.x;
-			if(bottomLeft.y > p.y) bottomLeft.y = p.y;
+			if(bottomLeft.x > px1) bottomLeft.x = px1;
+			if(bottomLeft.y > py) bottomLeft.y = py;
 		}
 
 		if(topRight == undefined)
 		{
-			topRight = { x: p.x, y: p.y };
+			topRight = { x: px2, y: py };
 		}
 		else
 		{
-			if(topRight.x < p.x) topRight.x = p.x;
-			if(topRight.y < p.y) topRight.y = p.y;
+			if(topRight.x < px2) topRight.x = px2;
+			if(topRight.y < py) topRight.y = py;
 		}
 	}
 
+	var r = this.settings.atom.radius;
 	return {
-		x: bottomLeft.x,
-		y: bottomLeft.y,
-		width: topRight.x - bottomLeft.x,
-		height: topRight.y - bottomLeft.y
+		x: bottomLeft.x - r,
+		y: bottomLeft.y - r,
+		width: topRight.x - bottomLeft.x + 2 * r,
+		height: topRight.y - bottomLeft.y + 2 * r
 	};
 }
 

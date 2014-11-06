@@ -19,31 +19,39 @@
 @import (reference) "vars";
 @import (reference) "global";
 
-.form-box(@bg: @light2)
+.form-box
 {
+	margin-bottom: 1px;
 	color: @foreground;
 	font-size: 12pt;
 	font-family: 'Open Sans', sans-serif;
 	text-decoration: none;
-	background: @bg;
-	border: 1px solid @contrast;
+	background: transparent;
+	border: 0;
+	border-bottom: 2px solid @foreground-less;
 
 	&:focus
 	{
 		outline: none;
-		border-color: @highlight !important;
+		border-color: @highlight-light !important;
 	}
 }
 
 .form-box-hover
 {
-	background: @light;
+	margin-bottom: 0;
+	border-width: 3px;
+
+	background: @light2;
 }
 
 .form-box-active
 {
-	background: @light3;
-	border-color: @contrast3 !important;
+	margin-bottom: 0;
+	border-width: 3px;
+
+	background: @highlight-light;
+	border-color: @highlight !important;
 }
 
 /* input */
@@ -67,7 +75,6 @@
 	font-size: normal;
 	font-size: initial;
 
-	background: @light2;
 	border: 0;
 }
 
@@ -100,7 +107,7 @@ input[type="text"]
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
 
-	font-family: 'Open Sans', sans-serif;
+	font-family: monospace;
 }
 
 input:focus
@@ -121,18 +128,17 @@ input[type="text"].alert + .input-focus
 
 .input
 {
-	.form-box;
-
 	width: 100%;
-	padding: 5px 10px;
-	background: @light2;
-	border: 1px solid @contrast;
+	height: 30px;
+	padding: 8px 10px 5px 10px;
+	background: transparent;
+	border: 0;
+	border-bottom: 1px solid @foreground-light;
 }
 
 .input:focus
 {
-	border-color: @highlight;
-	background-color: @light;
+	border-bottom: 2px solid @highlight !important;
 }
 
 /* select */
@@ -141,14 +147,10 @@ select
 	.form-box;
 
 	cursor: pointer;
-	margin: 10px 0 0 10px;
+	margin-top: 10px;
+	margin-left: 10px;
 	padding: 4px;
 	max-width: 300px;
-}
-
-select:focus
-{
-	background: @light;
 }
 
 option
@@ -168,7 +170,8 @@ button, input[type="submit"]
 	.form-box;
 
 	display: inline-block;
-	margin: 10px 0 0 10px;
+	margin-top: 10px;
+	margin-left: 10px;
 	padding: 5px 15px;
 }
 

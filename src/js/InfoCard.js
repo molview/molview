@@ -95,7 +95,7 @@ var InfoCard = {
 	{
 		if(this.data["smiles"] != smiles && smiles != "")
 		{
-			$(".chemprop").html("").val("").removeClass("chemprop-unavailable").addClass("chemprop-loading");
+			$(".chemprop").html("").val("").addClass("chemprop-loading");
 			$("#molecule-image").attr("src", emptyImage);
 			$("#molecule-image-wrapper").show();
 			$("#molecule-info").hide();
@@ -266,7 +266,9 @@ var InfoCard = {
 		InfoCard.getProperty(id, function(prop)
 		{
 			if(id == "mw") prop += " u";//append Units unit (u)
-			$("#prop-" + id).html(prop).val(prop).removeClass("chemprop-loading");
+			var out = $("#prop-" + id);
+			if(out.is("input")) out.val(prop).removeClass("chemprop-loading");
+			else out.html(prop).removeClass("chemprop-loading");
 
 			if(cb) cb(prop);
 		}, function()

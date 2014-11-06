@@ -192,16 +192,16 @@ Query parameters:
 						<button><i class="fa fa-search"></i></button>
 						<input id="search-input" name="q" type="text" autocomplete="off" spellcheck="false" />
 						<div class="input-focus"></div>
-					</div>
-					<div id="search-dropdown" class="dropdown">
-						<a class="dropdown-toggle"></a>
-						<ul class="dropdown-menu dropdown-left">
-							<li class="menu-item"><a id="action-show-search-layer">Show last search results</a></li>
-							<li class="menu-header">Advanced search</li>
-							<li class="menu-item"><a id="action-search-pubchem">PubChem Compounds</a></li>
-							<li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li>
-							<li class="menu-item"><a id="action-search-cod">Crystallography Open Database</a></li>
-						</ul>
+						<div id="search-dropdown" class="dropdown">
+							<a class="dropdown-toggle"></a>
+							<ul class="dropdown-menu dropdown-left">
+								<li class="menu-item"><a id="action-show-search-layer">Show last search results</a></li>
+								<li class="menu-header">Advanced search</li>
+								<li class="menu-item"><a id="action-search-pubchem">PubChem Compounds</a></li>
+								<li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li>
+								<li class="menu-item"><a id="action-search-cod">Crystallography Open Database</a></li>
+							</ul>
+						</div>
 					</div>
 				</form>
 				<ul id="main-menu" class="hstack">
@@ -217,8 +217,8 @@ Query parameters:
 								<a id="action-layout-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
 							</li>
 							<li class="menu-header">Theme</li>
-							<li class="menu-item"><a id="action-theme-desktop" <?php if(!$touch) echo 'class="checked"'; ?>>Desktop</a></li>
-							<li class="menu-item"><a id="action-theme-touch" <?php if($touch) echo 'class="checked"'; ?>>Touch</a></li>
+							<li class="menu-item"><a id="action-theme-desktop" <?php echo !$touch ? 'class="radio checked"' : 'class="radio"'; ?>>Desktop</a></li>
+							<li class="menu-item"><a id="action-theme-touch" <?php echo $touch ? 'class="radio checked"' : 'class="radio"'; ?>>Touch</a></li>
 							<li class="menu-header">Information</li>
 							<li class="menu-item"><a id="action-help">Help</a></li>
 							<li class="menu-item"><a id="action-about">About</a></li>
@@ -249,19 +249,19 @@ Query parameters:
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="action-model-reset">Reset</a></li>
 							<li class="menu-header">Representation</li>
-							<li class="menu-item"><a id="action-model-balls" class="r-mode checked">Ball and Stick</a></li>
-							<li class="menu-item"><a id="action-model-stick" class="r-mode">Stick</a></li>
-							<li class="menu-item"><a id="action-model-vdw" class="r-mode">van der Waals Spheres</a></li>
-							<li class="menu-item"><a id="action-model-wireframe" class="r-mode">Wireframe</a></li>
-							<li class="menu-item"><a id="action-model-line" class="r-mode">Line</a></li>
+							<li class="menu-item"><a id="action-model-balls" class="r-mode radio checked">Ball and Stick</a></li>
+							<li class="menu-item"><a id="action-model-stick" class="r-mode radio">Stick</a></li>
+							<li class="menu-item"><a id="action-model-vdw" class="r-mode radio">van der Waals Spheres</a></li>
+							<li class="menu-item"><a id="action-model-wireframe" class="r-mode radio">Wireframe</a></li>
+							<li class="menu-item"><a id="action-model-line" class="r-mode radio">Line</a></li>
 							<li class="menu-header">Background</li>
-							<li class="menu-item"><a id="action-model-bg-black" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
-							<li class="menu-item"><a id="action-model-bg-gray" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
-							<li class="menu-item"><a id="action-model-bg-white" <?php echo 'class="model-bg'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
+							<li class="menu-item"><a id="action-model-bg-black" <?php echo 'class="model-bg radio'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
+							<li class="menu-item"><a id="action-model-bg-gray" <?php echo 'class="model-bg radio'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
+							<li class="menu-item"><a id="action-model-bg-white" <?php echo 'class="model-bg radio'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
 							<li class="menu-header">Engine</li>
-							<li class="menu-item"><a id="action-engine-glmol" class="checked">GLmol</a></li>
-							<li class="menu-item"><a id="action-engine-jmol">Jmol</a></li>
-							<li class="menu-item"><a id="action-engine-cdw">ChemDoodle</a></li>
+							<li class="menu-item"><a id="action-engine-glmol" class="radio checked">GLmol</a></li>
+							<li class="menu-item"><a id="action-engine-jmol" class="radio">Jmol</a></li>
+							<li class="menu-item"><a id="action-engine-cdw" class="radio">ChemDoodle</a></li>
 							<li class="menu-header">Crystallography</li>
 							<li class="menu-item"><a id="action-cif-unit-cell">Load unit cell</a></li>
 							<li class="menu-item"><a id="action-cif-cubic-supercell">Load 2&times;2&times;2 supercell</a></li>
@@ -271,27 +271,27 @@ Query parameters:
 					<li id="protein-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Protein</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="action-bio-assembly">Show bio assembly</a></li>
+							<li class="menu-item"><a id="action-bio-assembly" class="check">Show bio assembly</a></li>
 							<li class="menu-header">Chain representation</li>
-							<li class="menu-item"><a id="action-chain-type-ribbon" class="chain-type checked">Ribbon</a></li>
-							<li class="menu-item"><a id="action-chain-type-cylinders" class="chain-type">Cylinder and plate</a></li>
-							<li class="menu-item"><a id="action-chain-type-btube" class="chain-type">B-factor tube</a></li>
-							<li class="menu-item"><a id="action-chain-type-ctrace" class="chain-type">C-alpha trace</a></li>
+							<li class="menu-item"><a id="action-chain-type-ribbon" class="chain-type radio checked">Ribbon</a></li>
+							<li class="menu-item"><a id="action-chain-type-cylinders" class="chain-type radio">Cylinder and plate</a></li>
+							<li class="menu-item"><a id="action-chain-type-btube" class="chain-type radio">B-factor tube</a></li>
+							<li class="menu-item"><a id="action-chain-type-ctrace" class="chain-type radio">C-alpha trace</a></li>
 							<li class="menu-divider"></li>
-							<li class="menu-item"><a id="action-chain-type-bonds">Bonds</a></li>
+							<li class="menu-item"><a id="action-chain-type-bonds" class="check">Bonds</a></li>
 							<li class="menu-header">Chain color scheme</li>
-							<li class="menu-item"><a id="action-chain-color-ss" class="chain-color checked">Secondary structure</a></li>
-							<li class="menu-item"><a id="action-chain-color-spectrum" class="chain-color">Spectrum</a></li>
-							<li class="menu-item"><a id="action-chain-color-chain" class="chain-color">Chain</a></li>
-							<li class="menu-item"><a id="action-chain-color-residue" class="chain-color">Residue</a></li>
-							<li class="menu-item"><a id="action-chain-color-polarity" class="chain-color">Polarity</a></li>
-							<li class="menu-item"><a id="action-chain-color-bfactor" class="chain-color">B-factor</a></li>
+							<li class="menu-item"><a id="action-chain-color-ss" class="chain-color radio checked">Secondary structure</a></li>
+							<li class="menu-item"><a id="action-chain-color-spectrum" class="chain-color radio">Spectrum</a></li>
+							<li class="menu-item"><a id="action-chain-color-chain" class="chain-color radio">Chain</a></li>
+							<li class="menu-item"><a id="action-chain-color-residue" class="chain-color radio">Residue</a></li>
+							<li class="menu-item"><a id="action-chain-color-polarity" class="chain-color radio">Polarity</a></li>
+							<li class="menu-item"><a id="action-chain-color-bfactor" class="chain-color radio">B-factor</a></li>
 						</ul>
 					</li>
 					<li id="jmol-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="action-jmol-hq" class="checked">High Quality</a></li>
+							<li class="menu-item"><a id="action-jmol-hq" class="check checked">High Quality</a></li>
 							<li class="menu-item"><a id="action-jmol-clean" class="jmol-script">Clean</a></li>
 							<li class="menu-header jmol-script jmol-calc">Calculations</li>
 							<li class="menu-item"><a id="action-jmol-mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
@@ -301,9 +301,9 @@ Query parameters:
 							<li class="menu-item"><a id="action-jmol-net-dipole" class="jmol-script jmol-calc">Overall dipole</a></li>
 							<li class="menu-item"><a id="action-jmol-minimize" class="jmol-script jmol-calc">Energy minimization</a></li>
 							<li class="menu-header jmol-script">Measurement</li>
-							<li class="menu-item"><a id="action-jmol-measure-distance" class="jmol-script jmol-picking">Distance</a></li>
-							<li class="menu-item"><a id="action-jmol-measure-angle" class="jmol-script jmol-picking">Angle</a></li>
-							<li class="menu-item"><a id="action-jmol-measure-torsion" class="jmol-script jmol-picking">Torsion</a></li>
+							<li class="menu-item"><a id="action-jmol-measure-distance" class="jmol-script jmol-picking radio">Distance</a></li>
+							<li class="menu-item"><a id="action-jmol-measure-angle" class="jmol-script jmol-picking radio">Angle</a></li>
+							<li class="menu-item"><a id="action-jmol-measure-torsion" class="jmol-script jmol-picking radio">Torsion</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -445,39 +445,39 @@ Query parameters:
 					</div>
 					<div id="prop-sysname-wrapper" class="chem-identifier">
 						<label for="prop-sysname">Systematic name</label>
-						<input type="text" id="prop-sysname" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-sysname" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-canonicalsmiles-wrapper" class="chem-identifier">
 						<label for="prop-canonicalsmiles">Canonical SMILES</label>
-						<input type="text" id="prop-canonicalsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-canonicalsmiles" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-isomericsmiles-wrapper" class="chem-identifier">
 						<label for="prop-isomericsmiles">Isomeric SMILES</label>
-						<input type="text" id="prop-isomericsmiles" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-isomericsmiles" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-inchikey-wrapper" class="chem-identifier">
 						<label for="prop-inchikey">InChiKey</label>
-						<input type="text" id="prop-inchikey" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-inchikey" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-inchi-wrapper" class="chem-identifier">
 						<label for="prop-inchi">InChi</label>
-						<input type="text" id="prop-inchi" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-inchi" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-cas-wrapper" class="chem-identifier">
 						<label for="cas-sysname">CAS Number</label>
-						<input type="text" id="prop-cas" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-cas" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-csid-wrapper" class="chem-identifier">
 						<label for="prop-csid">Chemspider ID
 							<a id="chemspider-link" class="link chem-link" target="_blank"><i class="fa fa-external-link"></i></a>
 						</label>
-						<input type="text" id="prop-csid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-csid" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-cid-wrapper" class="chem-identifier">
 						<label for="prop-cid">PubChem Compound ID
 							<a id="pubchem-link" class="link chem-link" target="_blank"><i class="fa fa-external-link"></i></a>
 						</label>
-						<input type="text" id="prop-cid" class="input chemprop" autocomplete="off" spellcheck="false" readonly="true" />
+						<input type="text" id="prop-cid" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 				</div>
 			</div>
@@ -487,7 +487,7 @@ Query parameters:
 					<select id="spectrum-select"></select>
 					<button id="action-export-spectrum-png" class="btn"><i class="fa fa-download"></i> Download PNG image</button>
 					<button id="action-export-spectrum-jcamp" class="btn"><i class="fa fa-download"></i> Download JCAMP data</button>
-					<a id="spectrum-nist-source" class="btn" target="_blank"><i class="fa fa-link"></i> NIST source</a>
+					<a id="spectrum-nist-source" class="btn" target="_blank"><i class="fa fa-external-link"></i> NIST source</a>
 				</div>
 				<div id="spectrum-wrapper">
 					<canvas id="spectrum-canvas"></canvas>
@@ -532,7 +532,7 @@ Query parameters:
 						<ul>
 							<li>JavaScript libraries
 								<ul>
-									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Molfile to SMILES conversion</li>
+									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Chemical 2D data reader/writer</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
 									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.8</a>: 3D render engine</li>
 									<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1</a>: 3D render engine and spectrum display</li>

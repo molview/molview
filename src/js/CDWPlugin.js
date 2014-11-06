@@ -68,7 +68,11 @@ var CDWPlugin = {
 	{
 		if(this.view)
 		{
-			this.view.rotationMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+			this.view.rotationMatrix =
+			[1, 0, 0, 0,
+			 0, 1, 0, 0,
+			 0, 0, 1, 0,
+			 0, 0, 0, 1];
 			this.view.repaint();
 		}
 	},

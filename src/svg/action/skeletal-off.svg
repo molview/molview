@@ -13,7 +13,7 @@
    width="40"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="skeletal.svg">
+   sodipodi:docname="skeletal-off.svg">
   <defs
      id="defs11" />
   <sodipodi:namedview
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -67,17 +67,13 @@
      id="path3768"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="ccc" />
-  <text
-     xml:space="preserve"
-     style="font-size:77.76214600000000132px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-     x="13.033134"
-     y="15.117041"
-     id="text3774"
-     sodipodi:linespacing="125%"
-     transform="scale(0.94481507,1.0584082)"><tspan
-       sodipodi:role="line"
-       id="tspan3776"
-       x="13.033134"
-       y="15.117041"
-       style="font-size:19.44053650000000033px;font-weight:bold;fill:#000000;fill-opacity:1;-inkscape-font-specification:Sans Bold">H</tspan></text>
+  <g
+     transform="scale(0.94481507,1.0584082)"
+     style="font-size:77.762146px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     id="text3774">
+    <path
+       d="m 14.817715,0.94481359 3.654593,0 0,5.40120371 5.391711,0 0,-5.40120371 3.654593,0 0,14.17222741 -3.654593,0 0,-6.0087209 -5.391711,0 0,6.0087209 -3.654593,0 0,-14.17222741"
+       style="font-size:19.4405365px;font-weight:bold;fill:#000000;-inkscape-font-specification:Sans Bold"
+       id="path2988" />
+  </g>
 </svg>

@@ -137,12 +137,12 @@ var Autocomplete = {
 			$("#search-input").val(Autocomplete.records[i].label);
 		}
 
-		$(".autocomplete-item").removeClass("autocomplete-item-hover");
+		$(".autocomplete-item").removeClass("autocomplete-item-active");
 
 		var target = $(".autocomplete-item").eq(i);
 		if(i != -1)
 		{
-			target.addClass("autocomplete-item-hover");
+			target.addClass("autocomplete-item-active");
 			var position = target.position();
 			if(position.top + target.outerHeight() > $("#autocomplete-dropdown").outerHeight())
 				$("#autocomplete-dropdown").scrollTop($("#autocomplete-dropdown").scrollTop()
@@ -370,7 +370,7 @@ var Autocomplete = {
 	focus: function()
 	{
 		Autocomplete.i = -1;
-		$(".autocomplete-item").removeClass("autocomplete-item-hover");
+		$(".autocomplete-item").removeClass("autocomplete-item-active");
 		$("#autocomplete-dropdown-wrapper").show();
 		$("#autocomplete-dropdown").hide();
 		$("#menu").scrollLeft($("#brand").is(":visible") ? 55 : 0);

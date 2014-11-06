@@ -3,7 +3,11 @@
 ## 2.3.x
 
 - Replaced MolEdit with MolPad
+- Fixed load.php redirect loop
+- Fixed GLmol multiTouch issue
+- Fixed GLmol O=C=O issue
 - Integrated bower
+- Slight redesign
 
 ## 2.2.x (2014-11-3)
 

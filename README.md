@@ -8,7 +8,7 @@ a similar web application.
 
 **JavaScript libraries**
 
-  - [Ketcher](http://ggasoftware.com/opensource/ketcher): Molfile to SMILES conversion
+  - [Ketcher](http://ggasoftware.com/opensource/ketcher): Chemical 2D data reader/writer
   - [GLmol v0.47](http://webglmol.sourceforge.jp/index-en.html): primary 3D render engine
   - [JSmol v14.3.8](http://sourceforge.net/projects/jsmol/): 3D render engine
   - [ChemDoodle Web Components v6.0.1](http://web.chemdoodle.com/): 3D render engine

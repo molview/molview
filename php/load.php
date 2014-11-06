@@ -73,8 +73,8 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 
 			if($pubchem_query != "cid")//redirect to ?cid
 			{
-				$query = preg_replace("/".$pubchem_query."=[^&]*/", "cid=".
-						($data -> InformationList -> Information[0] -> CID),
+				$query = preg_replace("/".($pubchem_query == "name" ? "q" : $pubchem_query).
+						"=[^&]*/", "cid=".($data -> InformationList -> Information[0] -> CID),
 						$_SERVER["QUERY_STRING"]);//remove old compound query
 				header("Location: ?".$query, true, 302);
 			}

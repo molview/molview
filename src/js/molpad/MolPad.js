@@ -17,6 +17,7 @@
  */
 
 /**
+ * TODO: draw data caching
  * Initialize MolPad in the given container
  * @param {DOMElement} container
  */
@@ -28,24 +29,63 @@ function MolPad(container, devicePixelRatio)
 	};
 
 	this.tool = {
-		handler: this.selectionToolHandler
+		defaultHandler: this.selectionToolHandler
 	};
 
 	this.settings = {
-		layoutRelative: true,//TODO: flexlayout: lines always >= 1px and text >= 10pt
+		fast: false,
 		zoomSpeed: 0.2,
 		minZoom: 0.01,
 		removeImplicitHydrogen: true,
-		drawSkeletonFormula: false,
+		drawSkeletonFormula: true,
 		relativePadding: 0.15,
-		bondLength: 80,
-		bondColor: "#000000",
-		bondWidth: 1,
-		bondLineCap: "round",
-		atomLabel: {
-			fontStyle: "bold",
-			fontFamily: "'Open Sans', serif",
-			fontSize: 12
+		bond: {
+			active: {
+				radius: 8,
+				color: "#8f8",
+				lineCap: "round"
+			},
+			hover: {
+				radius: 8,
+				color: "#bfb",
+				lineCap: "round"
+			},
+			delta: [
+				[],//no bond
+				[0],//single bond
+				[-3,3],//double bond
+				[-4,0,4],//triple bond
+				[-5,5]//wedge/hash bond
+			],
+			length: 55,
+			color: "#111111",
+			lineCap: "round",
+			width: 1.5,//in px
+			maxScale: 1.0,
+			hashLineSpace: 2
+		},
+		atom: {
+			active: {
+				radius: 12,
+				color: "#8f8",
+				lineCap: "round"
+			},
+			hover: {
+				radius: 12,
+				color: "#bfb",
+				lineCap: "round"
+			},
+			label: {
+				fontStyle: "bold",
+				fontFamily: "'Open Sans', serif",
+				fontSize: 12,//in pt
+			},
+			radius: 10,//radius around atom center-line
+			circleClamp: 15,//label width > circleClamp: atom center = line
+			maxScale: 1 / 1.5//12 * 1 / 1.5 = 8
+		},
+		selection: {
+			bg: "rgba(255, 85, 0, 0.5)"
 		}
 	};
 
@@ -55,7 +95,8 @@ function MolPad(container, devicePixelRatio)
 	this.pointer = {
 		old: { x: 0, y: 0 },//old pointer position
 		oldc: { x: 0, y: 0 },//old pointer center
-		drag: false
+		oldr: { x: 0, y: 0 },//old real pointer
+		handler: undefined
 	};
 
 	this.container = jQuery(container);
@@ -79,6 +120,8 @@ function MolPad(container, devicePixelRatio)
 	 * - pointerup: finish action
 	 * - multipointer: dismiss action and start multitouch action
 	 * - multipointer => single pointer: translate
+	 *
+	 * TODO: revise mouse events on touchscreen (touchgrabbing?)
 	 */
 
 	jQuery(container).on('DOMMouseScroll mousewheel', function(e)
@@ -97,7 +140,18 @@ function MolPad(container, devicePixelRatio)
 
 	jQuery(container).on("mousedown touchstart", function(e)
 	{
+		e.preventDefault();
 		scope.onPointerDown(e);
+	});
+
+	jQuery(container).on("mousemove", function(e)
+	{
+		scope.onMouseMoveInContainer(e);
+	});
+
+	jQuery(container).on("mouseout", function(e)
+	{
+		scope.onMouseOut(e);
 	});
 
 	jQuery(window).on("mousemove touchmove", function(e)
@@ -109,6 +163,18 @@ function MolPad(container, devicePixelRatio)
 	{
 		scope.onPointerUp(e);
 	});
+}
+
+MolPad.prototype.forAllObjects = function(func)
+{
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		if(func.call(this, this.molecule.atoms[i])) return;
+	}
+	for(var i = 0; i < this.molecule.bonds.length; i++)
+	{
+		if(func.call(this, this.molecule.bonds[i])) return;
+	}
 }
 
 /**

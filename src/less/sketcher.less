@@ -27,8 +27,6 @@
 	right: 0;
 	bottom: 0;
 	background: #fff;
-
-	border-right: 1px solid @contrast;
 }
 
 .toolbar
@@ -42,6 +40,7 @@
 
 .tool-button
 {
+	cursor: pointer;
 	width: @toolbar-size;
 	height: @toolbar-size;
 	margin: 0;
@@ -55,7 +54,7 @@
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: @toolbar-iconsize;
-	cursor: pointer;
+	border: 0;
 
     -webkit-user-select: none;
      -khtml-user-select: none;
@@ -76,7 +75,13 @@
 	background-color: @highlight-light !important;
 }
 
-#chem-tools > .toolbar-inner > .tool-button-selected, #elem-tools > .toolbar-inner > .tool-button-selected
+#chem-tools > .toolbar-inner > .tool-button-selected
+{
+	border-right: 3px solid @highlight;
+	width: 37px;
+}
+
+#elem-tools > .toolbar-inner > .tool-button-selected
 {
 	border-left: 3px solid @highlight;
 	width: 37px;
@@ -146,10 +151,6 @@
 
 	overflow: hidden;
 	background: #fff;
-
-	border-top: 1px solid @contrast;
-	border-left: 1px solid @contrast;
-	border-right: 1px solid @contrast;
 }
 
 /* MolPad buttons */

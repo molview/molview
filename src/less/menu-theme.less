@@ -29,14 +29,14 @@
 
 .dropdown-toggle
 {
-	border-left: 1px solid @light3;
-	border-right: 1px solid @light3;
+	border-left: 1px solid @menu-bar-bg;
+	border-right: 1px solid @menu-bar-bg;
 }
 
 .dropdown-toggle:after
 {
 	margin-left: 8px;
-	color: @contrast3;
+	color: @foreground;
 	font-family: FontAwesome;
 	content: '\f107';
 }
@@ -44,7 +44,7 @@
 .dropdown.open > .dropdown-toggle
 {
 	background-color: @light !important;
-	border-color: @contrast;
+	border-color: @contrast !important;
 }
 
 .caret
@@ -81,7 +81,7 @@
 /*
 Menu-item icons
 */
-*
+
 .menu-item > a
 {
 	color: @foreground;
@@ -98,16 +98,25 @@ Menu-item icons
 	content: ' ';
 }
 
+.menu-item > a.radio:before, .menu-item > a.check:before
+{
+	color: transparent;
+	content: '\f00c';
+}
+
 .menu-item > a.checked:before
 {
 	color: #000;
-	content: '\f00c';
 }
 
 .menu-item > a.disabled:before
 {
 	color: @foreground-disabled !important;
 }
+
+#action-search-pubchem:before { content: '\f1c0'; }
+#action-search-rcsb:before { content: '\f1c0'; }
+#action-search-cod:before { content: '\f1c0'; }
 
 #action-help:before { content: '\f1cd'; }
 #action-about:before { content: '\f05a'; }
@@ -118,7 +127,7 @@ Menu-item icons
 #action-export-model:before { content: '\f019'; }
 #action-data-infocard:before { content: '\f1ec'; }
 #action-data-spectra:before { content: '\f1fe'; }
-#model-source:before { content: '\f1c0'; }
+#model-source:before { content: '\f08e'; }
 #action-search-similarity:before { content: '\2248'; font-weight: bold; }
 #action-search-substructure:before { content: '\2282'; font-weight: bold; }
 #action-search-superstructure:before { content: '\2283'; font-weight: bold; }

@@ -38,7 +38,7 @@
 	position: absolute;
 	top: 0;
 	min-width: 100%;
-	background: @light3;
+	background: @menu-bar-bg;
 	border-bottom: 1px solid @contrast;
 	overflow: hidden;
 }
@@ -148,23 +148,29 @@ at least one other dropdown in order to:
 #search
 {
 	margin: 0 5px;
-	background: @light2;
+	background: @search-bar-bg;
 }
 
-#search-input-wrap
+
+#search > .input-wrapper > input, #search > .input-wrapper > button
 {
-	position: relative;
+	background: @search-bar-bg;
 }
 
 #search-input
 {
 	width: 300px;
-	margin-right: 10px !important;
+	font-family: 'Open Sans', sans-serif;
+}
+
+#search-dropdown
+{
+	display: inline-block;
 }
 
 #search-dropdown > .dropdown-toggle
 {
-	background: @light2;
+	border-color: transparent;
 }
 
 #search-dropdown > .dropdown-toggle:after

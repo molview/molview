@@ -296,6 +296,7 @@ var MolView = {
 		this.addAction("load_more_rcsb", "button");
 		this.addAction("load_more_cod", "button");
 
+		this.addAction("mp_center", "button");
 		this.addAction("mp_clean", "button");
 		this.addAction("mp_periodictable", "button");
 		this.addAction("resolve", "button");

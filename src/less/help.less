@@ -35,6 +35,7 @@
 .expandable
 {
 	margin: 10px 0;
+	padding-bottom: 1px;//for .form-box border-bottom
 }
 
 .expandable-title
@@ -44,9 +45,9 @@
 	padding: 7px 15px;
 	padding-left: 45px;
 
+	font-size: 12pt;
 	font-weight: bold;
-
-	.form-box(@light2);
+	border: 1px solid @contrast;
 
 	.no-select;
 }
@@ -64,10 +65,7 @@
 	font-size: 14pt;
 	font-family: FontAwesome;
 	border-right: 1px solid @contrast;
-}
 
-.expandable-title:before
-{
 	content: '\f107';
 }
 
@@ -86,22 +84,3 @@
 {
 	display: block;
 }
-
-/* .tool-icon
-{
-	display: inline-block;
-	padding: 1px;
-	width: 17px;
-	height: 17px;
-
-	color: #fff;
-	font-weight: bold;
-	text-align: center;
-	line-height: 20px;
-	font-size: 12pt;
-
-	background: #111;
-	vertical-align: middle;
-
-	border-radius: 4px;
-} */

@@ -60,6 +60,7 @@ var JSUnits = {
 	{
 		src: [
 			'src/js/molpad/Data.js',
+			'src/js/molpad/Utility.js',
 			'src/js/molpad/MPAtom.js',
 			'src/js/molpad/MPBond.js',
 			'src/js/molpad/MolPad.js',

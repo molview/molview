@@ -16,47 +16,13 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function getPointerCoords(e)
+MolPad.prototype.getRelativeCoords = function(p)
 {
-	var oe = e.originalEvent;
-	if(oe.targetTouches && oe.targetTouches.length > 0)
-	{
-		return { x: oe.targetTouches[0].pageX, y: oe.targetTouches[0].pageY };
-	}
-	else
-	{
-		return { x: e.pageX, y: e.pageY };
-	}
-}
-
-function getMultiTouchCenter(e)
-{
-	var t = e.originalEvent.targetTouches;
-	if(t.length == 0) return { x: 0, y: 0 };
-	else
-	{
-		var p = { x: t[0].pageX, y: t[0].pageY };
-		for(var i = 1; i < t.length; i++)
-		{
-			p.x += t[i].pageX;
-			p.y += t[i].pageY;
-		}
-		p.x /= t.length;
-		p.y /= t.length;
-		return p;
-	}
-}
-
-function getMultiTouchDelta(e)
-{
-	var t = e.originalEvent.targetTouches;
-	if(t.length == 0) return 0;
-	else
-	{
-		var dx = Math.abs(t[0].pageX - t[1].pageX);
-		var dy = Math.abs(t[0].pageY - t[1].pageY);
-		return Math.sqrt(dx * dx + dy * dy);
-	}
+	p.x = (p.x - this.offset.left) * this.devicePixelRatio;
+	p.y = (p.y - this.offset.top) * this.devicePixelRatio;
+	p.x = (p.x - this.matrix[4]) / this.matrix[0];
+	p.y = (p.y - this.matrix[5]) / this.matrix[3];
+	return p;
 }
 
 MolPad.prototype.onScroll = function(delta)
@@ -64,13 +30,17 @@ MolPad.prototype.onScroll = function(delta)
 	var s = 1 + this.settings.zoomSpeed * delta;
 	if(this.matrix[0] * s < this.settings.minZoom) s = this.settings.minZoom / this.matrix[0];
 	this.scaleAbsolute(s, this.width() / 2, this.height() / 2);
+	this.update();
 	this.redraw();
 }
 
 MolPad.prototype.onPointerDown = function(e)
 {
 	var oe = e.originalEvent;
-	this.pointer.old = getPointerCoords(e);
+	var p = getPointerCoords(e);
+	this.pointer.old = p;
+	this.pointer.oldr = this.getRelativeCoords({ x: p.x, y: p.y });//deep copy
+	this.forAllObjects(function(obj){ obj.resetState(); });
 
 	if(oe.targetTouches && oe.targetTouches.length > 1)
 	{
@@ -78,27 +48,68 @@ MolPad.prototype.onPointerDown = function(e)
 		this.pointer.oldd = getMultiTouchDelta(e);
 		this.pointer.handler = this.multiTouchHandler;
 	}
-	else if(e.which == 1 || oe.targetTouches && oe.targetTouches.length == 1)
+	else if(e.which == 1 || (oe.targetTouches && oe.targetTouches.length == 1))
 	{
-		this.pointer.handler = this.tool.handler;
+		this.pointer.handler = undefined;
+
+		this.forAllObjects(function(obj){ obj.resetState(); });
+		this.forAllObjects(function(obj)
+		{
+			var result = obj.handle(this, this.pointer.oldr, "active");
+
+			if(result.hit)
+			{
+				this.pointer.handler = obj.getHandler();
+				return true;
+			}
+		});
+
+		if(this.pointer.handler == undefined)
+		{
+			this.pointer.handler = this.tool.defaultHandler;
+		}
 	}
 	else if(e.which == 2)
 	{
 		this.pointer.handler = this.mouseDragHandler;
 	}
+
+	this.redraw();
+}
+
+MolPad.prototype.onMouseMoveInContainer = function(e)
+{
+	if(this.pointer.handler == undefined)
+	{
+		this.hoverHandler.onPointerMove.call(this, e);
+	}
+}
+
+MolPad.prototype.onMouseOut = function(e)
+{
+	var redraw = false;
+	this.forAllObjects(function(obj){ redraw = obj.setState("normal") || redraw; });
+	if(redraw) this.redraw();
 }
 
 MolPad.prototype.onPointerMove = function(e)
 {
-	if(this.pointer.handler !== undefined)
+	if(this.pointer.handler && this.pointer.handler.onPointerMove)
 	{
-		this.pointer.handler.call(this, e);
+		this.pointer.handler.onPointerMove.call(this, e);
 	}
 }
 
 MolPad.prototype.onPointerUp = function(e)
 {
 	var oe = e.originalEvent;
+
+	if(this.pointer.handler && this.pointer.handler.onPointerUp)
+	{
+		this.pointer.handler.onPointerUp.call(this, e);
+	}
+
+	this.setCursor("default");
 
 	//only one multi-touch pointer left: switch to dragHandler
 	if(oe.targetTouches)
@@ -123,35 +134,77 @@ MolPad.prototype.onPointerUp = function(e)
  * Event handlers
  */
 
-MolPad.prototype.mouseDragHandler = function(e)
-{
-	var p = getPointerCoords(e);
+MolPad.prototype.hoverHandler = {
+	onPointerMove: function(e)
+	{
+		if(e.which > 0) return;
 
-	if(p.x == this.pointer.old.x && p.y == this.pointer.old.y) return;
-	this.translate((p.x - this.pointer.old.x) * this.devicePixelRatio,
-				   (p.y - this.pointer.old.y) * this.devicePixelRatio);
+		var redraw = false;
+		this.setCursor("default");
+		var p = this.getRelativeCoords(getPointerCoords(e));
 
-	this.pointer.old = p;
-	this.redraw();
+		this.forAllObjects(function(obj){ obj.resetState(); });
+		this.forAllObjects(function(obj)
+		{
+			var result = obj.handle(this, p, "hover");
+			redraw = result.redraw || redraw;
+
+			if(result.hit)
+			{
+				e.preventDefault();
+				this.setCursor("pointer");
+				if(result.redraw) this.redraw();
+				return true;
+			}
+		});
+
+		if(redraw) this.redraw();
+	}
 }
 
-MolPad.prototype.multiTouchHandler = function(e)
-{
-	var c = getMultiTouchCenter(e);
-	var d = getMultiTouchDelta(e);
+MolPad.prototype.mouseDragHandler = {
+	onPointerMove: function(e)
+	{
+		this.setCursor("move");
 
-	this.translate((c.x - this.pointer.oldc.x) * this.devicePixelRatio,
-				   (c.y - this.pointer.oldc.y) * this.devicePixelRatio);
+		e.preventDefault();
+		var p = getPointerCoords(e);
 
-	this.scaleAbsolute(d / this.pointer.oldd,
-		(c.x - this.offset.top) * this.devicePixelRatio,
-		(c.y - this.offset.left) * this.devicePixelRatio);
+		if(p.x == this.pointer.old.x && p.y == this.pointer.old.y) return;
+		this.translate((p.x - this.pointer.old.x) * this.devicePixelRatio,
+					   (p.y - this.pointer.old.y) * this.devicePixelRatio);
 
-	this.pointer.oldc = c;
-	this.pointer.oldd = d;
-	this.redraw();
+		this.pointer.old = p;
+		this.redraw();
+	}
 }
 
-MolPad.prototype.selectionToolHandler = function(e)
-{
+MolPad.prototype.multiTouchHandler = {
+	onPointerMove: function(e)
+	{
+		e.preventDefault();
+		var c = getMultiTouchCenter(e);
+		var d = getMultiTouchDelta(e);
+
+		this.translate((c.x - this.pointer.oldc.x) * this.devicePixelRatio,
+					   (c.y - this.pointer.oldc.y) * this.devicePixelRatio);
+
+		this.scaleAbsolute(d / this.pointer.oldd,
+			(c.x - this.offset.left) * this.devicePixelRatio,
+			(c.y - this.offset.top) * this.devicePixelRatio);
+
+		this.pointer.oldc = c;
+		this.pointer.oldd = d;
+		this.update();
+		this.redraw();
+	}
+}
+
+MolPad.prototype.selectionToolHandler = {
+	onPointerMove: function(e)
+	{
+	},
+	onPointerUp: function(e)
+	{
+	}
 }
