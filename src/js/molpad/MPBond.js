@@ -131,7 +131,7 @@ MPBond.prototype.getHandler = function(mp)
 				this.molecule.atoms[scope.to].setState("normal");
 				this.redraw();
 			}
-		}
+		};
 	}
 	else if(mp.tool.type == "bond")
 	{
@@ -187,7 +187,7 @@ MPBond.prototype.getHandler = function(mp)
 				scope.setState(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
-		}
+		};
 	}
 }
 
@@ -236,7 +236,7 @@ MPBond.prototype.update = function(mp)
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
 		//TODO: connect one double CIS-TRANS bond to [0] endpoint
-		var ends = mp.settings.bond.delta[MP_BOND_DOUBLE];
+		var ends = multiplyAll(mp.settings.bond.delta[MP_BOND_DOUBLE], mp.settings.bond.deltaScale);
 		this.cache.ctd = {
 			from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends),
 			to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends)
@@ -246,13 +246,15 @@ MPBond.prototype.update = function(mp)
 	{
 		this.cache.wedge = {
 			far: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]),
-			near: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, mp.settings.bond.delta[MP_BOND_WEDGEHASH])
+			near: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from,
+					multiplyAll(mp.settings.bond.delta[MP_BOND_WEDGEHASH], mp.settings.bond.deltaScale))
 		}
 	}
 	else if(this.stereo == MP_STEREO_DOWN)//hash bond
 	{
 		var far = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]);
-		var near = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, mp.settings.bond.delta[MP_BOND_WEDGEHASH]);
+		var near = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from,
+				multiplyAll(mp.settings.bond.delta[MP_BOND_WEDGEHASH], mp.settings.bond.deltaScale));
 
 		var dx1 = near[0].x - far[0].x;
 		var dy1 = near[0].y - far[0].y;
@@ -278,12 +280,24 @@ MPBond.prototype.update = function(mp)
 	}
 	else if(this.type > 0 && this.type <= MP_BOND_TRIPLE)
 	{
-		var ends = mp.settings.bond.delta[this.type];
+		var ends = multiplyAll(mp.settings.bond.delta[this.type], mp.settings.bond.deltaScale);
 		this.cache.bond = {
 			from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends),
 			to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends.reverse())
 		};
 	}
+}
+
+MPBond.prototype.getAngle = function(mp, from)
+{
+	if(mp.molecule.atoms[this.from].equals(from))
+		return Math.atan2(
+			from.getY() - mp.molecule.atoms[this.to].getY(),//y coords are flipped
+			mp.molecule.atoms[this.to].getX() - from.getX());
+	else
+		return Math.atan2(
+			from.getY() - mp.molecule.atoms[this.from].getY(),
+			mp.molecule.atoms[this.from].getX() - from.getX());
 }
 
 MPBond.prototype.getCenterLine = function(mp)

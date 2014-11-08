@@ -121,6 +121,7 @@ var MolView = {
 
 		this.height = window.innerHeight;
 		$(".dropdown-menu").css("max-height", $("#content").height() - 10);
+		$("#main-layer").saveSize();
 
 		//window events
 		$(window).on("resize", function()
@@ -498,15 +499,17 @@ var MolView = {
 
 	/**
 	 * Shows layer with id #$name-layer
-	 * @param {String} name Layer name
+	 * @param {String}  name        Layer name
+	 * @param {Boolean} forceResize Force Sketcher and Model resize
 	 */
-	setLayer: function(name)
+	setLayer: function(name, forceResize)
 	{
 		$(".layer").hide();
 		$("#" + name + "-layer").show();
 
-		if(name == "main")
+		if(name == "main" && ($("#main-layer").sizeChanged() || forceResize))
 		{
+			$("#main-layer").saveSize();
 			Sketcher.resize();
 			Model.resize();
 		}
@@ -522,7 +525,7 @@ var MolView = {
 		$("#action-layout-" + layout).addClass("selected");
 		$("#main-layer").removeClass("layout-sketcher layout-model layout-vsplit layout-hsplit").addClass("layout-" + layout);
 		this.layout = layout;
-		this.setLayer("main");
+		this.setLayer("main", true);
 	},
 
 	/**

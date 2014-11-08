@@ -194,7 +194,7 @@ var Sketcher = {
 	{
 		if(this.molpad) this.molpad.setTool(type, data);
 
-		$(type == "select" ? ".select-tool" : ".primary-tool").removeClass("tool-button-selected");
+		$(".primary-tool").removeClass("tool-button-selected");
 		$(button).addClass("tool-button-selected");
 	},
 

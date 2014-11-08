@@ -65,8 +65,13 @@ function MolPad(container, devicePixelRatio)
 			lineCap: "round",
 			lineJoin: "round",
 			width: 1.5,//in px
-			maxScale: 1.0,
-			hashLineSpace: 2
+			scale: 1,
+			maxScale: 1 / 1.5,
+			maxDeltaScale: 1 / 2.0,
+			hashLineSpace: 2,
+			minAddRotateLength: 12,
+			minAddDragLength: 55,
+			rotateSteps: 360 / 30//steps of 30deg, 360 / 30 = 12
 		},
 		atom: {
 			active: {
@@ -84,7 +89,8 @@ function MolPad(container, devicePixelRatio)
 				fontFamily: "'Open Sans', serif",
 				fontSize: 12,//in pt
 			},
-			radius: 10,//radius around atom center-line
+			scale: 1,
+			radius: 12,//radius around atom center-line
 			circleClamp: 15,//label width > circleClamp: atom center = line
 			maxScale: 1 / 1.5//12 * 1 / 1.5 = 8
 		},

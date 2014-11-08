@@ -32,7 +32,7 @@ MolPad.prototype.loadMOL = function(mol)
 
 	molecule.atoms.each(function(i, atomData)
 	{
-		var atom = new MPAtom();
+		var atom = new MPAtom(i);
 		atom.setPosition({
 			x: atomData.pp.x * scope.settings.bond.length,
 			y: atomData.pp.y * scope.settings.bond.length

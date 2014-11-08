@@ -30,11 +30,14 @@ MolPad.prototype.update = function(scaleOnly)
 {
 	var oldAtomScale = this.settings.atom.scale;
 	var oldBondScale = this.settings.atom.scale;
+	var oldBondDeltaScale = this.settings.atom.deltaScale;
 
-	this.settings.atom.scale = this.getScale() < this.settings.atom.maxScale ?
-			this.settings.atom.maxScale / this.getScale() : 1;
+	this.settings.bond.deltaScale = this.getScale() < this.settings.bond.maxDeltaScale ?
+			this.settings.bond.maxDeltaScale / this.getScale() : 1;
 	this.settings.bond.scale = this.getScale() < this.settings.bond.maxScale ?
 			this.settings.bond.maxScale / this.getScale() : 1;
+	this.settings.atom.scale = this.getScale() < this.settings.atom.maxScale ?
+			this.settings.atom.maxScale / this.getScale() : 1;
 
 	if(!scaleOnly || this.settings.atom.scale != oldAtomScale)
 	{
@@ -43,7 +46,8 @@ MolPad.prototype.update = function(scaleOnly)
 			this.molecule.atoms[i].update(this);
 		}
 	}
-	if(!scaleOnly || this.settings.bond.scale != oldBondScale)
+	if(!scaleOnly || this.settings.bond.scale != oldBondScale ||
+			oldBondDeltaScale != this.settings.atom.deltaScale)
 	{
 		for(var i = 0; i < this.molecule.bonds.length; i++)
 		{

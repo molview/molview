@@ -17,6 +17,38 @@
  */
 
 /**
+ * Calculate angle between two angles where from is the first encountered angle
+ * in counter clockwise direction
+ * @param {Float} from
+ * @param {Float} to
+ */
+function findAngleBetween(from, to)
+{
+	if(to <= from)//to is actually larger than 2PI and therefore smaller than from
+	{
+		return to - from + 2 * Math.PI;
+	}
+	else
+	{
+		return to - from;
+	}
+}
+
+/**
+ * Multiply all values in an array with a given multiplier into new array
+ * @param  {Array} array
+ * @param  {Float} mult
+ * @return {Array}
+ */
+function multiplyAll(array, mult)
+{
+	var ret = []
+	for(var i = 0; i < array.length; i++)
+		ret.push(array[i] * mult);
+	return ret;
+}
+
+/**
  * Calculate shortest distance between a point and a line
  * @param  {Object} p Point: { x: 0, y: 0 }
  * @param  {Object} a Line vertex a: { x: 0, y: 0 }

@@ -16,8 +16,9 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function MPAtom()
+function MPAtom(index)
 {
+	this.index = index;
 	this.position = { x: 0, y: 0 };//atom center
 	this.element = "C";
 	this.charge = 0;
@@ -30,8 +31,14 @@ function MPAtom()
  * Data
  */
 
+MPAtom.prototype.getIndex = function() { return this.index; }
+MPAtom.prototype.setIndex = function(index) { this.index = index; }
+
 MPAtom.prototype.getPosition = function() { return this.position; }
 MPAtom.prototype.setPosition = function(position) { this.position = position; }
+
+MPAtom.prototype.getX = function() { return this.position.x; }
+MPAtom.prototype.getY = function() { return this.position.y; }
 
 MPAtom.prototype.getElement = function() { return this.element; }
 MPAtom.prototype.setElement = function(element)
@@ -112,20 +119,121 @@ MPAtom.prototype.getHandler = function(mp)
 				scope.setState(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
-		}
+		};
 	}
 	else if(mp.tool.type == "bond")
 	{
 		return {
 			onPointerDown: function(e)
 			{
-				//find new atom position
+				//create bond map with bond angles
+				var bondMap = [];
+				for(var i = 0; i < scope.bonds.length; i++)
+				{
+					bondMap.push({
+						i: scope.bonds[i],
+						a: this.molecule.bonds[scope.bonds[i]].getAngle(this, scope)
+					});
+				}
+
+				//sort bondMap in ascending bond angle order
+				bondMap.sort(function(a, b)
+				{
+					return a.a - b.a;
+				});
+
+				//convert bondMap to sections
+				var sections = [];
+				for(var i = 0; i < bondMap.length; i++)
+				{
+					var from = i == 0 ? bondMap.length - 1 : i - 1;
+					var to = i;
+					sections.push({
+						from: from,
+						to: to,
+						a: findAngleBetween(bondMap[from].a, bondMap[to].a)
+					});
+				}
+
+				//find larges section
+				var largest = 0;//skip i = 0 since it is already used for the first comparison
+				for(var i = 1; i < sections.length; i++)
+				{
+					if(sections[i].a > sections[largest].a)
+					{
+						largest = i;
+					}
+				}
+
+				//find new bond angle
+				var a = bondMap[sections[largest].from].a + sections[largest].a / 2;
+
+				//create new bond
+				var atom = new MPAtom(this.molecule.atoms.length);
+
+				atom.setPosition({
+					x: scope.getX() + this.settings.bond.length * Math.cos(a),
+					y: scope.getY() - this.settings.bond.length * Math.sin(a)//y axis is flipped
+				});
+				atom.setElement(this.tool.data.label || "C");
+
+				var bond = new MPBond();
+				bond.setType(this.tool.data.type || MP_BOND_SINGLE);
+				bond.setStereo(this.tool.data.stereo || MP_STEREO_NONE);
+				bond.setFrom(scope.getIndex());
+				bond.setTo(atom.getIndex());
+
+				atom.addBond(this.molecule.bonds.length);
+				scope.addBond(this.molecule.bonds.length);
+
+				this.tool.privateData = {
+					atom: atom.getIndex(),
+					startAngle: a
+				};
+
+				this.molecule.atoms.push(atom);
+				this.molecule.bonds.push(bond);
+				bond.update(this);
+				this.redraw();
 			},
 			onPointerMove: function(e)
 			{
-				//move added atom once distance > threshold
+				e.preventDefault();
+				var p = this.getRelativeCoords(getPointerCoords(e));
+
+				var dx = p.x - scope.getX();
+				var dy = p.y - scope.getY();
+				var d = Math.sqrt(dx * dx + dy * dy);
+
+				if(d > this.settings.bond.minAddDragLength)
+				{
+					this.molecule.atoms[this.tool.privateData.atom].setPosition(p);
+					this.molecule.atoms[this.tool.privateData.atom].update(this);
+					this.molecule.atoms[this.tool.privateData.atom].updateBonds(this);
+					this.redraw();
+				}
+				else if(d > this.settings.bond.minAddRotateLength)
+				{
+					var a = Math.atan2(-dy, dx);
+					var clampFactor = this.settings.bond.rotateSteps / (2 * Math.PI);
+					a = Math.round((a - this.tool.privateData.startAngle) * clampFactor) / clampFactor
+							+ this.tool.privateData.startAngle;//clamp to x steps, normalize to startAngle
+
+					this.molecule.atoms[this.tool.privateData.atom].setPosition({
+						x: scope.getX() + this.settings.bond.length * Math.cos(a),
+						y: scope.getY() - this.settings.bond.length * Math.sin(a)//y axis is flipped
+					});
+					this.molecule.atoms[this.tool.privateData.atom].update(this);
+					this.molecule.atoms[this.tool.privateData.atom].updateBonds(this);
+					this.redraw();
+				}
+			},
+			onPointerUp: function(e)
+			{
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
 			}
-		}
+		};
 	}
 }
 
@@ -163,6 +271,11 @@ MPAtom.prototype.handle = function(mp, point, type)
 /**
  * Calculations
  */
+
+MPAtom.prototype.equals = function(atom)
+{
+	return this.getX() == atom.getX() && this.getY() == atom.getY();
+}
 
 MPAtom.prototype.updateBonds = function(mp, not)
 {
@@ -358,14 +471,15 @@ MPAtom.prototype.isVisible = function(mp)
 		if(this.element == "C")
 		{
 			var singleBonds = 0;
-			if(this.bonds.length == 2 &&
+			if(this.bonds.length == 0) return true;
+			else if(this.bonds.length == 2 &&
 				mp.molecule.bonds[this.bonds[0]].getType() ==
 				mp.molecule.bonds[this.bonds[1]].getType() &&
 				mp.molecule.bonds[this.bonds[0]].getType() != MP_BOND_SINGLE)
 			{
 				return true;
 			}
-			return false;
+			else return false;
 		}
 		return true;
 	}
