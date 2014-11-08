@@ -76,15 +76,109 @@ MPAtom.prototype.resetState = function()
 	this.state = "normal";
 }
 
-MPAtom.prototype.translate = function(x, y)
+MPAtom.prototype.translate = function(x, y, mp)
 {
 	this.position.x += x;
 	this.position.y += y;
 }
 
 /**
+* Event handlers
+*/
+
+MPAtom.prototype.getHandler = function(mp)
+{
+	var scope = this;
+	if(mp.tool.type == "drag")
+	{
+		return {
+			onPointerMove: function(e)
+			{
+				e.preventDefault();
+				this.setCursor("move");
+				var p = this.getRelativeCoords(getPointerCoords(e));
+
+				scope.translate(p.x - this.pointer.oldr.x, p.y - this.pointer.oldr.y, this);
+				scope.update(this);
+				scope.updateBonds(this);
+
+				this.pointer.oldr.x = p.x;
+				this.pointer.oldr.y = p.y;
+				this.redraw();
+			},
+			onPointerUp: function(e)
+			{
+				this.setCursor("pointer");
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		}
+	}
+	else if(mp.tool.type == "bond")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				//find new atom position
+			},
+			onPointerMove: function(e)
+			{
+				//move added atom once distance > threshold
+			}
+		}
+	}
+}
+
+MPAtom.prototype.handle = function(mp, point, type)
+{
+	var line = this.getCenterLine(mp);
+	var r = mp.settings.atom[type].radius * mp.settings.atom.scale;
+
+	if(line.area.point)
+	{
+		if(fastPointInCircleBox(point, line.area.point, r))
+		{
+			var d = pointToPointDistance(point, line.area.point);
+			if(d <= r)
+			{
+				return { hit: true, redraw: this.setState(type) };
+			}
+		}
+	}
+	else
+	{
+		if(fastPointInLineBox(point, line.area.left, line.area.right, r))
+		{
+			var d = pointToLineDistance(point, line.area.left, line.area.right)
+			if(d <= r)
+			{
+				return { hit: true, redraw: this.setState(type) };
+			}
+		}
+	}
+
+	return { hit: false, redraw: this.setState("normal") };
+}
+
+/**
  * Calculations
  */
+
+MPAtom.prototype.updateBonds = function(mp, not)
+{
+	//TODO: prevent double update
+
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		if(not && mp.molecule.bonds[this.bonds[i]].equals(not)) continue;
+		mp.molecule.bonds[this.bonds[i]].update(mp);
+	}
+}
+
+MPAtom.prototype.update = function(mp)
+{
+
+}
 
 /**
  * Returns MPAtom area as a line with a surrounding area defined by a radius
@@ -264,12 +358,14 @@ MPAtom.prototype.isVisible = function(mp)
 		if(this.element == "C")
 		{
 			var singleBonds = 0;
-			for(var i = 0; i < this.bonds.length; i++)
+			if(this.bonds.length == 2 &&
+				mp.molecule.bonds[this.bonds[0]].getType() ==
+				mp.molecule.bonds[this.bonds[1]].getType() &&
+				mp.molecule.bonds[this.bonds[0]].getType() != MP_BOND_SINGLE)
 			{
-				if(mp.molecule.bonds[this.bonds[i]].getType() ==
-						MP_BOND_SINGLE) singleBonds++;
+				return true;
 			}
-			return (this.bonds.length - singleBonds) > 1;
+			return false;
 		}
 		return true;
 	}
@@ -332,56 +428,4 @@ MPAtom.prototype.drawLabel = function(mp)
 		mp.ctx.fillText(this.element, this.position.x + line.text.offsetLeft,
 					this.position.y + line.text.offsetTop);
 	}
-}
-
-/**
-* Event handlers
-*/
-
-MPAtom.prototype.getHandler = function()
-{
-	var scope = this;
-	return {
-		onPointerMove: function(e)
-		{
-			e.preventDefault();
-			this.setCursor("move");
-			var p = this.getRelativeCoords(getPointerCoords(e));
-			scope.translate(p.x - this.pointer.oldr.x, p.y - this.pointer.oldr.y);
-			this.pointer.oldr.x = p.x;
-			this.pointer.oldr.y = p.y;
-			this.redraw();
-		}
-	}
-}
-
-MPAtom.prototype.handle = function(mp, point, type)
-{
-	var line = this.getCenterLine(mp);
-	var r = mp.settings.atom[type].radius * mp.settings.atom.scale;
-
-	if(line.area.point)
-	{
-		if(fastPointInCircleBox(point, line.area.point, r))
-		{
-			var d = pointToPointDistance(point, line.area.point);
-			if(d <= r)
-			{
-				return { hit: true, redraw: this.setState(type) };
-			}
-		}
-	}
-	else
-	{
-		if(fastPointInLineBox(point, line.area.left, line.area.right, r))
-		{
-			var d = pointToLineDistance(point, line.area.left, line.area.right)
-			if(d <= r)
-			{
-				return { hit: true, redraw: this.setState(type) };
-			}
-		}
-	}
-
-	return { hit: false, redraw: this.setState("normal") };
 }

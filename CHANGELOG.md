@@ -3,6 +3,7 @@
 ## 2.3.x
 
 - Replaced MolEdit with MolPad
+- Added event tracking checkbox
 - Fixed load.php redirect loop
 - Fixed GLmol multiTouch issue
 - Fixed GLmol O=C=O issue

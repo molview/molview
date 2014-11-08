@@ -98,13 +98,13 @@ var GLmolPlugin = {
 					{
 						this.canvasAtomRadius = 0.4;
 						this.canvasBondWidth = 0.3;
-						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius * 5, true, true, 0.3);
+						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius * 5, true, 0.3);
 					}
 					else if(Model.representation == "stick")
 					{
 						this.canvasAtomRadius = 0.3;
 						this.canvasBondWidth = 0.6;
-						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius, this.cylinderRadius, true);
+						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius, this.cylinderRadius);
 					}
 					else if(Model.representation == "vdw")
 					{
@@ -117,7 +117,7 @@ var GLmolPlugin = {
 					{
 						this.canvasAtomRadius = 0.2;
 						this.canvasLine = true;
-						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, true, 0.05);
+						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, 0.05);
 					}
 					else if(Model.representation == "line")
 					{
@@ -164,7 +164,7 @@ var GLmolPlugin = {
 		{
 			this.view.zoom2D = 30;
 			this.view.zoomInto(this.view.getAllAtoms());
-			this.view.show();
+			this.view.redraw();
 		}
 	},
 
@@ -176,14 +176,14 @@ var GLmolPlugin = {
 		if(this.view)
 		{
 			this.view.rebuildScene();
-			this.view.show();
+			this.view.redraw();
 		}
 	},
 
 	setBackground: function(hex)
 	{
 		this.view.setBackground(hex);
-		this.view.show();
+		this.view.redraw();
 	},
 
 	loadMOL: function(mol)
@@ -233,7 +233,7 @@ var GLmolPlugin = {
 			}
 
 			this.view.zoomInto(Model.GLmol.view.getAllAtoms());
-			this.view.show();
+			this.view.redraw();
 		}
 	},
 
@@ -256,7 +256,7 @@ var GLmolPlugin = {
 		if(this.view)
 		{
 			this.view.setBackground(0x000000, 0);
-			this.view.show();
+			this.view.redraw();
 
 			var dataURL = "";
 
@@ -264,7 +264,7 @@ var GLmolPlugin = {
 			else dataURL = document.getElementById("glmol").firstChild.toDataURL("image/png");
 
 			this.view.setBackground(Model.bg.hex);
-			this.view.show();
+			this.view.redraw();
 
 			return dataURL;
 		}

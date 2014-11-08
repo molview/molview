@@ -30,7 +30,7 @@ MolPad.prototype.onScroll = function(delta)
 	var s = 1 + this.settings.zoomSpeed * delta;
 	if(this.matrix[0] * s < this.settings.minZoom) s = this.settings.minZoom / this.matrix[0];
 	this.scaleAbsolute(s, this.width() / 2, this.height() / 2);
-	this.update();
+	this.update(true);
 	this.redraw();
 }
 
@@ -59,7 +59,13 @@ MolPad.prototype.onPointerDown = function(e)
 
 			if(result.hit)
 			{
-				this.pointer.handler = obj.getHandler();
+				this.pointer.handler = obj.getHandler(this);
+
+				if(this.pointer.handler.onPointerDown)
+				{
+					this.pointer.handler.onPointerDown.call(this, e);
+				}
+
 				return true;
 			}
 		});
@@ -108,8 +114,10 @@ MolPad.prototype.onPointerUp = function(e)
 	{
 		this.pointer.handler.onPointerUp.call(this, e);
 	}
-
-	this.setCursor("default");
+	else
+	{
+		this.setCursor("default");
+	}
 
 	//only one multi-touch pointer left: switch to dragHandler
 	if(oe.targetTouches)
@@ -137,8 +145,6 @@ MolPad.prototype.onPointerUp = function(e)
 MolPad.prototype.hoverHandler = {
 	onPointerMove: function(e)
 	{
-		if(e.which > 0) return;
-
 		var redraw = false;
 		this.setCursor("default");
 		var p = this.getRelativeCoords(getPointerCoords(e));
@@ -195,7 +201,7 @@ MolPad.prototype.multiTouchHandler = {
 
 		this.pointer.oldc = c;
 		this.pointer.oldd = d;
-		this.update();
+		this.update(true);
 		this.redraw();
 	}
 }

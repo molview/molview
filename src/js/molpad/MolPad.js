@@ -29,14 +29,17 @@ function MolPad(container, devicePixelRatio)
 	};
 
 	this.tool = {
-		defaultHandler: this.selectionToolHandler
+		defaultHandler: this.selectionToolHandler,
+		type: "bond",//bond || fragment || chain || charge || eraser || drag || select || atom
+		data: {
+			type: MP_BOND_SINGLE
+		},
+		privateData: {}
 	};
 
 	this.settings = {
-		fast: false,
 		zoomSpeed: 0.2,
 		minZoom: 0.01,
-		removeImplicitHydrogen: true,
 		drawSkeletonFormula: true,
 		relativePadding: 0.15,
 		bond: {
@@ -60,6 +63,7 @@ function MolPad(container, devicePixelRatio)
 			length: 55,
 			color: "#111111",
 			lineCap: "round",
+			lineJoin: "round",
 			width: 1.5,//in px
 			maxScale: 1.0,
 			hashLineSpace: 2
@@ -183,12 +187,39 @@ MolPad.prototype.forAllObjects = function(func)
 
 MolPad.prototype.setTool = function(type, data)
 {
-
+	this.tool.type = type;
+	this.tool.data = data;
 }
 
 MolPad.prototype.onChange = function(cb)
 {
 
+}
+
+MolPad.prototype.clear = function(cb)
+{
+	this.molecule = { atoms: [], bonds: [] };
+	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
+	this.update();
+	this.redraw();
+}
+
+MolPad.prototype.undo = function(cb)
+{
+
+}
+
+MolPad.prototype.redo = function(cb)
+{
+
+}
+
+MolPad.prototype.displaySkeleton = function(yes)
+{
+	this.settings.drawSkeletonFormula = yes;
+	if(yes) this.removeImplicitHydrogen();
+	this.update();
+	this.redraw();
 }
 
 MolPad.prototype.removeImplicitHydrogen = function()

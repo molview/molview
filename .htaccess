@@ -1,11 +1,11 @@
 Options +FollowSymlinks
 RewriteEngine on
 
-ErrorDocument 400 /page.php?id=400
-ErrorDocument 401 /page.php?id=401
-ErrorDocument 403 /page.php?id=403
-ErrorDocument 404 /page.php?id=404
-ErrorDocument 500 /page.php?id=500
+ErrorDocument 400 /molview/page.php?id=400
+ErrorDocument 401 /molview/page.php?id=401
+ErrorDocument 403 /molview/page.php?id=403
+ErrorDocument 404 /molview/page.php?id=404
+ErrorDocument 500 /molview/page.php?id=500
 
 RewriteCond %{HTTP:CF-Visitor} '"scheme":"http"'
 RewriteRule ^(.*)$ https://molview.org/$1 [R,L]
@@ -20,5 +20,6 @@ RewriteRule ^legal$ page.php?id=legal [L]
 RewriteRule ^thanks$ page.php?id=thanks [L]
 RewriteRule ^internetExplorer$ page.php?id=iesupport [L]
 RewriteRule ^htmlCanvas$ page.php?id=htmlcanvas [L]
+RewriteRule ^tracking$ page.php?id=tracking [L]
 
 RewriteRule ^embed$ embed.php [L]

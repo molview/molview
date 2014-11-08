@@ -26,12 +26,30 @@ MolPad.prototype.resize = function()
 	this.center();
 }
 
-MolPad.prototype.update = function()
+MolPad.prototype.update = function(scaleOnly)
 {
+	var oldAtomScale = this.settings.atom.scale;
+	var oldBondScale = this.settings.atom.scale;
+
 	this.settings.atom.scale = this.getScale() < this.settings.atom.maxScale ?
 			this.settings.atom.maxScale / this.getScale() : 1;
 	this.settings.bond.scale = this.getScale() < this.settings.bond.maxScale ?
 			this.settings.bond.maxScale / this.getScale() : 1;
+
+	if(!scaleOnly || this.settings.atom.scale != oldAtomScale)
+	{
+		for(var i = 0; i < this.molecule.atoms.length; i++)
+		{
+			this.molecule.atoms[i].update(this);
+		}
+	}
+	if(!scaleOnly || this.settings.bond.scale != oldBondScale)
+	{
+		for(var i = 0; i < this.molecule.bonds.length; i++)
+		{
+			this.molecule.bonds[i].update(this);
+		}
+	}
 }
 
 MolPad.prototype.setCursor = function(type)
@@ -78,6 +96,7 @@ MolPad.prototype.draw = function()
 
 MolPad.prototype.redraw = function()
 {
+	//mainly important for Firefox performance
 	requestAnimationFrame(this.draw.bind(this));
 }
 
@@ -113,6 +132,16 @@ MolPad.prototype.center = function()
 
 MolPad.prototype.getBBox = function()
 {
+	if(this.molecule.atoms.length == 0)
+	{
+		return {
+			x: 0,
+			y: 0,
+			width: 10,
+			height: 10
+		}
+	}
+
 	var bottomLeft = undefined, topRight = undefined;
 
 	for(var i = 0; i < this.molecule.atoms.length; i++)

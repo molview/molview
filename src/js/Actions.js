@@ -373,15 +373,44 @@ var Actions = {
 	/*
 	Sketcher
 	*/
-	mp_center: function()
-	{
-		Sketcher.center();
-	},
+	mp_bond_single: function(){ Sketcher.setTool(this, "bond", { type: MP_BOND_SINGLE }); },
+	mp_bond_double: function(){ Sketcher.setTool(this, "bond", { type: MP_BOND_DOUBLE }); },
+	mp_bond_triple: function(){ Sketcher.setTool(this, "bond", { type: MP_BOND_TRIPLE }); },
+	mp_bond_wedge: function(){ Sketcher.setTool(this, "bond", { stereo: MP_STEREO_UP }); },
+	mp_bond_hash: function(){ Sketcher.setTool(this, "bond", { stereo: MP_STEREO_DOWN }); },
 
-	mp_clean: function()
-	{
-		Messages.process(Loader.clean, "clean");
-	},
+	mp_frag_benzene: function(){ Sketcher.setTool(this, "fragment", { frag: MPFragments.benzene }); },
+	mp_frag_cyclopropane: function(){ Sketcher.setTool(this, "fragment", { frag: MPFragments.cyclopropane }); },
+	mp_frag_cyclobutane: function(){ Sketcher.setTool(this, "fragment", { frag: MPFragments.cyclobutane }); },
+	mp_frag_cyclopentane: function(){ Sketcher.setTool(this, "fragment", { frag: MPFragments.cyclopentane }); },
+	mp_frag_cyclohexane: function(){ Sketcher.setTool(this, "fragment", { frag: MPFragments.cyclohexane }); },
+	mp_frag_cycloheptane: function(){ Sketcher.setTool(this, "fragment", { frag: MPFragments.cycloheptane }); },
+
+	mp_chain: function(){ Sketcher.setTool(this, "chain", {}); },
+	mp_charge_add: function(){ Sketcher.setTool(this, "charge", { charge: 1 }); },
+	mp_charge_sub: function(){ Sketcher.setTool(this, "charge", { charge: -1 }); },
+
+	mp_clear: function(){ Sketcher.clear(); },
+	mp_eraser: function(){ Sketcher.setTool(this, "eraser", {}); },
+	mp_drag: function(){ Sketcher.setTool(this, "drag", {}); },
+	mp_undo: function(){ Sketcher.undo(); },
+	mp_redo: function(){ Sketcher.redo(); },
+	mp_rect: function(){ Sketcher.setTool(this, "select", { type: "rect" }); },
+	mp_lasso: function(){ Sketcher.setTool(this, "select", { type: "lasso" }); },
+	mp_skeletal_formula: function(){ Sketcher.toggleSkeletalFormula(); },
+	mp_center: function(){ Sketcher.center(); },
+	mp_clean: function(){ Sketcher.clean(); },
+
+	mp_atom_h: function(){ Sketcher.setTool(this, "atom", { label: "H" }); },
+	mp_atom_c: function(){ Sketcher.setTool(this, "atom", { label: "C" }); },
+	mp_atom_n: function(){ Sketcher.setTool(this, "atom", { label: "N" }); },
+	mp_atom_o: function(){ Sketcher.setTool(this, "atom", { label: "O" }); },
+	mp_atom_s: function(){ Sketcher.setTool(this, "atom", { label: "S" }); },
+	mp_atom_p: function(){ Sketcher.setTool(this, "atom", { label: "P" }); },
+	mp_atom_f: function(){ Sketcher.setTool(this, "atom", { label: "F" }); },
+	mp_atom_i: function(){ Sketcher.setTool(this, "atom", { label: "I" }); },
+	mp_atom_cl: function(){ Sketcher.setTool(this, "atom", { label: "Cl" }); },
+	mp_atom_br: function(){ Sketcher.setTool(this, "atom", { label: "Br" }); },
 
 	mp_periodictable: function()
 	{

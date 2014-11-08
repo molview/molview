@@ -243,12 +243,12 @@ var InfoCard = {
 		{
 			$("#molecule-image").attr("src", img.src);
 			$("#molecule-image").css("width", 300 / MolView.devicePixelRatio);
-
 			$("#molecule-image-wrapper").show();
 		}
 		img.onerror = function()
 		{
-			$("#molecule-image").attr("src", emptyImage).hide();
+			$("#molecule-image").attr("src", emptyImage);
+			$("#molecule-image-wrapper").hide();
 		}
 
 		if(Sketcher.metadata.cid) img.src = Request.PubChem.image(Sketcher.metadata.cid);
@@ -398,7 +398,7 @@ var InfoCard = {
 
 	getPropertyFromCIR: function(id, success, fail)
 	{
-		if(InfoCard.data["smiles"] && CIRProps[id] != -1)
+		if(InfoCard.data["smiles"] && CIRProps[id] !== undefined)
 		{
 			Request.CIR.property(
 				InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],

@@ -355,19 +355,19 @@ Query parameters:
 							<div class="toolbar-inner hstack">
 								<div id="action-mp-clear" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="action-mp-eraser" class="tool-button tool-button-horizontal primary-tool" title="Erase"></div>
+								<div id="action-mp-drag" class="tool-button tool-button-horizontal primary-tool" title="Drag atoms and bonds"></div>
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
 								<div id="action-mp-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
 								<div class="horizontal-separator"></div>
-								<div id="action-mp-move" class="tool-button tool-button-horizontal bg-tool" title="Move"></div>
-								<div id="action-mp-rect" class="tool-button tool-button-horizontal bg-tool tool-button-selected" title="Rectangle selection"></div>
-								<div id="action-mp-lasso" class="tool-button tool-button-horizontal bg-tool" title="Lasso selection"></div>
+								<div id="action-mp-rect" class="tool-button tool-button-horizontal select-tool tool-button-selected" title="Rectangle selection"></div>
+								<div id="action-mp-lasso" class="tool-button tool-button-horizontal select-tool" title="Lasso selection"></div>
 								<div class="horizontal-separator"></div>
-								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
 								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula"></div>
+								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
-								<div id="action-resolve" class="tool-button tool-button-horizontal resolve-updated" title="Update 3D view">2D to 3D</div>
+								<div id="action-resolve" class="tool-button tool-button-horizontal" title="Update 3D view">2D to 3D</div>
 							</div>
 						</div>
 						<div id="elem-tools" class="toolbar">
@@ -382,7 +382,7 @@ Query parameters:
 								<div id="action-mp-atom-i" class="tool-button primary-tool" title="Iodine">I</div>
 								<div id="action-mp-atom-cl" class="tool-button primary-tool" title="Chlorine">Cl</div>
 								<div id="action-mp-atom-br" class="tool-button primary-tool" title="Bromine">Br</div>
-								<div id="action-mp-periodictable" class="tool-button" title="Periodic Table">...</div>
+								<div id="action-mp-periodictable" class="tool-button primary-tool" title="Periodic Table">...</div>
 							</div>
 						</div>
 						<div id="molpad-canvas-wrapper"></div>
@@ -504,8 +504,15 @@ Query parameters:
 					<div class="dialog" id="start-dialog">
 						<h1>Welcome to MolView <a target="_blank" href="http://github.com/molview"><img id="agpl-logo" src="img/agpl.svg" alt="AGPL" /></a></h1>
 						<p>MolView is an Open-Source, intuitive web-application to make chemistry and biology more awesome!</p>
+						<p id="allow-tracking-wrapper">
+							<input id="allow-tracking" type="checkbox" />
+							<script type="text/javascript">
+								$("#allow-tracking").prop("checked", Preferences.get("molview", "allow_tracking", true))
+							</script>
+							<label for="allow-tracking">Allow MolView to track interaction in order to improve the MolView experience (<a class="gray" href="tracking">read more</a>)</label>
+						</p>
 						<a class="gray" href="legal" target="_blank">Terms of Use</a>
-						<div class="btn-group">
+						<div id="welcome-button-bar" class="btn-group">
 							<button id="action-start-help" class="btn btn-large">Getting started</button>
 							<button class="btn close btn-large btn-primary">Continue</button>
 						</div>

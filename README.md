@@ -49,9 +49,10 @@ Build
 -----
 Instructions:
 
-1. Copy all files to a server with PHP and .htaccess support
-2. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
-3. Run `./build.sh fetch`
+1. Copy all files to a server with PHP and .htaccess + mod_rewrite support
+2. Configure ErrorDocument in .htaccess to point to page.php in the MolView root directory
+3. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
+4. Run `./build.sh fetch`
 
 Committing
 ---------

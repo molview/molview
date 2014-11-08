@@ -36,5 +36,4 @@ Wishlist
 - Create MolView for Android and iOS using CocoonJS
 - Investigate Mathematica features
 - Add plugin framework and developer SDK
-
-- Create 'A nano tale', an interactive eBook with stunning MolView graphics
+- Add reaction animations using the MACiE database

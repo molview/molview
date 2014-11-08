@@ -77,19 +77,19 @@
 
 #chem-tools > .toolbar-inner > .tool-button-selected
 {
-	border-right: 3px solid @highlight;
+	border-right: 3px solid @highlight !important;
 	width: 37px;
 }
 
 #elem-tools > .toolbar-inner > .tool-button-selected
 {
-	border-left: 3px solid @highlight;
+	border-left: 3px solid @highlight !important;
 	width: 37px;
 }
 
 #edit-tools > .toolbar-inner > .tool-button-selected
 {
-	border-bottom: 3px solid @highlight;
+	border-bottom: 3px solid @highlight !important;
 	height: 37px;
 }
 
@@ -169,13 +169,13 @@
 
 #action-mp-clear { background-image: url(../img/action/clear.svg); }
 #action-mp-eraser { background-image: url(../img/action/erase.svg); }
+#action-mp-drag { background-image: url(../img/action/move.svg); }
 #action-mp-undo { background-image: url(../img/action/undo.svg); }
 #action-mp-redo { background-image: url(../img/action/redo.svg); }
-#action-mp-move { background-image: url(../img/action/move.svg); }
 #action-mp-rect { background-image: url(../img/action/rect.svg); }
 #action-mp-lasso { background-image: url(../img/action/lasso.svg); }
-#action-mp-center { background-image: url(../img/action/center.svg); }
 #action-mp-skeletal-formula { background-image: url(../img/action/skeletal-off.svg); }
+#action-mp-center { background-image: url(../img/action/center.svg); }
 #action-mp-clean { background-image: url(../img/action/clean.svg); }
 
 #action-resolve
@@ -183,11 +183,8 @@
 	padding: 0 10px;
 	width: auto;
 
-	line-height: @toolbar-size;
 	font-size: @toolbar-fontsize - 4pt;
 	font-weight: bold;
-
-	color: #f50;
 }
 
 #action-resolve:hover, #resolve:active
@@ -195,7 +192,9 @@
 	color: #000;
 }
 
-.resolve-updated
+.resolve-outdated
 {
-	color: #000 !important;
+	height: 37px;
+	color: #f50;
+	border-bottom: 3px solid #f50;
 }

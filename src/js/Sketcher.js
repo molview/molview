@@ -38,13 +38,14 @@ var Sketcher = {
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
-		$("#action-mp-skeletal-formula").toggleClass("tool-button-active",
+		$("#action-mp-skeletal-formula").toggleClass("tool-button-selected",
 				!Preferences.get("sketcher", "skeletal_formula", true));
 
 		if(Detector.canvas)
 		{
 			this.molpad = new MolPad(document.getElementById("molpad-canvas-wrapper"),
 					MolView.devicePixelRatio);
+			this.molpad.displaySkeleton(Preferences.get("sketcher", "skeletal_formula", true));
 
 			if(MolView.loadDefault)
 			{
@@ -54,7 +55,7 @@ var Sketcher = {
 			this.molpad.onChange(function()
 			{
 				Sketcher.metadata = {};
-				$("#action-resolve").removeClass("resolve-updated");
+				Sketcher.markOutdated();
 			});
 		}
 		else
@@ -128,13 +129,13 @@ var Sketcher = {
 					.append($("<h3></h3>").html(element.number))
 					.append($("<h4></h4>").html(element.small)
 						.css("color", JmolAtomColorsCSS[element.small]))
-					.data("nr", element.small)
+					.data("lbl", element.small)
 					.on(MolView.trigger, function()
 					{
 						$("#molpad .primary-tool").removeClass("tool-button-selected");
 						$("#action-mp-periodictable").addClass("tool-button-selected");
 
-						Sketcher.molpad.setTool("atom", $(this).data("nr"));
+						Sketcher.molpad.setTool("atom", { label: $(this).data("lbl") });
 						MolView.hideDialogs();
 					})
 					.appendTo("#periodictable");
@@ -189,14 +190,59 @@ var Sketcher = {
 		else return "";
 	},
 
+	setTool: function(button, type, data)
+	{
+		if(this.molpad) this.molpad.setTool(type, data);
+
+		$(type == "select" ? ".select-tool" : ".primary-tool").removeClass("tool-button-selected");
+		$(button).addClass("tool-button-selected");
+	},
+
+	clear: function()
+	{
+		if(this.molpad) this.molpad.clear();
+	},
+
+	undo: function()
+	{
+		if(this.molpad) this.molpad.undo();
+	},
+
+	redo: function()
+	{
+		if(this.molpad) this.molpad.redo();
+	},
+
+	toggleSkeletalFormula: function()
+	{
+		if(this.molpad)
+		{
+			var skeleton = !$("#action-mp-skeletal-formula")
+					.toggleClass("tool-button-selected")
+					.hasClass("tool-button-selected");
+			Preferences.set("sketcher", "skeletal_formula", skeleton);
+			this.molpad.displaySkeleton(skeleton);
+		}
+	},
+
+	center: function()
+	{
+		if(this.molpad) this.molpad.center();
+	},
+
+	clean: function()
+	{
+		Messages.process(Loader.clean, "clean");
+	},
+
 	markOutdated: function()
 	{
-		$("#action-resolve").removeClass("resolve-updated");
+		$("#action-resolve").addClass("resolve-outdated");
 	},
 
 	markUpdated: function()
 	{
-		$("#action-resolve").addClass("resolve-updated");
+		$("#action-resolve").removeClass("resolve-outdated");
 	},
 
 	toDataURL: function()
@@ -206,10 +252,5 @@ var Sketcher = {
 			return this.molpad.toDataURL();
 		}
 		else return "";
-	},
-
-	/**
-	 * MolPad wrapper API
-	 */
-	center: function(){ if(this.molpad) this.molpad.center(); }
+	}
 };

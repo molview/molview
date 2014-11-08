@@ -226,84 +226,122 @@ var MolView = {
 			$(this).parent().toggleClass("open");
 		});
 
+		//do not track checkbox
+		$("#allow-tracking").on("change", function()
+		{
+			Preferences.set("molview", "allow_tracking", this.checked);
+		});
+
 		//actions
-		this.addAction("layout_sketcher", "menu");
-		this.addAction("layout_model", "menu");
-		this.addAction("layout_vsplit", "menu");
-		this.addAction("layout_hsplit", "menu");
-		this.addAction("theme_desktop", "menu");
-		this.addAction("theme_touch", "menu");
-		this.addAction("help", "menu");
-		this.addAction("about", "menu");
+		this.addAction("layout_sketcher", "menu", true);
+		this.addAction("layout_model", "menu", true);
+		this.addAction("layout_vsplit", "menu", true);
+		this.addAction("layout_hsplit", "menu", true);
+		this.addAction("theme_desktop", "menu", true);
+		this.addAction("theme_touch", "menu", true);
+		this.addAction("help", "menu", true);
+		this.addAction("about", "menu", true);
 
-		this.addAction("share", "menu");
-		this.addAction("embed", "menu");
-		this.addAction("export_sketcher_png", "menu");
-		this.addAction("export_model_png", "menu");
-		this.addAction("export_model", "menu");
-		this.addAction("data_infocard", "menu");
-		this.addAction("data_spectra", "menu");
-		this.addAction("search_substructure", "menu");
-		this.addAction("search_superstructure", "menu");
-		this.addAction("search_similarity", "menu");
+		this.addAction("share", "menu", true);
+		this.addAction("embed", "menu", true);
+		this.addAction("export_sketcher_png", "menu", true);
+		this.addAction("export_model_png", "menu", true);
+		this.addAction("export_model", "menu", true);
+		this.addAction("data_infocard", "menu", true);
+		this.addAction("data_spectra", "menu", true);
+		this.addAction("search_substructure", "menu", true);
+		this.addAction("search_superstructure", "menu", true);
+		this.addAction("search_similarity", "menu", true);
 
-		this.addAction("model_reset", "menu");
-		this.addAction("model_balls", "menu");
-		this.addAction("model_stick", "menu");
-		this.addAction("model_vdw", "menu");
-		this.addAction("model_wireframe", "menu");
-		this.addAction("model_line", "menu");
-		this.addAction("model_bg_black", "menu");
-		this.addAction("model_bg_gray", "menu");
-		this.addAction("model_bg_white", "menu");
-		this.addAction("engine_glmol", "menu");
-		this.addAction("engine_jmol", "menu");
-		this.addAction("engine_cdw", "menu");
-		this.addAction("cif_unit_cell", "menu");
-		this.addAction("cif_cubic_supercell", "menu");
-		this.addAction("cif_flat_supercell", "menu");
+		this.addAction("model_reset", "menu", true);
+		this.addAction("model_balls", "menu", true);
+		this.addAction("model_stick", "menu", true);
+		this.addAction("model_vdw", "menu", true);
+		this.addAction("model_wireframe", "menu", true);
+		this.addAction("model_line", "menu", true);
+		this.addAction("model_bg_black", "menu", true);
+		this.addAction("model_bg_gray", "menu", true);
+		this.addAction("model_bg_white", "menu", true);
+		this.addAction("engine_glmol", "menu", true);
+		this.addAction("engine_jmol", "menu", true);
+		this.addAction("engine_cdw", "menu", true);
+		this.addAction("cif_unit_cell", "menu", true);
+		this.addAction("cif_cubic_supercell", "menu", true);
+		this.addAction("cif_flat_supercell", "menu", true);
 
-		this.addAction("bio_assembly", "menu");
-		this.addAction("chain_type_ribbon", "menu");
-		this.addAction("chain_type_cylinders", "menu");
-		this.addAction("chain_type_btube", "menu");
-		this.addAction("chain_type_ctrace", "menu");
-		this.addAction("chain_type_bonds", "menu");
-		this.addAction("chain_color_ss", "menu");
-		this.addAction("chain_color_spectrum", "menu");
-		this.addAction("chain_color_chain", "menu");
-		this.addAction("chain_color_residue", "menu");
-		this.addAction("chain_color_polarity", "menu");
-		this.addAction("chain_color_bfactor", "menu");
+		this.addAction("bio_assembly", "menu", true);
+		this.addAction("chain_type_ribbon", "menu", true);
+		this.addAction("chain_type_cylinders", "menu", true);
+		this.addAction("chain_type_btube", "menu", true);
+		this.addAction("chain_type_ctrace", "menu", true);
+		this.addAction("chain_type_bonds", "menu", true);
+		this.addAction("chain_color_ss", "menu", true);
+		this.addAction("chain_color_spectrum", "menu", true);
+		this.addAction("chain_color_chain", "menu", true);
+		this.addAction("chain_color_residue", "menu", true);
+		this.addAction("chain_color_polarity", "menu", true);
+		this.addAction("chain_color_bfactor", "menu", true);
 
-		this.addAction("jmol_hq", "menu");
-		this.addAction("jmol_clean", "menu");
-		this.addAction("jmol_mep_lucent", "menu");
-		this.addAction("jmol_mep_opaque", "menu");
-		this.addAction("jmol_charge", "menu");
-		this.addAction("jmol_bond_dipoles", "menu");
-		this.addAction("jmol_net_dipole", "menu");
-		this.addAction("jmol_minimize", "menu");
-		this.addAction("jmol_measure_distance", "menu");
-		this.addAction("jmol_measure_angle", "menu");
-		this.addAction("jmol_measure_torsion", "menu");
+		this.addAction("jmol_hq", "menu", true);
+		this.addAction("jmol_clean", "menu", true);
+		this.addAction("jmol_mep_lucent", "menu", true);
+		this.addAction("jmol_mep_opaque", "menu", true);
+		this.addAction("jmol_charge", "menu", true);
+		this.addAction("jmol_bond_dipoles", "menu", true);
+		this.addAction("jmol_net_dipole", "menu", true);
+		this.addAction("jmol_minimize", "menu", true);
+		this.addAction("jmol_measure_distance", "menu", true);
+		this.addAction("jmol_measure_angle", "menu", true);
+		this.addAction("jmol_measure_torsion", "menu", true);
 
-		this.addAction("search_pubchem", "menu");
-		this.addAction("search_rcsb", "menu");
-		this.addAction("search_cod", "menu");
-		this.addAction("show_search_layer", "menu");
-		this.addAction("load_more_pubchem", "button");
-		this.addAction("load_more_rcsb", "button");
-		this.addAction("load_more_cod", "button");
+		this.addAction("search_pubchem", "menu", true);
+		this.addAction("search_rcsb", "menu", true);
+		this.addAction("search_cod", "menu", true);
+		this.addAction("show_search_layer", "menu", true);
+		this.addAction("load_more_pubchem", "button", true);
+		this.addAction("load_more_rcsb", "button", true);
+		this.addAction("load_more_cod", "button", true);
 
-		this.addAction("mp_center", "button");
-		this.addAction("mp_clean", "button");
-		this.addAction("mp_periodictable", "button");
-		this.addAction("resolve", "button");
+		this.addAction("mp_bond_single", "button", true);
+		this.addAction("mp_bond_double", "button", true);
+		this.addAction("mp_bond_triple", "button", true);
+		this.addAction("mp_bond_wedge", "button", true);
+		this.addAction("mp_bond_hash", "button", true);
+		this.addAction("mp_frag_benzene", "button", true);
+		this.addAction("mp_frag_cyclopropane", "button", true);
+		this.addAction("mp_frag_cyclobutane", "button", true);
+		this.addAction("mp_frag_cyclopentane", "button", true);
+		this.addAction("mp_frag_cyclohexane", "button", true);
+		this.addAction("mp_frag_cycloheptane", "button", true);
+		this.addAction("mp_chain", "button", true);
+		this.addAction("mp_charge_add", "button", true);
+		this.addAction("mp_charge_sub", "button", true);
+		this.addAction("mp_clear", "button", true);
+		this.addAction("mp_eraser", "button", true);
+		this.addAction("mp_drag", "button", true);
+		this.addAction("mp_undo", "button", true);
+		this.addAction("mp_redo", "button", true);
+		this.addAction("mp_rect", "button", true);
+		this.addAction("mp_lasso", "button", true);
+		this.addAction("mp_skeletal_formula", "button", true);
+		this.addAction("mp_center", "button", true);
+		this.addAction("mp_clean", "button", true);
+		this.addAction("mp_atom_h", "button", true);
+		this.addAction("mp_atom_c", "button", true);
+		this.addAction("mp_atom_n", "button", true);
+		this.addAction("mp_atom_o", "button", true);
+		this.addAction("mp_atom_s", "button", true);
+		this.addAction("mp_atom_p", "button", true);
+		this.addAction("mp_atom_f", "button", true);
+		this.addAction("mp_atom_i", "button", true);
+		this.addAction("mp_atom_cl", "button", true);
+		this.addAction("mp_atom_br", "button", true);
+		this.addAction("mp_periodictable", "button", true);
+		this.addAction("resolve", "button", true);
 
-		this.addAction("start_help", "button");
-		this.addAction("export_spectrum_png", "button");
-		this.addAction("export_spectrum_jcamp", "button");
+		this.addAction("start_help", "button", true);
+		this.addAction("export_spectrum_png", "button", true);
+		this.addAction("export_spectrum_jcamp", "button", true);
 
 		//custom event trackers
 		$("#model-source").on(this.trigger, function()
@@ -332,16 +370,23 @@ var MolView = {
 	 * Bind action using $(#action-id).on(MolView.trigger, Actions[id])
 	 * DOM ID: '_' is replaced with '-'
 	 * Event label: '_' is replaced with ' '
-	 * @param {String} id       Action identifier ([a-z]_)
-	 * @param {String} category Event tracking category (button|menu)
+	 * @param {String}  id       Action identifier ([a-z]_)
+	 * @param {String}  category Event tracking category (button|menu)
+	 * @param {Boolean} track    Indicates if action should be tracked using GA
 	 */
-	addAction: function(id, category)
+	addAction: function(id, category, track)
 	{
-		$("#action-" + id.replace(/_/g, "-")).data("id", id).on(this.trigger, function()
+		$("#action-" + id.replace(/_/g, "-")).on(this.trigger, function()
 		{
-			var id = $(this).data("id");
-			MolView.pushEvent(category, "click", id.replace(/_/g, " "),
-				Actions[id].call(this) || 0);
+			if(track && Preferences.get("molview", "allow_tracking", false))
+			{
+				MolView.pushEvent(category, "click",
+					id.replace(/_/g, " "), Actions[id].call(this) || 0);
+			}
+			else
+			{
+				Actions[id].call(this);
+			}
 		});
 	},
 

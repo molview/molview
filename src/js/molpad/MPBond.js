@@ -30,15 +30,15 @@ var MP_STEREO_EITHER = 4;
 function MPBond()
 {
 	this.type = 0;
-	this.stereo = 0;
+	this.stereo = MP_STEREO_NONE;
 	this.from = 0;
 	this.to = 0;
 	this.state = "normal";
 }
 
 /**
-* Data
-*/
+ * Data
+ */
 
 MPBond.prototype.getType = function() { return this.type; }
 MPBond.prototype.setType = function(type) { this.type = type; }
@@ -68,10 +68,10 @@ MPBond.prototype.calculateBondVertices = function(mp, begin, type, which)
 }
 
 /**
-* Sets state and returs wether the state has changed
-* @param  {String} state
-* @return {Boolean}
-*/
+ * Sets state and returs wether the state has changed
+ * @param  {String} state
+ * @return {Boolean}
+ */
 MPBond.prototype.setState = function(state)
 {
 	var changed = this.oldState != state;
@@ -81,12 +81,12 @@ MPBond.prototype.setState = function(state)
 }
 
 /**
-* Resets state to normal in case this.handle is not reached by the
-* hoverHandler (in this case, the state is drawn as normal and in the
-* next hoverHandler cycle, this.oldState will become normal)
-* Saves the old state in this.oldState to check the state change in
-* this.setState later
-*/
+ * Resets state to normal in case this.handle is not reached by the
+ * hoverHandler (in this case, the state is drawn as normal and in the
+ * next hoverHandler cycle, this.oldState will become normal)
+ * Saves the old state in this.oldState to check the state change in
+ * this.setState later
+ */
 MPBond.prototype.resetState = function()
 {
 	this.oldState = this.state;
@@ -94,8 +94,197 @@ MPBond.prototype.resetState = function()
 }
 
 /**
+* Event handlers
+*/
+
+MPBond.prototype.getHandler = function(mp)
+{
+	var scope = this;
+	if(mp.tool.type == "drag")
+	{
+		return {
+			onPointerMove: function(e)
+			{
+				e.preventDefault();
+				this.setCursor("move");
+				var p = this.getRelativeCoords(getPointerCoords(e));
+				var dx = p.x - this.pointer.oldr.x;
+				var dy = p.y - this.pointer.oldr.y;
+
+				this.molecule.atoms[scope.from].translate(dx, dy, this);
+				this.molecule.atoms[scope.to].translate(dx, dy, this);
+				this.molecule.atoms[scope.from].update(this);
+				this.molecule.atoms[scope.to].update(this);
+				this.molecule.atoms[scope.from].updateBonds(this, scope);
+				this.molecule.atoms[scope.to].updateBonds(this, scope);
+				scope.update(this);
+
+				this.pointer.oldr.x = p.x;
+				this.pointer.oldr.y = p.y;
+				this.redraw();
+			},
+			onPointerUp: function(e)
+			{
+				this.setCursor("pointer");
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.molecule.atoms[scope.from].setState("normal");
+				this.molecule.atoms[scope.to].setState("normal");
+				this.redraw();
+			}
+		}
+	}
+	else if(mp.tool.type == "bond")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				//TODO: implement up/down bond flipping
+				//TODO: implement up to up bonds
+
+				var changed = false;
+				e.preventDefault();
+
+				var fromVisible = this.molecule.atoms[scope.from].isVisible(this);
+				var toVisible = this.molecule.atoms[scope.to].isVisible(this);
+
+				if(this.tool.data.type)
+				{
+					changed = !(scope.type == MP_BOND_TRIPLE && this.tool.data.type == MP_BOND_TRIPLE);
+
+					scope.type = this.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
+						(scope.type == MP_BOND_TRIPLE || scope.stereo != MP_STEREO_NONE) ? this.tool.data.type :
+							scope.type == MP_BOND_SINGLE ? MP_BOND_DOUBLE : MP_BOND_SINGLE;
+					scope.stereo = MP_STEREO_NONE;
+				}
+				else if(this.tool.data.stereo)
+				{
+					scope.type = MP_BOND_SINGLE;
+					scope.stereo = scope.stereo == this.tool.data.stereo ?
+						(this.tool.data.stereo == MP_STEREO_UP ? MP_STEREO_DOWN : MP_STEREO_UP) :
+						this.tool.data.stereo;
+					changed = true;
+				}
+
+				if(changed)
+				{
+					if(fromVisible != this.molecule.atoms[scope.from].isVisible(this))
+					{
+						this.molecule.atoms[scope.from].update(this);
+						this.molecule.atoms[scope.from].updateBonds(this, scope);
+					}
+					if(toVisible != this.molecule.atoms[scope.to].isVisible(this))
+					{
+						this.molecule.atoms[scope.to].update(this);
+						this.molecule.atoms[scope.to].updateBonds(this, scope);
+					}
+
+					scope.update(this);
+					this.redraw();
+				}
+			},
+			onPointerUp: function(e)
+			{
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		}
+	}
+}
+
+MPBond.prototype.handle = function(mp, point, type)
+{
+	var line = this.getCenterLine(mp);
+	var r = mp.settings.bond[type].radius * mp.settings.bond.scale;
+
+	if(fastPointInLineBox(point, line.from, line.to, r))
+	{
+		var d = pointToLineDistance(point, line.from, line.to);
+		if(d <= r)
+		{
+			if(type == "active" && mp.tool.type == "drag")
+			{
+				mp.molecule.atoms[this.from].setState("active");
+				mp.molecule.atoms[this.to].setState("active");
+			}
+			return { hit: true, redraw: this.setState(type) };
+		}
+	}
+
+	return { hit: false, redraw: this.setState("normal") };
+}
+
+/**
  * Calculations
  */
+
+MPBond.prototype.equals = function(bond)
+{
+	return bond.from == this.from && bond.to == this.to;
+}
+
+MPBond.prototype.update = function(mp)
+{
+	var scale = mp.settings.bond.scale;
+	var line = this.getCenterLine(mp);
+
+	this.cache = {};
+	this.cache.line = {
+		from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]),
+		to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, [0])
+	};
+
+	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
+	{
+		//TODO: connect one double CIS-TRANS bond to [0] endpoint
+		var ends = mp.settings.bond.delta[MP_BOND_DOUBLE];
+		this.cache.ctd = {
+			from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends),
+			to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends)
+		};
+	}
+	else if(this.stereo == MP_STEREO_UP)//wedge bond
+	{
+		this.cache.wedge = {
+			far: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]),
+			near: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, mp.settings.bond.delta[MP_BOND_WEDGEHASH])
+		}
+	}
+	else if(this.stereo == MP_STEREO_DOWN)//hash bond
+	{
+		var far = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]);
+		var near = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, mp.settings.bond.delta[MP_BOND_WEDGEHASH]);
+
+		var dx1 = near[0].x - far[0].x;
+		var dy1 = near[0].y - far[0].y;
+		var dx2 = near[1].x - far[0].x;
+		var dy2 = near[1].y - far[0].y;
+		var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+		var w = mp.settings.bond.width * scale;
+		var s = mp.settings.bond.hashLineSpace * scale;
+
+		this.cache.hashLines = [];
+		while(d1 - s - w > 0)
+		{
+			var mult = (d1 - s - w) / d1;
+			d1 *= mult;
+			dx1 *= mult; dy1 *= mult;
+			dx2 *= mult; dy2 *= mult;
+
+			this.cache.hashLines.push({
+				from: { x: far[0].x + dx1, y: far[0].y + dy1 + .5 },
+				to: { x: far[0].x + dx2, y: far[0].y + dy2 + .5 }
+			});
+		}
+	}
+	else if(this.type > 0 && this.type <= MP_BOND_TRIPLE)
+	{
+		var ends = mp.settings.bond.delta[this.type];
+		this.cache.bond = {
+			from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends),
+			to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends.reverse())
+		};
+	}
+}
 
 MPBond.prototype.getCenterLine = function(mp)
 {
@@ -106,20 +295,16 @@ MPBond.prototype.getCenterLine = function(mp)
 }
 
 /**
-* Render methods
-*/
+ * Render methods
+ */
 
 MPBond.prototype.drawStateColor = function(mp)
 {
 	if(this.state == "hover" || this.state == "active")
 	{
-		var line = this.getCenterLine(mp);
-		var from = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]);
-		var to = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, [0]);
-
 		mp.ctx.beginPath();
-		mp.ctx.moveTo(from[0].x, from[0].y + .5);//add .5 to fix blurry lines
-		mp.ctx.lineTo(to[0].x, to[0].y + .5);
+		mp.ctx.moveTo(this.cache.line.from[0].x, this.cache.line.from[0].y + .5);//add .5 to fix blurry lines
+		mp.ctx.lineTo(this.cache.line.to[0].x, this.cache.line.to[0].y + .5);
 
 		mp.ctx.strokeStyle = mp.settings.bond[this.state].color;
 		mp.ctx.lineWidth = 2 * mp.settings.bond[this.state].radius * mp.settings.bond.scale;
@@ -135,16 +320,16 @@ MPBond.prototype.drawBond = function(mp)
 
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
+		//TODO: connect one double CIS-TRANS bond to [0] endpoint
 		var ends = mp.settings.bond.delta[MP_BOND_DOUBLE];
 		var from = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends);
 		var to = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends);
 
 		mp.ctx.beginPath();
-		for(var i = 0; i < from.length; i++)
-		{
-			mp.ctx.moveTo(from[i].x, from[i].y + .5);
-			mp.ctx.lineTo(to[i].x, to[i].y + .5);
-		}
+		mp.ctx.moveTo(this.cache.ctd.from[0].x, this.cache.ctd.from[0].y + .5);
+		mp.ctx.lineTo(this.cache.ctd.to[0].x, this.cache.ctd.to[0].y + .5);
+		mp.ctx.moveTo(this.cache.ctd.from[1].x, this.cache.ctd.from[1].y + .5);
+		mp.ctx.lineTo(this.cache.ctd.to[1].x, this.cache.ctd.to[1].y + .5);
 
 		mp.ctx.strokeStyle = mp.settings.bond.color;
 		mp.ctx.lineWidth = mp.settings.bond.width * scale;
@@ -153,45 +338,26 @@ MPBond.prototype.drawBond = function(mp)
 	}
 	else if(this.stereo == MP_STEREO_UP)//wedge bond
 	{
-		var far = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]);
-		var near = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, mp.settings.bond.delta[MP_BOND_WEDGEHASH]);
-
 		mp.ctx.beginPath();
-		mp.ctx.moveTo(far[0].x, far[0].y + .5);
-		mp.ctx.lineTo(near[0].x, near[0].y + .5);
-		mp.ctx.lineTo(near[1].x, near[1].y + .5);
+		mp.ctx.moveTo(this.cache.wedge.far[0].x, this.cache.wedge.far[0].y + .5);
+		mp.ctx.lineTo(this.cache.wedge.near[0].x, this.cache.wedge.near[0].y + .5);
+		mp.ctx.lineTo(this.cache.wedge.near[1].x, this.cache.wedge.near[1].y + .5);
 		mp.ctx.closePath();
 
-		mp.ctx.fillStyle = mp.settings.bond.color;
+		mp.ctx.fillStyle = mp.ctx.strokeStyle= mp.settings.bond.color;
 		mp.ctx.lineWidth = mp.settings.bond.width * scale;
 		mp.ctx.lineCap = mp.settings.bond.lineCap;
-		mp.ctx.lineJoin = mp.settings.bond.lineCap;
+		mp.ctx.lineJoin = mp.settings.bond.lineJoin;
 		mp.ctx.fill();
-		if(!mp.settings.minimal) mp.ctx.stroke();
+		mp.ctx.stroke();
 	}
 	else if(this.stereo == MP_STEREO_DOWN)//hash bond
 	{
-		var far = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]);
-		var near = mp.molecule.atoms[this.to].calculateBondVertices(mp, lien.from, mp.settings.bond.delta[MP_BOND_WEDGEHASH]);
-
-		var dx1 = near[0].x - far[0].x;
-		var dy1 = near[0].y - far[0].y;
-		var dx2 = near[1].x - far[0].x;
-		var dy2 = near[1].y - far[0].y;
-		var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-		var w = mp.settings.bond.width * scale;
-		var s = mp.settings.bond.hashLineSpace * scale;
-
 		mp.ctx.beginPath();
-		while(d1 - s - w > 0)
+		for(var i = 0; i < this.cache.hashLines.length; i++)
 		{
-			var mult = (d1 - s - w) / d1;
-			d1 *= mult;
-			dx1 *= mult; dy1 *= mult;
-			dx2 *= mult; dy2 *= mult;
-
-			mp.ctx.moveTo(far[0].x + dx1, far[0].y + dy1 + .5);
-			mp.ctx.lineTo(far[0].x + dx2, far[0].y + dy2 + .5);
+			mp.ctx.moveTo(this.cache.hashLines[i].from.x, this.cache.hashLines[i].from.y + .5);
+			mp.ctx.lineTo(this.cache.hashLines[i].to.x, this.cache.hashLines[i].to.y + .5);
 		}
 
 		mp.ctx.strokeStyle = mp.settings.bond.color;
@@ -201,15 +367,11 @@ MPBond.prototype.drawBond = function(mp)
 	}
 	else if(this.type > 0 && this.type <= MP_BOND_TRIPLE)
 	{
-		var ends = mp.settings.bond.delta[this.type];
-		var from = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends);
-		var to = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends.reverse());
-
 		mp.ctx.beginPath();
-		for(var i = 0; i < from.length; i++)
+		for(var i = 0; i < this.cache.bond.from.length; i++)
 		{
-			mp.ctx.moveTo(from[i].x, from[i].y + .5);
-			mp.ctx.lineTo(to[i].x, to[i].y + .5);
+			mp.ctx.moveTo(this.cache.bond.from[i].x, this.cache.bond.from[i].y + .5);
+			mp.ctx.lineTo(this.cache.bond.to[i].x, this.cache.bond.to[i].y + .5);
 		}
 
 		mp.ctx.strokeStyle = mp.settings.bond.color;
@@ -217,50 +379,4 @@ MPBond.prototype.drawBond = function(mp)
 		mp.ctx.lineCap = mp.settings.bond.lineCap;
 		mp.ctx.stroke();
 	}
-}
-
-/**
-* Event handlers
-*/
-
-MPBond.prototype.getHandler = function()
-{
-	var scope = this;
-	return {
-		onPointerMove: function(e)
-		{
-			e.preventDefault();
-			this.setCursor("move");
-			var p = this.getRelativeCoords(getPointerCoords(e));
-			var dx = p.x - this.pointer.oldr.x;
-			var dy = p.y - this.pointer.oldr.y;
-			this.molecule.atoms[scope.from].translate(dx, dy);
-			this.molecule.atoms[scope.to].translate(dx, dy);
-			this.pointer.oldr.x = p.x;
-			this.pointer.oldr.y = p.y;
-			this.redraw();
-		}
-	}
-}
-
-MPBond.prototype.handle = function(mp, point, type)
-{
-	var line = this.getCenterLine(mp);
-	var r = mp.settings.bond[type].radius * mp.settings.bond.scale;
-
-	if(fastPointInLineBox(point, line.from, line.to, r))
-	{
-		var d = pointToLineDistance(point, line.from, line.to);
-		if(d <= r)
-		{
-			if(type == "active")
-			{
-				mp.molecule.atoms[this.from].setState("active");
-				mp.molecule.atoms[this.to].setState("active");
-			}
-			return { hit: true, redraw: this.setState(type) };
-		}
-	}
-
-	return { hit: false, redraw: this.setState("normal") };
 }
