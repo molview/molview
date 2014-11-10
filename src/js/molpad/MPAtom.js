@@ -31,6 +31,19 @@ function MPAtom(index)
  * Data
  */
 
+MPAtom.prototype.getKetcherData = function(mp)
+{
+	return new chem.Struct.Atom({
+		pp: {
+			x: this.position.x / mp.settings.bond.length,
+			y: this.position.y / mp.settings.bond.length
+		},
+		label: this.getElement(),
+		charge: this.getCharge(),
+		isotope: this.getIsotope()
+	});
+}
+
 MPAtom.prototype.getIndex = function() { return this.index; }
 MPAtom.prototype.setIndex = function(index) { this.index = index; }
 
@@ -55,6 +68,31 @@ MPAtom.prototype.setIsotope = function(isotope) { this.isotope = isotope; }
 MPAtom.prototype.addBond = function(bond)
 {
 	this.bonds.push(bond);
+}
+
+MPAtom.prototype.mapBonds = function(map)
+{
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		if(map[this.bonds[i]] !== undefined)
+		{
+			this.bonds[i] = map[this.bonds[i]];
+		}
+		else
+		{
+			this.bonds.splice(i, 1);
+			i--;
+		}
+	}
+}
+
+MPAtom.prototype.getCenterLine = function()
+{
+	return this.line || {
+		area: {
+			point: this.position
+		}
+	};
 }
 
 /**
@@ -83,15 +121,138 @@ MPAtom.prototype.resetState = function()
 	this.state = "normal";
 }
 
-MPAtom.prototype.translate = function(x, y, mp)
+MPAtom.prototype.translate = function(x, y)
 {
 	this.position.x += x;
 	this.position.y += y;
 }
 
 /**
-* Event handlers
-*/
+ * Finds this MPAtom if it is an implicit hydrogen atom
+ * All H atoms bonded to a C atom without stereo information are considered implicit
+ * @param  {Object}  mp MolPad instance
+ * @return {Boolean}    Indicates if this atom is implicit
+ */
+MPAtom.prototype.isImplicit = function(mp)
+{
+	if(this.getElement() == "H" && this.bonds.length == 1)
+	{
+		var bond = mp.molecule.bonds[this.bonds[0]];
+		if(bond.getType() == MP_BOND_SINGLE && bond.getStereo() == MP_STEREO_NONE &&
+			bond.isPair("C", "H", mp))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Saturate atom with hydrogens
+ * C atoms are saturated using their four binding sites
+ * @param  {[type]} mp [description]
+ * @return {[type]}    [description]
+ */
+MPAtom.prototype.addImplicitHydrogen = function(mp)
+{
+	if(this.getElement() == "C")
+	{
+		if(this.getBondNumber(mp) == 2 && this.bonds.length == 2)
+		{
+			var af = mp.molecule.bonds[this.bonds[0]].getAngle(mp, this);
+			var at = mp.molecule.bonds[this.bonds[1]].getAngle(mp, this);
+			var da = Math.max(af, at) - Math.min(af, at);
+
+			if(da < Math.PI - mp.settings.bond.straightDev ||
+				da > Math.PI + mp.settings.bond.straightDev)
+			{
+				var a = this.calculateNewBondAngle(mp, 2);
+				if(a == 0) return;
+
+				//create first bond
+				var atom1 = new MPAtom(mp.molecule.atoms.length);
+
+				atom1.setPosition({
+					x: this.getX() + mp.settings.bond.lengthHydrogen * Math.cos(a[0]),
+					y: this.getY() - mp.settings.bond.lengthHydrogen * Math.sin(a[0])//y axis is flipped
+				});
+				atom1.setElement("H");
+
+				var bond1 = new MPBond(mp.molecule.bonds.length);
+				bond1.setType(MP_BOND_SINGLE);
+				bond1.setFrom(this.getIndex());
+				bond1.setTo(atom1.getIndex());
+
+				atom1.addBond(bond1.getIndex());
+				this.addBond(bond1.getIndex());
+
+				mp.molecule.atoms.push(atom1);
+				mp.molecule.bonds.push(bond1);
+
+				//create second bond
+				var atom2 = new MPAtom(mp.molecule.atoms.length);
+
+				atom2.setPosition({
+					x: this.getX() + mp.settings.bond.lengthHydrogen * Math.cos(a[1]),
+					y: this.getY() - mp.settings.bond.lengthHydrogen * Math.sin(a[1])//y axis is flipped
+				});
+				atom2.setElement("H");
+
+				var bond2 = new MPBond(mp.molecule.bonds.length);
+				bond2.setType(MP_BOND_SINGLE);
+				bond2.setFrom(this.getIndex());
+				bond2.setTo(atom2.getIndex());
+
+				atom2.addBond(bond2.getIndex());
+				this.addBond(bond2.getIndex());
+
+				mp.molecule.atoms.push(atom2);
+				mp.molecule.bonds.push(bond2);
+
+				return;
+			}
+		}
+
+		while(this.getBondNumber(mp) < 4)
+		{
+			var a = this.calculateNewBondAngle(mp);
+
+			//create new bond
+			var atom = new MPAtom(mp.molecule.atoms.length);
+
+			atom.setPosition({
+				x: this.getX() + mp.settings.bond.lengthHydrogen * Math.cos(a),
+				y: this.getY() - mp.settings.bond.lengthHydrogen * Math.sin(a)//y axis is flipped
+			});
+			atom.setElement("H");
+
+			var bond = new MPBond(mp.molecule.bonds.length);
+			bond.setType(MP_BOND_SINGLE);
+			bond.setFrom(this.getIndex());
+			bond.setTo(atom.getIndex());
+
+			atom.addBond(bond.getIndex());
+			this.addBond(bond.getIndex());
+
+			mp.molecule.atoms.push(atom);
+			mp.molecule.bonds.push(bond);
+		}
+	}
+}
+
+MPAtom.prototype.getBondNumber = function(mp)
+{
+	var ret = 0;
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		ret += mp.molecule.bonds[this.bonds[i]].getType();
+	}
+	return ret;
+}
+
+/**
+ * Event handlers
+ */
 
 MPAtom.prototype.getHandler = function(mp)
 {
@@ -105,7 +266,7 @@ MPAtom.prototype.getHandler = function(mp)
 				this.setCursor("move");
 				var p = this.getRelativeCoords(getPointerCoords(e));
 
-				scope.translate(p.x - this.pointer.oldr.x, p.y - this.pointer.oldr.y, this);
+				scope.translate(p.x - this.pointer.oldr.x, p.y - this.pointer.oldr.y);
 				scope.update(this);
 				scope.updateBonds(this);
 
@@ -126,47 +287,7 @@ MPAtom.prototype.getHandler = function(mp)
 		return {
 			onPointerDown: function(e)
 			{
-				//create bond map with bond angles
-				var bondMap = [];
-				for(var i = 0; i < scope.bonds.length; i++)
-				{
-					bondMap.push({
-						i: scope.bonds[i],
-						a: this.molecule.bonds[scope.bonds[i]].getAngle(this, scope)
-					});
-				}
-
-				//sort bondMap in ascending bond angle order
-				bondMap.sort(function(a, b)
-				{
-					return a.a - b.a;
-				});
-
-				//convert bondMap to sections
-				var sections = [];
-				for(var i = 0; i < bondMap.length; i++)
-				{
-					var from = i == 0 ? bondMap.length - 1 : i - 1;
-					var to = i;
-					sections.push({
-						from: from,
-						to: to,
-						a: findAngleBetween(bondMap[from].a, bondMap[to].a)
-					});
-				}
-
-				//find larges section
-				var largest = 0;//skip i = 0 since it is already used for the first comparison
-				for(var i = 1; i < sections.length; i++)
-				{
-					if(sections[i].a > sections[largest].a)
-					{
-						largest = i;
-					}
-				}
-
-				//find new bond angle
-				var a = bondMap[sections[largest].from].a + sections[largest].a / 2;
+				var a = scope.calculateNewBondAngle(this);
 
 				//create new bond
 				var atom = new MPAtom(this.molecule.atoms.length);
@@ -177,14 +298,14 @@ MPAtom.prototype.getHandler = function(mp)
 				});
 				atom.setElement(this.tool.data.label || "C");
 
-				var bond = new MPBond();
+				var bond = new MPBond(this.molecule.bonds.length);
 				bond.setType(this.tool.data.type || MP_BOND_SINGLE);
 				bond.setStereo(this.tool.data.stereo || MP_STEREO_NONE);
 				bond.setFrom(scope.getIndex());
 				bond.setTo(atom.getIndex());
 
-				atom.addBond(this.molecule.bonds.length);
-				scope.addBond(this.molecule.bonds.length);
+				atom.addBond(bond.getIndex());
+				scope.addBond(bond.getIndex());
 
 				this.tool.privateData = {
 					atom: atom.getIndex(),
@@ -205,14 +326,7 @@ MPAtom.prototype.getHandler = function(mp)
 				var dy = p.y - scope.getY();
 				var d = Math.sqrt(dx * dx + dy * dy);
 
-				if(d > this.settings.bond.minAddDragLength)
-				{
-					this.molecule.atoms[this.tool.privateData.atom].setPosition(p);
-					this.molecule.atoms[this.tool.privateData.atom].update(this);
-					this.molecule.atoms[this.tool.privateData.atom].updateBonds(this);
-					this.redraw();
-				}
-				else if(d > this.settings.bond.minAddRotateLength)
+				if(d > this.settings.bond.minAddRotateLength)
 				{
 					var a = Math.atan2(-dy, dx);
 					var clampFactor = this.settings.bond.rotateSteps / (2 * Math.PI);
@@ -239,8 +353,8 @@ MPAtom.prototype.getHandler = function(mp)
 
 MPAtom.prototype.handle = function(mp, point, type)
 {
-	var line = this.getCenterLine(mp);
-	var r = mp.settings.atom[type].radius * mp.settings.atom.scale;
+	var line = this.getCenterLine();
+	var r = mp.settings.atom.radius * mp.settings.atom.scale;
 
 	if(line.area.point)
 	{
@@ -274,7 +388,7 @@ MPAtom.prototype.handle = function(mp, point, type)
 
 MPAtom.prototype.equals = function(atom)
 {
-	return this.getX() == atom.getX() && this.getY() == atom.getY();
+	return this.getIndex() == atom.getIndex();
 }
 
 MPAtom.prototype.updateBonds = function(mp, not)
@@ -290,7 +404,68 @@ MPAtom.prototype.updateBonds = function(mp, not)
 
 MPAtom.prototype.update = function(mp)
 {
+	this.line = this.calculateCenterLine(mp);
+}
 
+MPAtom.prototype.calculateNewBondAngle = function(mp, n)
+{
+	if(this.bonds.length == 0) return 0;
+
+	//create bond map with bond angles
+	var bondMap = [];
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		bondMap.push({
+			i: this.bonds[i],
+			a: mp.molecule.bonds[this.bonds[i]].getAngle(mp, this)
+		});
+	}
+
+	//sort bondMap in ascending bond angle order
+	bondMap.sort(function(a, b)
+	{
+		return a.a - b.a;
+	});
+
+	//convert bondMap to sections
+	var sections = [];
+	for(var i = 0; i < bondMap.length; i++)
+	{
+		var from = i == 0 ? bondMap.length - 1 : i - 1;
+		var to = i;
+		sections.push({
+			from: from,
+			to: to,
+			a: findAngleBetween(bondMap[from].a, bondMap[to].a)
+		});
+	}
+
+	//find larges section
+	var largest = 0;//skip i = 0 since it is already used for the first comparison
+	for(var i = 1; i < sections.length; i++)
+	{
+		if(sections[i].a > sections[largest].a)
+		{
+			largest = i;
+		}
+	}
+
+	//find new bond angle
+	if(n === undefined)
+	{
+		return bondMap[sections[largest].from].a + sections[largest].a / 2;
+	}
+	else
+	{
+		var p = n !== undefined ? n + 1 : 2;
+		var a = sections[largest].a / (n + 1);
+		var ret = [];
+		for(var i = 1; i <= n; i++)
+		{
+			ret.push(bondMap[sections[largest].from].a + i * a);
+		}
+		return ret;
+	}
 }
 
 /**
@@ -302,10 +477,19 @@ MPAtom.prototype.update = function(mp)
  *                  Label drawing box:
  *                  { offsetLeft: 0, offsetTop: 0 }
  */
-MPAtom.prototype.getCenterLine = function(mp)
+MPAtom.prototype.calculateCenterLine = function(mp)
 {
+	if(mp.settings.atom.miniLabel)
+	{
+		return {
+			text: { offsetLeft: 0, offsetTop: 0 },
+			area: { point: this.position }
+		};
+	}
+
 	var scale = mp.settings.atom.scale;
-	this.setFont(mp, scale, "label");
+
+	this.setFont(mp, "label");
 	var w = mp.ctx.measureText(this.element).width;
 	var h = mp.settings.atom.label.fontSize * scale;
 	var halfw = w / 2;
@@ -320,14 +504,14 @@ MPAtom.prototype.getCenterLine = function(mp)
 				left: { x: this.position.x - halfw + pad, y: this.position.y },
 				right: { x: this.position.x + halfw - pad, y: this.position.y }
 			}
-		}
+		};
 	}
 	else
 	{
 		return {
 			text: text,
 			area: { point: this.position }
-		}
+		};
 	}
 }
 
@@ -343,11 +527,39 @@ MPAtom.prototype.getCenterLine = function(mp)
  */
 MPAtom.prototype.calculateBondVertices = function(mp, begin, ends)
 {
-	var line = this.getCenterLine(mp)
+	var line = this.getCenterLine();
 
 	//TODO: implement bonding site for collapsed groups (only left or right)
 
-	if(!this.isVisible(mp))
+	if(begin.x == this.position.x)
+	{
+		var ret = [];
+		var r = this.isVisible(mp) ? mp.settings.atom.radius : 0;
+		var below = begin.y < this.position.y;
+		for(var i = 0; i < ends.length; i++)
+		{
+			ret.push({
+				x: this.position.x + (below ? ends[i] : -ends[i]),//counter clockwise
+				y: this.position.y + (below ? -r : r)
+			});
+		}
+		return ret;
+	}
+	else if(begin.y == this.position.y)
+	{
+		var ret = [];
+		var r = this.isVisible(mp) ? mp.settings.atom.radius : 0;
+		var right = begin.x > this.position.x;
+		for(var i = 0; i < ends.length; i++)
+		{
+			ret.push({
+				x: this.position.x + (right ? r : -r),
+				y: this.position.y + (right ? ends[i] : -ends[i])//counter clockwise
+			});
+		}
+		return ret;
+	}
+	else if(!this.isVisible(mp))
 	{
 		/**
 		 * TODO: implement full skeleton display
@@ -387,34 +599,6 @@ MPAtom.prototype.calculateBondVertices = function(mp, begin, ends)
 
 			return ret;
 		}
-	}
-	else if(begin.x == this.position.x)
-	{
-		var ret = [];
-		var below = begin.y < this.position.y;
-		for(var i = 0; i < ends.length; i++)
-		{
-			ret.push({
-				x: this.position.x + (below ? ends[i] : -ends[i]),//counter clockwise
-				y: this.position.y + (below ? -mp.settings.atom.radius
-											: mp.settings.atom.radius)
-			});
-		}
-		return ret;
-	}
-	else if(begin.y == this.position.y)
-	{
-		var ret = [];
-		var right = begin.x > this.position.x;
-		for(var i = 0; i < ends.length; i++)
-		{
-			ret.push({
-				x: this.position.x + (right ? mp.settings.atom.radius
-											: -mp.settings.atom.radius),
-				y: this.position.y + (right ? ends[i] : -ends[i])//counter clockwise
-			});
-		}
-		return ret;
 	}
 	else
 	{
@@ -490,37 +674,39 @@ MPAtom.prototype.isVisible = function(mp)
  * Render methods
  */
 
-MPAtom.prototype.setFont = function(mp, scale, type)
+MPAtom.prototype.setFont = function(mp, type)
 {
-	mp.ctx.font = mp.settings.atom[type].fontStyle + " " +
-			(mp.settings.atom[type].fontSize * scale) + "pt " +
+	var font = mp.settings.atom[type].fontStyle + " " +
+			Math.round((mp.settings.atom[type].fontSize
+				* mp.settings.atom.scale) * 96 / 72) + "px " +
 			mp.settings.atom[type].fontFamily;
+
+	if(font != mp.ctx.font)
+	{
+		mp.ctx.font = font;
+	}
 }
 
 MPAtom.prototype.drawStateColor = function(mp)
 {
 	if(this.state == "hover" || this.state == "active")
 	{
-		var scale = mp.settings.atom.scale;
-		var line = this.getCenterLine(mp);
+		var line = this.getCenterLine();
 
 		mp.ctx.beginPath();
 		if(line.area.point)
 		{
 			mp.ctx.arc(line.area.point.x, line.area.point.y,
-					mp.settings.atom[this.state].radius * scale, 0, 2 * Math.PI);
-
+					mp.settings.atom.radius * mp.settings.atom.scale,
+					0, 2 * Math.PI);
 			mp.ctx.fillStyle = mp.settings.atom[this.state].color;
 			mp.ctx.fill();
 		}
 		else
 		{
-			mp.ctx.moveTo(line.area.left.x, line.area.left.y + .5);
-			mp.ctx.lineTo(line.area.right.x, line.area.right.y + .5);
-
+			mp.ctx.moveTo(line.area.left.x, line.area.left.y);
+			mp.ctx.lineTo(line.area.right.x, line.area.right.y);
 			mp.ctx.strokeStyle = mp.settings.atom[this.state].color;
-			mp.ctx.lineWidth = 2 * mp.settings.atom[this.state].radius * scale;
-			mp.ctx.lineCap = mp.settings.atom[this.state].lineCap;
 			mp.ctx.stroke();
 		}
 	}
@@ -533,13 +719,19 @@ MPAtom.prototype.drawLabel = function(mp)
 
 	if(this.isVisible(mp))
 	{
-		var scale = mp.settings.atom.scale;
-		var line = this.getCenterLine(mp);
+		var line = this.getCenterLine();
+		mp.ctx.fillStyle = JmolAtomColorsHashHex[this.element];
 
-		mp.ctx.fillStyle = JmolAtomColorsCSS[this.element];
-		this.setFont(mp, scale, "label");
-
-		mp.ctx.fillText(this.element, this.position.x + line.text.offsetLeft,
-					this.position.y + line.text.offsetTop);
+		if(mp.settings.atom.miniLabel)
+		{
+			var s = mp.settings.atom.miniLabelSize;
+			mp.ctx.fillRect(this.position.x - s / 2, this.position.y - s / 2, s, s);
+		}
+		else
+		{
+			this.setFont(mp, "label");
+			mp.ctx.fillText(this.element, this.position.x + line.text.offsetLeft,
+						this.position.y + line.text.offsetTop);
+		}
 	}
 }

@@ -48,7 +48,7 @@ MolPad.prototype.loadMOL = function(mol)
 		scope.molecule.atoms[bondData.begin].addBond(scope.molecule.bonds.length);
 		scope.molecule.atoms[bondData.end].addBond(scope.molecule.bonds.length);
 
-		var bond = new MPBond();
+		var bond = new MPBond(i);
 		bond.setType(bondData.type);
 		bond.setStereo(bondData.stereo);
 		bond.setFrom(bondData.begin);
@@ -56,7 +56,7 @@ MolPad.prototype.loadMOL = function(mol)
 		scope.molecule.bonds.push(bond);
 	});
 
-	if(this.settings.removeImplicitHydrogen)
+	if(this.settings.drawSkeletonFormula)
 	{
 		this.removeImplicitHydrogen();
 	}
@@ -75,31 +75,92 @@ MolPad.prototype.getSMILES = function()
 	return new chem.SmilesSaver().saveMolecule(this.getKetcherData());
 }
 
+MolPad.prototype.removeAtom = function(index)
+{
+	this.molecule.atoms.splice(index, 1);
+	this.updateIndices();
+}
+
+MolPad.prototype.removeBond = function(index)
+{
+	this.molecule.atoms.splice(this.molecule.bonds[index].getFrom(), 1);
+	this.molecule.atoms.splice(this.molecule.bonds[index].getTo(), 1);
+	this.molecule.bonds.splice(index, 1);
+	this.updateIndices();
+}
+
+MolPad.prototype.updateIndices = function(index)
+{
+	var atomIndexMap = {}, bondIndexMap = {};
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		atomIndexMap[this.molecule.atoms[i].getIndex()] = i;
+		this.molecule.atoms[i].setIndex(i);
+	}
+	for(var i = 0; i < this.molecule.bonds.length; i++)
+	{
+		var bond = this.molecule.bonds[i];
+		var from = atomIndexMap[bond.getFrom()];
+		var to = atomIndexMap[bond.getTo()];
+
+		if(from !== undefined && to !== undefined)
+		{
+			bondIndexMap[bond.getIndex()] = i;
+			bond.setIndex(i);
+			bond.setFrom(from);
+			bond.setTo(to);
+		}
+		else
+		{
+			this.molecule.bonds.splice(i, 1);
+			i--;
+		}
+	}
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		this.molecule.atoms[i].mapBonds(bondIndexMap);
+	}
+}
+
+MolPad.prototype.removeImplicitHydrogen = function()
+{
+	var implicit = [];
+
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		if(this.molecule.atoms[i].isImplicit(this))
+		{
+			implicit.push(i);
+		}
+	}
+
+	for(var i = 0; i < implicit.length; i++)
+	{
+		this.molecule.atoms.splice(implicit[i] - i, 1);
+	}
+
+	this.updateIndices();
+}
+
+MolPad.prototype.addImplicitHydrogen = function()
+{
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		this.molecule.atoms[i].addImplicitHydrogen(this);
+	}
+}
+
 MolPad.prototype.getKetcherData = function()
 {
 	var molecule = new chem.Struct();
 
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		var pp = this.molecule.atoms[i].getPosition();
-		molecule.atoms.add(new chem.Struct.Atom({
-			pp: {
-				x: pp.x / this.settings.bond.length,
-				y: pp.y / this.settings.bond.length
-			},
-			label: this.molecule.atoms[i].getElement(),
-			charge: this.molecule.atoms[i].getCharge(),
-			isotope: this.molecule.atoms[i].getIsotope()
-		}));
+		molecule.atoms.add(this.molecule.atoms[i].getKetcherData(this));
 	}
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
-		molecule.bonds.add(new chem.Struct.Bond({
-			type: this.molecule.bonds[i].getType(),
-			stereo: this.molecule.bonds[i].getStereo(),
-			begin: this.molecule.bonds[i].getFrom(),
-			end: this.molecule.bonds[i].getTo()
-		}));
+		molecule.bonds.add(this.molecule.bonds[i].getKetcherData(this));
 	}
 
 	molecule.initHalfBonds();
@@ -107,9 +168,4 @@ MolPad.prototype.getKetcherData = function()
 	molecule.markFragments();
 
 	return molecule;
-}
-
-MolPad.prototype.toDataURL = function()
-{
-	return this.canvas.toDataURL("image/png");
 }

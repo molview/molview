@@ -44,14 +44,10 @@ function MolPad(container, devicePixelRatio)
 		relativePadding: 0.15,
 		bond: {
 			active: {
-				radius: 8,
-				color: "#8f8",
-				lineCap: "round"
+				color: "#8f8"
 			},
 			hover: {
-				radius: 8,
-				color: "#bfb",
-				lineCap: "round"
+				color: "#bfb"
 			},
 			delta: [
 				[],//no bond
@@ -61,42 +57,49 @@ function MolPad(container, devicePixelRatio)
 				[-5,5]//wedge/hash bond
 			],
 			length: 55,
+			lengthHydrogen: 34,
+			radius: 8,
 			color: "#111111",
 			lineCap: "round",
 			lineJoin: "round",
 			width: 1.5,//in px
 			scale: 1,
-			maxScale: 1 / 1.5,
-			maxDeltaScale: 1 / 2.0,
+			minScale: 1 / 1.5,
+			minDeltaScale: 1 / 2.0,
 			hashLineSpace: 2,
 			minAddRotateLength: 12,
-			minAddDragLength: 55,
-			rotateSteps: 360 / 30//steps of 30deg, 360 / 30 = 12
+			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
+			straightDev: Math.PI / 10
 		},
 		atom: {
 			active: {
-				radius: 12,
-				color: "#8f8",
-				lineCap: "round"
+				color: "#8f8"
 			},
 			hover: {
-				radius: 12,
-				color: "#bfb",
-				lineCap: "round"
+				color: "#bfb"
 			},
 			label: {
 				fontStyle: "bold",
-				fontFamily: "'Open Sans', serif",
+				fontFamily: 'sans',//"Open Sans", sans
 				fontSize: 12,//in pt
 			},
 			scale: 1,
 			radius: 12,//radius around atom center-line
+			lineCap: "round",
 			circleClamp: 15,//label width > circleClamp: atom center = line
-			maxScale: 1 / 1.5//12 * 1 / 1.5 = 8
+			minScale: 1 / 1.5,//12 * 1 / 1.5 = 8
+			maxMiniLabelScale: 1 / 5.0,
+			miniLabelSize: 25,
+			miniLabel: false
 		},
 		selection: {
 			bg: "rgba(255, 85, 0, 0.5)"
 		}
+	};
+
+	this.cache = {
+		measureText: {},
+		drawText: {}
 	};
 
 	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
@@ -120,6 +123,8 @@ function MolPad(container, devicePixelRatio)
 
 	container.appendChild(this.canvas);
 	this.ctx = this.canvas.getContext("2d");
+	this.pendingFrame = false;//used to prevent requestAnimationFrame stacking
+	this.updated = false;//used to update only before a real redraw
 
 	var scope = this;
 
@@ -224,11 +229,11 @@ MolPad.prototype.displaySkeleton = function(yes)
 {
 	this.settings.drawSkeletonFormula = yes;
 	if(yes) this.removeImplicitHydrogen();
-	this.update();
-	this.redraw();
+	else this.addImplicitHydrogen();
+	this.redraw(true);
 }
 
-MolPad.prototype.removeImplicitHydrogen = function()
+MolPad.prototype.toDataURL = function()
 {
-
+	return this.canvas.toDataURL("image/png");
 }

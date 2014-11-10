@@ -29,13 +29,14 @@
      inkscape:window-height="1056"
      id="namedview9"
      showgrid="true"
-     inkscape:zoom="11.4"
-     inkscape:cx="42.955091"
-     inkscape:cy="22.237512"
+     inkscape:zoom="32.24407"
+     inkscape:cx="33.812526"
+     inkscape:cy="19.202748"
      inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5682">
+     inkscape:current-layer="svg5682"
+     inkscape:snap-bbox="true">
     <inkscape:grid
        type="xygrid"
        id="grid2988" />
@@ -57,23 +58,28 @@
      style="-webkit-tap-highlight-color:rgba(0, 0, 0, 0);">Created with Raphaël</desc>
   <path
      style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:6"
-     d="M 20,29 20,19"
+     d="m 19,22 2,-3"
      id="path3772"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="cc" />
-  <path
-     style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-     d="M 2,39 20,29 38,39"
-     id="path3768"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="ccc" />
   <g
-     transform="scale(0.94481507,1.0584082)"
+     transform="matrix(1.1810189,0,0,1.1995292,-10.000003,-1.1552839e-7)"
      style="font-size:77.762146px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
      id="text3774">
     <path
-       d="m 14.817715,0.94481359 3.654593,0 0,5.40120371 5.391711,0 0,-5.40120371 3.654593,0 0,14.17222741 -3.654593,0 0,-6.0087209 -5.391711,0 0,6.0087209 -3.654593,0 0,-14.17222741"
+       d="m 29.63543,0 3.654593,0 0,5.4012037 5.391711,0 0,-5.4012037 3.654593,0 0,14.172227 -3.654593,0 0,-6.0087205 -5.391711,0 0,6.0087205 -3.654593,0 0,-14.172227"
        style="font-size:19.4405365px;font-weight:bold;fill:#000000;-inkscape-font-specification:Sans Bold"
-       id="path2988" />
+       id="path2988"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     id="text2987"
+     transform="matrix(0.96755907,0,0,0.9916075,-5.9239601,18.37759)">
+    <path
+       d="m 21.625512,21.513095 c -0.862645,0.429688 -1.761896,0.753906 -2.697754,0.972655 -0.935885,0.218751 -1.912446,0.328126 -2.929687,0.328126 -3.03549,0 -5.440273,-0.8125 -7.2143557,-2.4375 C 7.0096245,18.743567 6.1225812,16.532632 6.1225824,13.743563 6.1225812,10.9467 7.0096245,8.7357652 8.7837153,7.1107513 10.557798,5.4779557 12.962581,4.6615503 15.998071,4.6615325 c 1.017241,1.78e-5 1.993802,0.1093932 2.929687,0.328125 0.935858,0.2187673 1.835109,0.5429857 2.697754,0.9726562 l 0,3.6210931 C 20.754728,9.013108 19.896168,8.5951396 19.049829,8.3295004 18.203462,8.06389 17.312349,7.9310776 16.376489,7.9310632 c -1.676442,1.44e-5 -2.9948,0.5156388 -3.955078,1.5468756 -0.960293,1.0312622 -1.440437,2.4531352 -1.44043,4.2656242 -7e-6,1.804695 0.480137,3.222663 1.44043,4.253907 0.960278,1.031253 2.278636,1.546878 3.955078,1.546875 0.93586,3e-6 1.826973,-0.13281 2.67334,-0.398438 0.846339,-0.265621 1.704899,-0.68359 2.575683,-1.253907 l 0,3.621095"
+       style="font-size:20px;font-weight:bold;-inkscape-font-specification:Sans Bold"
+       id="path2992"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

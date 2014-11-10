@@ -64,7 +64,7 @@ var JSUnits = {
 			'src/js/molpad/MPAtom.js',
 			'src/js/molpad/MPBond.js',
 			'src/js/molpad/MolPad.js',
-			'src/js/molpad/MPIO.js',
+			'src/js/molpad/MPChem.js',
 			'src/js/molpad/MPGraphics.js',
 			'src/js/molpad/MPEvents.js'
 		]

@@ -21,13 +21,45 @@ Modifications:
 - vdwRadii from iView
 - devicePixelRatio support
 - Mobile multi touch scaling
-- Renamed some methods
+- Renamed API methods
+- redraw using requestAnimationFrame
 - Fallback
   - zoom2D: 2D scale/zoom factor
   - canvasAtomRadius: default atom radius
   - canvasBondWidth: fallback bond width
   - canvasVDW: indicates if GLmolVDWRadii should be used rather than canvasAtomRadius
 */
+
+/**
+ * requestAnimationFrame polyfill by Erik Möller
+ * fixes from Paul Irish and Tino Zijdel
+ * http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+ * http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+ */
+(function() {
+	var lastTime = 0;
+	var vendors = ['ms', 'moz', 'webkit', 'o'];
+	for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+								|| window[vendors[x]+'CancelRequestAnimationFrame'];
+	}
+
+	if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = function(callback, element) {
+			var currTime = new Date().getTime();
+			var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+			timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+
+	if (!window.cancelAnimationFrame)
+		window.cancelAnimationFrame = function(id) {
+			clearTimeout(id);
+		};
+}());
 
 var TV3 = THREE.Vector3,
 	TF3 = THREE.Face3,
@@ -217,6 +249,7 @@ var GLmol = (function()
 		this.scene = null;
 		this.rotationGroup = null;//parent of modelGroup
 		this.modelGroup = null;//child of rotationGroup
+		this.framePending = false;//used to protect requestAnimationFrame stacking
 
 		this.bgColor = bg;
 		this.bgAlpha = 1;
@@ -934,16 +967,19 @@ var GLmol = (function()
 		var c1 = new TCo(atom1.color),
 			c2 = new TCo(atom2.color);
 
-		if(order == 1 || order == 3)
+		if (order == 1 || order == 3)
 		{
 			this.drawCylinder(group, p1, mp, bondR, atom1.color);
+			this.drawCylinder(group, p2, mp, bondR, atom2.color);
 		}
-		if(order > 1)
+		if (order > 1)
 		{
 			tmp = mp.clone().addSelf(delta);
 			this.drawCylinder(group, p1.clone().addSelf(delta), tmp, bondR, atom1.color);
+			this.drawCylinder(group, p2.clone().addSelf(delta), tmp, bondR, atom2.color);
 			tmp = mp.clone().subSelf(delta);
 			this.drawCylinder(group, p1.clone().subSelf(delta), tmp, bondR, atom1.color);
+			this.drawCylinder(group, p2.clone().subSelf(delta), tmp, bondR, atom2.color);
 		}
 	};
 
@@ -961,7 +997,7 @@ var GLmol = (function()
 				if(atomlist.indexOf(j) == -1) continue;
 				var atom2 = this.atoms[j];
 				if(atom2 == undefined) continue;
-				atom1.connected = atom2.connected = true;
+				if(j < i && atom2.bonds.indexOf(i) != -1) continue;//bond has been drawn already
 				this.drawBondAsStickSub(group, atom1, atom2, bondR, (!!multipleBonds) ? atom1.bondOrder[_j] : 1);
 			}
 		}
@@ -1049,6 +1085,7 @@ var GLmol = (function()
 		}
 		if(!found || Math.abs(dot - 1) < 0.001 || Math.abs(dot + 1) < 0.001)
 		{
+			//CHECK: why was this code here???
 			/* if(axis.x < 0.01 && axis.y < 0.01)
 			{
 				delta = new TV3(0, -axis.z, axis.y);
@@ -1065,33 +1102,29 @@ var GLmol = (function()
 
 	GLmol.prototype.drawBondsAsLineSub = function(geo, atom1, atom2, order)
 	{
-		var delta, tmp, vs = geo.vertices,
-			cs = geo.colors;
-		if(order > 1) delta = this.calcBondDelta(atom1, atom2, 0.15);
+		var delta, tmp, vs = geo.vertices, cs = geo.colors;
+		if (order > 1) delta = this.calcBondDelta(atom1, atom2, 0.15);
 		var p1 = new TV3(atom1.x, atom1.y, atom1.z);
 		var p2 = new TV3(atom2.x, atom2.y, atom2.z);
 		var mp = p1.clone().addSelf(p2).multiplyScalar(0.5);
 
 		var c1 = new TCo(atom1.color),
 			c2 = new TCo(atom2.color);
-
-		if(order == 1 || order == 3)
+		if (order == 1 || order == 3)
 		{
-			vs.push(p1);
-			cs.push(c1);
-			vs.push(mp);
-			cs.push(c1);
+			vs.push(p1); cs.push(c1); vs.push(mp); cs.push(c1);
+			vs.push(p2); cs.push(c2); vs.push(mp); cs.push(c2);
 		}
-		if(order > 1)
+		if (order > 1)
 		{
-			vs.push(p1.clone().addSelf(delta));
-			cs.push(c1);
-			vs.push(tmp = mp.clone().addSelf(delta));
-			cs.push(c1);
-			vs.push(p1.clone().subSelf(delta));
-			cs.push(c1);
-			vs.push(tmp = mp.clone().subSelf(delta));
-			cs.push(c1);
+			vs.push(p1.clone().addSelf(delta)); cs.push(c1);
+			vs.push(tmp = mp.clone().addSelf(delta)); cs.push(c1);
+			vs.push(p2.clone().addSelf(delta)); cs.push(c2);
+			vs.push(tmp); cs.push(c2);
+			vs.push(p1.clone().subSelf(delta)); cs.push(c1);
+			vs.push(tmp = mp.clone().subSelf(delta)); cs.push(c1);
+			vs.push(p2.clone().subSelf(delta)); cs.push(c2);
+			vs.push(tmp); cs.push(c2);
 		}
 	};
 
@@ -1110,7 +1143,7 @@ var GLmol = (function()
 				if(atomlist.indexOf(j) == -1) continue;
 				var atom2 = this.atoms[j];
 				if(atom2 == undefined) continue;
-				atom1.connected = atom2.connected = true;
+				if(j < i && atom2.bonds.indexOf(i) != -1) continue;//bond has been drawn already
 				this.drawBondsAsLineSub(geo, atom1, atom2, atom1.bondOrder[_j]);
 			}
 		}
@@ -2420,13 +2453,21 @@ var GLmol = (function()
 		this.scene.fog.far = this.camera.far;
 	};
 
-	GLmol.prototype.redraw = function()
+	GLmol.prototype.draw = function()
 	{
 		if(!this.scene) return;
 
+		this.framePending = false;
 		this.setSlabAndFog();
 		if(!this.webglFailed) this.renderer.render(this.scene, this.camera);
 		else this.render2d();
+	};
+
+	GLmol.prototype.redraw = function()
+	{
+		if(this.framePending) return;
+		this.pendingFrame = true
+		requestAnimationFrame(this.draw.bind(this));
 	};
 
 	GLmol.prototype.render2d = function()

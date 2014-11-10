@@ -128,7 +128,7 @@ var Sketcher = {
 					.attr("title", element.name)
 					.append($("<h3></h3>").html(element.number))
 					.append($("<h4></h4>").html(element.small)
-						.css("color", JmolAtomColorsCSS[element.small]))
+						.css("color", JmolAtomColorsHashHex[element.small]))
 					.data("lbl", element.small)
 					.on(MolView.trigger, function()
 					{

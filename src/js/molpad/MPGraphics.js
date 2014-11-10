@@ -29,26 +29,23 @@ MolPad.prototype.resize = function()
 MolPad.prototype.update = function(scaleOnly)
 {
 	var oldAtomScale = this.settings.atom.scale;
-	var oldBondScale = this.settings.atom.scale;
-	var oldBondDeltaScale = this.settings.atom.deltaScale;
 
-	this.settings.bond.deltaScale = this.getScale() < this.settings.bond.maxDeltaScale ?
-			this.settings.bond.maxDeltaScale / this.getScale() : 1;
-	this.settings.bond.scale = this.getScale() < this.settings.bond.maxScale ?
-			this.settings.bond.maxScale / this.getScale() : 1;
-	this.settings.atom.scale = this.getScale() < this.settings.atom.maxScale ?
-			this.settings.atom.maxScale / this.getScale() : 1;
+	this.settings.atom.miniLabel = this.getScale() <= this.settings.atom.maxMiniLabelScale;
+	this.settings.atom.scale = this.getScale() < this.settings.atom.minScale ?
+			this.settings.atom.minScale / this.getScale() : 1;
+	this.settings.bond.deltaScale = this.getScale() < this.settings.bond.minDeltaScale ?
+			this.settings.bond.minDeltaScale / this.getScale() : 1;
+	this.settings.bond.scale = this.getScale() < this.settings.bond.minScale ?
+			this.settings.bond.minScale / this.getScale() : 1;
 
+	//atom.scale is the first dynamic scale factor
 	if(!scaleOnly || this.settings.atom.scale != oldAtomScale)
 	{
 		for(var i = 0; i < this.molecule.atoms.length; i++)
 		{
 			this.molecule.atoms[i].update(this);
 		}
-	}
-	if(!scaleOnly || this.settings.bond.scale != oldBondScale ||
-			oldBondDeltaScale != this.settings.atom.deltaScale)
-	{
+
 		for(var i = 0; i < this.molecule.bonds.length; i++)
 		{
 			this.molecule.bonds[i].update(this);
@@ -63,6 +60,14 @@ MolPad.prototype.setCursor = function(type)
 
 MolPad.prototype.draw = function()
 {
+	this.pendingFrame = false;
+
+	if(!this.updated)
+	{
+		this.update();
+		this.updated = true;
+	}
+
 	//clear
 	this.ctx.clearRect(0, 0, this.width(), this.height());
 
@@ -72,16 +77,25 @@ MolPad.prototype.draw = function()
 					   this.matrix[3], this.matrix[4], this.matrix[5]);
 
 	//draw state (hover/active)
+	this.ctx.lineWidth = 2 * this.settings.atom.radius * this.settings.atom.scale;
+	this.ctx.lineCap = this.settings.atom.lineCap;
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
 		this.molecule.atoms[i].drawStateColor(this);
 	}
+
+	this.ctx.lineWidth = 2 * this.settings.bond.radius * this.settings.bond.scale;
+	this.ctx.lineCap = this.settings.bond.lineCap;
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
 		this.molecule.bonds[i].drawStateColor(this);
 	}
 
 	//draw bonds
+	this.ctx.fillStyle = this.ctx.strokeStyle = this.settings.bond.color;
+	this.ctx.lineWidth = this.settings.bond.width * this.settings.bond.scale;
+	this.ctx.lineCap = this.settings.bond.lineCap;
+	this.ctx.lineJoin = this.settings.bond.lineJoin;
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
 		this.molecule.bonds[i].drawBond(this);
@@ -98,18 +112,26 @@ MolPad.prototype.draw = function()
 	this.ctx.restore();
 }
 
-MolPad.prototype.redraw = function()
+/**
+ * Redraw using requestAnimationFrame
+ * requestAnimationFrame polyfill is already present in GLmol
+ * @param {Boolean} update Indicates if molecule should be updated
+ */
+MolPad.prototype.redraw = function(update)
 {
-	//mainly important for Firefox performance
+	if(update) this.updated = false;
+	if(this.pendingFrame) return;
+	this.pendingFrame = true;
 	requestAnimationFrame(this.draw.bind(this));
 }
 
 MolPad.prototype.center = function()
 {
-	var bbox = this.getBBox();
-
 	this.resetMatrix();
 
+	if(this.molecule.atoms.length == 0) return;
+
+	var bbox = this.getBBox();
 	var sx = this.width() / bbox.width;
 	var sy = this.height() / bbox.height;
 	if(sx < sy)
@@ -130,8 +152,7 @@ MolPad.prototype.center = function()
 	var s = 1 - 2 * this.settings.relativePadding;
 	this.scaleAbsolute(s, this.width() / 2, this.height() / 2);
 
-	this.update();
-	this.redraw();
+	this.redraw(true);
 }
 
 MolPad.prototype.getBBox = function()
@@ -150,7 +171,8 @@ MolPad.prototype.getBBox = function()
 
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		var l = this.molecule.atoms[i].getCenterLine(this);
+		//calculate center line since molecule might not be updated yet
+		var l = this.molecule.atoms[i].calculateCenterLine(this);
 		var px1 = l.area.left !== undefined ? l.area.left.x : l.area.point.x;
 		var px2 = l.area.right !== undefined ? l.area.right.x : l.area.point.x;
 		var py = l.area.left !== undefined ? l.area.left.y : l.area.point.y;

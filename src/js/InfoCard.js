@@ -353,42 +353,45 @@ var InfoCard = {
 				InfoCard.getPropertyFromCIR(id, success, fail);
 			});
 		}
-		else if(InfoCard.PubChem_cache && PubChemProps[id])
+		else if(PubChemProps[id])
 		{
-			InfoCard.loadFrom_PubChem_cache(id, success, function()
+			if(InfoCard.PubChem_cache)
 			{
-				InfoCard.getPropertyFromCIR(id, success, fail);
-			});
-		}
-		else if(InfoCard.data["cid"] && PubChemProps[id])
-		{
-			InfoCard.PubChem_cache = { loading: true };
-
-			Request.PubChem.properties(InfoCard.data["cid"], PubChemPropNames,
-			function(data)
-			{
-				InfoCard.PubChem_cache = data.PropertyTable.Properties[0] || { failed: true };
-
-				for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
-				{
-					InfoCard.PubChem_queue[i].success();
-				}
-				InfoCard.PubChem_queue = [];
 				InfoCard.loadFrom_PubChem_cache(id, success, function()
 				{
 					InfoCard.getPropertyFromCIR(id, success, fail);
 				});
-			},
-			function()
+			}
+			else if(InfoCard.data["cid"])
 			{
-				for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
+				InfoCard.PubChem_cache = { loading: true };
+
+				Request.PubChem.properties(InfoCard.data["cid"], PubChemPropNames,
+				function(data)
 				{
-					InfoCard.PubChem_queue[i].fail();
-				}
-				InfoCard.PubChem_queue = [];
-				InfoCard.PubChem_cache = { failed: true };
-				InfoCard.getPropertyFromCIR(id, success, fail);
-			});
+					InfoCard.PubChem_cache = data.PropertyTable.Properties[0] || { failed: true };
+
+					for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
+					{
+						InfoCard.PubChem_queue[i].success();
+					}
+					InfoCard.PubChem_queue = [];
+					InfoCard.loadFrom_PubChem_cache(id, success, function()
+					{
+						InfoCard.getPropertyFromCIR(id, success, fail);
+					});
+				},
+				function()
+				{
+					for(var i = 0; i < InfoCard.PubChem_queue.length; i++)
+					{
+						InfoCard.PubChem_queue[i].fail();
+					}
+					InfoCard.PubChem_queue = [];
+					InfoCard.PubChem_cache = { failed: true };
+					InfoCard.getPropertyFromCIR(id, success, fail);
+				});
+			}
 		}
 		else
 		{
