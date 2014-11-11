@@ -46,10 +46,18 @@ var Loader = {
 		History.push(type, content, forceReplace);
 
 		$("#model-source").removeClass("disabled");
-		if(type == "q" || type == "smiles") $("#model-source").removeAttr().addClass("disabled");
-		else if(type == "cid") $("#model-source").attr("href", Request.PubChem.staticURL(content));
-		else if(type == "pdbid") $("#model-source").attr("href", Request.RCSB.staticURL(content));
-		else if(type == "codid") $("#model-source").attr("href", Request.COD.staticURL(content));
+		if(type == "q" || type == "smiles") $("#model-source")
+			.text("3D model source")
+			.removeAttr().addClass("disabled");
+		else if(type == "cid") $("#model-source")
+			.text("PubChem source")
+			.attr("href", Request.PubChem.staticURL(content));
+		else if(type == "pdbid") $("#model-source")
+			.text("RCSB source")
+			.attr("href", Request.RCSB.staticURL(content));
+		else if(type == "codid") $("#model-source")
+			.text("COD source")
+			.attr("href", Request.COD.staticURL(content));
 	},
 
 	/**
@@ -540,6 +548,7 @@ var Loader = {
 					{
 						Sketcher.metadata.smiles = smiles;
 						Sketcher.loadMOL(mol2d);
+						Sketcher.removeImplicitHydrogen();
 						Sketcher.markUpdated();
 
 						finish();
@@ -563,6 +572,7 @@ var Loader = {
 					{
 						Sketcher.metadata.cid = cid;
 						Sketcher.loadMOL(mol2d);
+						Sketcher.removeImplicitHydrogen();
 						Sketcher.markUpdated();
 
 						finish();

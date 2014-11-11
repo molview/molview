@@ -17,7 +17,6 @@
  */
 
 /**
- * TODO: draw data caching
  * Initialize MolPad in the given container
  * @param {DOMElement} container
  */
@@ -34,7 +33,7 @@ function MolPad(container, devicePixelRatio)
 		data: {
 			type: MP_BOND_SINGLE
 		},
-		privateData: {}
+		tmp: {}
 	};
 
 	this.settings = {
@@ -67,7 +66,6 @@ function MolPad(container, devicePixelRatio)
 			minScale: 1 / 1.5,
 			minDeltaScale: 1 / 2.0,
 			hashLineSpace: 2,
-			minAddRotateLength: 12,
 			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
 			straightDev: Math.PI / 10
 		},
@@ -83,10 +81,23 @@ function MolPad(container, devicePixelRatio)
 				fontFamily: 'sans',//"Open Sans", sans
 				fontSize: 12,//in pt
 			},
+			charge: {
+				fontStyle: "bold",
+				fontFamily: 'sans',
+				fontSize: 8,
+				pad: 1
+			},
+			isotope: {
+				fontStyle: "bold",
+				fontFamily: 'sans',
+				fontSize: 8,
+				pad: 1
+			},
 			scale: 1,
 			radius: 12,//radius around atom center-line
 			lineCap: "round",
 			circleClamp: 15,//label width > circleClamp: atom center = line
+			minAddRotateLength: 12,
 			minScale: 1 / 1.5,//12 * 1 / 1.5 = 8
 			maxMiniLabelScale: 1 / 5.0,
 			miniLabelSize: 25,

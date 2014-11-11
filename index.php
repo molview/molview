@@ -346,7 +346,7 @@ Query parameters:
 								<div id="action-mp-frag-cyclohexane" class="tool-button primary-tool" title="Cyclohexane"></div>
 								<div id="action-mp-frag-cycloheptane" class="tool-button primary-tool" title="Cycloheptane"></div>
 								<div class="vertical-separator"></div>
-								<div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div>
+								<!-- <div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div> -->
 								<div id="action-mp-charge-add" class="tool-button primary-tool" title="Charge +">e<sup>+</sup></div>
 								<div id="action-mp-charge-sub" class="tool-button primary-tool" title="Charge -">e<sup>&minus;</sup></div>
 							</div>

@@ -32,14 +32,15 @@ MolPad.prototype.loadMOL = function(mol)
 
 	molecule.atoms.each(function(i, atomData)
 	{
-		var atom = new MPAtom(i);
-		atom.setPosition({
+		var atom = new MPAtom({
+			i: i,
 			x: atomData.pp.x * scope.settings.bond.length,
-			y: atomData.pp.y * scope.settings.bond.length
+			y: atomData.pp.y * scope.settings.bond.length,
+			element: atomData.label,
+			charge: atomData.charge,
+			isotope: atomData.isotope
 		});
-		atom.setElement(atomData.label);
-		atom.setCharge(atomData.charge);
-		atom.setIsotope(atomData.isotope);
+
 		scope.molecule.atoms.push(atom);
 	});
 
@@ -48,11 +49,14 @@ MolPad.prototype.loadMOL = function(mol)
 		scope.molecule.atoms[bondData.begin].addBond(scope.molecule.bonds.length);
 		scope.molecule.atoms[bondData.end].addBond(scope.molecule.bonds.length);
 
-		var bond = new MPBond(i);
-		bond.setType(bondData.type);
-		bond.setStereo(bondData.stereo);
-		bond.setFrom(bondData.begin);
-		bond.setTo(bondData.end);
+		var bond = new MPBond({
+			i: i,
+			type: bondData.type,
+			stereo: bondData.stereo,
+			from: bondData.begin,
+			to: bondData.end
+		});
+
 		scope.molecule.bonds.push(bond);
 	});
 

@@ -59,7 +59,7 @@ MolPad.prototype.onPointerDown = function(e)
 
 			if(result.hit)
 			{
-				this.pointer.handler = obj.getHandler(this);
+				this.pointer.handler = obj.getHandler(this) || this.tool.defaultHandler;
 
 				if(this.pointer.handler.onPointerDown)
 				{

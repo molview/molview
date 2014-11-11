@@ -35,6 +35,8 @@ var Sketcher = {
 	 */
 	init: function()
 	{
+		MPFragments.init();
+
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
@@ -233,6 +235,11 @@ var Sketcher = {
 	clean: function()
 	{
 		Messages.process(Loader.clean, "clean");
+	},
+
+	removeImplicitHydrogen: function()
+	{
+		if(this.molpad) this.molpad.removeImplicitHydrogen();
 	},
 
 	markOutdated: function()

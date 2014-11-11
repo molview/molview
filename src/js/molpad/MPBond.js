@@ -27,13 +27,13 @@ var MP_STEREO_DOWN = 6;
 var MP_STEREO_CIS_TRANS = 3;
 var MP_STEREO_EITHER = 4;
 
-function MPBond(index)
+function MPBond(obj)
 {
-	this.index = index;
-	this.type = 0;
-	this.stereo = MP_STEREO_NONE;
-	this.from = 0;
-	this.to = 0;
+	this.index = obj.i;
+	this.type = obj.type || 0;
+	this.stereo = obj.stereo || MP_STEREO_NONE;
+	this.from = obj.from || 0;
+	this.to = obj.to || 0;
 	this.state = "normal";
 }
 
@@ -121,7 +121,72 @@ MPBond.prototype.isPair = function(a, b, mp)
 MPBond.prototype.getHandler = function(mp)
 {
 	var scope = this;
-	if(mp.tool.type == "drag")
+	if(mp.tool.type == "bond")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				//TODO: implement up/down bond flipping
+				//TODO: implement up to up bonds
+
+				var changed = false;
+				e.preventDefault();
+
+				var fromVisible = this.molecule.atoms[scope.from].isVisible(this);
+				var toVisible = this.molecule.atoms[scope.to].isVisible(this);
+
+				if(this.tool.data.type)
+				{
+					changed = !(scope.type == MP_BOND_TRIPLE && this.tool.data.type == MP_BOND_TRIPLE);
+
+					scope.type = this.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
+						(scope.type == MP_BOND_TRIPLE || scope.stereo != MP_STEREO_NONE) ? this.tool.data.type :
+							scope.type == MP_BOND_SINGLE ? MP_BOND_DOUBLE : MP_BOND_SINGLE;
+					scope.stereo = MP_STEREO_NONE;
+				}
+				else if(this.tool.data.stereo)
+				{
+					scope.type = MP_BOND_SINGLE;
+
+					if(scope.stereo == this.tool.data.stereo)
+					{
+						var f = scope.from;
+						scope.from = scope.to;
+						scope.to = f;
+					}
+					else
+					{
+						scope.stereo = this.tool.data.stereo;
+					}
+
+					changed = true;
+				}
+
+				if(changed)
+				{
+					if(fromVisible != this.molecule.atoms[scope.from].isVisible(this))
+					{
+						this.molecule.atoms[scope.from].update(this);
+						this.molecule.atoms[scope.from].updateBonds(this, scope);
+					}
+					if(toVisible != this.molecule.atoms[scope.to].isVisible(this))
+					{
+						this.molecule.atoms[scope.to].update(this);
+						this.molecule.atoms[scope.to].updateBonds(this, scope);
+					}
+
+					scope.update(this);
+					this.redraw();
+				}
+			},
+			onPointerUp: function(e)
+			{
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		};
+	}
+	else//drag, fallback
 	{
 		return {
 			onPointerMove: function(e)
@@ -154,62 +219,20 @@ MPBond.prototype.getHandler = function(mp)
 			}
 		};
 	}
-	else if(mp.tool.type == "bond")
-	{
-		return {
-			onPointerDown: function(e)
-			{
-				//TODO: implement up/down bond flipping
-				//TODO: implement up to up bonds
-
-				var changed = false;
-				e.preventDefault();
-
-				var fromVisible = this.molecule.atoms[scope.from].isVisible(this);
-				var toVisible = this.molecule.atoms[scope.to].isVisible(this);
-
-				if(this.tool.data.type)
-				{
-					changed = !(scope.type == MP_BOND_TRIPLE && this.tool.data.type == MP_BOND_TRIPLE);
-
-					scope.type = this.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
-						(scope.type == MP_BOND_TRIPLE || scope.stereo != MP_STEREO_NONE) ? this.tool.data.type :
-							scope.type == MP_BOND_SINGLE ? MP_BOND_DOUBLE : MP_BOND_SINGLE;
-					scope.stereo = MP_STEREO_NONE;
-				}
-				else if(this.tool.data.stereo)
-				{
-					scope.type = MP_BOND_SINGLE;
-					scope.stereo = scope.stereo == this.tool.data.stereo ?
-						(this.tool.data.stereo == MP_STEREO_UP ? MP_STEREO_DOWN : MP_STEREO_UP) :
-						this.tool.data.stereo;
-					changed = true;
-				}
-
-				if(changed)
-				{
-					if(fromVisible != this.molecule.atoms[scope.from].isVisible(this))
-					{
-						this.molecule.atoms[scope.from].update(this);
-						this.molecule.atoms[scope.from].updateBonds(this, scope);
-					}
-					if(toVisible != this.molecule.atoms[scope.to].isVisible(this))
-					{
-						this.molecule.atoms[scope.to].update(this);
-						this.molecule.atoms[scope.to].updateBonds(this, scope);
-					}
-
-					scope.update(this);
-					this.redraw();
-				}
-			},
-			onPointerUp: function(e)
-			{
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
-				this.redraw();
-			}
-		};
-	}
+	/**
+	 * Add fragment to bond:
+	 * 1. calculate bond midpoint
+	 * 2. calculate bond length
+	 * 3. scale bond to bondLength relative to midpoint
+	 * 4. clone frag.toBond and save tool.tmp.frag
+	 * 5. translate fragment to bond
+	 * 6. calculate bond angle relative to bond.from
+	 * 7. add fragment to MolPad.molecule and save new atom indices to tool.tmp.frag
+	 * 6. rotate real fragment using the relative bond angle
+	 * 7. connect frag.bonds.first.from to bond.from
+	 * 8. connect frag.bonds.first.to to bond.to
+	 * 9. calculate pointer position (on +/- side of bond matrix) onPointerMove and flip fragment
+	 */
 }
 
 MPBond.prototype.handle = function(mp, point, type)
