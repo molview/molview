@@ -391,7 +391,7 @@ var Actions = {
 	mp_charge_sub: function(){ Sketcher.setTool(this, "charge", { charge: -1 }); },
 
 	mp_clear: function(){ Sketcher.clear(); },
-	mp_eraser: function(){ Sketcher.setTool(this, "eraser", {}); },
+	mp_eraser: function(){ Sketcher.setTool(this, "erase", {}); },
 	mp_drag: function(){ Sketcher.setTool(this, "drag", {}); },
 	mp_undo: function(){ Sketcher.undo(); },
 	mp_redo: function(){ Sketcher.redo(); },
@@ -401,16 +401,16 @@ var Actions = {
 	mp_center: function(){ Sketcher.center(); },
 	mp_clean: function(){ Sketcher.clean(); },
 
-	mp_atom_h: function(){ Sketcher.setTool(this, "atom", { label: "H" }); },
-	mp_atom_c: function(){ Sketcher.setTool(this, "atom", { label: "C" }); },
-	mp_atom_n: function(){ Sketcher.setTool(this, "atom", { label: "N" }); },
-	mp_atom_o: function(){ Sketcher.setTool(this, "atom", { label: "O" }); },
-	mp_atom_s: function(){ Sketcher.setTool(this, "atom", { label: "S" }); },
-	mp_atom_p: function(){ Sketcher.setTool(this, "atom", { label: "P" }); },
-	mp_atom_f: function(){ Sketcher.setTool(this, "atom", { label: "F" }); },
-	mp_atom_i: function(){ Sketcher.setTool(this, "atom", { label: "I" }); },
-	mp_atom_cl: function(){ Sketcher.setTool(this, "atom", { label: "Cl" }); },
-	mp_atom_br: function(){ Sketcher.setTool(this, "atom", { label: "Br" }); },
+	mp_atom_h: function(){ Sketcher.setTool(this, "atom", { element: "H" }); },
+	mp_atom_c: function(){ Sketcher.setTool(this, "atom", { element: "C" }); },
+	mp_atom_n: function(){ Sketcher.setTool(this, "atom", { element: "N" }); },
+	mp_atom_o: function(){ Sketcher.setTool(this, "atom", { element: "O" }); },
+	mp_atom_s: function(){ Sketcher.setTool(this, "atom", { element: "S" }); },
+	mp_atom_p: function(){ Sketcher.setTool(this, "atom", { element: "P" }); },
+	mp_atom_f: function(){ Sketcher.setTool(this, "atom", { element: "F" }); },
+	mp_atom_i: function(){ Sketcher.setTool(this, "atom", { element: "I" }); },
+	mp_atom_cl: function(){ Sketcher.setTool(this, "atom", { element: "Cl" }); },
+	mp_atom_br: function(){ Sketcher.setTool(this, "atom", { element: "Br" }); },
 
 	mp_periodictable: function()
 	{

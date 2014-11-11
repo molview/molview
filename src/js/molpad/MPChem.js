@@ -23,6 +23,8 @@
  */
 MolPad.prototype.loadMOL = function(mol)
 {
+	this.saveToStack();
+
 	this.molecule = { atoms: [], bonds: [] };
 
 	var molecule = chem.Molfile.parseCTFile(mol.split("\n"));
@@ -79,6 +81,58 @@ MolPad.prototype.getSMILES = function()
 	return new chem.SmilesSaver().saveMolecule(this.getKetcherData());
 }
 
+MolPad.prototype.getKetcherData = function()
+{
+	var molecule = new chem.Struct();
+
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		molecule.atoms.add(this.molecule.atoms[i].getKetcherData(this));
+	}
+	for(var i = 0; i < this.molecule.bonds.length; i++)
+	{
+		molecule.bonds.add(this.molecule.bonds[i].getKetcherData(this));
+	}
+
+	molecule.initHalfBonds();
+	molecule.initNeighbors();
+	molecule.markFragments();
+
+	return molecule;
+}
+
+MolPad.prototype.getPlainData = function()
+{
+	var molecule = { atoms: [], bonds: [] };
+
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		molecule.atoms.push(this.molecule.atoms[i].getPlainData());
+	}
+	for(var i = 0; i < this.molecule.bonds.length; i++)
+	{
+		molecule.bonds.push(this.molecule.bonds[i].getPlainData());
+	}
+
+	return molecule;
+}
+
+MolPad.prototype.loadPlainData = function(data)
+{
+	this.molecule = { atoms: [], bonds: [] };
+
+	for(var i = 0; i < data.atoms.length; i++)
+	{
+		this.molecule.atoms.push(new MPAtom(data.atoms[i]));
+	}
+	for(var i = 0; i < data.bonds.length; i++)
+	{
+		this.molecule.bonds.push(new MPBond(data.bonds[i]));
+	}
+
+	this.redraw(true);
+}
+
 MolPad.prototype.removeAtom = function(index)
 {
 	this.molecule.atoms.splice(index, 1);
@@ -87,8 +141,10 @@ MolPad.prototype.removeAtom = function(index)
 
 MolPad.prototype.removeBond = function(index)
 {
-	this.molecule.atoms.splice(this.molecule.bonds[index].getFrom(), 1);
-	this.molecule.atoms.splice(this.molecule.bonds[index].getTo(), 1);
+	var f = this.molecule.bonds[index].getFrom();
+	var t = this.molecule.bonds[index].getTo();
+	this.molecule.atoms.splice(f > t ? f : t, 1);
+	this.molecule.atoms.splice(f < t ? f : t, 1);
 	this.molecule.bonds.splice(index, 1);
 	this.updateIndices();
 }
@@ -152,24 +208,4 @@ MolPad.prototype.addImplicitHydrogen = function()
 	{
 		this.molecule.atoms[i].addImplicitHydrogen(this);
 	}
-}
-
-MolPad.prototype.getKetcherData = function()
-{
-	var molecule = new chem.Struct();
-
-	for(var i = 0; i < this.molecule.atoms.length; i++)
-	{
-		molecule.atoms.add(this.molecule.atoms[i].getKetcherData(this));
-	}
-	for(var i = 0; i < this.molecule.bonds.length; i++)
-	{
-		molecule.bonds.add(this.molecule.bonds[i].getKetcherData(this));
-	}
-
-	molecule.initHalfBonds();
-	molecule.initNeighbors();
-	molecule.markFragments();
-
-	return molecule;
 }

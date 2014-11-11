@@ -19,34 +19,30 @@
 /**
  * Initialize MolPad in the given container
  * @param {DOMElement} container
+ * @param {Float}      devicePixelRatio
+ * @param {Object}     buttons
  */
-function MolPad(container, devicePixelRatio)
+function MolPad(container, devicePixelRatio, buttons)
 {
-	this.molecule = {
-		atoms: [],
-		bonds: []
-	};
-
-	this.tool = {
-		defaultHandler: this.selectionToolHandler,
-		type: "bond",//bond || fragment || chain || charge || eraser || drag || select || atom
-		data: {
-			type: MP_BOND_SINGLE
-		},
-		tmp: {}
-	};
-
+	/**
+	 * Settings
+	 * @type {Object}
+	 */
 	this.settings = {
+		maxStackSize: 100,
 		zoomSpeed: 0.2,
 		minZoom: 0.01,
 		drawSkeletonFormula: true,
 		relativePadding: 0.15,
 		bond: {
+			hover: {
+				color: "#bfb"
+			},
 			active: {
 				color: "#8f8"
 			},
-			hover: {
-				color: "#bfb"
+			selected: {
+				color: "#afa"
 			},
 			delta: [
 				[],//no bond
@@ -103,18 +99,28 @@ function MolPad(container, devicePixelRatio)
 			miniLabelSize: 25,
 			miniLabel: false
 		},
-		selection: {
-			bg: "rgba(255, 85, 0, 0.5)"
+		select: {
+			fillStyle: "rgba(255, 85, 0, 0.3)",
+			strokeStyle: "#ff5500",
+			lineWidth: 2,
+			lineCap: "round",
+			lineJoin: "round"
 		}
 	};
 
-	this.cache = {
-		measureText: {},
-		drawText: {}
+	this.molecule = {
+		atoms: [],
+		bonds: []
 	};
 
-	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
-	this.devicePixelRatio = devicePixelRatio || 1;
+	this.tool = {
+		defaultHandler: this.createNewHandler,
+		type: "bond",//bond || fragment || chain || charge || erase || drag || select || atom
+		data: {
+			type: MP_BOND_SINGLE
+		},
+		tmp: {}
+	};
 
 	this.pointer = {
 		old: { x: 0, y: 0 },//old pointer position
@@ -122,6 +128,12 @@ function MolPad(container, devicePixelRatio)
 		oldr: { x: 0, y: 0 },//old real pointer
 		handler: undefined
 	};
+
+	this.stack = [];
+	this.reverseStack = [];
+	this.buttons = buttons;
+	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
+	this.devicePixelRatio = devicePixelRatio || 1;
 
 	this.container = jQuery(container);
 	this.offset = this.container.offset();
@@ -146,8 +158,6 @@ function MolPad(container, devicePixelRatio)
 	 * - pointerup: finish action
 	 * - multipointer: dismiss action and start multitouch action
 	 * - multipointer => single pointer: translate
-	 *
-	 * TODO: revise mouse events on touchscreen (touchgrabbing?)
 	 */
 
 	jQuery(container).on('DOMMouseScroll mousewheel', function(e)
@@ -189,6 +199,22 @@ function MolPad(container, devicePixelRatio)
 	{
 		scope.onPointerUp(e);
 	});
+
+	/**
+	 * Hotkeys
+	 */
+	if(navigator.platform.toLowerCase().indexOf("mac") >= 0)
+	{
+		jQuery(document).on("keydown", "meta+z", this.undo.bind(this));
+		jQuery(document).bind("keydown", "meta+y", this.redo.bind(this));
+		jQuery(document).bind("keydown", "meta+shift+z", this.redo.bind(this));
+	}
+	else
+	{
+		jQuery(document).bind("keydown", "ctrl+z", this.undo.bind(this));
+		jQuery(document).bind("keydown", "ctrl+y", this.redo.bind(this));
+		jQuery(document).bind("keydown", "ctrl+shift+z", this.redo.bind(this));
+	}
 }
 
 MolPad.prototype.forAllObjects = function(func)
@@ -215,7 +241,7 @@ MolPad.prototype.setTool = function(type, data)
 
 MolPad.prototype.onChange = function(cb)
 {
-
+	this.changeCallback = cb;
 }
 
 MolPad.prototype.clear = function(cb)
@@ -226,14 +252,52 @@ MolPad.prototype.clear = function(cb)
 	this.redraw();
 }
 
+MolPad.prototype.changed = function()
+{
+	if(this.changeCallback)
+	{
+		this.changeCallback();
+	}
+}
+
+MolPad.prototype.saveToStack = function()
+{
+	this.stack.push(this.getPlainData());
+	jQuery(this.buttons.undo).removeClass("tool-button-disabled");
+	this.changed();//assumption since saveToStack should only be called before changes
+}
+
 MolPad.prototype.undo = function(cb)
 {
+	if(this.stack.length > 0)
+	{
+		this.reverseStack.push(this.getPlainData());
+		this.loadPlainData(this.stack.pop());
+		jQuery(this.buttons.redo).removeClass("tool-button-disabled");
+	}
 
+	if(this.stack.length == 0)
+	{
+		jQuery(this.buttons.undo).addClass("tool-button-disabled");
+	}
+
+	this.changed();
 }
 
 MolPad.prototype.redo = function(cb)
 {
+	if(this.reverseStack.length > 0)
+	{
+		this.saveToStack();
+		this.loadPlainData(this.reverseStack.pop());
+	}
 
+	if(this.reverseStack.length == 0)
+	{
+		jQuery(this.buttons.redo).addClass("tool-button-disabled");
+	}
+
+	this.changed();
 }
 
 MolPad.prototype.displaySkeleton = function(yes)

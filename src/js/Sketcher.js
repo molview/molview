@@ -46,7 +46,10 @@ var Sketcher = {
 		if(Detector.canvas)
 		{
 			this.molpad = new MolPad(document.getElementById("molpad-canvas-wrapper"),
-					MolView.devicePixelRatio);
+					MolView.devicePixelRatio, {
+						undo: "#action-mp-undo",
+						redo: "#action-mp-redo"
+					});
 			this.molpad.displaySkeleton(Preferences.get("sketcher", "skeletal_formula", true));
 
 			if(MolView.loadDefault)
@@ -131,13 +134,13 @@ var Sketcher = {
 					.append($("<h3></h3>").html(element.number))
 					.append($("<h4></h4>").html(element.small)
 						.css("color", JmolAtomColorsHashHex[element.small]))
-					.data("lbl", element.small)
+					.data("element", element.small)
 					.on(MolView.trigger, function()
 					{
 						$("#molpad .primary-tool").removeClass("tool-button-selected");
 						$("#action-mp-periodictable").addClass("tool-button-selected");
 
-						Sketcher.molpad.setTool("atom", { label: $(this).data("lbl") });
+						Sketcher.molpad.setTool("atom", { element: $(this).data("element") });
 						MolView.hideDialogs();
 					})
 					.appendTo("#periodictable");

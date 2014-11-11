@@ -108,6 +108,37 @@ MolPad.prototype.draw = function()
 	}
 
 	//draw selection tool
+	if(this.tool.type == "select")
+	{
+		this.ctx.fillStyle = this.settings.select.fillStyle;
+		this.ctx.strokeStyle = this.settings.select.strokeStyle;
+		this.ctx.lineWidth = this.settings.select.lineWidth / this.getScale();
+		this.ctx.lineCap = this.settings.select.lineCap;
+		this.ctx.lineJoin = this.settings.select.lineJoin;
+		this.ctx.setLineDash([
+			2 / this.getScale(),
+			5 / this.getScale()
+		]);
+
+		this.ctx.beginPath();
+
+		if(this.tool.tmp.rect)
+		{
+			this.ctx.rect(this.tool.tmp.rect.x, this.tool.tmp.rect.y,
+					this.tool.tmp.rect.width, this.tool.tmp.rect.height);
+		}
+		else if(this.tool.tmp.points)//lasso
+		{
+			for(var i = 0; i < this.tool.tmp.points.length; i++)
+			{
+				if(i == 0) this.ctx.moveTo(this.tool.tmp.points[i].x, this.tool.tmp.points[i].y);
+				else this.ctx.lineTo(this.tool.tmp.points[i].x, this.tool.tmp.points[i].y);
+			}
+		}
+
+		this.ctx.fill();
+		this.ctx.stroke();
+	}
 
 	this.ctx.restore();
 }

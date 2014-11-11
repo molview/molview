@@ -23,7 +23,7 @@ function MPAtom(obj)
 	this.element = obj.element || "C";
 	this.charge = obj.charge || 0;
 	this.isotope = obj.isotope || 0;
-	this.bonds = [];
+	this.bonds = obj.bonds || [];
 	this.state = "normal";
 }
 
@@ -42,6 +42,19 @@ MPAtom.prototype.getKetcherData = function(mp)
 		charge: this.getCharge(),
 		isotope: this.getIsotope()
 	});
+}
+
+MPAtom.prototype.getPlainData = function()
+{
+	return {
+		i: this.index,
+		x: this.position.x,
+		y: this.position.y,
+		element: this.getElement(),
+		charge: this.getCharge(),
+		isotope: this.getIsotope(),
+		bonds: this.bonds.slice(0, this.bonds.length)
+	};
 }
 
 MPAtom.prototype.getIndex = function() { return this.index; }
@@ -350,11 +363,13 @@ MPAtom.prototype.getHandler = function(mp)
 		return {
 			onPointerDown: function(e)
 			{
-				this.tool.tmp.frag = MPFragments.translate(
-					MPFragments.scale(MPFragments.clone(this.tool.data.frag.toAtom),
-						this.settings.bond.length),
-						scope.position.x, scope.position.y);
-				this.tool.tmp.startAngle = scope.calculateNewBondAngle(this);
+				this.tool.tmp = {
+					frag: MPFragments.translate(
+						MPFragments.scale(MPFragments.clone(this.tool.data.frag.toAtom),
+							this.settings.bond.length),
+							scope.position.x, scope.position.y),
+					startAngle: scope.calculateNewBondAngle(this)
+				};
 
 				var frag = MPFragments.rotate(MPFragments.clone(this.tool.tmp.frag),
 						scope.position, -this.tool.tmp.startAngle);//y axis is flipped: rotate clockwise
@@ -428,6 +443,43 @@ MPAtom.prototype.getHandler = function(mp)
 				scope.setCharge(scope.getCharge() + this.tool.data.charge);
 				scope.update(this);
 				scope.updateBonds(this);//because of modified width in certain cases
+				this.redraw();
+			},
+			onPointerUp: function(e)
+			{
+				this.setCursor("pointer");
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		};
+	}
+	else if(mp.tool.type == "erase")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				e.preventDefault();
+				this.removeAtom(scope.getIndex());
+				this.redraw();
+			},
+			onPointerUp: function(e)
+			{
+				this.setCursor("pointer");
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		};
+	}
+	else if(mp.tool.type == "atom")
+	{
+		//TODO: implement add bond with atom when dragging
+		return {
+			onPointerDown: function(e)
+			{
+				e.preventDefault();
+				scope.setElement(this.tool.data.element);
+				scope.update(this);
+				scope.updateBonds(this);
 				this.redraw();
 			},
 			onPointerUp: function(e)
@@ -826,7 +878,7 @@ MPAtom.prototype.setFont = function(mp, type)
 
 MPAtom.prototype.drawStateColor = function(mp)
 {
-	if(this.state == "hover" || this.state == "active")
+	if(this.state == "hover" || this.state == "active" || this.state == "selected")
 	{
 		var line = this.getCenterLine();
 

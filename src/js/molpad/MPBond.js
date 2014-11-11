@@ -51,6 +51,17 @@ MPBond.prototype.getKetcherData = function(mp)
 	});
 }
 
+MPBond.prototype.getPlainData = function()
+{
+	return {
+		i: this.index,
+		type: this.getType(),
+		stereo: this.getStereo(),
+		from: this.getFrom(),
+		to: this.getTo()
+	};
+}
+
 MPBond.prototype.getIndex = function() { return this.index; }
 MPBond.prototype.setIndex = function(index) { this.index = index; }
 
@@ -181,6 +192,23 @@ MPBond.prototype.getHandler = function(mp)
 			},
 			onPointerUp: function(e)
 			{
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		};
+	}
+	else if(mp.tool.type == "erase")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				e.preventDefault();
+				this.removeBond(scope.getIndex());
+				this.redraw();
+			},
+			onPointerUp: function(e)
+			{
+				this.setCursor("pointer");
 				scope.setState(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
@@ -358,7 +386,7 @@ MPBond.prototype.getCenterLine = function(mp)
 
 MPBond.prototype.drawStateColor = function(mp)
 {
-	if(this.state == "hover" || this.state == "active")
+	if(this.state == "hover" || this.state == "active" || this.state == "selected")
 	{
 		mp.ctx.beginPath();
 		mp.ctx.moveTo(this.cache.line.from[0].x, this.cache.line.from[0].y);

@@ -59,7 +59,16 @@ MolPad.prototype.onPointerDown = function(e)
 
 			if(result.hit)
 			{
-				this.pointer.handler = obj.getHandler(this) || this.tool.defaultHandler;
+				this.pointer.handler = obj.getHandler(this);
+
+				if(this.pointer.handler !== undefined)
+				{
+					this.saveToStack();
+				}
+				else
+				{
+					this.pointer.handler = this.tool.defaultHandler;
+				}
 
 				if(this.pointer.handler.onPointerDown)
 				{
@@ -73,6 +82,11 @@ MolPad.prototype.onPointerDown = function(e)
 		if(this.pointer.handler == undefined)
 		{
 			this.pointer.handler = this.tool.defaultHandler;
+
+			if(this.pointer.handler.onPointerDown)
+			{
+				this.pointer.handler.onPointerDown.call(this, e);
+			}
 		}
 	}
 	else if(e.which == 2)
@@ -206,11 +220,56 @@ MolPad.prototype.multiTouchHandler = {
 	}
 }
 
+//TODO: fully implement selection tool
 MolPad.prototype.selectionToolHandler = {
+	onPointerDown: function(e)
+	{
+		e.preventDefault();
+		this.setCursor("pointer");
+		var p = this.getRelativeCoords(getPointerCoords(e));
+
+		if(this.tool.data.type == "rect")
+		{
+			this.tool.tmp = {
+				rect: {
+					x: p.x,
+					y: p.y,
+					width: 0,
+					height: 0
+				}
+			};
+		}
+		else//lasso
+		{
+			this.tool.tmp = {
+				points: [{
+					x: p.x,
+					y: p.y
+				}]
+			};
+		}
+	},
 	onPointerMove: function(e)
 	{
+		e.preventDefault();
+		this.setCursor("default");
+		var p = this.getRelativeCoords(getPointerCoords(e));
+
+		if(this.tool.data.type == "rect")
+		{
+			this.tool.tmp.rect.width = p.x - this.tool.tmp.rect.x;
+			this.tool.tmp.rect.height = p.y - this.tool.tmp.rect.y;
+		}
+		else//lasso
+		{
+			this.tool.tmp.points.push(p);
+		}
+
+		this.redraw();
 	},
 	onPointerUp: function(e)
 	{
+		this.tool.tmp = {};
+		this.redraw();
 	}
 }

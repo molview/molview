@@ -127,6 +127,14 @@ function fastPointInCircleBox(p, a, r)
 	return p.x >= a.x - r && p.x <= a.x + r && p.y >= a.y - r && p.y <= a.y + r;
 }
 
+function pointInRect(point, rect)
+{
+}
+
+function pointInPolygon(point, polygon)
+{
+}
+
 function getPointerCoords(e)
 {
 	var oe = e.originalEvent;
