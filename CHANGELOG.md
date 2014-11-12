@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.1
+
+- Fixed relative URLs in error pages
+- Changed img/image.png background to white
+
 ## 2.3.x
 
 - Replaced MolEdit with MolPad

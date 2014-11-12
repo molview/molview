@@ -408,7 +408,7 @@ var GLmol = (function()
 				y = e.originalEvent.targetTouches[0].pageY;
 			}
 
-		//Multi touch zoom
+			//multi touch zoom
 			if(me.multiTouch && e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1)
 			{
 				var t = e.originalEvent.targetTouches;
