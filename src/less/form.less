@@ -1,5 +1,5 @@
 /**
- * This file is part of MolView (https://molview.org)
+ * This file is part of MolView (http://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify

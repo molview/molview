@@ -8,9 +8,9 @@ ErrorDocument 404 /molview/page.php?id=404
 ErrorDocument 500 /molview/page.php?id=500
 
 # RewriteCond %{HTTP:CF-Visitor} '"scheme":"http"'
-# RewriteRule ^(.*)$ https://molview.org/$1 [R,L]
+# RewriteRule ^(.*)$ http://molview.org/$1 [R,L]
 # RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
-# RewriteRule ^(.*)$ https://molview.org/$1 [L,R=301]
+# RewriteRule ^(.*)$ http://molview.org/$1 [L,R=301]
 
 RewriteRule ^readme$ page.php?id=readme [L]
 RewriteRule ^changelog$ page.php?id=changelog [L]
