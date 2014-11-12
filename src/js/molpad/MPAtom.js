@@ -363,9 +363,14 @@ MPAtom.prototype.getHandler = function(mp)
 		return {
 			onPointerDown: function(e)
 			{
+				var bondConnection = scope.getBondNumber(this) > 2 && scope.getElement() == "C";
+
 				this.tool.tmp = {
 					frag: MPFragments.translate(
-						MPFragments.scale(MPFragments.clone(this.tool.data.frag.toAtom),
+						MPFragments.scale(
+							MPFragments.translate(
+								MPFragments.clone(this.tool.data.frag.toAtom),
+								bondConnection ? 1 : 0, 0),
 							this.settings.bond.length),
 							scope.position.x, scope.position.y),
 					startAngle: scope.calculateNewBondAngle(this)
@@ -374,7 +379,8 @@ MPAtom.prototype.getHandler = function(mp)
 				var frag = MPFragments.rotate(MPFragments.clone(this.tool.tmp.frag),
 						scope.position, -this.tool.tmp.startAngle);//y axis is flipped: rotate clockwise
 
-				for(var i = 0, n = this.settings.drawSkeletonFormula ?
+				//skip first atom (which will be this atom) if !bondConnection
+				for(var i = bondConnection ? 0 : 1, n = this.settings.drawSkeletonFormula ?
 					frag.size : frag.atoms.length; i < n; i++)
 				{
 					var atom = new MPAtom({
@@ -392,12 +398,16 @@ MPAtom.prototype.getHandler = function(mp)
 				for(var i = 0, n = this.settings.drawSkeletonFormula ?
 					frag.size : frag.bonds.length; i < n; i++)
 				{
+					var from = !bondConnection && frag.bonds[i].from == 0 ? scope.getIndex() :
+							this.tool.tmp.frag.atoms[frag.bonds[i].from].i;
+					var to = !bondConnection && frag.bonds[i].to == 0 ? scope.getIndex() :
+							this.tool.tmp.frag.atoms[frag.bonds[i].to].i;
 					var bond = new MPBond({
 						i: this.molecule.bonds.length,
 						type: frag.bonds[i].type,
 						stereo: MP_STEREO_NONE,
-						from: this.tool.tmp.frag.atoms[frag.bonds[i].from].i,
-						to: this.tool.tmp.frag.atoms[frag.bonds[i].to].i
+						from: from,
+						to: to
 					});
 
 					this.molecule.atoms[bond.getFrom()].addBond(bond.getIndex());
@@ -407,18 +417,21 @@ MPAtom.prototype.getHandler = function(mp)
 					bond.update(this);
 				}
 
-				var connection = new MPBond({
-					i: this.molecule.bonds.length,
-					type: MP_BOND_SINGLE,
-					stereo: MP_STEREO_NONE,
-					from: scope.getIndex(),
-					to: this.tool.tmp.frag.atoms[0].i
-				});
+				if(bondConnection)
+				{
+					var connection = new MPBond({
+						i: this.molecule.bonds.length,
+						type: MP_BOND_SINGLE,
+						stereo: MP_STEREO_NONE,
+						from: scope.getIndex(),
+						to: this.tool.tmp.frag.atoms[0].i
+					});
 
-				scope.addBond(connection.getIndex());
-				this.molecule.atoms[connection.getTo()].addBond(connection.getIndex());
-				this.molecule.bonds.push(connection);
-				connection.update(this);
+					scope.addBond(connection.getIndex());
+					this.molecule.atoms[connection.getTo()].addBond(connection.getIndex());
+					this.molecule.bonds.push(connection);
+					connection.update(this);
+				}
 
 				this.redraw();
 			},

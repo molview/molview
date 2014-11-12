@@ -18,6 +18,7 @@
 
 /**
  * Initialize MolPad in the given container
+ * TODO: larger touch targers on high DPI screens
  * @param {DOMElement} container
  * @param {Float}      devicePixelRatio
  * @param {Object}     buttons
@@ -74,18 +75,18 @@ function MolPad(container, devicePixelRatio, buttons)
 			},
 			label: {
 				fontStyle: "bold",
-				fontFamily: 'sans',//"Open Sans", sans
+				fontFamily: 'sans-serif',//"Open Sans", sans-serif
 				fontSize: 12,//in pt
 			},
 			charge: {
 				fontStyle: "bold",
-				fontFamily: 'sans',
+				fontFamily: 'sans-serif',
 				fontSize: 8,
 				pad: 1
 			},
 			isotope: {
 				fontStyle: "bold",
-				fontFamily: 'sans',
+				fontFamily: 'sans-serif',
 				fontSize: 8,
 				pad: 1
 			},
@@ -114,7 +115,6 @@ function MolPad(container, devicePixelRatio, buttons)
 	};
 
 	this.tool = {
-		defaultHandler: this.createNewHandler,
 		type: "bond",//bond || fragment || chain || charge || erase || drag || select || atom
 		data: {
 			type: MP_BOND_SINGLE
@@ -126,9 +126,12 @@ function MolPad(container, devicePixelRatio, buttons)
 		old: { x: 0, y: 0 },//old pointer position
 		oldc: { x: 0, y: 0 },//old pointer center
 		oldr: { x: 0, y: 0 },//old real pointer
-		handler: undefined
+		handler: undefined,
+		targetTouchesNumber: 0,
+		touchGrab: false
 	};
 
+	this.hasChanged = false;
 	this.stack = [];
 	this.reverseStack = [];
 	this.buttons = buttons;
@@ -246,14 +249,14 @@ MolPad.prototype.onChange = function(cb)
 
 MolPad.prototype.clear = function(cb)
 {
+	this.saveToStack();
 	this.molecule = { atoms: [], bonds: [] };
-	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
-	this.update();
-	this.redraw();
+	this.redraw(true);
 }
 
 MolPad.prototype.changed = function()
 {
+	this.hasChanged = true;
 	if(this.changeCallback)
 	{
 		this.changeCallback();
@@ -263,15 +266,16 @@ MolPad.prototype.changed = function()
 MolPad.prototype.saveToStack = function()
 {
 	this.stack.push(this.getPlainData());
+	if(this.stack.length > this.settings.maxStackSize) this.stack.shift();
 	jQuery(this.buttons.undo).removeClass("tool-button-disabled");
 	this.changed();//assumption since saveToStack should only be called before changes
 }
 
-MolPad.prototype.undo = function(cb)
+MolPad.prototype.undo = function(noRedo)
 {
 	if(this.stack.length > 0)
 	{
-		this.reverseStack.push(this.getPlainData());
+		if(!noRedo) this.reverseStack.push(this.getPlainData());
 		this.loadPlainData(this.stack.pop());
 		jQuery(this.buttons.redo).removeClass("tool-button-disabled");
 	}
@@ -284,7 +288,7 @@ MolPad.prototype.undo = function(cb)
 	this.changed();
 }
 
-MolPad.prototype.redo = function(cb)
+MolPad.prototype.redo = function()
 {
 	if(this.reverseStack.length > 0)
 	{

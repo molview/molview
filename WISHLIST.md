@@ -7,6 +7,7 @@ Wishlist
 - Add Preferences dialog
 - Add functional groups to Sketcher
 - Add Lewis dot structures display to Sketcher
+- Add PDB/ligand representation to Sketcher using PoseView
 - Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
 - Add MolView home website (pages: features, about, manual, changelog, license, feedback)
 
@@ -30,6 +31,7 @@ Wishlist
 
 - Add own SpectrumView
 - Add support for UV/Visable spectra
+- Add IR spectrum analysis and search database
 - Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Add client-side structural formula depiction using JavaScript
 - Add backend services using CDK and the Google Cloud Platform

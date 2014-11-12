@@ -61,18 +61,34 @@ var MPFragments = {
 
     generate: function(vertices, alternating)
     {
+        var as = 2 * Math.PI / vertices;//angle step
+        var r = 0.5 / Math.sin(as / 2) * this.length;
+
+        var ret = {
+            full: this.createRing(vertices, alternating, false),
+            toAtom: this.translate(this.createRing(vertices, alternating, true), r, 0),//r to move bond to the left
+            toBond: this.rotate(this.createRing(vertices, alternating, false), (as + Math.PI) / 2, { x: 0, y: 0 })
+        };
+        //ret.toBond.bonds.shift();//remove first bond to apply rule 7
+		//ret.toBond.atoms.splice(vertices, alternating ? 1 : 2);//also remove second (pair of) H atoms to apply rule 7
+        //ret.toBond.atoms.splice(0, 2);//remove first two atoms to apply rule 7
+        return ret;
+    },
+
+    createRing: function(vertices, alternating, skipFirstH)
+    {
         var frag = { atoms: [], bonds: [], size: vertices };
         var as = 2 * Math.PI / vertices;//angle step
         var r = 0.5 / Math.sin(as / 2) * this.length;
 
-		//ring
+        //ring
         for(var i = 0; i < vertices; i++)
         {
             //move a = 0 to left side to apply rule 4
             frag.atoms.push({
                 x: r * Math.cos(Math.PI + as * i),
                 y: r * Math.sin(Math.PI + as * i),
-				element: "C"
+                element: "C"
             });
             frag.bonds.push({
                 from: i,
@@ -81,38 +97,52 @@ var MPFragments = {
             });
         }
 
-		//saturate
-		var hr = this.lengthHydrogen;
-		for(var i = 1; i < vertices; i++)//skip first since it is a bonding place
-		{
-			if(alternating)//one H atom
-			{
-				frag.atoms.push({
-					x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i),
-					y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i),
-					element: "H"
-				});
-				frag.bonds.push({
-					from: i,
-					to: vertices - 1 + i,
-					type: MP_BOND_SINGLE
-				});
-			}
-			else
-			{
-				var a = Math.PI - 2 * as;
+        //saturate
+        var s = skipFirstH ? 1 : 0;
+        var hr = this.lengthHydrogen;
+        for(var i = s; i < vertices; i++)
+        {
+            if(alternating)//one H atom
+            {
+                frag.atoms.push({
+                    x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i),
+                    y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i),
+                    element: "H"
+                });
+                frag.bonds.push({
+                    from: i,
+                    to: frag.atoms.length - 1,
+                    type: MP_BOND_SINGLE
+                });
+            }
+            else//two H atoms
+            {
+                var a = (Math.PI + as) / 3 / 2;
 
-			}
-		}
+                frag.atoms.push({
+                    x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i + a),
+                    y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i + a),
+                    element: "H"
+                });
+                frag.bonds.push({
+                    from: i,
+                    to: frag.atoms.length - 1,
+                    type: MP_BOND_SINGLE
+                });
+                frag.atoms.push({
+                    x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i - a),
+                    y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i - a),
+                    element: "H"
+                });
+                frag.bonds.push({
+                    from: i,
+                    to: frag.atoms.length - 1,
+                    type: MP_BOND_SINGLE
+                });
+            }
+        }
 
-        var ret = {
-            toAtom: this.translate(MPFragments.clone(frag), 1 + r, 0),//1 for center to (0, 0), r to move bond to the left
-            toBond: this.rotate(MPFragments.clone(frag), (as + Math.PI) / 2, { x: 0, y: 0 })
-        };
-        //ret.toBond.bonds.shift();//remove first bond to apply rule 7
-		//ret.toBond.atoms.splice(vertices, alternating ? 1 : 2);//also remove second (pair of) H atoms to apply rule 7
-        //ret.toBond.atoms.splice(0, 2);//remove first two atoms to apply rule 7
-        return ret;
+        return frag;
     },
 
 	clone: function(frag)

@@ -67,7 +67,7 @@ var Actions = {
 
 	export_sketcher_png: function()
 	{
-		var dataURL = Sketcher.getDataURL();
+		var dataURL = Sketcher.toDataURL();
 		var blob = dataURItoBlob(dataURL);
 		if(blob !== null) saveAs(blob, document.title + " (structural formula).png");
 	},

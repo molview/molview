@@ -364,7 +364,7 @@ var MolView = {
 			{
 				Messages.alert("cir_down");
 			}
-		}, (!Detector.webgl && !MolView.touch) ? "JSmol" : "GLmol");
+		}, "GLmol");
 	},
 
 	/**
@@ -377,7 +377,7 @@ var MolView = {
 	 */
 	addAction: function(id, category, track)
 	{
-		$("#action-" + id.replace(/_/g, "-")).on(this.trigger, function()
+		$("#action-" + id.replace(/_/g, "-")).on(this.trigger, function(e)
 		{
 			if(track && Preferences.get("molview", "allow_tracking", false))
 			{

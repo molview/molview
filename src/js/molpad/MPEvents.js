@@ -36,6 +36,15 @@ MolPad.prototype.onScroll = function(delta)
 
 MolPad.prototype.onPointerDown = function(e)
 {
+	if(e.type == "mousedown" && this.pointer.targetTouchesNumber == 0)
+	{
+		this.pointer.touchGrab = false;
+	}
+	else if(e.type == "mousedown" && this.pointer.touchGrab)
+	{
+		return;
+	}
+
 	var oe = e.originalEvent;
 	var p = getPointerCoords(e);
 	this.pointer.old = p;
@@ -44,6 +53,15 @@ MolPad.prototype.onPointerDown = function(e)
 
 	if(oe.targetTouches && oe.targetTouches.length > 1)
 	{
+		this.pointer.targetTouchesNumber = oe.targetTouches.length;
+		this.pointer.touchGrab = true;
+
+		if(this.hasChanged)
+		{
+			this.hasChanged = false;
+			this.undo(true);
+		}
+
 		this.pointer.oldc = getMultiTouchCenter(e);
 		this.pointer.oldd = getMultiTouchDelta(e);
 		this.pointer.handler = this.multiTouchHandler;
@@ -65,12 +83,8 @@ MolPad.prototype.onPointerDown = function(e)
 				{
 					this.saveToStack();
 				}
-				else
-				{
-					this.pointer.handler = this.tool.defaultHandler;
-				}
 
-				if(this.pointer.handler.onPointerDown)
+				if(this.pointer.handler && this.pointer.handler.onPointerDown)
 				{
 					this.pointer.handler.onPointerDown.call(this, e);
 				}
@@ -81,7 +95,7 @@ MolPad.prototype.onPointerDown = function(e)
 
 		if(this.pointer.handler == undefined)
 		{
-			this.pointer.handler = this.tool.defaultHandler;
+			this.pointer.handler = this.getHandler();
 
 			if(this.pointer.handler.onPointerDown)
 			{
@@ -99,6 +113,11 @@ MolPad.prototype.onPointerDown = function(e)
 
 MolPad.prototype.onMouseMoveInContainer = function(e)
 {
+	if(this.pointer.touchGrab)
+	{
+		return;//dimiss mouse events if touch is active
+	}
+
 	if(this.pointer.handler == undefined)
 	{
 		this.hoverHandler.onPointerMove.call(this, e);
@@ -114,6 +133,11 @@ MolPad.prototype.onMouseOut = function(e)
 
 MolPad.prototype.onPointerMove = function(e)
 {
+	if(e.type == "mousemove" && this.pointer.touchGrab)
+	{
+		return;//dimiss mouse events if touch is active
+	}
+
 	if(this.pointer.handler && this.pointer.handler.onPointerMove)
 	{
 		this.pointer.handler.onPointerMove.call(this, e);
@@ -122,7 +146,13 @@ MolPad.prototype.onPointerMove = function(e)
 
 MolPad.prototype.onPointerUp = function(e)
 {
+	if(e.type == "mouseup" && this.pointer.touchGrab)
+	{
+		return;//dimiss mouse events if touch is active
+	}
+
 	var oe = e.originalEvent;
+	this.hasChanged = false;
 
 	if(this.pointer.handler && this.pointer.handler.onPointerUp)
 	{
@@ -136,6 +166,8 @@ MolPad.prototype.onPointerUp = function(e)
 	//only one multi-touch pointer left: switch to dragHandler
 	if(oe.targetTouches)
 	{
+		this.pointer.targetTouchesNumber = oe.targetTouches.length;
+
 		if(oe.targetTouches.length == 1)
 		{
 			this.pointer.old = getPointerCoords(e);
@@ -159,8 +191,9 @@ MolPad.prototype.onPointerUp = function(e)
 MolPad.prototype.hoverHandler = {
 	onPointerMove: function(e)
 	{
-		var redraw = false;
+		e.preventDefault();
 		this.setCursor("default");
+		var redraw = false;
 		var p = this.getRelativeCoords(getPointerCoords(e));
 
 		this.forAllObjects(function(obj){ obj.resetState(); });
@@ -186,7 +219,6 @@ MolPad.prototype.mouseDragHandler = {
 	onPointerMove: function(e)
 	{
 		this.setCursor("move");
-
 		e.preventDefault();
 		var p = getPointerCoords(e);
 
@@ -224,7 +256,6 @@ MolPad.prototype.multiTouchHandler = {
 MolPad.prototype.selectionToolHandler = {
 	onPointerDown: function(e)
 	{
-		e.preventDefault();
 		this.setCursor("pointer");
 		var p = this.getRelativeCoords(getPointerCoords(e));
 
@@ -271,5 +302,131 @@ MolPad.prototype.selectionToolHandler = {
 	{
 		this.tool.tmp = {};
 		this.redraw();
+	}
+}
+
+MolPad.prototype.getHandler = function()
+{
+	if(this.tool.type == "atom")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				this.saveToStack();
+
+				var p = this.getRelativeCoords(getPointerCoords(e));
+				var atom = new MPAtom({
+					i: this.molecule.atoms.length,
+					x: p.x,
+					y: p.y,
+					element: this.tool.data.element
+				});
+				atom.update(this);
+				this.molecule.atoms.push(atom);
+				this.redraw();
+			}
+		};
+	}
+	else if(this.tool.type == "bond")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				this.saveToStack();
+
+				var p = this.getRelativeCoords(getPointerCoords(e));
+
+				var atom1 = new MPAtom({
+					i: this.molecule.atoms.length,
+					x: p.x - this.settings.bond.length / 2,
+					y: p.y,
+					element: "C"
+				});
+				this.molecule.atoms.push(atom1);
+
+				var atom2 = new MPAtom({
+					i: this.molecule.atoms.length,
+					x: p.x + this.settings.bond.length / 2,
+					y: p.y,
+					element: "C"
+				});
+				this.molecule.atoms.push(atom2);
+
+				var bond = new MPBond({
+					i: this.molecule.bonds.length,
+					from: atom1.getIndex(),
+					to: atom2.getIndex(),
+					type: this.tool.data.type,
+					stereo: this.tool.data.stereo
+				});
+				this.molecule.bonds.push(bond);
+
+				atom1.addBond(bond.getIndex());
+				atom2.addBond(bond.getIndex());
+				atom1.update(this);
+				atom2.update(this);
+				bond.update(this);
+
+				this.redraw();
+			}
+		};
+	}
+	else if(this.tool.type == "fragment")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				this.saveToStack();
+
+				var p = this.getRelativeCoords(getPointerCoords(e));
+
+				var frag = MPFragments.translate(
+						MPFragments.scale(MPFragments.clone(this.tool.data.frag.full),
+							this.settings.bond.length),
+							p.x, p.y);
+
+				for(var i = 0, n = this.settings.drawSkeletonFormula ?
+					frag.size : frag.atoms.length; i < n; i++)
+				{
+					var atom = new MPAtom({
+						i: this.molecule.atoms.length,
+						x: frag.atoms[i].x,
+						y: frag.atoms[i].y,
+						element: frag.atoms[i].element
+					});
+
+					this.molecule.atoms.push(atom);
+					frag.atoms[i].i = atom.getIndex();
+					atom.update(this);
+				}
+
+				for(var i = 0, n = this.settings.drawSkeletonFormula ?
+					frag.size : frag.bonds.length; i < n; i++)
+				{
+					var bond = new MPBond({
+						i: this.molecule.bonds.length,
+						type: frag.bonds[i].type,
+						stereo: MP_STEREO_NONE,
+						from: frag.atoms[frag.bonds[i].from].i,
+						to: frag.atoms[frag.bonds[i].to].i
+					});
+
+					this.molecule.atoms[bond.getFrom()].addBond(bond.getIndex());
+					this.molecule.atoms[bond.getTo()].addBond(bond.getIndex());
+					this.molecule.bonds.push(bond);
+					bond.update(this);
+				}
+
+				this.redraw();
+			}
+		};
+	}
+	else if(this.tool.type == "select")
+	{
+		return this.selectionToolHandler;
+	}
+	else
+	{
+		return this.mouseDragHandler;
 	}
 }

@@ -513,7 +513,7 @@ Query parameters:
 						</p>
 						<a class="gray" href="legal" target="_blank">Terms of Use</a>
 						<div id="welcome-button-bar" class="btn-group">
-							<button id="action-start-help" class="btn btn-large">Getting started</button>
+							<button id="action-start-help" class="btn btn-large">Get started</button>
 							<button class="btn close btn-large btn-primary">Continue</button>
 						</div>
 						<p>MolView is also on YouTube, Twitter, Facebook and Google Plus to keep you updated about the latest stuff!</p>
@@ -558,7 +558,7 @@ Query parameters:
 							</li>
 						</ul>
 						<p id="about-links">
-							MolView v2.2.0
+							MolView v2.3.x
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
@@ -605,17 +605,27 @@ Query parameters:
 							<div class="expandable-content">
 								<p>You can draw structural formulas using the Sketcher component.</p>
 								<h4>Top toolbar</h4>
-								<p>The top toolbar contains all general editing tools. The 2D to 3D tool converts the structural formula into a 3D molecule which is displayed in the model window. If you don't want that implicit hydrogen atoms are stripped from the structural formula after loading, you have to toggle the hydrogen stripping button off (third from right)</p>
 								<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.png" alt="Top toolbar" /></p>
-								<p class="image-note"><span>Top toolbar, from left to right: delete all, erase, undo, redo, move atoms/bonds, center view, rectangle select, lasso select, clear selection, toggle hydrogen stripping, clean structural formula, 2D to 3D conversion</span></p>
+								<ol>
+									<li><b>Trash:</b> clears the entire canvas</li>
+									<li><b>Eraser:</b> click atoms or bonds to erase them</li>
+									<li><b>Drag:</b> drag atoms and bonds around</li>
+									<li><b>Undo/redo:</b> navigate trough your edit history</li>
+									<li><b>Full mode:</b> displays all C and H atoms instead of skeleton display</li>
+									<li><b>Center:</b> centers the whole molecule</li>
+									<li><b>Clean:</b> cleans the structural formula using an external service</li>
+									<li><b>2D to 3D:</b> converts the structural formula into a 3D model</li>
+								</ol>
 								<h4>Left toolbar</h4>
-								<p>In the left toolbar, you can select a tool you want to use in order to modify or extend the structural formula. You can draw a carbon chain using the chain tool. Just click a start point or atom and drag a chain.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.png" alt="Left toolbar" /></p>
-								<p class="image-note"><span>Left toolbar (rotated), from left to right: single bond, double bond, triple bond, up/down bond, benzene, cyclopropane, butane, pentane, hexane, heptane, chain, charge+, charge-</span></p>
+								<ol>
+									<li><b>Bonds:</b> pick one of the bond types and create bonds by clicking the canvas, add bonds to atoms or modify bonds by clicking existing bonds</li>
+									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and create fragments by clicking the canvas or add fragments to atoms</li>
+									<li><b>Charge:</b> click atoms to either increment or decrement their charge</li>
+								</ol>
 								<h4>Right toolbar</h4>
-								<p>The right toolbar contains some common elements and a periodic table tool in case you want to pick another element. You can select an atom and click an existing atom in order to replace it with the selected atom. Note that you can only replace existing atoms. In order to add an atom, you will first have to add a new bond using the tools from the left toolbar.</p>
 								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.png" alt="Right toolbar" /></p>
-								<p class="image-note"><span>Right toolbar (rotated), from left to right: hydrogen, carbon, nitrogen, oxygen, sulfur, phosphorus, fluorine, iodine, chlorine, bromine, table of elements, info (about dialog)</span></p>
+								<p>Contains a number of elements and at the bottom a periodic table button which pop-ups a periodic table where you can choose from all elements. If you have selected an element, you can click existing atoms to change their element or click on an empty part of the canvas to create a new atom with the selected element.</p>
 							</div>
 						</div>
 						<div class="expandable">

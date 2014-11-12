@@ -35,7 +35,7 @@
 - Removed MyMemory translation from PubChem, RCSB and COD search
 
 #### Functionality
-- Added audo Ball and Stick mode when performing a Jmol measurement
+- Added auto Ball and Stick mode when performing a Jmol measurement
 - Replaced Jmol render-mode menu with HQ switch
 - Removed auto layout-model onload crystals
 - Removed embed warning about slow, non-WebGL devices
