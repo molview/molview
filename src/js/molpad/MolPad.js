@@ -204,11 +204,11 @@ function MolPad(container, devicePixelRatio, buttons)
 	});
 
 	/**
-	 * Hotkeys
+	 * Keyboard shortcuts
 	 */
 	if(navigator.platform.toLowerCase().indexOf("mac") >= 0)
 	{
-		jQuery(document).on("keydown", "meta+z", this.undo.bind(this));
+		jQuery(document).bind("keydown", "meta+z", this.undo.bind(this));
 		jQuery(document).bind("keydown", "meta+y", this.redo.bind(this));
 		jQuery(document).bind("keydown", "meta+shift+z", this.redo.bind(this));
 	}

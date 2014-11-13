@@ -2,7 +2,11 @@
 
 ## 2.3.1
 
+- Added <!DOCTYPE html> to page.php
 - Fixed relative URLs in error pages
+- Fixed .menu-item icons in .dropdown-compact
+- Fixed incorrect meta+z keyboard shortcut binding
+- Restyled all dialog headings (removed .dialog-close-btn)
 - Changed img/image.png background to white
 
 ## 2.3.x

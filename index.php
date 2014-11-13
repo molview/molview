@@ -533,7 +533,6 @@ Query parameters:
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>
-						<div class="dialog-close-btn"></div>
 						<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
 						This web application is built on top of the JavaScript libraries and online services listed below. I also drew inspiration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar web application.</p>
 						<ul>
@@ -588,7 +587,6 @@ Query parameters:
 					</div>
 					<div class="dialog" id="help-dialog" style="display: none;">
 						<h2>Help</h2>
-						<div class="dialog-close-btn"></div>
 						<script type="text/javascript">
 							if(isTouchDevice())
 							{
@@ -605,7 +603,7 @@ Query parameters:
 							<div class="expandable-content">
 								<p>You can draw structural formulas using the Sketcher component.</p>
 								<h4>Top toolbar</h4>
-								<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.png" alt="Top toolbar" /></p>
+								<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.jpg" alt="Top toolbar" /></p>
 								<ol>
 									<li><b>Trash:</b> clears the entire canvas</li>
 									<li><b>Eraser:</b> click atoms or bonds to erase them</li>
@@ -617,14 +615,14 @@ Query parameters:
 									<li><b>2D to 3D:</b> converts the structural formula into a 3D model</li>
 								</ol>
 								<h4>Left toolbar</h4>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.png" alt="Left toolbar" /></p>
+								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.jpg" alt="Left toolbar" /></p>
 								<ol>
 									<li><b>Bonds:</b> pick one of the bond types and create bonds by clicking the canvas, add bonds to atoms or modify bonds by clicking existing bonds</li>
 									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and create fragments by clicking the canvas or add fragments to atoms</li>
 									<li><b>Charge:</b> click atoms to either increment or decrement their charge</li>
 								</ol>
 								<h4>Right toolbar</h4>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.png" alt="Right toolbar" /></p>
+								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.jpg" alt="Right toolbar" /></p>
 								<p>Contains a number of elements and at the bottom a periodic table button which pop-ups a periodic table where you can choose from all elements. If you have selected an element, you can click existing atoms to change their element or click on an empty part of the canvas to create a new atom with the selected element.</p>
 							</div>
 						</div>
@@ -638,7 +636,7 @@ Query parameters:
 									<li><b>The RCSB Protein Data Bank</b></li>
 									<li><b>The Crystallography Open Database</b></li>
 								</ol>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block; border: 1px solid #ccc;" src="img/help/SearchBar.png" alt="Search bar" /></p>
+								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block; border: 1px solid #ccc;" src="img/help/SearchBar.jpg" alt="Search bar" /></p>
 								<p class="image-note"><span>The search form</span></p>
 							</div>
 						</div>
@@ -788,7 +786,6 @@ Query parameters:
 					</div>
 					<div class="dialog" id="share-dialog" style="display: none;">
 						<h2>Share</h2>
-						<div class="dialog-close-btn"></div>
 						<div class="alert-box">
 							<span id="share-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
 						</div>
@@ -807,7 +804,6 @@ Query parameters:
 					</div>
 					<div class="dialog" id="embed-dialog" style="display: none;">
 						<h2>Embed</h2>
-						<div class="dialog-close-btn"></div>
 						<div class="alert-box">
 							<span id="embed-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
 						</div>
@@ -826,7 +822,6 @@ Query parameters:
 					</div>
 					<div class="dialog" id="periodictable-dialog" style="display: none;">
 						<h2>Periodic Table</h2>
-						<div class="dialog-close-btn"></div>
 						<div id="periodictable"></div>
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>

@@ -76,6 +76,8 @@ $copyrightMap = array(
 $md = file_get_contents($map[$id]);
 $renderer = new Parsedown();
 ?>
+
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8" />

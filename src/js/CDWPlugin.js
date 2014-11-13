@@ -35,7 +35,6 @@ var CDWPlugin = {
 
 		if(Detector.webgl)
 		{
-			var mult = MolView.mobile ? 1.5 : 1.5;
 			this.view = new ChemDoodle.TransformCanvas3D("chemdoodle-canvas", $("#model").width() * Model.pixelMult, $("#model").height() * Model.pixelMult);
 			$("#chemdoodle-canvas").css({ width: $("#model").width(), height: $("#model").height() });
 			this.view.specs.macromolecules_ribbonCartoonize = this.view.specs.proteins_ribbonCartoonize = true;
