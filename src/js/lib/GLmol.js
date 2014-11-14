@@ -832,7 +832,11 @@ var GLmol = (function()
 
 		protein.smallMolecule = false;
 
-		//calculate PDB chain bonds
+		return true;
+	};
+
+	GLmol.prototype.calculateBonds = function()
+	{
 		var atomlist = this.getAllAtoms();
 		for(var _i = 0; _i < atomlist.length; _i++)
 		{
@@ -860,8 +864,6 @@ var GLmol = (function()
 				}
 			}
 		}
-
-		return true;
 	};
 
 	/**
@@ -1086,15 +1088,16 @@ var GLmol = (function()
 		if(!found || Math.abs(dot - 1) < 0.001 || Math.abs(dot + 1) < 0.001)
 		{
 			//CHECK: why was this code here???
-			/* if(axis.x < 0.01 && axis.y < 0.01)
+			console.log(axis);
+			if(Math.abs(axis.x) < 0.01 && Math.abs(axis.y) < 0.01)
 			{
 				delta = new TV3(0, -axis.z, axis.y);
 			}
 			else
 			{
 				delta = new TV3(-axis.y, axis.x, 0);
-			} */
-			delta = new TV3(-axis.y, axis.x, 0);
+			}
+			//delta = new TV3(-axis.y, axis.x, 0);
 		}
 		delta.normalize().multiplyScalar(sep);
 		return delta;

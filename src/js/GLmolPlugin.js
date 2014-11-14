@@ -24,9 +24,18 @@ var GLmolPlugin = {
 	ready: false,
 	view: undefined,
 
-	/* Saves current containing model data in order to prevent loading the
-	same structure multiple times while switching between render engines */
+	/**
+	 * Saves current containing model data in order to prevent loading the
+	 * same structure multiple times while switching between render engines
+	 * @type {String}
+	 */
 	currentModel: "",
+
+	/**
+	 * Indicates if the protein bonds are calculated using GLmol.calculatedBonds
+	 * @type {Boolean}
+	 */
+	bondsCalculated: false,
 
 	init: function(cb)
 	{
@@ -83,6 +92,12 @@ var GLmolPlugin = {
 
 					if(chain.bonds)
 					{
+						if(!Model.GLmol.bondsCalculated)
+						{
+							Model.GLmol.bondsCalculated = true;
+							this.calculateBonds();
+						}
+
 						this.drawBondsAsLine(asu, all, this.lineWidth);
 					}
 
@@ -123,7 +138,7 @@ var GLmolPlugin = {
 					{
 						this.canvasAtomRadius = 0.0;
 						this.canvasLine = true;
-						this.drawBondsAsLine(this.modelGroup, hetatm, 1);
+						this.drawBondsAsLine(this.modelGroup, hetatm, this.lineWidth);
 					}
 				}
 
@@ -209,6 +224,7 @@ var GLmolPlugin = {
 
 		if(this.view)
 		{
+			this.bondsCalculated = false;
 			this.currentModel = pdb;
 			this.view.loadPDB(pdb);
 		}

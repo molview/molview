@@ -40,17 +40,20 @@ var Sketcher = {
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
+		$("#action-mp-color-mode").toggleClass("tool-button-selected",
+				Preferences.get("sketcher", "colored", true));
 		$("#action-mp-skeletal-formula").toggleClass("tool-button-selected",
 				!Preferences.get("sketcher", "skeletal_formula", true));
 
 		if(Detector.canvas)
 		{
 			this.molpad = new MolPad(document.getElementById("molpad-canvas-wrapper"),
-					MolView.devicePixelRatio, {
-						undo: "#action-mp-undo",
-						redo: "#action-mp-redo"
-					});
+				MolView.devicePixelRatio, {
+					undo: "#action-mp-undo",
+					redo: "#action-mp-redo"
+				});
 			this.molpad.displaySkeleton(Preferences.get("sketcher", "skeletal_formula", true));
+			this.setColored(Preferences.get("sketcher", "colored", true));
 
 			if(MolView.loadDefault)
 			{
@@ -216,6 +219,26 @@ var Sketcher = {
 	redo: function()
 	{
 		if(this.molpad) this.molpad.redo();
+	},
+
+	setColored: function(colored)
+	{
+		if(this.molpad)
+		{
+			$(".tool-element").toggleClass("element-colored", colored);
+			Preferences.set("sketcher", "colored", colored);
+			this.molpad.setColored(colored);
+		}
+	},
+
+	toggleColorMode: function()
+	{
+		if(this.molpad)
+		{
+			this.setColored($("#action-mp-color-mode")
+					.toggleClass("tool-button-selected")
+					.hasClass("tool-button-selected"));
+		}
 	},
 
 	toggleSkeletalFormula: function()

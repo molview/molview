@@ -121,6 +121,21 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		}
 	}
 
+	//refine PubChem image
+	if(isset($pubchem_query))
+	{
+		if($pubchem_query == "smiles")
+		{
+			$image_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles=".
+					urlencode($pubchem_value)."&record_type=2d";
+		}
+		else
+		{
+			$image_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".
+					$pubchem_query."/".$pubchem_value."/png?record_type=2d";
+		}
+	}
+
 	return array(
 		"title" => $title,
 		"description" => $description,

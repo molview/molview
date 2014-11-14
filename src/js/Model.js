@@ -241,7 +241,7 @@ var Model = {
 		else if(mode == "stick") $("#action-model-stick").addClass("checked");
 		else if(mode == "vdw") $("#action-model-vdw").addClass("checked");
 		else if(mode == "wireframe") $("#action-model-wireframe").addClass("checked");
-		else if(mode == "line") $("action-#model-line").addClass("checked");
+		else if(mode == "line") $("#action-model-line").addClass("checked");
 
 		this.representation = mode;
 

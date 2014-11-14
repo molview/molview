@@ -930,7 +930,11 @@ MPAtom.prototype.drawLabel = function(mp)
 	if(this.isVisible(mp))
 	{
 		var line = this.getCenterLine();
-		mp.ctx.fillStyle = JmolAtomColorsHashHex[this.element];
+
+		if(mp.settings.atom.colored)
+		{
+			mp.ctx.fillStyle = JmolAtomColorsHashHex[this.element];
+		}
 
 		if(mp.settings.atom.miniLabel)
 		{

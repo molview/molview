@@ -305,6 +305,15 @@ MPBond.prototype.update = function(mp)
 		to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, [0])
 	};
 
+	if(mp.settings.bond.gradient.enabled)
+	{
+		var f = mp.molecule.atoms[this.from];
+		var t = mp.molecule.atoms[this.to];
+		this.cache.gradient = mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
+		this.cache.gradient.addColorStop(mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.getElement()]);
+		this.cache.gradient.addColorStop(mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.getElement()]);
+	}
+
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
 		//TODO: connect one double CIS-TRANS bond to [0] endpoint
@@ -401,13 +410,14 @@ MPBond.prototype.drawBond = function(mp)
 	var scale = mp.settings.bond.scale;
 	var line = this.getCenterLine(mp);
 
+	if(mp.settings.bond.gradient.enabled && !mp.settings.atom.miniLabel)
+	{
+		mp.ctx.strokeStyle = this.cache.gradient;
+		if(this.stereo == MP_STEREO_UP) mp.ctx.fillStyle = this.cache.gradient;
+	}
+
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
-		//TODO: connect one double CIS-TRANS bond to [0] endpoint
-		var ends = mp.settings.bond.delta[MP_BOND_DOUBLE];
-		var from = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends);
-		var to = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends);
-
 		mp.ctx.beginPath();
 		mp.ctx.moveTo(this.cache.ctd.from[0].x, this.cache.ctd.from[0].y);
 		mp.ctx.lineTo(this.cache.ctd.to[0].x, this.cache.ctd.to[0].y);

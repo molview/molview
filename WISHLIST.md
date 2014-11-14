@@ -35,7 +35,5 @@ Wishlist
 - Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Add client-side structural formula depiction using JavaScript
 - Add backend services using CDK and the Google Cloud Platform
-- Create MolView for Android and iOS using CocoonJS
-- Investigate Mathematica features
 - Add plugin framework and developer SDK
 - Add reaction animations using the MACiE database

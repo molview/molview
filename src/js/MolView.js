@@ -324,19 +324,20 @@ var MolView = {
 		this.addAction("mp_redo", "button", true);
 		this.addAction("mp_rect", "button", true);
 		this.addAction("mp_lasso", "button", true);
+		this.addAction("mp_color_mode", "button", true);
 		this.addAction("mp_skeletal_formula", "button", true);
 		this.addAction("mp_center", "button", true);
 		this.addAction("mp_clean", "button", true);
-		this.addAction("mp_atom_h", "button", true);
 		this.addAction("mp_atom_c", "button", true);
+		this.addAction("mp_atom_h", "button", true);
 		this.addAction("mp_atom_n", "button", true);
 		this.addAction("mp_atom_o", "button", true);
-		this.addAction("mp_atom_s", "button", true);
 		this.addAction("mp_atom_p", "button", true);
+		this.addAction("mp_atom_s", "button", true);
 		this.addAction("mp_atom_f", "button", true);
-		this.addAction("mp_atom_i", "button", true);
 		this.addAction("mp_atom_cl", "button", true);
 		this.addAction("mp_atom_br", "button", true);
+		this.addAction("mp_atom_i", "button", true);
 		this.addAction("mp_periodictable", "button", true);
 		this.addAction("resolve", "button", true);
 

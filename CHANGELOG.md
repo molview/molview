@@ -2,12 +2,18 @@
 
 ## 2.3.1
 
+- Added GLmol.calculateBonds()
+- Added MolPad color scheme switch
 - Added <!DOCTYPE html> to page.php
 - Fixed relative URLs in error pages
 - Fixed .menu-item icons in .dropdown-compact
+- Fixed #action-model-line checkmark toggling
 - Fixed incorrect meta+z keyboard shortcut binding
-- Restyled all dialog headings (removed .dialog-close-btn)
+- Fixed GLmol.calcBondDelta for bond in Z direction
 - Changed img/image.png background to white
+- Changed element order in #elem-tools to CHNOPS
+- Restyled all dialog headings (removed .dialog-close-btn)
+- Revised metadata image loading
 
 ## 2.3.x
 

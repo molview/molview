@@ -25,8 +25,11 @@ var CDWPlugin = {
 	view: undefined,
 	molecule: undefined,
 
-	/* Saves current containing model data in order to prevent loading the
-	same structure multiple times while switching between render engines */
+	/**
+	* Saves current containing model data in order to prevent loading the
+	* same structure multiple times while switching between render engines
+	* @type {String}
+	*/
 	currentModel: "",
 
 	init: function(cb)

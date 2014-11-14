@@ -58,13 +58,41 @@ select nucleic; color ribbon red; color backbone red;",
  * @type {Object}
  */
 var JSmolPlugin = {
+	/**
+	 * Indicates if JSmol is loaded
+	 * @type {Boolean}
+	 */
 	ready: false,
-	readyCB: undefined,//only used in constructor
-	hq: true,//high quality
+
+	/**
+	 * Callback called once constructor is finished
+	 * @type {Function}
+	 */
+	readyCB: undefined,
+
+
+	/**
+	 * Indicates if High Quality is enabled
+	 * High Quality includes:
+	 * - anti aliasing
+	 * - higher platform speed
+	 * - protein ribbon rims
+	 *
+	 * @type {Boolean}
+	 */
+	hq: true,
+
+	/**
+	 * Jmol picking mode
+	 * @type {String}
+	 */
 	picking: "OFF",
 
-	/* Saves current containing model data in order to prevent loading the
-	same structure multiple times while switching between render engines */
+	/**
+	* Saves current containing model data in order to prevent loading the
+	* same structure multiple times while switching between render engines
+	* @type {String}
+	*/
 	currentModel: "",
 
 	init: function(cb)

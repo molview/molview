@@ -397,20 +397,21 @@ var Actions = {
 	mp_redo: function(){ Sketcher.redo(); },
 	mp_rect: function(){ Sketcher.setTool(this, "select", { type: "rect" }); },
 	mp_lasso: function(){ Sketcher.setTool(this, "select", { type: "lasso" }); },
+	mp_color_mode: function(){ Sketcher.toggleColorMode(); },
 	mp_skeletal_formula: function(){ Sketcher.toggleSkeletalFormula(); },
 	mp_center: function(){ Sketcher.center(); },
 	mp_clean: function(){ Sketcher.clean(); },
 
-	mp_atom_h: function(){ Sketcher.setTool(this, "atom", { element: "H" }); },
 	mp_atom_c: function(){ Sketcher.setTool(this, "atom", { element: "C" }); },
+	mp_atom_h: function(){ Sketcher.setTool(this, "atom", { element: "H" }); },
 	mp_atom_n: function(){ Sketcher.setTool(this, "atom", { element: "N" }); },
 	mp_atom_o: function(){ Sketcher.setTool(this, "atom", { element: "O" }); },
-	mp_atom_s: function(){ Sketcher.setTool(this, "atom", { element: "S" }); },
 	mp_atom_p: function(){ Sketcher.setTool(this, "atom", { element: "P" }); },
+	mp_atom_s: function(){ Sketcher.setTool(this, "atom", { element: "S" }); },
 	mp_atom_f: function(){ Sketcher.setTool(this, "atom", { element: "F" }); },
-	mp_atom_i: function(){ Sketcher.setTool(this, "atom", { element: "I" }); },
 	mp_atom_cl: function(){ Sketcher.setTool(this, "atom", { element: "Cl" }); },
 	mp_atom_br: function(){ Sketcher.setTool(this, "atom", { element: "Br" }); },
+	mp_atom_i: function(){ Sketcher.setTool(this, "atom", { element: "I" }); },
 
 	mp_periodictable: function()
 	{

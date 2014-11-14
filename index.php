@@ -93,31 +93,9 @@ Query parameters:
 			$metadata["description"].'" />';
 
 			//image
-			if(isset($metadata["pubchem_query"]))
-			{
-				if($metadata["pubchem_query"] == "smiles")
-				{
-					echo '<meta name="twitter:image:src" property="og:image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles='.
-							urlencode($metadata["pubchem_value"]).'&record_type=2d" />';
-					echo '<meta itemprop="image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles='.
-							urlencode($metadata["pubchem_value"]).'record_type=2d" />';
-				}
-				else
-				{
-					echo '<meta name="twitter:image:src" property="og:image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'.
-							$metadata["pubchem_query"].'/'.$metadata["pubchem_value"].'/png?record_type=2d" />';
-					echo '<meta itemprop="image" content="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'.
-							$metadata["pubchem_query"].'/'.$metadata["pubchem_value"].'/png?record_type=2d" />';
-				}
-			}
-			else
-
-			{
-				echo '<meta name="twitter:image:src" itemprop="image" property="og:image" content="'.
-						$metadata["image_url"].'" />';
-				echo '<meta itemprop="image" content="'.
-						$metadata["image_url"].'" />';
-			}
+			echo '<meta property="og:image" content="'.$metadata["image_url"].'" />';
+			echo '<meta itemprop="image" content="'.$metadata["image_url"].'" />';
+			echo '<meta name="twitter:image" content="'.$metadata["image_url"].'" />';
 
 			//special metadata
 			echo '<meta itemprop="sameAs" content="'.$metadata["same_as"].'" />';
@@ -363,6 +341,7 @@ Query parameters:
 								<div id="action-mp-rect" class="tool-button tool-button-horizontal primary-tool" title="Rectangle selection"></div>
 								<div id="action-mp-lasso" class="tool-button tool-button-horizontal primary-tool" title="Lasso selection"></div> -->
 								<div class="horizontal-separator"></div>
+								<div id="action-mp-color-mode" class="tool-button tool-button-horizontal enabled" title="Toggle color mode"></div>
 								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula"></div>
 								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
 								<div class="horizontal-separator"></div>
@@ -372,16 +351,16 @@ Query parameters:
 						</div>
 						<div id="elem-tools" class="toolbar">
 							<div class="toolbar-inner">
-								<div id="action-mp-atom-h" class="tool-button primary-tool" title="Hydrogen">H</div>
-								<div id="action-mp-atom-c" class="tool-button primary-tool" title="Carbon">C</div>
-								<div id="action-mp-atom-n" class="tool-button primary-tool" title="Nitrogen">N</div>
-								<div id="action-mp-atom-o" class="tool-button primary-tool" title="Oxygen">O</div>
-								<div id="action-mp-atom-s" class="tool-button primary-tool" title="Sulfur">S</div>
-								<div id="action-mp-atom-p" class="tool-button primary-tool" title="Phosphorus">P</div>
-								<div id="action-mp-atom-f" class="tool-button primary-tool" title="Fluorine">F</div>
-								<div id="action-mp-atom-i" class="tool-button primary-tool" title="Iodine">I</div>
-								<div id="action-mp-atom-cl" class="tool-button primary-tool" title="Chlorine">Cl</div>
-								<div id="action-mp-atom-br" class="tool-button primary-tool" title="Bromine">Br</div>
+								<div id="action-mp-atom-c" class="tool-button primary-tool tool-element element-colored" title="Carbon">C</div>
+								<div id="action-mp-atom-h" class="tool-button primary-tool tool-element element-colored" title="Hydrogen">H</div>
+								<div id="action-mp-atom-n" class="tool-button primary-tool tool-element element-colored" title="Nitrogen">N</div>
+								<div id="action-mp-atom-o" class="tool-button primary-tool tool-element element-colored" title="Oxygen">O</div>
+								<div id="action-mp-atom-p" class="tool-button primary-tool tool-element element-colored" title="Phosphorus">P</div>
+								<div id="action-mp-atom-s" class="tool-button primary-tool tool-element element-colored" title="Sulfur">S</div>
+								<div id="action-mp-atom-f" class="tool-button primary-tool tool-element element-colored" title="Fluorine">F</div>
+								<div id="action-mp-atom-cl" class="tool-button primary-tool tool-element element-colored" title="Chlorine">Cl</div>
+								<div id="action-mp-atom-br" class="tool-button primary-tool tool-element element-colored" title="Bromine">Br</div>
+								<div id="action-mp-atom-i" class="tool-button primary-tool tool-element element-colored" title="Iodine">I</div>
 								<div id="action-mp-periodictable" class="tool-button primary-tool" title="Periodic Table">...</div>
 							</div>
 						</div>

@@ -36,6 +36,11 @@ function MolPad(container, devicePixelRatio, buttons)
 		drawSkeletonFormula: true,
 		relativePadding: 0.15,
 		bond: {
+			gradient: {
+				enabled: true,
+				from: 0.4,
+				to: 0.6
+			},
 			hover: {
 				color: "#bfb"
 			},
@@ -92,6 +97,8 @@ function MolPad(container, devicePixelRatio, buttons)
 			},
 			scale: 1,
 			radius: 12,//radius around atom center-line
+			color: "#111111",
+			colored: true,
 			lineCap: "round",
 			circleClamp: 15,//label width > circleClamp: atom center = line
 			minAddRotateLength: 12,
@@ -310,6 +317,14 @@ MolPad.prototype.displaySkeleton = function(yes)
 	if(yes) this.removeImplicitHydrogen();
 	else this.addImplicitHydrogen();
 	this.redraw(true);
+}
+
+MolPad.prototype.setColored = function(yes)
+{
+	this.settings.atom.colored = this.settings.bond.gradient.enabled = yes;
+	this.settings.atom.isotope.fontStyle = this.settings.atom.label.fontStyle =
+			this.settings.atom.charge.fontStyle = yes ? "bold" : "normal";
+	this.redraw(true);//gradients are cached
 }
 
 MolPad.prototype.toDataURL = function()

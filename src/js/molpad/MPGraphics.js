@@ -102,6 +102,7 @@ MolPad.prototype.draw = function()
 	}
 
 	//draw atoms
+	this.ctx.fillStyle = this.ctx.strokeStyle = this.settings.atom.color;
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
 		this.molecule.atoms[i].drawLabel(this);
