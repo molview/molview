@@ -35,6 +35,24 @@ function findAngleBetween(from, to)
 }
 
 /**
+ * Calculate angle between two points where from is the center point
+ * @param {Object} from
+ * @param {Object} to
+ */
+function angleBetweenPoints(from, to)
+{
+	return Math.atan2(-to.y + from.y, to.x - from.x);//flipped y axis because of 2D canvas
+}
+
+function clampedAngle(start, center, point, steps)
+{
+	var a = angleBetweenPoints(center, point);
+	var clampFactor = steps / (2 * Math.PI);
+	return Math.round((a - start) * clampFactor) / clampFactor
+			+ start;//clamp to x steps, normalize to startAngle
+}
+
+/**
  * Multiply all values in an array with a given multiplier into new array
  * @param  {Array} array
  * @param  {Float} mult
@@ -89,11 +107,17 @@ function pointToLineDistance(p, a, b)
 	return Math.sqrt(dx * dx + dy * dy);
 }
 
-function pointToPointDistance(a, b)
+/**
+ * Checks if the given point is inside the given circle
+ * @param  {Object} point  Point
+ * @param  {Object} center Circle center
+ * @param  {Float}  radius Cricle radius
+ * @return {Boolean}
+ */
+function pointInsideCircle(point, center, radius)
 {
-	var dx = a.x - b.x;
-	var dy = a.y - b.y;
-	return Math.sqrt(dx * dx + dy * dy);
+	return (point.x - center.x) * (point.x - center.x) +
+		   (point.y - center.y) * (point.y - center.y) < radius * radius;
 }
 
 /**
@@ -112,7 +136,7 @@ function fastPointInLineBox(p, a, b, r)
 	if(a.y < b.y) { bl.y = a.y, tr.y = b.y; }
 	else		  { bl.y = b.y, tr.y = a.y; }
 
-	return p.x >= bl.x - r && p.x <= tr.x + r && p.y >= bl.y - r && p.y <= tr.y + r;
+	return !(p.x < bl.x - r || p.x > tr.x + r || p.y < bl.y - r || p.y > tr.y + r);
 }
 
 /**
@@ -124,7 +148,7 @@ function fastPointInLineBox(p, a, b, r)
 */
 function fastPointInCircleBox(p, a, r)
 {
-	return p.x >= a.x - r && p.x <= a.x + r && p.y >= a.y - r && p.y <= a.y + r;
+	return !(p.x < a.x - r || p.x > a.x + r || p.y < a.y - r || p.y > a.y + r);
 }
 
 function pointInRect(point, rect)

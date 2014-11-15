@@ -328,9 +328,13 @@ var InfoCard = {
 			{
 				Request.PubChem.smilesToCID(InfoCard.data["smiles"], function(cid)
 				{
-					InfoCard.data[id] = cid;
-					success(InfoCard.data[id]);
-				}, _fail);
+					InfoCard.data["cid"] = cid;
+					success(InfoCard.data["cid"]);
+				}, function()
+				{
+					InfoCard.data["cid"] = -1;
+					_fail();
+				});
 			}
 			else
 			{
@@ -341,7 +345,11 @@ var InfoCard = {
 
 	getPropertyFromPubChem: function(id, success, fail)
 	{
-		if(InfoCard.data["cid"] && id == "cas")
+		if(InfoCard.data["cid"] == -1)
+		{
+			InfoCard.getPropertyFromCIR(id, success, fail);
+		}
+		else if(InfoCard.data["cid"] && id == "cas")
 		{
 			Request.PubChem.casNumber(InfoCard.data["cid"], function(cas)
 			{

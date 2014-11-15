@@ -546,8 +546,7 @@ var Loader = {
 					if(mol2d)
 					{
 						Sketcher.metadata.smiles = smiles;
-						Sketcher.loadMOL(mol2d);
-						Sketcher.removeImplicitHydrogen();//use only in fallback
+						Sketcher.loadMOL(mol2d, true);
 						Sketcher.markUpdated();
 
 						finish();

@@ -9,6 +9,8 @@
 - Added GLmol.calculateBonds()
 - Added MolPad color scheme switch
 - Added <!DOCTYPE html> to page.php
+- Added bond creation to MolPad atom edit
+- Added fragment rotation to MolPad
 - Fixed relative URLs in error pages
 - Fixed .menu-item icons in .dropdown-compact
 - Fixed #action-model-line checkmark toggling

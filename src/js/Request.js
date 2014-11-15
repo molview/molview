@@ -438,7 +438,7 @@ var Request = {
 				defaultError: error,
 				success: function(data)
 				{
-					if(data.IdentifierList)
+					if(data.IdentifierList && data.IdentifierList.CID[0] > 0)
 					{
 						success(data.IdentifierList.CID[0]);
 					}

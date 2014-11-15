@@ -131,13 +131,14 @@ MPBond.prototype.isPair = function(a, b, mp)
 
 MPBond.prototype.getHandler = function(mp)
 {
+	//TODO: implement fragment to bond tool
+
 	var scope = this;
 	if(mp.tool.type == "bond")
 	{
 		return {
 			onPointerDown: function(e)
 			{
-				//TODO: implement up/down bond flipping
 				//TODO: implement up to up bonds
 
 				var changed = false;
@@ -309,8 +310,8 @@ MPBond.prototype.update = function(mp)
 	{
 		var f = mp.molecule.atoms[this.from];
 		var t = mp.molecule.atoms[this.to];
-		
-		if(this.stereo == MP_STEREO_UP)
+
+		if(this.stereo == MP_STEREO_UP || f.getElement() == t.getElement())
 		{
 			this.cache.gradient = JmolAtomColorsHashHex[f.getElement()];
 		}

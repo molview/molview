@@ -19,9 +19,10 @@
 /**
  * Load molfile into MolPad
  * Uses Ketcher chem utils
- * @param {String} mol
+ * @param {String}  mol
+ * @param {Boolean} forceRemoveHydrogen
  */
-MolPad.prototype.loadMOL = function(mol)
+MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 {
 	this.saveToStack();
 
@@ -62,7 +63,7 @@ MolPad.prototype.loadMOL = function(mol)
 		scope.molecule.bonds.push(bond);
 	});
 
-	if(this.settings.drawSkeletonFormula)
+	if(this.settings.drawSkeletonFormula || forceRemoveHydrogen)
 	{
 		this.removeImplicitHydrogen();
 	}

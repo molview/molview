@@ -134,16 +134,10 @@ MPAtom.prototype.resetState = function()
 	this.state = "normal";
 }
 
-MPAtom.prototype.translate = function(x, y)
-{
-	this.position.x += x;
-	this.position.y += y;
-}
-
 /**
  * Finds this MPAtom if it is an implicit hydrogen atom
  * All H atoms bonded to a C atom without stereo information are considered implicit
- * @param  {Object}  mp MolPad instance
+ * @param  {MolPad}  mp
  * @return {Boolean}    Indicates if this atom is implicit
  */
 MPAtom.prototype.isImplicit = function(mp)
@@ -162,9 +156,20 @@ MPAtom.prototype.isImplicit = function(mp)
 }
 
 /**
+ * Translate the atom using the given x and y distance
+ * @param  {Float} x
+ * @param  {Float} y
+ */
+MPAtom.prototype.translate = function(x, y)
+{
+	this.position.x += x;
+	this.position.y += y;
+}
+
+/**
  * Saturate atom with hydrogens
  * C atoms are saturated using their four binding sites
- * @param {Object} mp MolPad instance
+ * @param {MolPad} mp
  */
 MPAtom.prototype.addImplicitHydrogen = function(mp)
 {
@@ -182,47 +187,14 @@ MPAtom.prototype.addImplicitHydrogen = function(mp)
 				var a = this.calculateNewBondAngle(mp, 2);
 				if(a == 0) return;
 
-				//create first bond
-				var atom1 = new MPAtom({
-					i: mp.molecule.atoms.length,
-					x: this.getX() + mp.settings.bond.lengthHydrogen * Math.cos(a[0]),
-					y: this.getY() - mp.settings.bond.lengthHydrogen * Math.sin(a[0]),//y axis is flipped
+				this.addNewBond(mp, {
+					a: a[0],
 					element: "H"
 				});
-
-				var bond1 = new MPBond({
-					i: mp.molecule.bonds.length,
-					type: MP_BOND_SINGLE,
-					from: this.getIndex(),
-					to: atom1.getIndex()
-				});
-
-				atom1.addBond(bond1.getIndex());
-				this.addBond(bond1.getIndex());
-
-				mp.molecule.atoms.push(atom1);
-				mp.molecule.bonds.push(bond1);
-
-				//create second bond
-				var atom2 = new MPAtom({
-					i: mp.molecule.atoms.length,
-					x: this.getX() + mp.settings.bond.lengthHydrogen * Math.cos(a[1]),
-					y: this.getY() - mp.settings.bond.lengthHydrogen * Math.sin(a[1]),//y axis is flipped
+				this.addNewBond(mp, {
+					a: a[1],
 					element: "H"
 				});
-
-				var bond2 = new MPBond({
-					i: mp.molecule.bonds.length,
-					type: MP_BOND_SINGLE,
-					from: this.getIndex(),
-					to: atom2.getIndex()
-				});
-
-				atom2.addBond(bond2.getIndex());
-				this.addBond(bond2.getIndex());
-
-				mp.molecule.atoms.push(atom2);
-				mp.molecule.bonds.push(bond2);
 
 				return;
 			}
@@ -233,25 +205,10 @@ MPAtom.prototype.addImplicitHydrogen = function(mp)
 			var a = this.calculateNewBondAngle(mp);
 
 			//create new bond
-			var atom = new MPAtom({
-				i: mp.molecule.atoms.length,
-				x: this.getX() + mp.settings.bond.lengthHydrogen * Math.cos(a),
-				y: this.getY() - mp.settings.bond.lengthHydrogen * Math.sin(a),//y axis is flipped
+			this.addNewBond(mp, {
+				a: a,
 				element: "H"
 			});
-
-			var bond = new MPBond({
-				i: mp.molecule.bonds.length,
-				type: MP_BOND_SINGLE,
-				from: this.getIndex(),
-				to: atom.getIndex()
-			});
-
-			atom.addBond(bond.getIndex());
-			this.addBond(bond.getIndex());
-
-			mp.molecule.atoms.push(atom);
-			mp.molecule.bonds.push(bond);
 		}
 	}
 }
@@ -275,43 +232,21 @@ MPAtom.prototype.getHandler = function(mp)
 	//TODO: implement carbon chain
 
 	var scope = this;
-	if(mp.tool.type == "bond")
+	if(mp.tool.type == "atom")
 	{
 		return {
 			onPointerDown: function(e)
 			{
-				//TODO: live merge
-
-				var a = scope.calculateNewBondAngle(this);
-
-				//create new bond
-				var atom = new MPAtom({
-					i: this.molecule.atoms.length,
-					x: scope.getX() + this.settings.bond.length * Math.cos(a),
-					y: scope.getY() - this.settings.bond.length * Math.sin(a),//y axis is flipped
-					element: this.tool.data.label || "C"
-				});
-
-				var bond = new MPBond({
-					i: this.molecule.bonds.length,
-					type: this.tool.data.type || MP_BOND_SINGLE,
-					stereo: this.tool.data.stereo || MP_STEREO_NONE,
-					from: scope.getIndex(),
-					to: atom.getIndex()
-				});
-
-				atom.addBond(bond.getIndex());
-				scope.addBond(bond.getIndex());
+				e.preventDefault();
 
 				this.tool.tmp = {
-					atom: atom.getIndex(),
-					startAngle: a
+					atom: -1,
+					oldElement: scope.getElement()
 				};
 
-				this.molecule.atoms.push(atom);
-				this.molecule.bonds.push(bond);
-				atom.update(this);
-				atom.updateBonds(this);
+				scope.setElement(this.tool.data.element);
+				scope.update(this);
+				scope.updateBonds(this);
 				this.redraw();
 			},
 			onPointerMove: function(e)
@@ -319,24 +254,66 @@ MPAtom.prototype.getHandler = function(mp)
 				e.preventDefault();
 				var p = this.getRelativeCoords(getPointerCoords(e));
 
-				var dx = p.x - scope.getX();
-				var dy = p.y - scope.getY();
-				var d = Math.sqrt(dx * dx + dy * dy);
-
-				if(d > this.settings.atom.minAddRotateLength)
+				if(!pointInsideCircle(p, scope.getPosition(), this.settings.atom.minAddRotateLength))
 				{
-					var a = Math.atan2(-dy, dx);
-					var clampFactor = this.settings.bond.rotateSteps / (2 * Math.PI);
-					a = Math.round((a - this.tool.tmp.startAngle) * clampFactor) / clampFactor
-							+ this.tool.tmp.startAngle;//clamp to x steps, normalize to startAngle
+					var first = this.tool.tmp.atom == -1;
+					if(first)
+					{
+						scope.setElement(this.tool.tmp.oldElement);
+						scope.updateBonds(this);
+						var a = scope.calculateNewBondAngle(this);
+						this.tool.tmp = scope.addNewBond(this, {
+							a: a,
+							type: this.tool.data.type || MP_BOND_SINGLE,
+							stereo: this.tool.data.stereo || MP_STEREO_NONE,
+							element: this.tool.data.element
+						});
+					}
 
-					this.molecule.atoms[this.tool.tmp.atom].setPosition({
-						x: scope.getX() + this.settings.bond.length * Math.cos(a),
-						y: scope.getY() - this.settings.bond.length * Math.sin(a)//y axis is flipped
-					});
-					this.molecule.atoms[this.tool.tmp.atom].update(this);
-					this.molecule.atoms[this.tool.tmp.atom].updateBonds(this);
-					this.redraw();
+					if(scope.rotateAtomAround(this, p, this.tool.tmp.atom) || first)
+					{
+						this.redraw();
+					}
+				}
+			},
+			onPointerUp: function(e)
+			{
+				this.setCursor("pointer");
+				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				this.redraw();
+			}
+		};
+	}
+	else if(mp.tool.type == "bond")
+	{
+		return {
+			onPointerDown: function(e)
+			{
+				//TODO: live collapse
+
+				var a = scope.calculateNewBondAngle(this);
+
+				this.tool.tmp = scope.addNewBond(this, {
+					a: a,
+					type: this.tool.data.type || MP_BOND_SINGLE,
+					stereo: this.tool.data.stereo || MP_STEREO_NONE,
+					element: this.tool.data.element
+				});
+
+				this.redraw();
+			},
+			onPointerMove: function(e)
+			{
+				e.preventDefault();
+				var p = this.getRelativeCoords(getPointerCoords(e));
+
+				if(!pointInsideCircle(p, scope.getPosition(),
+						this.settings.atom.minAddRotateLength))
+				{
+					if(scope.rotateAtomAround(this, p, this.tool.tmp.atom))
+					{
+						this.redraw();
+					}
 				}
 			},
 			onPointerUp: function(e)
@@ -375,8 +352,9 @@ MPAtom.prototype.getHandler = function(mp)
 							scope.position.x, scope.position.y),
 					startAngle: scope.calculateNewBondAngle(this)
 				};
+				this.tool.tmp.currentAngle = this.tool.tmp.startAngle;
 
-				var frag = MPFragments.rotate(MPFragments.clone(this.tool.tmp.frag),
+				var frag = MPFragments.rotate(this.tool.tmp.frag,
 						scope.position, -this.tool.tmp.startAngle);//y axis is flipped: rotate clockwise
 
 				//skip first atom (which will be this atom) if !bondConnection
@@ -437,7 +415,36 @@ MPAtom.prototype.getHandler = function(mp)
 			},
 			onPointerMove: function(e)
 			{
-				//TODO: implement fragment rotation
+				e.preventDefault();
+				var p = this.getRelativeCoords(getPointerCoords(e));
+
+				if(!pointInsideCircle(p, scope.getPosition(),
+						this.settings.atom.minAddRotateLength))
+				{
+					var a = clampedAngle(this.tool.tmp.startAngle, scope.getPosition(),
+							p, this.settings.bond.rotateSteps);
+
+					if(a != this.tool.tmp.currentAngle)
+					{
+						this.tool.tmp.currentAngle = a;
+						var frag = MPFragments.rotate(this.tool.tmp.frag, scope.getPosition(),
+								findAngleBetween(a, this.tool.tmp.currentAngle));
+
+						for(var _i = 0; _i < this.tool.tmp.frag.atoms.length; _i++)
+						{
+							var i = frag.atoms[_i].i;
+							if(i === undefined) continue;
+							this.molecule.atoms[i].setPosition({
+								x: frag.atoms[_i].x,
+								y: frag.atoms[_i].y
+							});
+							this.molecule.atoms[i].update(this);
+							this.molecule.atoms[i].updateBonds(this);
+						}
+
+						this.redraw();
+					}
+				}
 			},
 			onPointerUp: function(e)
 			{
@@ -473,26 +480,6 @@ MPAtom.prototype.getHandler = function(mp)
 			{
 				e.preventDefault();
 				this.removeAtom(scope.getIndex());
-				this.redraw();
-			},
-			onPointerUp: function(e)
-			{
-				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
-				this.redraw();
-			}
-		};
-	}
-	else if(mp.tool.type == "atom")
-	{
-		//TODO: implement add bond with atom when dragging
-		return {
-			onPointerDown: function(e)
-			{
-				e.preventDefault();
-				scope.setElement(this.tool.data.element);
-				scope.update(this);
-				scope.updateBonds(this);
 				this.redraw();
 			},
 			onPointerUp: function(e)
@@ -539,8 +526,7 @@ MPAtom.prototype.handle = function(mp, point, type)
 	{
 		if(fastPointInCircleBox(point, line.area.point, r))
 		{
-			var d = pointToPointDistance(point, line.area.point);
-			if(d <= r)
+			if(pointInsideCircle(point, line.area.point, r))
 			{
 				return { hit: true, redraw: this.setState(type) };
 			}
@@ -559,6 +545,80 @@ MPAtom.prototype.handle = function(mp, point, type)
 	}
 
 	return { hit: false, redraw: this.setState("normal") };
+}
+
+/**
+ * Helpers
+ */
+
+/**
+ * Adds new bond to this atom using the given element and angle
+ * Does not redraw the canvas
+ * @param  {MolPad} mp
+ * @param  {Object} config { element, a, type, stereo }
+ * @return {Object}        Tool data for this bond
+ */
+MPAtom.prototype.addNewBond = function(mp, config)
+{
+	var atom = new MPAtom({
+		i: mp.molecule.atoms.length,
+		x: this.getX() + mp.settings.bond.length * Math.cos(config.a),
+		y: this.getY() - mp.settings.bond.length * Math.sin(config.a),//y axis is flipped
+		element: config.element || "C"
+	});
+
+	var bond = new MPBond({
+		i: mp.molecule.bonds.length,
+		type: config.type || MP_BOND_SINGLE,
+		stereo: config.stereo || MP_STEREO_NONE,
+		from: this.getIndex(),
+		to: atom.getIndex()
+	});
+
+	atom.addBond(bond.getIndex());
+	this.addBond(bond.getIndex());
+
+	mp.molecule.atoms.push(atom);
+	mp.molecule.bonds.push(bond);
+	atom.update(mp);
+	atom.updateBonds(mp);
+
+	return {
+		atom: atom.getIndex(),
+		startAngle: config.a,
+		currentAngle: config.a
+	};
+}
+
+/**
+ * Rotates atom around this.getPosition() using point and mp.tool.tmp.startAngle
+ * Does not redraw the canvas
+ * @param  {MolPad}  mp
+ * @param  {Object}  point Rotation target point
+ * @param  {Integer} atom  Atom index
+ * @return {Boolean}       Indicates if atom angle has changed
+ */
+MPAtom.prototype.rotateAtomAround = function(mp, point, atom)
+{
+	var a = clampedAngle(mp.tool.tmp.startAngle, this.getPosition(),
+			point, mp.settings.bond.rotateSteps);
+
+	if(a != mp.tool.tmp.currentAngle)
+	{
+		mp.tool.tmp.currentAngle = a;
+		mp.molecule.atoms[atom].setPosition({
+			x: this.getX() + mp.settings.bond.length * Math.cos(a),
+			y: this.getY() - mp.settings.bond.length * Math.sin(a)//y axis is flipped
+		});
+		mp.molecule.atoms[atom].update(mp);
+		mp.molecule.atoms[atom].updateBonds(mp);
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 /**

@@ -22,7 +22,7 @@ include_once("utility.php");
 function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 {
 	global $root;
-	
+
 	//title
 	$title = "MolView";
 	if(isset($q))
@@ -72,24 +72,30 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 
 		if(isset($data -> InformationList -> Information[0] -> CID))
 		{
-			$same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".
-					$data -> InformationList -> Information[0] -> CID;
-
-			if($pubchem_query != "cid")//redirect to ?cid
+			if($data -> InformationList -> Information[0] -> CID > 0)
 			{
-				$query = preg_replace("/".($pubchem_query == "name" ? "q" : $pubchem_query).
-						"=[^&]*/", "cid=".($data -> InformationList -> Information[0] -> CID),
-						$_SERVER["QUERY_STRING"]);//remove old compound query
-				header("Location: ?".$query, true, 302);
+				if($pubchem_query != "cid")//redirect to ?cid
+				{
+					$query = preg_replace("/".($pubchem_query == "name" ? "q" : $pubchem_query).
+							"=[^&]*/", "cid=".($data -> InformationList -> Information[0] -> CID),
+							$_SERVER["QUERY_STRING"]);//remove old compound query
+					header("Location: ?".$query, true, 302);
+				}
+				else
+				{
+					$same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".
+							$data -> InformationList -> Information[0] -> CID;
+
+					if(isset($data -> InformationList -> Information[0] -> Title))
+					{
+						$title = ucfirst(humanize($data -> InformationList -> Information[0] -> Title));
+					}
+					if(isset($data -> InformationList -> Information[0] -> Description))
+					{
+						$description = $data -> InformationList -> Information[0] -> Description;
+					}
+				}
 			}
-		}
-		if(isset($data -> InformationList -> Information[0] -> Title))
-		{
-			$title = ucfirst(humanize($data -> InformationList -> Information[0] -> Title));
-		}
-		if(isset($data -> InformationList -> Information[0] -> Description))
-		{
-			$description = $data -> InformationList -> Information[0] -> Description;
 		}
 	}
 	else if(isset($pdbid))//data via RCSB
