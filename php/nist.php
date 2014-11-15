@@ -36,6 +36,8 @@ Parameters:
 - i = ir index
 */
 
+include_once("utility.php");
+
 error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
 
@@ -71,7 +73,7 @@ if($type == "lookup")
 	}
 	*/
 
-	$nist_page = file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?Mask=80&ID=".$cas);
+	$nist_page = get_curl("http://webbook.nist.gov/cgi/cbook.cgi?Mask=80&ID=".$cas);
 
 	echo "{";
 	echo '"url":'.json_encode(utf8_encode("http://webbook.nist.gov/cgi/cbook.cgi?ID=".$cas));
@@ -157,16 +159,16 @@ if($type == "lookup")
 else if($type == "mass")
 {
 	header("Content-Type: text");
-	echo file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=Mass&Index=0");
+	echo_curl("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=Mass&Index=0");
 }
 else if($type == "ir")
 {
 	header("Content-Type: text");
 	if(!isset($i)) $i = 0;
-	echo file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=IR&Index=".$i);
+	echo_curl("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=IR&Index=".$i);
 }
 else if($type == "uvvis")
 {
 	header("Content-Type: text");
-	echo file_get_contents("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=UVVis&Index=0");
+	echo_curl("http://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=UVVis&Index=0");
 }

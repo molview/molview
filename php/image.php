@@ -1,3 +1,4 @@
+<?php
 /**
  * This file is part of MolView (http://molview.org)
  * Copyright (c) 2014, Herman Bergwerf
@@ -16,42 +17,28 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//dimensions
-@menubar-height: 40px;
-@toolbar-size: 40px;
-@toolbar-iconsize: 20px;
-@toolbar-fontsize: 16pt;
-@message-bar-height: 45px;
-@message-bar-vpad: 20px;
+/*
+PHP script for mirroring metadata images
 
-//colors
-@light: #fff;
-@light2: #eee;
-@light3: #ddd;
-@contrast: #ccc;
-@contrast2: #bbb;
-@contrast3: #aaa;
+Parameters:
+- id = cid || pdb
+- i = db index for the given id
+*/
 
-@foreground: #111;
-@foreground-less: #333;
-@foreground-aside: #666;
-@foreground-light: #888;
-@foreground-lighter: #aaa;
-@foreground-disabled: #ccc;
-@foreground-error-light: #f33;
+include_once("utility.php");
 
-@light-shadow: #ccc;
-@dark-shadow: #888;
+error_reporting(0);
+parse_str($_SERVER["QUERY_STRING"]);
 
-@highlight: #f50;
-@highlight-light: #fa8;
-@active: #f00;
-
-@error: #f00;
-@error-light: #fcb3bc;
-
-@pubchem-pngbg: #f5f5f5;
-@soft-light: #f5f5f5;
-
-@menu-bar-bg: #eee;
-@search-bar-bg: #eee;
+if($id == "cid")
+{
+	header("Content-Type: image/png");
+	echo_curl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/".$i."/png?record_type=2d");
+	exit;
+}
+else if($id == "pdb")
+{
+	header("Content-Type: image/jpeg");
+	echo_curl("http://www.rcsb.org/pdb/images/".strtoupper($i)."_bio_r_500.jpg");
+	exit;
+}

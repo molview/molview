@@ -21,12 +21,14 @@
 PHP script for mirroring CIF files form the Crystallography Open Database
 
 Parameters:
-- codid = {COD-ID}
+- codid = {CODID}
 */
+
+include_once("utility.php");
 
 parse_str($_SERVER["QUERY_STRING"]);
 header("Content-Type: text");
-$cif = file_get_contents("http://www.crystallography.net/".$codid.".cif");
+$cif = get_curl("http://www.crystallography.net/".$codid.".cif");
 
 if(strpos($cif, "? ? ? ?") == false)
 {
@@ -34,5 +36,5 @@ if(strpos($cif, "? ? ? ?") == false)
 }
 else
 {
-    header("HTTP/1.0 404 Not Found");
+    http_response_code(404);
 }

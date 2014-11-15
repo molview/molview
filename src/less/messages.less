@@ -35,20 +35,19 @@
 
 	color: @light;
 	background: @foreground-less;
-	border-radius: @small-border-radius;
 	overflow: hidden;
 }
 
 .alert-message
 {
-	border: @small-border-radius solid @error;
-	border-radius: @small-border-radius + @small-border-radius;
+	background: @error;
 }
 
 .message-text
 {
 	display: inline-block;
-	padding: 8px 15px;
+	padding: 0 @message-bar-vpad;
+	line-height: @message-bar-height;
 }
 
 .error-message
@@ -56,21 +55,20 @@
 	padding-left: 5px;
 	font-style: italic;
 	font-weight: bold;
-	color: @foreground-error-light;
 }
 
 .message-close-btn
 {
 	cursor: pointer;
 	margin: 0;
-	padding: 0 15px;
+	padding: 0 @message-bar-vpad;
 	height: @message-bar-height;
 	float: right;
 
 	color: @light;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 12pt;
-	background: #111;
+	background: rgba(0, 0, 0, 0.3);
 	border: 0;
 }
 

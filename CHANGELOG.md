@@ -2,6 +2,10 @@
 
 ## 2.3.1
 
+- Revised COD search sorting
+- Revised metadata image loading
+- Revised URL scheme for PHP calls
+- Added metadata image mirror
 - Added GLmol.calculateBonds()
 - Added MolPad color scheme switch
 - Added <!DOCTYPE html> to page.php
@@ -13,7 +17,7 @@
 - Changed img/image.png background to white
 - Changed element order in #elem-tools to CHNOPS
 - Restyled all dialog headings (removed .dialog-close-btn)
-- Revised metadata image loading
+- Restyled messages (removed border-radius)
 
 ## 2.3.x
 

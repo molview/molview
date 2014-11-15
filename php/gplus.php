@@ -17,16 +17,19 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-header('content-type: application/json');
+include_once("utility.php");
 
+error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
+
+header('content-type: application/json');
 
 libxml_use_internal_errors(true);
 
-$html =  file_get_contents("https://plusone.google.com/_/+1/fastbutton?url=".urlencode($url));
+$html =  get_curl("https://plusone.google.com/_/+1/fastbutton?url=".urlencode($url));
 $doc = new DOMDocument();
 $doc -> loadHTML($html);
 $counter = $doc -> getElementById('aggregateCount');
-echo '{ "count": '.$counter -> nodeValue."}";
+echo '{ "count": '.json_encode($counter -> nodeValue)."}";
 
 libxml_clear_errors();

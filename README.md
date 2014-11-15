@@ -51,7 +51,7 @@ Instructions:
 
 1. Copy all files to a server with PHP and .htaccess + mod_rewrite support
 2. Configure ErrorDocument in .htaccess to point to page.php in the MolView root directory
-3. Configure $directory in page.php to point to the MolView root directory
+3. Configure $directory in php/utility.php to point to the MolView root directory
 4. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
 5. Run `./build.sh fetch`
 
@@ -65,7 +65,7 @@ Below are all tests you have to pass before committing changes
     1. [2POR](embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw) (PDBID loading & protein representation)
     2. [LSD](embed?smiles=O=C%28[C@@]%28[H]%291C=C2C3C=CC=C4C=3C%28=CN4[H]%29C[C@@]2%28[H]%29N%28C%29C1%29N%28CC%29CC&bg=white) (SMILES resolving & background color)
     3. [Mustard gas](embed?cid=10461&mode=wireframe) (CID loading & molecule representation)
-    4. [Pyrite](embed?codid=5000115) (CODID loading)
+    4. [Pyrite](embed?codid=5000115&bg=black) (CODID loading & background color)
     4. [Benzene](embed?q=Benzene) (text resolving)
 3. Verify for chances mentioned in CHANGELOG.md:
     1. Expected behaviour in Chrome and Firefox

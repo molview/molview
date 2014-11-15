@@ -17,8 +17,12 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+include_once("utility.php");
+
 function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 {
+	global $root;
+	
 	//title
 	$title = "MolView";
 	if(isset($q))
@@ -49,7 +53,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		$same_as = "//www.rcsb.org/pdb/explore/explore.do?structureId=".$pdbid;
 
 	//image
-	$image_url = "http://molview.org/img/image.png";
+	$image_url = $root."img/image.png";
 	$pubchem_query = null;
 	$pubchem_value = null;
 	if(isset($cid))
@@ -59,11 +63,11 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	else if(isset($q))
 		{ $pubchem_query = "name"; $pubchem_value = $q; }
 	else if(isset($pdbid))
-		$image_url = "http://www.rcsb.org/pdb/images/".$pdbid."_bio_r_500.jpg";
+		$image_url = $root."api/image/pdb/".$pdbid.".jpg";
 
 	if(isset($pubchem_query))//data via PubChem
 	{
-		$json = file_get_contents("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
+		$json = get_curl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
 		$data = json_decode($json);
 
 		if(isset($data -> InformationList -> Information[0] -> CID))
@@ -90,7 +94,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	}
 	else if(isset($pdbid))//data via RCSB
 	{
-		$xml = file_get_contents("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
+		$xml = get_curl("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
 		$data = new SimpleXMLElement($xml);
 
 		if(isset($data -> {"record"} -> {"dimStructure.structureId"}))
@@ -124,15 +128,9 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	//refine PubChem image
 	if(isset($pubchem_query))
 	{
-		if($pubchem_query == "smiles")
+		if($pubchem_query == "cid")
 		{
-			$image_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?smiles=".
-					urlencode($pubchem_value)."&record_type=2d";
-		}
-		else
-		{
-			$image_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".
-					$pubchem_query."/".$pubchem_value."/png?record_type=2d";
+			$image_url = $root."api/image/cid/".$pubchem_value.".png";
 		}
 	}
 

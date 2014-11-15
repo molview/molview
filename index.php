@@ -1,7 +1,7 @@
 <?php
-include("php/utility.php");
-include("php/load.php");
-include("php/Mobile_Detect.php");
+include_once("php/utility.php");
+include_once("php/load.php");
+include_once("php/Mobile_Detect.php");
 
 error_reporting(0);
 
@@ -93,9 +93,12 @@ Query parameters:
 			$metadata["description"].'" />';
 
 			//image
-			echo '<meta property="og:image" content="'.$metadata["image_url"].'" />';
-			echo '<meta itemprop="image" content="'.$metadata["image_url"].'" />';
-			echo '<meta name="twitter:image" content="'.$metadata["image_url"].'" />';
+			if($metadata["image_url"] != "")
+			{
+				echo '<meta property="og:image" content="'.$metadata["image_url"].'" />';
+				echo '<meta itemprop="image" content="'.$metadata["image_url"].'" />';
+				echo '<meta name="twitter:image" content="'.$metadata["image_url"].'" />';
+			}
 
 			//special metadata
 			echo '<meta itemprop="sameAs" content="'.$metadata["same_as"].'" />';

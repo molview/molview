@@ -21,10 +21,11 @@
 PHP script for processing and retrieving data from the Crystallography Open Database
 
 Parameters:
-- q = {query}
-- codids = {CODID,CODID,CODID}
-- action = search (using query) || smiles (using codids) || name (using codids)
+- action = search (using text) || smiles (using codids) || name (using codids)
+- q = {query} || {CODID,CODID,CODID}
 */
+
+include_once("utility.php");
 
 error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
@@ -58,7 +59,7 @@ if($action == "search" && isset($q))
 
 	header("Content-Type: application/json");
 
-	$q = strtolower($q);
+	$q = strtolower(urldecode($q));
 
 	$query =
 'SELECT file,mineral,commonname,chemname,formula,title FROM data
@@ -73,94 +74,58 @@ WHERE (mineral LIKE "%'.addslashes($q).'%" OR commonname LIKE "%'.addslashes($q)
 			$record = array();
 
 			$record["codid"] = utf8_encode($row[0]);
-			if(isset($row[1])) if($row[1] != "?" && $row[1] != "" && !is_null($row[1]))
-				$record["mineral"] = utf8_encode($row[1]);
-			if(isset($row[2])) if($row[2] != "?" && $row[2] != "" && !is_null($row[2]))
-				$record["commonname"] = utf8_encode($row[2]);
-			if(isset($row[3])) if($row[3] != "?" && $row[3] != "" && !is_null($row[3]))
-				$record["chemname"] = utf8_encode($row[3]);
-			if(isset($row[4])) if($row[4] != "?" && $row[4] != "" && !is_null($row[4]))
-				$record["formula"] = utf8_encode($row[4]);
-			if(isset($row[5])) if($row[5] != "?" && $row[5] != "" && !is_null($row[5]))
-				$record["title"] = utf8_encode($row[5]);
+			if(isset($row[1]))
+			{
+				if($row[1] != "?" && $row[1] != "" && !is_null($row[1]))
+					$record["mineral"] = utf8_encode($row[1]);
+			}
+			if(isset($row[2]))
+			{
+				if($row[2] != "?" && $row[2] != "" && !is_null($row[2]))
+					$record["commonname"] = utf8_encode($row[2]);
+			}
+			if(isset($row[3]))
+			{
+				if($row[3] != "?" && $row[3] != "" && !is_null($row[3]))
+					$record["chemname"] = utf8_encode($row[3]);
+			}
+			if(isset($row[4]))
+			{
+				if($row[4] != "?" && $row[4] != "" && !is_null($row[4]))
+					$record["formula"] = utf8_encode($row[4]);
+			}
+			if(isset($row[5]))
+			{
+				if($row[5] != "?" && $row[5] != "" && !is_null($row[5]))
+					$record["title"] = utf8_encode($row[5]);
+			}
 
 			array_push($records, $record);
 		}
 
+		//sort by priority
 		usort($records, function($a, $b)
 		{
-			if(isset($a["mineral"]))
+			global $q;
+
+			$albl = isset($a["mineral"]) ? $a["mineral"] :
+					(isset($a["commonname"]) ? $a["commonname"] :
+					(isset($a["chemname"]) ? $a["chemname"] : $a["codid"]));
+			$blbl = isset($b["mineral"]) ? $b["mineral"] :
+					(isset($b["commonname"]) ? $b["commonname"] :
+					(isset($b["chemname"]) ? $b["chemname"] : $b["codid"]));
+
+			similar_text($q, strtolower($albl), $ap);
+			similar_text($q, strtolower($blbl), $bp);
+
+			if($ap == $bp)
 			{
-				$key = "mineral";
-				if(isset($b[$key]))
-				{
-					if(strlen($a[$key]) == strlen($b[$key]))
-					{
-						if(strtolower($a[$key]) == strtolower($b[$key]))
-						{
-							$key = "formula";
-							return strlen($a[$key]) - strlen($b[$key]);
-						}
-						else
-						{
-							$array = array($a[$key], $b[$key]);
-							sort($array);
-							return $array[0] == $a[$key] ? -1 : 1;
-						}
-					}
-					else return strlen($a[$key]) - strlen($b[$key]);
-				}
-				else return -1;
+				return intval($a["codid"]) < intval($b["codid"]) ? -1 : 1;
 			}
-			else if(isset($b["mineral"])) return 1;
-			else if(isset($a["commonname"]))
+			else
 			{
-				$key = "commonname";
-				if(isset($b[$key]))
-				{
-					if(strlen($a[$key]) == strlen($b[$key]))
-					{
-						if(strtolower($a[$key]) == strtolower($b[$key]))
-						{
-							$key = "formula";
-							return strlen($a[$key]) - strlen($b[$key]);
-						}
-						else
-						{
-							$array = array($a[$key], $b[$key]);
-							sort($array);
-							return $array[0] == $a[$key] ? -1 : 1;
-						}
-					}
-					else return strlen($a[$key]) - strlen($b[$key]);
-				}
-				else return -1;
+				return $ap > $bp ? -1 : 1;
 			}
-			else if(isset($b["commonname"])) return 1;
-			else if(isset($a["chemname"]))
-			{
-				$key = "chemname";
-				if(isset($b[$key]))
-				{
-					if(strlen($a[$key]) == strlen($b[$key]))
-					{
-						if(strtolower($a[$key]) == strtolower($b[$key]))
-						{
-							$key = "formula";
-							return strlen($a[$key]) - strlen($b[$key]);
-						}
-						else
-						{
-							$array = array($a[$key], $b[$key]);
-							sort($array);
-							return $array[0] == $a[$key] ? -1 : 1;
-						}
-					}
-					else return strlen($a[$key]) - strlen($b[$key]);
-				}
-				else return -1;
-			}
-			else return 1;
 		});
 
 		echo '{"records":[';
@@ -185,7 +150,7 @@ WHERE (mineral LIKE "%'.addslashes($q).'%" OR commonname LIKE "%'.addslashes($q)
 		echo "]}";
 	}
 }
-else if($action == "smiles" && isset($codids))
+else if($action == "smiles" && isset($q))
 {
 	/*
 	Returns:
@@ -201,7 +166,7 @@ else if($action == "smiles" && isset($codids))
 
 	header("Content-Type: application/json");
 
-	$query = "SELECT codid,value FROM smiles WHERE codid IN(".$codids.")";
+	$query = "SELECT codid,value FROM smiles WHERE codid IN(".$q.")";
 
 	if($result = $cod -> query($query))
 	{
@@ -213,8 +178,8 @@ else if($action == "smiles" && isset($codids))
 
 		echo '{"records":[';
 		$first_record = true;
-		$codids = explode(",", $codids);
-		foreach($codids as $codid)//print JSON
+		$q = explode(",", $q);
+		foreach($q as $codid)//print JSON
 		{
 			if($first_record) $first_record = false;
 			else echo ",";
@@ -224,7 +189,7 @@ else if($action == "smiles" && isset($codids))
 			if(isset($smiles[$codid])) echo json_encode(utf8_encode($smiles[$codid]));
 			else
 			{
-				$smi = file_get_contents("http://www.crystallography.net/cod/chemistry/stoichiometric/".$codid.".smi");
+				$smi = get_curl("http://www.crystallography.net/cod/chemistry/stoichiometric/".$codid.".smi");
 				if(strlen($smi) > 9) echo json_encode(substr($smi, 0, strlen($smi) - 9));
 				else echo '""';
 			}
@@ -233,7 +198,7 @@ else if($action == "smiles" && isset($codids))
 		echo "]}";
 	}
 }
-else if($action == "name" && isset($codids))
+else if($action == "name" && isset($q))
 {
 	/*
 	Returns:
@@ -249,7 +214,7 @@ else if($action == "name" && isset($codids))
 
 	header("Content-Type: application/json");
 
-	$query = "SELECT file,mineral,commonname,chemname FROM data WHERE file IN(".$codids.")";
+	$query = "SELECT file,mineral,commonname,chemname FROM data WHERE file IN(".$q.")";
 
 	if($result = $cod -> query($query))
 	{
@@ -261,8 +226,8 @@ else if($action == "name" && isset($codids))
 
 		echo '{"records":[';
 		$first_record = true;
-		$codids = explode(",", $codids);
-		foreach($codids as $codid)//print JSON
+		$q = explode(",", $q);
+		foreach($q as $codid)//print JSON
 		{
 			if($first_record) $first_record = false;
 			else echo ",";

@@ -1,6 +1,6 @@
 <?php
-include("php/utility.php");
-include("php/Mobile_Detect.php");
+include_once("php/utility.php");
+include_once("php/Mobile_Detect.php");
 
 error_reporting(0);
 

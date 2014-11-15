@@ -159,9 +159,9 @@ MolPad.prototype.redraw = function(update)
 
 MolPad.prototype.center = function()
 {
-	this.resetMatrix();
-
 	if(this.molecule.atoms.length == 0) return;
+	
+	this.resetMatrix();
 
 	var bbox = this.getBBox();
 	var sx = this.width() / bbox.width;

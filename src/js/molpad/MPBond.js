@@ -309,9 +309,17 @@ MPBond.prototype.update = function(mp)
 	{
 		var f = mp.molecule.atoms[this.from];
 		var t = mp.molecule.atoms[this.to];
-		this.cache.gradient = mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
-		this.cache.gradient.addColorStop(mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.getElement()]);
-		this.cache.gradient.addColorStop(mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.getElement()]);
+		
+		if(this.stereo == MP_STEREO_UP)
+		{
+			this.cache.gradient = JmolAtomColorsHashHex[f.getElement()];
+		}
+		else
+		{
+			this.cache.gradient = mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
+			this.cache.gradient.addColorStop(mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.getElement()]);
+			this.cache.gradient.addColorStop(mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.getElement()]);
+		}
 	}
 
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)

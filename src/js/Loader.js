@@ -500,8 +500,7 @@ var Loader = {
 		 * Load a Crystal model using a COD ID
 		 * @param {String} codid        COD ID
 		 * @param {String} name         Crystal name
-		 * @param {String} cid          PubChem Compound ID for 2D depiction
-		 * @param {String} PubChem_name PubChem Compound Name for 2D depiction
+		 * @param {String} PubChem_name PubChem Compound name for 2D depiction
 		 */
 		loadCODID: function(codid, name, PubChem_name)
 		{
@@ -548,7 +547,7 @@ var Loader = {
 					{
 						Sketcher.metadata.smiles = smiles;
 						Sketcher.loadMOL(mol2d);
-						Sketcher.removeImplicitHydrogen();
+						Sketcher.removeImplicitHydrogen();//use only in fallback
 						Sketcher.markUpdated();
 
 						finish();
@@ -572,7 +571,6 @@ var Loader = {
 					{
 						Sketcher.metadata.cid = cid;
 						Sketcher.loadMOL(mol2d);
-						Sketcher.removeImplicitHydrogen();
 						Sketcher.markUpdated();
 
 						finish();
@@ -613,7 +611,7 @@ var Loader = {
 							  - Resolve smiles using CIR
 							*/
 
-							if(PubChem_name != undefined)
+							if(PubChem_name !== undefined)
 							{
 								//check if PubChem_name is CID primary name
 								Request.PubChem.primaryName(PubChem_name, function(name)
@@ -630,18 +628,25 @@ var Loader = {
 							}
 							else
 							{
-								//convert CODID to name
-								Request.COD.name(codid, function(data)
+								if(name === undefined || name == "MolView")
 								{
-									Progress.increment();
-
-									if(data.records[0].name != "")
+									//convert CODID to name
+									Request.COD.name(codid, function(data)
 									{
-										//convert name to PubChem CID
-										nameToCID(data.records[0].name);
-									}
-									else fallback();
-								}, fallback);
+										Progress.increment();
+
+										if(data.records[0].name != "")
+										{
+											//convert name to PubChem CID
+											nameToCID(data.records[0].name);
+										}
+										else fallback();
+									}, fallback);
+								}
+								else
+								{
+									nameToCID(name);
+								}
 							}
 						});
 					}

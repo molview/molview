@@ -17,13 +17,11 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include("php/Parsedown.php");
+include_once("php/Parsedown.php");
+include_once("php/utility.php");
 
 error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
-
-$directory = "/molview/";
-$root = "http://".$_SERVER["HTTP_HOST"].$directory;
 
 $map = array(
 	"readme" => "README.md",

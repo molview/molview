@@ -81,7 +81,7 @@ $.fn.share = function(url, display_count, message)
 			if(display_count)
 			{
 				AJAX({
-					url: "php/gplus.php?url=" + encodeURIComponent(url.gplus || url.all),
+					url: "api/gplus?url=" + encodeURIComponent(url.gplus || url.all),
 					dataType: "json",
 					success: function(data)
 					{

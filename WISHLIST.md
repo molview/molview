@@ -17,7 +17,9 @@ Wishlist
 - Add newest THREE.js version to GLmol
 - Add THREE.CanvasRenderer to GLmol
 - Add THREE.RaytracingRenderer to GLmol
+- Add PDBe binding in order to replace RCSB
 - Add protein solvents display
+- Add switch for multiple protein assmblies
 - Add electron density maps for macromolecules
 - Add dotted H-bonds and SS-bonds for proteins
 - Create interactive macromolecule exploration mode
@@ -30,7 +32,8 @@ Wishlist
 - Integrate Smorf viewer (carved crystals)
 
 - Add own SpectrumView
-- Add support for UV/Visable spectra
+- Add ChemSpider PHP binding
+- Add OpenData spectra from ChemSpider
 - Add IR spectrum analysis and search database
 - Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Add client-side structural formula depiction using JavaScript

@@ -728,7 +728,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: "php/cod.php?action=search&q=" + encodeURIComponent(text),
+				url: "api/cod/search/" + encodeURIComponent(text),
 				defaultError: error,
 				success: function(data)
 				{
@@ -752,7 +752,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: "php/cod.php?action=smiles&codids=" + codids,
+				url: "api/cod/smiles/" + codids,
 				defaultError: error,
 				success: success
 			});
@@ -763,7 +763,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: "php/cod.php?action=name&codids=" + codids,
+				url: "api/cod/name/" + codids,
 				defaultError: error,
 				success: success
 			});
@@ -774,7 +774,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: "php/cif.php?codid=" + codid,
+				url: "api/cod/cif/" + codid + ".cif",
 				defaultError: error,
 				success: success
 			});
@@ -808,7 +808,7 @@ var Request = {
 		{
 			AJAX({
 				dataType: "json",
-				url: "php/nist.php?type=lookup&cas=" + cas,
+				url: "api/nist/lookup/" + cas,
 				defaultError: error,
 				success: function(data)
 				{
@@ -844,7 +844,7 @@ var Request = {
 			- ir-{i}
 			- uvvis
 			*/
-			var i = 0;
+			var i = -1;
 			if(type.indexOf("ir") != -1)
 			{
 				i = parseInt(type.substr(3));
@@ -853,7 +853,7 @@ var Request = {
 
 			AJAX({
 				dataType: "text",
-				url: "php/nist.php?type=" + type + "&cas=" + cas + "&i=" + i,
+				url: "api/nist/" + type + "/" + cas + (i != -1 ? "/" + i : ""),
 				defaultError: error,
 				success: success
 			});

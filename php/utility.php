@@ -17,6 +17,9 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$directory = "/molview/";
+$root = "http://".$_SERVER["HTTP_HOST"].$directory;
+
 function is_below_IE10()
 {
 	return preg_match('/(?i)msie [0-9]/', $_SERVER['HTTP_USER_AGENT']);
@@ -41,4 +44,25 @@ function is_available($url)
     //if the document has loaded successfully without any redirection or error
     if($http_code >= 200 && $http_code < 300) return true;
     else return false;
+}
+
+function get_curl($url)
+{
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+	$out = curl_exec($ch);
+	curl_close($ch);
+	return $out;
+}
+
+function echo_curl($url)
+{
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+	echo curl_exec($ch);
+	curl_close($ch);
 }
