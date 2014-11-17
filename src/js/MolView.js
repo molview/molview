@@ -345,6 +345,9 @@ var MolView = {
 		this.addAction("export_spectrum_png", "button", true);
 		this.addAction("export_spectrum_jcamp", "button", true);
 
+		$("#welcome-loading-msg").hide();
+		$("#welcome-button-bar").show();
+
 		//custom event trackers
 		$("#model-source").on(this.trigger, function()
 		{
@@ -380,6 +383,8 @@ var MolView = {
 	{
 		$("#action-" + id.replace(/_/g, "-")).on(this.trigger, function(e)
 		{
+			if($(this).hasClass("disabled") || $(this).hasClass("tool-button-disabled")) return;
+
 			if(track && Preferences.get("molview", "allow_tracking", false))
 			{
 				MolView.pushEvent(category, "click",

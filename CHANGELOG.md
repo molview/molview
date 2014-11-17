@@ -9,8 +9,11 @@
 - Added GLmol.calculateBonds()
 - Added MolPad color scheme switch
 - Added <!DOCTYPE html> to page.php
+- Added loading message to welcome dialog
 - Added bond creation to MolPad atom edit
+- Added bond collapsing to MolPad
 - Added fragment rotation to MolPad
+- Added PubChem lookup for lightning fast Autocomplete submits
 - Fixed relative URLs in error pages
 - Fixed .menu-item icons in .dropdown-compact
 - Fixed #action-model-line checkmark toggling
@@ -18,6 +21,7 @@
 - Fixed GLmol.calcBondDelta for bond in Z direction
 - Changed img/image.png background to white
 - Changed element order in #elem-tools to CHNOPS
+- Changed toolbar background-color to white
 - Restyled all dialog headings (removed .dialog-close-btn)
 - Restyled messages (removed border-radius)
 

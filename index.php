@@ -105,7 +105,7 @@ Query parameters:
 		?>
 
 		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview-app.min.css" />
 		<?php
@@ -494,7 +494,8 @@ Query parameters:
 							<label for="allow-tracking">Allow MolView to track interaction in order to improve the MolView experience (<a class="gray" href="tracking">read more</a>)</label>
 						</p>
 						<a class="gray" href="legal" target="_blank">Terms of Use</a>
-						<div id="welcome-button-bar" class="btn-group">
+						<div id="welcome-loading-msg">LOADING&hellip;</div>
+						<div id="welcome-button-bar" class="btn-group" style="display: none;">
 							<button id="action-start-help" class="btn btn-large">Get started</button>
 							<button class="btn close btn-large btn-primary">Continue</button>
 						</div>
@@ -539,7 +540,7 @@ Query parameters:
 							</li>
 						</ul>
 						<p id="about-links">
-							MolView v2.3.x
+							MolView v2.3.1
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
@@ -569,13 +570,12 @@ Query parameters:
 					</div>
 					<div class="dialog" id="help-dialog" style="display: none;">
 						<h2>Help</h2>
-						<script type="text/javascript">
-							if(isTouchDevice())
+						<?php
+							if($touch)
 							{
-								//TODO: replace with PHP
-								document.write('<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in your screen.</div>');
+								echo '<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in your screen.</div>';
 							}
-						</script>
+						?>
 						<p>Download PDF: <a class="link" href="docs/manual.pdf" target="_blank">docs/manual.pdf</a></p>
 						<p>Download eBook: <a class="link" href="docs/manual.epub" target="_blank">docs/manual.epub</a></p>
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>

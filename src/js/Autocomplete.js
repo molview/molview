@@ -418,7 +418,18 @@ var Autocomplete = {
 
 			if(this.i == -1)//fast search using CIR
 			{
-				Messages.process(Loader.CIRsearch, "search");
+				var val = $("#search-input").val();
+				if(Autocomplete.cache[val] === undefined)
+				{
+					Loader.PubChem.loadName(val, function()
+					{
+						Messages.process(Loader.CIRsearch, "search");
+					});
+				}
+				else
+				{
+					Messages.process(Loader.CIRsearch, "search");
+				}
 			}
 			else
 			{
@@ -436,7 +447,10 @@ var Autocomplete = {
 				}
 				else//PubChem compound
 				{
-					Loader.PubChem.loadName(this.records[this.i].label);
+					Loader.PubChem.loadName(this.records[this.i].label, function()
+					{
+						Messages.alert("load_fail");
+					});
 				}
 
 				this.refresh();

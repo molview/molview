@@ -24,7 +24,7 @@ function MPAtom(obj)
 	this.charge = obj.charge || 0;
 	this.isotope = obj.isotope || 0;
 	this.bonds = obj.bonds || [];
-	this.state = "normal";
+	this.display = "normal";
 }
 
 /**
@@ -38,9 +38,9 @@ MPAtom.prototype.getKetcherData = function(mp)
 			x: this.position.x / mp.settings.bond.length,
 			y: this.position.y / mp.settings.bond.length
 		},
-		label: this.getElement(),
-		charge: this.getCharge(),
-		isotope: this.getIsotope()
+		label: this.element,
+		charge: this.charge,
+		isotope: this.isotope
 	});
 }
 
@@ -50,9 +50,9 @@ MPAtom.prototype.getPlainData = function()
 		i: this.index,
 		x: this.position.x,
 		y: this.position.y,
-		element: this.getElement(),
-		charge: this.getCharge(),
-		isotope: this.getIsotope(),
+		element: this.element,
+		charge: this.charge,
+		isotope: this.isotope,
 		bonds: this.bonds.slice(0, this.bonds.length)
 	};
 }
@@ -108,30 +108,31 @@ MPAtom.prototype.getCenterLine = function()
 	};
 }
 
+MPAtom.prototype.getDisplay = function() { return this.display; }
+
 /**
- * Sets state and returs wether the state has changed
+ * Sets display and returns wether the display has changed
  * @param  {String} state
  * @return {Boolean}
  */
-MPAtom.prototype.setState = function(state)
+MPAtom.prototype.setDisplay = function(state)
 {
-	var changed = this.oldState != state;
-	this.state = state;
-	this.oldState = this.state;
+	var changed = this.lastDisplay != state;
+	this.lastDisplay = this.display = state;
 	return changed;
 }
 
 /**
- * Resets state to normal in case this.handle is not reached by the
+ * Resets display to normal in case this.handle is not reached by the
  * hoverHandler (in this case, the state is drawn as normal and in the
- * next hoverHandler cycle, this.oldState will become normal)
- * Saves the old state in this.oldState to check the state change in
- * this.setState later
+ * next hoverHandler cycle, this.lastDisplay will become normal)
+ * Saves the old state in this.lastDisplay to check the state change in
+ * this.setDisplay later
  */
-MPAtom.prototype.resetState = function()
+MPAtom.prototype.resetDisplay = function()
 {
-	this.oldState = this.state;
-	this.state = "normal";
+	this.lastDisplay = this.display;
+	this.display = "normal";
 }
 
 /**
@@ -142,12 +143,33 @@ MPAtom.prototype.resetState = function()
  */
 MPAtom.prototype.isImplicit = function(mp)
 {
-	if(this.getElement() == "H" && this.getIsotope() == 0 &&
-			this.getCharge() == 0 &&this.bonds.length == 1)
+	if(this.element == "H" && this.isotope == 0 &&
+			this.charge == 0 && this.bonds.length == 1)
 	{
 		var bond = mp.molecule.bonds[this.bonds[0]];
 		if(bond.getType() == MP_BOND_SINGLE && bond.getStereo() == MP_STEREO_NONE &&
 			bond.isPair("C", "H", mp))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Checks if the given index is a neighbor atom
+ * You can set an exclude bond index so it can be used for live bond collapsing
+ * @param  {MolPad}  mp
+ * @param  {Integer} idx
+ * @param  {Integer} exclude
+ * @return {Boolean}
+ */
+MPAtom.prototype.isNeighborAtom = function(mp, idx, exclude)
+{
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		if(this.bonds[i] == exclude) continue;
+		if(mp.molecule.bonds[this.bonds[i]].hasAtom(idx))
 		{
 			return true;
 		}
@@ -173,9 +195,9 @@ MPAtom.prototype.translate = function(x, y)
  */
 MPAtom.prototype.addImplicitHydrogen = function(mp)
 {
-	if(this.getElement() == "C")
+	if(this.element == "C")
 	{
-		if(this.getBondNumber(mp) == 2 && this.bonds.length == 2)
+		if(this.getBondCount(mp) == 2 && this.bonds.length == 2)
 		{
 			var af = mp.molecule.bonds[this.bonds[0]].getAngle(mp, this);
 			var at = mp.molecule.bonds[this.bonds[1]].getAngle(mp, this);
@@ -189,10 +211,12 @@ MPAtom.prototype.addImplicitHydrogen = function(mp)
 
 				this.addNewBond(mp, {
 					a: a[0],
+					length: mp.settings.bond.lengthHydrogen,
 					element: "H"
 				});
 				this.addNewBond(mp, {
 					a: a[1],
+					length: mp.settings.bond.lengthHydrogen,
 					element: "H"
 				});
 
@@ -200,20 +224,21 @@ MPAtom.prototype.addImplicitHydrogen = function(mp)
 			}
 		}
 
-		while(this.getBondNumber(mp) < 4)
+		while(this.getBondCount(mp) < 4)
 		{
 			var a = this.calculateNewBondAngle(mp);
 
 			//create new bond
 			this.addNewBond(mp, {
 				a: a,
+				length: mp.settings.bond.lengthHydrogen,
 				element: "H"
 			});
 		}
 	}
 }
 
-MPAtom.prototype.getBondNumber = function(mp)
+MPAtom.prototype.getBondCount = function(mp)
 {
 	var ret = 0;
 	for(var i = 0; i < this.bonds.length; i++)
@@ -230,6 +255,9 @@ MPAtom.prototype.getBondNumber = function(mp)
 MPAtom.prototype.getHandler = function(mp)
 {
 	//TODO: implement carbon chain
+	//TODO: drag atom if bond count is filled
+	//TODO: always enable horizontal/vertical rotate clamping
+	//TODO: atom drag collapsing
 
 	var scope = this;
 	if(mp.tool.type == "atom")
@@ -254,7 +282,8 @@ MPAtom.prototype.getHandler = function(mp)
 				e.preventDefault();
 				var p = this.getRelativeCoords(getPointerCoords(e));
 
-				if(!pointInsideCircle(p, scope.getPosition(), this.settings.atom.minAddRotateLength))
+				if(!pointInsideCircle(p, scope.getPosition(),
+						this.settings.atom.minAddRotateLength))//rotate around
 				{
 					var first = this.tool.tmp.atom == -1;
 					if(first)
@@ -279,7 +308,7 @@ MPAtom.prototype.getHandler = function(mp)
 			onPointerUp: function(e)
 			{
 				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -289,8 +318,6 @@ MPAtom.prototype.getHandler = function(mp)
 		return {
 			onPointerDown: function(e)
 			{
-				//TODO: live collapse
-
 				var a = scope.calculateNewBondAngle(this);
 
 				this.tool.tmp = scope.addNewBond(this, {
@@ -305,21 +332,77 @@ MPAtom.prototype.getHandler = function(mp)
 			onPointerMove: function(e)
 			{
 				e.preventDefault();
+				var changed = false;
 				var p = this.getRelativeCoords(getPointerCoords(e));
+				var bond = this.molecule.bonds[this.tool.tmp.bond];
 
-				if(!pointInsideCircle(p, scope.getPosition(),
-						this.settings.atom.minAddRotateLength))
+				for(var i = 0; i < this.molecule.atoms.length; i++)
 				{
-					if(scope.rotateAtomAround(this, p, this.tool.tmp.atom))
+					if(i == scope.getIndex() || i == this.tool.tmp.atom) continue;
+
+					if(this.molecule.atoms[i].handle(this, p, "active").hit)
 					{
-						this.redraw();
+						if(bond.getTo() != i)
+						{
+							this.molecule.atoms[bond.getTo()].setDisplay("normal");
+							this.molecule.atoms[this.tool.tmp.atom].setDisplay("hidden");
+							bond.setTo(i);
+
+							if(scope.isNeighborAtom(this, i, this.tool.tmp.bond))
+							{
+								bond.setDisplay("hidden");
+							}
+							else
+							{
+								bond.setDisplay("normal");
+								bond.update(this);
+							}
+
+							this.redraw();
+						}
+
+						return;
 					}
 				}
+
+				//reset bond.to to tool.tmp.atom
+				if(bond.getTo() != this.tool.tmp.atom)
+				{
+					bond.setDisplay("normal");
+					bond.setTo(this.tool.tmp.atom);
+					this.molecule.atoms[this.tool.tmp.atom].setDisplay("normal");
+					changed = true;
+				}
+
+				if(!pointInsideCircle(p, scope.getPosition(),
+						this.settings.atom.minAddRotateLength))//rotate around
+				{
+					changed = scope.rotateAtomAround(this, p, this.tool.tmp.atom, changed) || changed;
+				}
+
+				if(changed) this.redraw();
 			},
 			onPointerUp: function(e)
 			{
-				//TODO: merge into exisiting atoms
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				var to = this.molecule.bonds[this.tool.tmp.bond].getTo();
+
+				if(scope.isNeighborAtom(this, to, this.tool.tmp.bond))
+				{
+					scope.bonds.splice(scope.bonds.indexOf(this.tool.tmp.bond));
+					this.molecule.bonds.pop();
+					this.molecule.atoms.pop();
+					scope.update(this);
+					scope.updateBonds(this);
+				}
+				else if(to != this.tool.tmp.atom)
+				{
+					this.molecule.atoms[to].addBond(this.tool.tmp.bond);
+					this.molecule.atoms.pop();
+					scope.update(this);
+					scope.updateBonds(this);
+				}
+
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -340,7 +423,7 @@ MPAtom.prototype.getHandler = function(mp)
 		return {
 			onPointerDown: function(e)
 			{
-				var bondConnection = scope.getBondNumber(this) > 2 && scope.getElement() == "C";
+				var bondConnection = scope.getBondCount(this) > 2 && scope.getElement() == "C";
 
 				this.tool.tmp = {
 					frag: MPFragments.translate(
@@ -419,16 +502,16 @@ MPAtom.prototype.getHandler = function(mp)
 				var p = this.getRelativeCoords(getPointerCoords(e));
 
 				if(!pointInsideCircle(p, scope.getPosition(),
-						this.settings.atom.minAddRotateLength))
+						this.settings.atom.minAddRotateLength))//rotate around
 				{
 					var a = clampedAngle(this.tool.tmp.startAngle, scope.getPosition(),
 							p, this.settings.bond.rotateSteps);
 
 					if(a != this.tool.tmp.currentAngle)
 					{
-						this.tool.tmp.currentAngle = a;
 						var frag = MPFragments.rotate(this.tool.tmp.frag, scope.getPosition(),
 								findAngleBetween(a, this.tool.tmp.currentAngle));
+						this.tool.tmp.currentAngle = a;//after rotate or arot = 0
 
 						for(var _i = 0; _i < this.tool.tmp.frag.atoms.length; _i++)
 						{
@@ -449,7 +532,7 @@ MPAtom.prototype.getHandler = function(mp)
 			onPointerUp: function(e)
 			{
 				//TODO: merge into exisiting atoms
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -468,7 +551,7 @@ MPAtom.prototype.getHandler = function(mp)
 			onPointerUp: function(e)
 			{
 				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -480,12 +563,12 @@ MPAtom.prototype.getHandler = function(mp)
 			{
 				e.preventDefault();
 				this.removeAtom(scope.getIndex());
-				this.redraw();
+				this.redraw(true);
 			},
 			onPointerUp: function(e)
 			{
 				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -510,7 +593,7 @@ MPAtom.prototype.getHandler = function(mp)
 			onPointerUp: function(e)
 			{
 				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -528,7 +611,7 @@ MPAtom.prototype.handle = function(mp, point, type)
 		{
 			if(pointInsideCircle(point, line.area.point, r))
 			{
-				return { hit: true, redraw: this.setState(type) };
+				return { hit: true, redraw: this.setDisplay(type) };
 			}
 		}
 	}
@@ -539,12 +622,12 @@ MPAtom.prototype.handle = function(mp, point, type)
 			var d = pointToLineDistance(point, line.area.left, line.area.right)
 			if(d <= r)
 			{
-				return { hit: true, redraw: this.setState(type) };
+				return { hit: true, redraw: this.setDisplay(type) };
 			}
 		}
 	}
 
-	return { hit: false, redraw: this.setState("normal") };
+	return { hit: false, redraw: this.setDisplay("normal") };
 }
 
 /**
@@ -562,8 +645,8 @@ MPAtom.prototype.addNewBond = function(mp, config)
 {
 	var atom = new MPAtom({
 		i: mp.molecule.atoms.length,
-		x: this.getX() + mp.settings.bond.length * Math.cos(config.a),
-		y: this.getY() - mp.settings.bond.length * Math.sin(config.a),//y axis is flipped
+		x: this.getX() + (config.length || mp.settings.bond.length) * Math.cos(config.a),
+		y: this.getY() - (config.length || mp.settings.bond.length) * Math.sin(config.a),//y axis is flipped
 		element: config.element || "C"
 	});
 
@@ -571,7 +654,7 @@ MPAtom.prototype.addNewBond = function(mp, config)
 		i: mp.molecule.bonds.length,
 		type: config.type || MP_BOND_SINGLE,
 		stereo: config.stereo || MP_STEREO_NONE,
-		from: this.getIndex(),
+		from: this.index,
 		to: atom.getIndex()
 	});
 
@@ -581,29 +664,32 @@ MPAtom.prototype.addNewBond = function(mp, config)
 	mp.molecule.atoms.push(atom);
 	mp.molecule.bonds.push(bond);
 	atom.update(mp);
-	atom.updateBonds(mp);
+	this.update(mp);
+	this.updateBonds(mp);
 
 	return {
 		atom: atom.getIndex(),
+		bond: bond.getIndex(),
 		startAngle: config.a,
 		currentAngle: config.a
 	};
 }
 
 /**
- * Rotates atom around this.getPosition() using point and mp.tool.tmp.startAngle
+ * Rotates atom around this.position using point and mp.tool.tmp.startAngle
  * Does not redraw the canvas
  * @param  {MolPad}  mp
  * @param  {Object}  point Rotation target point
  * @param  {Integer} atom  Atom index
+ * @param  {Boolean} force Force angel refresh
  * @return {Boolean}       Indicates if atom angle has changed
  */
-MPAtom.prototype.rotateAtomAround = function(mp, point, atom)
+MPAtom.prototype.rotateAtomAround = function(mp, point, atom, force)
 {
-	var a = clampedAngle(mp.tool.tmp.startAngle, this.getPosition(),
+	var a = clampedAngle(mp.tool.tmp.startAngle, this.position,
 			point, mp.settings.bond.rotateSteps);
 
-	if(a != mp.tool.tmp.currentAngle)
+	if(a != mp.tool.tmp.currentAngle || force)
 	{
 		mp.tool.tmp.currentAngle = a;
 		mp.molecule.atoms[atom].setPosition({
@@ -627,7 +713,7 @@ MPAtom.prototype.rotateAtomAround = function(mp, point, atom)
 
 MPAtom.prototype.equals = function(atom)
 {
-	return this.getIndex() == atom.getIndex();
+	return this.index == atom.getIndex();
 }
 
 MPAtom.prototype.updateBonds = function(mp, not)
@@ -912,7 +998,11 @@ MPAtom.prototype.calculateBondVertices = function(mp, begin, ends)
 
 MPAtom.prototype.isVisible = function(mp)
 {
-	if(mp.settings.drawSkeletonFormula)
+	if(this.display == "hidden")
+	{
+		return false;
+	}
+	else if(mp.settings.drawSkeletonFormula)
 	{
 		if(this.element == "C")
 		{
@@ -951,7 +1041,7 @@ MPAtom.prototype.setFont = function(mp, type)
 
 MPAtom.prototype.drawStateColor = function(mp)
 {
-	if(this.state == "hover" || this.state == "active" || this.state == "selected")
+	if(this.display == "hover" || this.display == "active" || this.display == "selected")
 	{
 		var line = this.getCenterLine();
 
@@ -961,14 +1051,14 @@ MPAtom.prototype.drawStateColor = function(mp)
 			mp.ctx.arc(line.area.point.x, line.area.point.y,
 					mp.settings.atom.radius * mp.settings.atom.scale,
 					0, 2 * Math.PI);
-			mp.ctx.fillStyle = mp.settings.atom[this.state].color;
+			mp.ctx.fillStyle = mp.settings.atom[this.display].color;
 			mp.ctx.fill();
 		}
 		else
 		{
 			mp.ctx.moveTo(line.area.left.x, line.area.left.y);
 			mp.ctx.lineTo(line.area.right.x, line.area.right.y);
-			mp.ctx.strokeStyle = mp.settings.atom[this.state].color;
+			mp.ctx.strokeStyle = mp.settings.atom[this.display].color;
 			mp.ctx.stroke();
 		}
 	}

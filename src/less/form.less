@@ -41,6 +41,7 @@
 {
 	margin-bottom: 0;
 	border-width: 3px;
+	border-color: @foreground-less;
 
 	background: @light2;
 }
@@ -117,7 +118,7 @@ input:focus
 
 input[type="text"]:focus + .input-focus
 {
-	border-color: @highlight;
+	border-color: @highlight !important;
 	border-width: 0 1px 1px 1px;
 }
 
@@ -190,8 +191,7 @@ button, input[type="submit"]
 	font-size: 18pt;
 	font-weight: lighter;
 	background: @light2;
-	border-color: @contrast3;
-	border-radius: 10px;
+	border-color: @contrast;
 }
 
 .close-btn

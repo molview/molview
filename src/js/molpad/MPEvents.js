@@ -49,7 +49,7 @@ MolPad.prototype.onPointerDown = function(e)
 	var p = getPointerCoords(e);
 	this.pointer.old = p;
 	this.pointer.oldr = this.getRelativeCoords({ x: p.x, y: p.y });//deep copy
-	this.forAllObjects(function(obj){ obj.resetState(); });
+	this.forAllObjects(function(obj){ obj.resetDisplay(); });
 
 	if(oe.targetTouches && oe.targetTouches.length > 1)
 	{
@@ -70,7 +70,6 @@ MolPad.prototype.onPointerDown = function(e)
 	{
 		this.pointer.handler = undefined;
 
-		this.forAllObjects(function(obj){ obj.resetState(); });
 		this.forAllObjects(function(obj)
 		{
 			var result = obj.handle(this, this.pointer.oldr, "active");
@@ -118,7 +117,7 @@ MolPad.prototype.onMouseMoveInContainer = function(e)
 		return;//dimiss mouse events if touch is active
 	}
 
-	if(this.pointer.handler == undefined)
+	if(this.pointer.handler === undefined)
 	{
 		this.hoverHandler.onPointerMove.call(this, e);
 	}
@@ -127,7 +126,8 @@ MolPad.prototype.onMouseMoveInContainer = function(e)
 MolPad.prototype.onMouseOut = function(e)
 {
 	var redraw = false;
-	this.forAllObjects(function(obj){ redraw = obj.setState("normal") || redraw; });
+	this.forAllObjects(function(obj){ redraw = obj.setDisplay("normal") || redraw; });
+	this.setCursor("default");
 	if(redraw) this.redraw();
 }
 
@@ -184,6 +184,15 @@ MolPad.prototype.onPointerUp = function(e)
 	}
 }
 
+MolPad.prototype.onBlur = function(e)
+{
+	this.forAllObjects(function(obj){ obj.setDisplay("normal"); });
+	this.hasChanged = false;
+	this.setCursor("default");
+	this.pointer.targetTouchesNumber = 0;
+	this.pointer.handler = undefined;
+}
+
 /**
  * Event handlers
  */
@@ -196,7 +205,7 @@ MolPad.prototype.hoverHandler = {
 		var redraw = false;
 		var p = this.getRelativeCoords(getPointerCoords(e));
 
-		this.forAllObjects(function(obj){ obj.resetState(); });
+		this.forAllObjects(function(obj){ obj.resetDisplay(); });
 		this.forAllObjects(function(obj)
 		{
 			var result = obj.handle(this, p, "hover");

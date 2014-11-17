@@ -205,7 +205,7 @@ var Loader = {
 			});
 		},
 
-		loadName: function(name)
+		loadName: function(name, error)
 		{
 			Progress.reset(5);
 
@@ -214,11 +214,7 @@ var Loader = {
 				Request.PubChem.nameToCID(name, function(cid)
 				{
 					Loader.PubChem._loadCID(cid, ucfirst(name));
-				},
-				function()
-				{
-					Messages.alert("load_fail");
-				});
+				}, error);
 			}, "compound");
 		},
 

@@ -34,7 +34,7 @@ function MPBond(obj)
 	this.stereo = obj.stereo || MP_STEREO_NONE;
 	this.from = obj.from || 0;
 	this.to = obj.to || 0;
-	this.state = "normal";
+	this.display = "normal";
 }
 
 /**
@@ -44,10 +44,10 @@ function MPBond(obj)
 MPBond.prototype.getKetcherData = function(mp)
 {
 	return new chem.Struct.Bond({
-		type: this.getType(),
-		stereo: this.getStereo(),
-		begin: this.getFrom(),
-		end: this.getTo()
+		type: this.type,
+		stereo: this.stereo,
+		begin: this.from,
+		end: this.to
 	});
 }
 
@@ -55,10 +55,10 @@ MPBond.prototype.getPlainData = function()
 {
 	return {
 		i: this.index,
-		type: this.getType(),
-		stereo: this.getStereo(),
-		from: this.getFrom(),
-		to: this.getTo()
+		type: this.type,
+		stereo: this.stereo,
+		from: this.from,
+		to: this.to
 	};
 }
 
@@ -93,29 +93,28 @@ MPBond.prototype.calculateBondVertices = function(mp, begin, type, which)
 }
 
 /**
- * Sets state and returs wether the state has changed
+ * Sets display and returns wether the display has changed
  * @param  {String} state
  * @return {Boolean}
  */
-MPBond.prototype.setState = function(state)
+MPBond.prototype.setDisplay = function(state)
 {
-	var changed = this.oldState != state;
-	this.state = state;
-	this.oldState = this.state;
+	var changed = this.lastDisplay != state;
+	this.lastDisplay = this.display = state;
 	return changed;
 }
 
 /**
- * Resets state to normal in case this.handle is not reached by the
+ * Resets display to normal in case this.handle is not reached by the
  * hoverHandler (in this case, the state is drawn as normal and in the
- * next hoverHandler cycle, this.oldState will become normal)
- * Saves the old state in this.oldState to check the state change in
- * this.setState later
+ * next hoverHandler cycle, this.lastDisplay will become normal)
+ * Saves the old state in this.lastDisplay to check the state change in
+ * this.setDisplay later
  */
-MPBond.prototype.resetState = function()
+MPBond.prototype.resetDisplay = function()
 {
-	this.oldState = this.state;
-	this.state = "normal";
+	this.lastDisplay = this.display;
+	this.display = "normal";
 }
 
 MPBond.prototype.isPair = function(a, b, mp)
@@ -125,13 +124,19 @@ MPBond.prototype.isPair = function(a, b, mp)
 	return _a == a && _b == b || _a == b && _b == a;
 }
 
+MPBond.prototype.hasAtom = function(i)
+{
+	return this.from == i || this.to == i;
+}
+
 /**
 * Event handlers
 */
 
 MPBond.prototype.getHandler = function(mp)
 {
-	//TODO: implement fragment to bond tool
+	//TODO: fragment to bond tool
+	//TODO: bond drag collapsing
 
 	var scope = this;
 	if(mp.tool.type == "bond")
@@ -193,7 +198,7 @@ MPBond.prototype.getHandler = function(mp)
 			},
 			onPointerUp: function(e)
 			{
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -205,12 +210,12 @@ MPBond.prototype.getHandler = function(mp)
 			{
 				e.preventDefault();
 				this.removeBond(scope.getIndex());
-				this.redraw();
+				this.redraw(true);
 			},
 			onPointerUp: function(e)
 			{
 				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.redraw();
 			}
 		};
@@ -241,27 +246,13 @@ MPBond.prototype.getHandler = function(mp)
 			onPointerUp: function(e)
 			{
 				this.setCursor("pointer");
-				scope.setState(e.type == "mouseup" ? "hover" : "normal");
-				this.molecule.atoms[scope.from].setState("normal");
-				this.molecule.atoms[scope.to].setState("normal");
+				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
+				this.molecule.atoms[scope.from].setDisplay("normal");
+				this.molecule.atoms[scope.to].setDisplay("normal");
 				this.redraw();
 			}
 		};
 	}
-	/**
-	 * Add fragment to bond:
-	 * 1. calculate bond midpoint
-	 * 2. calculate bond length
-	 * 3. scale bond to bondLength relative to midpoint
-	 * 4. clone frag.toBond and save tool.tmp.frag
-	 * 5. translate fragment to bond
-	 * 6. calculate bond angle relative to bond.from
-	 * 7. add fragment to MolPad.molecule and save new atom indices to tool.tmp.frag
-	 * 6. rotate real fragment using the relative bond angle
-	 * 7. connect frag.bonds.first.from to bond.from
-	 * 8. connect frag.bonds.first.to to bond.to
-	 * 9. calculate pointer position (on +/- side of bond matrix) onPointerMove and flip fragment
-	 */
 }
 
 MPBond.prototype.handle = function(mp, point, type)
@@ -276,14 +267,14 @@ MPBond.prototype.handle = function(mp, point, type)
 		{
 			if(type == "active" && mp.tool.type == "drag")
 			{
-				mp.molecule.atoms[this.from].setState("active");
-				mp.molecule.atoms[this.to].setState("active");
+				mp.molecule.atoms[this.from].setDisplay("active");
+				mp.molecule.atoms[this.to].setDisplay("active");
 			}
-			return { hit: true, redraw: this.setState(type) };
+			return { hit: true, redraw: this.setDisplay(type) };
 		}
 	}
 
-	return { hit: false, redraw: this.setState("normal") };
+	return { hit: false, redraw: this.setDisplay("normal") };
 }
 
 /**
@@ -404,18 +395,29 @@ MPBond.prototype.getCenterLine = function(mp)
 
 MPBond.prototype.drawStateColor = function(mp)
 {
-	if(this.state == "hover" || this.state == "active" || this.state == "selected")
+	if(this.display == "hover" || this.display == "active" || this.display == "selected")
 	{
 		mp.ctx.beginPath();
-		mp.ctx.moveTo(this.cache.line.from[0].x, this.cache.line.from[0].y);
-		mp.ctx.lineTo(this.cache.line.to[0].x, this.cache.line.to[0].y);
-		mp.ctx.strokeStyle = mp.settings.bond[this.state].color;
+
+		var f = this.cache.line.from[0];
+		var t = this.cache.line.to[0];
+		if(mp.molecule.atoms[this.from].getDisplay() != "normal")
+			f = mp.molecule.atoms[this.from].getPosition();
+		if(mp.molecule.atoms[this.to].getDisplay() != "normal")
+			t = mp.molecule.atoms[this.to].getPosition();
+
+		mp.ctx.moveTo(f.x, f.y);
+		mp.ctx.lineTo(t.x, t.y);
+
+		mp.ctx.strokeStyle = mp.settings.bond[this.display].color;
 		mp.ctx.stroke();
 	}
 }
 
 MPBond.prototype.drawBond = function(mp)
 {
+	if(this.display == "hidden") return;
+
 	var scale = mp.settings.bond.scale;
 	var line = this.getCenterLine(mp);
 

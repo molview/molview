@@ -37,6 +37,7 @@ Wishlist
 - Add IR spectrum analysis and search database
 - Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Add client-side structural formula depiction using JavaScript
+- Add server-side structural formula rendering using NodeJS
 - Add backend services using CDK and the Google Cloud Platform
 - Add plugin framework and developer SDK
 - Add reaction animations using the MACiE database

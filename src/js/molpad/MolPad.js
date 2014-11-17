@@ -210,6 +210,11 @@ function MolPad(container, devicePixelRatio, buttons)
 		scope.onPointerUp(e);
 	});
 
+	jQuery(window).on("blur", function(e)
+	{
+		scope.onBlur(e);
+	});
+
 	/**
 	 * Keyboard shortcuts
 	 */
