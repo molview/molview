@@ -99,6 +99,12 @@ MPAtom.prototype.mapBonds = function(map)
 	}
 }
 
+MPAtom.prototype.replaceBond = function(i, n)
+{
+	var idx = this.bonds.indexOf(i);
+	if(idx != -1) this.bonds[idx] = n;
+}
+
 MPAtom.prototype.getCenterLine = function()
 {
 	return this.line || {
@@ -162,7 +168,7 @@ MPAtom.prototype.isImplicit = function(mp)
  * @param  {MolPad}  mp
  * @param  {Integer} idx
  * @param  {Integer} exclude
- * @return {Boolean}
+ * @return {Integer} Bond index or -1
  */
 MPAtom.prototype.isNeighborAtom = function(mp, idx, exclude)
 {
@@ -171,10 +177,10 @@ MPAtom.prototype.isNeighborAtom = function(mp, idx, exclude)
 		if(this.bonds[i] == exclude) continue;
 		if(mp.molecule.bonds[this.bonds[i]].hasAtom(idx))
 		{
-			return true;
+			return this.bonds[i];
 		}
 	}
-	return false;
+	return -1;
 }
 
 /**
@@ -347,15 +353,24 @@ MPAtom.prototype.getHandler = function(mp)
 							this.molecule.atoms[bond.getTo()].setDisplay("normal");
 							this.molecule.atoms[this.tool.tmp.atom].setDisplay("hidden");
 							bond.setTo(i);
+							bond.update(this);
 
-							if(scope.isNeighborAtom(this, i, this.tool.tmp.bond))
+							var n = scope.isNeighborAtom(this, i, this.tool.tmp.bond);
+							if(n != -1)
 							{
-								bond.setDisplay("hidden");
+								if(n != this.tool.tmp.neighbor)
+								{
+									this.tool.tmp.neighbor = n;
+									this.molecule.bonds[n].setDisplay("hidden");
+								}
 							}
 							else
 							{
-								bond.setDisplay("normal");
-								bond.update(this);
+								if(this.tool.tmp.neighbor !== undefined)
+								{
+									this.molecule.bonds[this.tool.tmp.neighbor].setDisplay("normal");
+									this.tool.tmp.neighbor = undefined;
+								}
 							}
 
 							this.redraw();
@@ -368,7 +383,12 @@ MPAtom.prototype.getHandler = function(mp)
 				//reset bond.to to tool.tmp.atom
 				if(bond.getTo() != this.tool.tmp.atom)
 				{
-					bond.setDisplay("normal");
+					if(this.tool.tmp.neighbor !== undefined)
+					{
+						this.molecule.bonds[this.tool.tmp.neighbor].setDisplay("normal");
+						this.tool.tmp.neighbor = undefined;
+					}
+
 					bond.setTo(this.tool.tmp.atom);
 					this.molecule.atoms[this.tool.tmp.atom].setDisplay("normal");
 					changed = true;
@@ -386,20 +406,23 @@ MPAtom.prototype.getHandler = function(mp)
 			{
 				var to = this.molecule.bonds[this.tool.tmp.bond].getTo();
 
-				if(scope.isNeighborAtom(this, to, this.tool.tmp.bond))
-				{
-					scope.bonds.splice(scope.bonds.indexOf(this.tool.tmp.bond));
-					this.molecule.bonds.pop();
-					this.molecule.atoms.pop();
-					scope.update(this);
-					scope.updateBonds(this);
-				}
-				else if(to != this.tool.tmp.atom)
+				if(to != this.tool.tmp.atom)
 				{
 					this.molecule.atoms[to].addBond(this.tool.tmp.bond);
 					this.molecule.atoms.pop();
-					scope.update(this);
-					scope.updateBonds(this);
+
+					if(this.tool.tmp.neighbor)
+					{
+						var n = this.tool.tmp.neighbor;
+						var r = this.tool.tmp.bond - (this.tool.tmp.bond > n ? 1 : 0);
+						var f = this.molecule.bonds[n].getFrom();
+						var t = this.molecule.bonds[n].getTo();
+
+						this.molecule.atoms[f].replaceBond(n, r);
+						this.molecule.atoms[t].replaceBond(n, r);
+						this.molecule.bonds.splice(n, 1);
+						this.updateIndices();
+					}
 				}
 
 				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");

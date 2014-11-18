@@ -10,8 +10,10 @@ ErrorDocument 500 /molview/page.php?id=500
 # HTTPS redirection
 # RewriteCond %{HTTP:CF-Visitor} '"scheme":"http"'
 # RewriteRule ^(.*)$ http://molview.org/$1 [R,L]
-# RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
-# RewriteRule ^(.*)$ http://molview.org/$1 [L,R=301]
+
+# WWW redirection
+RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
+RewriteRule ^(.*)$ http://molview.org/$1 [L,R=301]
 
 # Embed page
 RewriteRule ^embed$ embed.php [L]

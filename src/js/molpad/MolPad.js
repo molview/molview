@@ -18,7 +18,8 @@
 
 /**
  * Initialize MolPad in the given container
- * TODO: larger touch targers on high DPI screens
+ * TODO: larger touch targets on high DPI screens
+ *
  * @param {DOMElement} container
  * @param {Float}      devicePixelRatio
  * @param {Object}     buttons
@@ -220,15 +221,15 @@ function MolPad(container, devicePixelRatio, buttons)
 	 */
 	if(navigator.platform.toLowerCase().indexOf("mac") >= 0)
 	{
-		jQuery(document).bind("keydown", "meta+z", this.undo.bind(this));
-		jQuery(document).bind("keydown", "meta+y", this.redo.bind(this));
-		jQuery(document).bind("keydown", "meta+shift+z", this.redo.bind(this));
+		jQuery(document).bind("keydown", "meta+z", function(){ scope.undo(); });
+		jQuery(document).bind("keydown", "meta+y", function(){ scope.redo(); });
+		jQuery(document).bind("keydown", "meta+shift+z", function(){ scope.redo(); });
 	}
 	else
 	{
-		jQuery(document).bind("keydown", "ctrl+z", this.undo.bind(this));
-		jQuery(document).bind("keydown", "ctrl+y", this.redo.bind(this));
-		jQuery(document).bind("keydown", "ctrl+shift+z", this.redo.bind(this));
+		jQuery(document).bind("keydown", "ctrl+z", function(){ scope.undo(); });
+		jQuery(document).bind("keydown", "ctrl+y", function(){ scope.redo(); });
+		jQuery(document).bind("keydown", "ctrl+shift+z", function(){ scope.redo(); });
 	}
 }
 
@@ -287,9 +288,13 @@ MolPad.prototype.undo = function(noRedo)
 {
 	if(this.stack.length > 0)
 	{
-		if(!noRedo) this.reverseStack.push(this.getPlainData());
+		if(!noRedo)
+		{
+			this.reverseStack.push(this.getPlainData());
+			jQuery(this.buttons.redo).removeClass("tool-button-disabled");
+		}
+
 		this.loadPlainData(this.stack.pop());
-		jQuery(this.buttons.redo).removeClass("tool-button-disabled");
 	}
 
 	if(this.stack.length == 0)
@@ -306,14 +311,13 @@ MolPad.prototype.redo = function()
 	{
 		this.saveToStack();
 		this.loadPlainData(this.reverseStack.pop());
+		this.changed();
 	}
 
 	if(this.reverseStack.length == 0)
 	{
 		jQuery(this.buttons.redo).addClass("tool-button-disabled");
 	}
-
-	this.changed();
 }
 
 MolPad.prototype.displaySkeleton = function(yes)

@@ -140,6 +140,10 @@ MolPad.prototype.removeAtom = function(index)
 	this.updateIndices();
 }
 
+/**
+ * Remove bond from the current molecule
+ * @param {Integer} index Bond index
+ */
 MolPad.prototype.removeBond = function(index)
 {
 	var f = this.molecule.bonds[index].getFrom();

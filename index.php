@@ -485,7 +485,7 @@ Query parameters:
 				<div id="dialog-wrapper">
 					<div class="dialog" id="start-dialog">
 						<h1>Welcome to MolView <a target="_blank" href="http://github.com/molview"><img id="agpl-logo" src="img/agpl.svg" alt="AGPL" /></a></h1>
-						<p>MolView is an Open-Source, intuitive web-application to make chemistry and biology more awesome!</p>
+						<p>MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome!</p>
 						<p id="allow-tracking-wrapper">
 							<input id="allow-tracking" type="checkbox" />
 							<script type="text/javascript">
@@ -585,32 +585,34 @@ Query parameters:
 							<div class="expandable-content">
 								<p>You can draw structural formulas using the Sketcher component.</p>
 								<h4>Top toolbar</h4>
-								<p style="text-align: right;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.jpg" alt="Top toolbar" /></p>
+								<p style="margin-top: 10px;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.jpg" alt="Top toolbar" /></p>
 								<ol>
 									<li><b>Trash:</b> clears the entire canvas</li>
 									<li><b>Eraser:</b> click atoms or bonds to erase them</li>
 									<li><b>Drag:</b> drag atoms and bonds around</li>
 									<li><b>Undo/redo:</b> navigate trough your edit history</li>
+									<li><b>Color mode:</b> display atoms and bonds using colors</li>
 									<li><b>Full mode:</b> displays all C and H atoms instead of skeleton display</li>
 									<li><b>Center:</b> centers the whole molecule</li>
 									<li><b>Clean:</b> cleans the structural formula using an external service</li>
 									<li><b>2D to 3D:</b> converts the structural formula into a 3D model</li>
 								</ol>
 								<h4>Left toolbar</h4>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.jpg" alt="Left toolbar" /></p>
+								<p style="margin-top: 10px;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.jpg" alt="Left toolbar" /></p>
 								<ol>
 									<li><b>Bonds:</b> pick one of the bond types and create bonds by clicking the canvas, add bonds to atoms or modify bonds by clicking existing bonds</li>
 									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and create fragments by clicking the canvas or add fragments to atoms</li>
 									<li><b>Charge:</b> click atoms to either increment or decrement their charge</li>
 								</ol>
 								<h4>Right toolbar</h4>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.jpg" alt="Right toolbar" /></p>
+								<p style="margin-top: 10px;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.jpg" alt="Right toolbar" /></p>
 								<p>Contains a number of elements and at the bottom a periodic table button which pop-ups a periodic table where you can choose from all elements. If you have selected an element, you can click existing atoms to change their element or click on an empty part of the canvas to create a new atom with the selected element.</p>
 							</div>
 						</div>
 						<div class="expandable">
 							<div class="expandable-title"><span>Finding structures</span></div>
 							<div class="expandable-content">
+								<p><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.jpg" alt="Search bar" /></p>
 								<p>You can load molecules from large databases like PubChem and RCSB using the search form located on the left side of the menu-bar. Just type what you are looking for and a list of available molecules will appear.</p>
 								<p>You can also click on the dropdown button next to the search field to select a specific database. This will perform a more extensive search on the selected database. Currently, three big databases are supported:</p>
 								<ol>
@@ -618,8 +620,6 @@ Query parameters:
 									<li><b>The RCSB Protein Data Bank</b></li>
 									<li><b>The Crystallography Open Database</b></li>
 								</ol>
-								<p style="text-align: right;"><img style="max-height: 40px; display: inline-block; border: 1px solid #ccc;" src="img/help/SearchBar.jpg" alt="Search bar" /></p>
-								<p class="image-note"><span>The search form</span></p>
 							</div>
 						</div>
 						<div class="expandable">
