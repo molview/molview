@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.2
+
+- Revised MolPad refresh cycle
+- Removed implicit H atoms from calculated fragments
+- Removed protein display information in embed URL for non-proteins
+- Fixed Autocomplete submit Progress reset in CIR fallback
+- Fixed MolPad multiTouch to mouseDrag transition
++ TODO: fix GLmol embed mouseout bug
++ TODO: fix embed ?mode not applied before first redraw
+
 ## 2.3.1
 
 - Revised COD search sorting

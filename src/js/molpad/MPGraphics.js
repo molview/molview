@@ -26,6 +26,20 @@ MolPad.prototype.resize = function()
 	this.center();
 }
 
+MolPad.prototype.invalidate = function()
+{
+	this.valid = false;
+}
+
+MolPad.prototype.validate = function()
+{
+	if(!this.valid)
+	{
+		this.valid = true;
+		this.redraw();
+	}
+}
+
 MolPad.prototype.update = function(scaleOnly)
 {
 	var oldAtomScale = this.settings.atom.scale;
@@ -43,12 +57,12 @@ MolPad.prototype.update = function(scaleOnly)
 	{
 		for(var i = 0; i < this.molecule.atoms.length; i++)
 		{
-			this.molecule.atoms[i].update(this);
+			this.molecule.atoms[i].invalidate();
 		}
 
 		for(var i = 0; i < this.molecule.bonds.length; i++)
 		{
-			this.molecule.bonds[i].update(this);
+			this.molecule.bonds[i].invalidate();
 		}
 	}
 }
@@ -64,8 +78,8 @@ MolPad.prototype.draw = function()
 
 	if(!this.updated)
 	{
-		this.update();
 		this.updated = true;
+		this.update();
 	}
 
 	//clear
@@ -147,7 +161,7 @@ MolPad.prototype.draw = function()
 /**
  * Redraw using requestAnimationFrame
  * requestAnimationFrame polyfill is already present in GLmol
- * @param {Boolean} update Indicates if molecule should be updated
+ * @param {Boolean} update Indicates if update should be performed
  */
 MolPad.prototype.redraw = function(update)
 {
@@ -160,7 +174,7 @@ MolPad.prototype.redraw = function(update)
 MolPad.prototype.center = function()
 {
 	if(this.molecule.atoms.length == 0) return;
-	
+
 	this.resetMatrix();
 
 	var bbox = this.getBBox();

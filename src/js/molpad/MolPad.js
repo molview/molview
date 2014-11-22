@@ -19,6 +19,11 @@
 /**
  * Initialize MolPad in the given container
  * TODO: larger touch targets on high DPI screens
+ * TODO: rotate/move selection tool
+ * TODO: delete selection on DEL
+ * TODO: element/valence based handler actions
+ * TODO: add implicit hydrogen as subset of MPAtom
+ * TODO: collapse newly added implicit H atoms if !skeleton
  *
  * @param {DOMElement} container
  * @param {Float}      devicePixelRatio
@@ -34,11 +39,10 @@ function MolPad(container, devicePixelRatio, buttons)
 		maxStackSize: 100,
 		zoomSpeed: 0.2,
 		minZoom: 0.01,
-		drawSkeletonFormula: true,
+		skeletonDisplay: true,
 		relativePadding: 0.15,
 		bond: {
 			gradient: {
-				enabled: true,
 				from: 0.4,
 				to: 0.6
 			},
@@ -62,6 +66,7 @@ function MolPad(container, devicePixelRatio, buttons)
 			lengthHydrogen: 34,
 			radius: 8,
 			color: "#111111",
+			colored: true,
 			lineCap: "round",
 			lineJoin: "round",
 			width: 1.5,//in px
@@ -131,15 +136,19 @@ function MolPad(container, devicePixelRatio, buttons)
 	};
 
 	this.pointer = {
-		old: { x: 0, y: 0 },//old pointer position
-		oldc: { x: 0, y: 0 },//old pointer center
-		oldr: { x: 0, y: 0 },//old real pointer
+		old: {
+			p: new MPPoint(),
+			r: new MPPoint(),
+			c: new MPPoint(),
+			d: 0,
+		},
 		handler: undefined,
 		targetTouchesNumber: 0,
 		touchGrab: false
 	};
 
-	this.hasChanged = false;
+	this.hasChanged = false;//TODO: revise
+	this.valid = true;
 	this.stack = [];
 	this.reverseStack = [];
 	this.buttons = buttons;
@@ -264,7 +273,7 @@ MolPad.prototype.clear = function(cb)
 {
 	this.saveToStack();
 	this.molecule = { atoms: [], bonds: [] };
-	this.redraw(true);
+	this.redraw();
 }
 
 MolPad.prototype.changed = function()
@@ -286,6 +295,8 @@ MolPad.prototype.saveToStack = function()
 
 MolPad.prototype.undo = function(noRedo)
 {
+	this.dismissHandler();
+	
 	if(this.stack.length > 0)
 	{
 		if(!noRedo)
@@ -307,6 +318,8 @@ MolPad.prototype.undo = function(noRedo)
 
 MolPad.prototype.redo = function()
 {
+	this.dismissHandler();
+
 	if(this.reverseStack.length > 0)
 	{
 		this.saveToStack();
@@ -322,18 +335,40 @@ MolPad.prototype.redo = function()
 
 MolPad.prototype.displaySkeleton = function(yes)
 {
-	this.settings.drawSkeletonFormula = yes;
+	if(yes == this.settings.skeletonDisplay) return;
+
+	this.dismissHandler();
+
+	if(yes)
+	{
+		//so all new invisible carbons are invalidated
+		this.settings.skeletonDisplay = true;
+	}
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		if(!this.molecule.atoms[i].isVisible())
+		{
+			this.molecule.atoms[i].invalidate(false);
+		}
+	}
+	if(!yes)
+	{
+		//so all invisible carbon atoms are inavalidated before becoming visibile
+		this.settings.skeletonDisplay = false;
+	}
+
 	if(yes) this.removeImplicitHydrogen();
 	else this.addImplicitHydrogen();
-	this.redraw(true);
+
+	this.validate();
 }
 
 MolPad.prototype.setColored = function(yes)
 {
-	this.settings.atom.colored = this.settings.bond.gradient.enabled = yes;
+	this.settings.atom.colored = this.settings.bond.colored = yes;
 	this.settings.atom.isotope.fontStyle = this.settings.atom.label.fontStyle =
 			this.settings.atom.charge.fontStyle = yes ? "bold" : "normal";
-	this.redraw(true);//gradients are cached
+	this.redraw(true);
 }
 
 MolPad.prototype.toDataURL = function()

@@ -16,20 +16,12 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function rotateAround(p, c, a)
-{
-	return {
-		x: c.x + (p.x - c.x) * Math.cos(a) - (p.y - c.y) * Math.sin(a),
-		y: c.y + (p.x - c.x) * Math.sin(a) + (p.y - c.y) * Math.cos(a)
-	};
-}
-
 /**
  * Input fragment data for MolPad
  * 1. you can pass this data as tool.data.frag
  * 2. all fragments use bondLength = 1 as default
  * 3. you have to multiply all coordinates with the real bondLength
- * 4. all fragments are positioned on the positive side of the x-axis
+ * 4. all fragments are centered on the positive side of the x-axis
  * 5. you can rotate the fragment coordinates around (0, 0)
  * 6. the first atom in each fragment.toAtom is the atom you have to connect to
  *    when adding the fragment to an atom
@@ -63,15 +55,15 @@ var MPFragments = {
 		var r = 0.5 / Math.sin(as / 2) * this.length;
 
 		var ret = {
-			full: this.createRing(vertices, alternating, false),
-			toAtom: this.translate(this.createRing(vertices, alternating, true), r, 0)//r to move bond to the left
+			full: this.createRing(vertices, alternating),
+			toAtom: this.translate(this.createRing(vertices, alternating), r, 0)//r to move bond to the left
 		};
 		return ret;
 	},
 
-	createRing: function(vertices, alternating, skipFirstH)
+	createRing: function(vertices, alternating)
 	{
-		var frag = { atoms: [], bonds: [], size: vertices };
+		var frag = { atoms: [], bonds: [] };
 		var as = 2 * Math.PI / vertices;//angle step
 		var r = 0.5 / Math.sin(as / 2) * this.length;
 
@@ -80,8 +72,9 @@ var MPFragments = {
 		{
 			//move a = 0 to left side to apply rule 4
 			frag.atoms.push({
-				x: r * Math.cos(Math.PI + as * i),
-				y: r * Math.sin(Math.PI + as * i),
+				center: new MPPoint(
+					r * Math.cos(Math.PI + as * i),
+					r * Math.sin(Math.PI + as * i)),
 				element: "C"
 			});
 			frag.bonds.push({
@@ -89,70 +82,6 @@ var MPFragments = {
 				to: i + 1 < vertices ? i + 1 : 0,
 				type: alternating ? (i % 2 == 0 ? MP_BOND_SINGLE : MP_BOND_DOUBLE) : MP_BOND_SINGLE
 			});
-		}
-
-		//saturate
-		var hr = this.lengthHydrogen;
-		for(var i = 0; i < vertices; i++)
-		{
-			if(alternating)//one H atom
-			{
-				if(i == 0 && skipFirstH) continue;
-
-				frag.atoms.push({
-					x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i),
-					y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i),
-					element: "H"
-				});
-				frag.bonds.push({
-					from: i,
-					to: frag.atoms.length - 1,
-					type: MP_BOND_SINGLE
-				});
-			}
-			else//two H atoms
-			{
-				if(i == 0 && skipFirstH)
-				{
-					var a = -(Math.PI + as) / 4;
-
-					frag.atoms.push({
-						x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i + a),
-						y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i + a),
-						element: "H"
-					});
-					frag.bonds.push({
-						from: i,
-						to: frag.atoms.length - 1,
-						type: MP_BOND_SINGLE
-					});
-				}
-				else
-				{
-					var a = (Math.PI + as) / 3 / 2;
-
-					frag.atoms.push({
-						x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i + a),
-						y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i + a),
-						element: "H"
-					});
-					frag.bonds.push({
-						from: i,
-						to: frag.atoms.length - 1,
-						type: MP_BOND_SINGLE
-					});
-					frag.atoms.push({
-						x: frag.atoms[i].x + hr * Math.cos(Math.PI + as * i - a),
-						y: frag.atoms[i].y + hr * Math.sin(Math.PI + as * i - a),
-						element: "H"
-					});
-					frag.bonds.push({
-						from: i,
-						to: frag.atoms.length - 1,
-						type: MP_BOND_SINGLE
-					});
-				}
-			}
 		}
 
 		return frag;
@@ -165,8 +94,7 @@ var MPFragments = {
 		for(var i = 0; i < frag.atoms.length; i++)
 		{
 			copy.atoms.push({
-				x: frag.atoms[i].x,
-				y: frag.atoms[i].y,
+				center: frag.atoms[i].center.clone(),
 				element: frag.atoms[i].element
 			});
 		}
@@ -187,8 +115,7 @@ var MPFragments = {
 	{
 		for(var i = 0; i < frag.atoms.length; i++)
 		{
-			frag.atoms[i].x *= scale;
-			frag.atoms[i].y *= scale;
+			frag.atoms[i].center.scale(scale);
 		}
 		return frag;
 	},
@@ -197,9 +124,7 @@ var MPFragments = {
 	{
 		for(var i = 0; i < frag.atoms.length; i++)
 		{
-			var p = rotateAround(frag.atoms[i], center, angle);
-			frag.atoms[i].x = p.x;
-			frag.atoms[i].y = p.y;
+			frag.atoms[i].center.rotateAroundCenter(center, angle);
 		}
 		return frag;
 	},
@@ -208,8 +133,7 @@ var MPFragments = {
 	{
 		for(var i = 0; i < frag.atoms.length; i++)
 		{
-			frag.atoms[i].x += dx;
-			frag.atoms[i].y += dy;
+			frag.atoms[i].center.translate(dx, dy);
 		}
 		return frag;
 	}

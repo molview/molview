@@ -27,21 +27,26 @@ var MP_STEREO_DOWN = 6;
 var MP_STEREO_CIS_TRANS = 3;
 var MP_STEREO_EITHER = 4;
 
-function MPBond(obj)
+/**
+ * Create new MPBond
+ * @param {MolPad} mp
+ * @param {Object} obj Configuration
+ */
+function MPBond(mp, obj)
 {
+	this.mp = mp;
 	this.index = obj.i;
 	this.type = obj.type || 0;
 	this.stereo = obj.stereo || MP_STEREO_NONE;
 	this.from = obj.from || 0;
 	this.to = obj.to || 0;
 	this.display = "normal";
+
+	this.valid = false;
+	this.mp.invalidate();
 }
 
-/**
- * Data
- */
-
-MPBond.prototype.getKetcherData = function(mp)
+MPBond.prototype.getKetcherData = function()
 {
 	return new chem.Struct.Bond({
 		type: this.type,
@@ -51,7 +56,7 @@ MPBond.prototype.getKetcherData = function(mp)
 	});
 }
 
-MPBond.prototype.getPlainData = function()
+MPBond.prototype.getConfig = function()
 {
 	return {
 		i: this.index,
@@ -62,65 +67,66 @@ MPBond.prototype.getPlainData = function()
 	};
 }
 
-MPBond.prototype.getIndex = function() { return this.index; }
 MPBond.prototype.setIndex = function(index) { this.index = index; }
 
-MPBond.prototype.getType = function() { return this.type; }
-MPBond.prototype.setType = function(type) { this.type = type; }
-
-MPBond.prototype.getStereo = function() { return this.stereo; }
-MPBond.prototype.setStereo = function(stereo) { this.stereo = stereo; }
-
-MPBond.prototype.getFrom = function() { return this.from; }
-MPBond.prototype.setFrom = function(from) { this.from = from; }
-
-MPBond.prototype.getTo = function() { return this.to; }
-MPBond.prototype.setTo = function(to) { this.to = to; }
-
-MPBond.prototype.calculateBondVertices = function(mp, begin, type, which)
+MPBond.prototype.setType = function(type)
 {
-	if(this.bondVC[type] && this.bondVC[type][which])
+	this.type = type;
+	this.invalidate();
+}
+
+MPBond.prototype.setStereo = function(stereo)
+{
+	this.stereo = stereo;
+	this.invalidate();
+}
+
+MPBond.prototype.setFrom = function(from)
+{
+	this.from = from;
+	this.invalidate();
+}
+
+MPBond.prototype.setTo = function(to)
+{
+	this.to = to;
+	this.invalidate();
+}
+
+/**
+ * Sets display type
+ * @param {String} type
+ */
+MPBond.prototype.setDisplay = function(type)
+{
+	if(type != this.display)
 	{
-		return this.bondVC[type][which];
-	}
-	else
-	{
-		//TODO: finish bond vertices caching
-		if(!this.bondVC[type]) this.bondVC[type] = {};
-		this.bondVC[type][which] = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0])
-		return this.bondVC[type];
+		this.display = type;
+		this.invalidate();
 	}
 }
 
 /**
- * Sets display and returns wether the display has changed
- * @param  {String} state
- * @return {Boolean}
+ * Replace a given atom with another atom
+ * @param {Integer} i Atom index
+ * @param {Integer} n New atom index
  */
-MPBond.prototype.setDisplay = function(state)
+MPBond.prototype.replaceAtom = function(i, n)
 {
-	var changed = this.lastDisplay != state;
-	this.lastDisplay = this.display = state;
-	return changed;
+	if(this.from == i && this.to != n) this.from = n;
+	else if(this.to == i && this.from != n) this.to = n;
+	this.invalidate();
 }
 
-/**
- * Resets display to normal in case this.handle is not reached by the
- * hoverHandler (in this case, the state is drawn as normal and in the
- * next hoverHandler cycle, this.lastDisplay will become normal)
- * Saves the old state in this.lastDisplay to check the state change in
- * this.setDisplay later
- */
-MPBond.prototype.resetDisplay = function()
+MPBond.prototype.equals = function(bond)
 {
-	this.lastDisplay = this.display;
-	this.display = "normal";
+	return bond.from == this.from && bond.to == this.to;
 }
 
-MPBond.prototype.isPair = function(a, b, mp)
+MPBond.prototype.isPair = function(a, b)
 {
-	var _a = mp.molecule.atoms[this.from].getElement();
-	var _b = mp.molecule.atoms[this.to].getElement();
+	var _a = this.mp.molecule.atoms[this.from].element;
+	var _b = this.mp.molecule.atoms[this.to].element;
 	return _a == a && _b == b || _a == b && _b == a;
 }
 
@@ -129,221 +135,115 @@ MPBond.prototype.hasAtom = function(i)
 	return this.from == i || this.to == i;
 }
 
-/**
-* Event handlers
-*/
-
-MPBond.prototype.getHandler = function(mp)
+MPBond.prototype.oppositeAtom = function(i)
 {
-	//TODO: fragment to bond tool
-	//TODO: bond drag collapsing
-
-	var scope = this;
-	if(mp.tool.type == "bond")
-	{
-		return {
-			onPointerDown: function(e)
-			{
-				//TODO: implement up to up bonds
-
-				var changed = false;
-				e.preventDefault();
-
-				var fromVisible = this.molecule.atoms[scope.from].isVisible(this);
-				var toVisible = this.molecule.atoms[scope.to].isVisible(this);
-
-				if(this.tool.data.type)
-				{
-					changed = !(scope.type == MP_BOND_TRIPLE && this.tool.data.type == MP_BOND_TRIPLE);
-
-					scope.type = this.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
-						(scope.type == MP_BOND_TRIPLE || scope.stereo != MP_STEREO_NONE) ? this.tool.data.type :
-							scope.type == MP_BOND_SINGLE ? MP_BOND_DOUBLE : MP_BOND_SINGLE;
-					scope.stereo = MP_STEREO_NONE;
-				}
-				else if(this.tool.data.stereo)
-				{
-					scope.type = MP_BOND_SINGLE;
-
-					if(scope.stereo == this.tool.data.stereo)
-					{
-						var f = scope.from;
-						scope.from = scope.to;
-						scope.to = f;
-					}
-					else
-					{
-						scope.stereo = this.tool.data.stereo;
-					}
-
-					changed = true;
-				}
-
-				if(changed)
-				{
-					if(fromVisible != this.molecule.atoms[scope.from].isVisible(this))
-					{
-						this.molecule.atoms[scope.from].update(this);
-						this.molecule.atoms[scope.from].updateBonds(this, scope);
-					}
-					if(toVisible != this.molecule.atoms[scope.to].isVisible(this))
-					{
-						this.molecule.atoms[scope.to].update(this);
-						this.molecule.atoms[scope.to].updateBonds(this, scope);
-					}
-
-					scope.update(this);
-					this.redraw();
-				}
-			},
-			onPointerUp: function(e)
-			{
-				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
-				this.redraw();
-			}
-		};
-	}
-	else if(mp.tool.type == "erase")
-	{
-		return {
-			onPointerDown: function(e)
-			{
-				e.preventDefault();
-				this.removeBond(scope.getIndex());
-				this.redraw(true);
-			},
-			onPointerUp: function(e)
-			{
-				this.setCursor("pointer");
-				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
-				this.redraw();
-			}
-		};
-	}
-	else//drag, fallback
-	{
-		return {
-			onPointerMove: function(e)
-			{
-				e.preventDefault();
-				this.setCursor("move");
-				var p = this.getRelativeCoords(getPointerCoords(e));
-				var dx = p.x - this.pointer.oldr.x;
-				var dy = p.y - this.pointer.oldr.y;
-
-				this.molecule.atoms[scope.from].translate(dx, dy);
-				this.molecule.atoms[scope.to].translate(dx, dy);
-				this.molecule.atoms[scope.from].update(this);
-				this.molecule.atoms[scope.to].update(this);
-				this.molecule.atoms[scope.from].updateBonds(this, scope);
-				this.molecule.atoms[scope.to].updateBonds(this, scope);
-				scope.update(this);
-
-				this.pointer.oldr.x = p.x;
-				this.pointer.oldr.y = p.y;
-				this.redraw();
-			},
-			onPointerUp: function(e)
-			{
-				this.setCursor("pointer");
-				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
-				this.molecule.atoms[scope.from].setDisplay("normal");
-				this.molecule.atoms[scope.to].setDisplay("normal");
-				this.redraw();
-			}
-		};
-	}
+	return this.from == i ? this.to : this.from;
 }
 
-MPBond.prototype.handle = function(mp, point, type)
+/**
+ * Invalidate this bond
+ * If this bond changes, secondary bonds of invisible atom are always invalidated
+ */
+MPBond.prototype.invalidate = function()
 {
-	var line = this.getCenterLine(mp);
-	var r = mp.settings.bond.radius * mp.settings.bond.scale;
+	this.valid = false;
 
-	if(fastPointInLineBox(point, line.from, line.to, r))
+	if(!this.mp.molecule.atoms[this.from].isVisible())
+		this.mp.molecule.atoms[this.from].invalidateBonds();
+	if(!this.mp.molecule.atoms[this.to].isVisible())
+		this.mp.molecule.atoms[this.to].invalidateBonds();
+
+	this.mp.invalidate();
+}
+
+MPBond.prototype.invalidateFrom = function(from, updateSecondary)
+{
+	this.valid = false;
+
+	if(from !== undefined)
 	{
-		var d = pointToLineDistance(point, line.from, line.to);
-		if(d <= r)
+		var t = from == this.from ? this.to : this.from;
+
+		if(updateSecondary && !this.mp.molecule.atoms[t].isVisible())
 		{
-			if(type == "active" && mp.tool.type == "drag")
-			{
-				mp.molecule.atoms[this.from].setDisplay("active");
-				mp.molecule.atoms[this.to].setDisplay("active");
-			}
-			return { hit: true, redraw: this.setDisplay(type) };
+			this.mp.molecule.atoms[t].invalidateBonds();
 		}
 	}
 
-	return { hit: false, redraw: this.setDisplay("normal") };
+	this.mp.invalidate();
 }
 
-/**
- * Calculations
- */
-
-MPBond.prototype.equals = function(bond)
+MPBond.prototype.validate = function()
 {
-	return bond.from == this.from && bond.to == this.to;
-}
+	if(this.valid) return;
+	this.valid = true;
 
-MPBond.prototype.update = function(mp)
-{
-	var scale = mp.settings.bond.scale;
-	var line = this.getCenterLine(mp);
+	var scale = this.mp.settings.bond.scale;
 
 	this.cache = {};
-	this.cache.line = {
-		from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]),
-		to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, [0])
+	this.line = {
+		from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0])[0],
+		to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, [0])[0]
 	};
 
-	if(mp.settings.bond.gradient.enabled)
+	if(this.mp.settings.bond.colored)
 	{
-		var f = mp.molecule.atoms[this.from];
-		var t = mp.molecule.atoms[this.to];
+		var f = this.mp.molecule.atoms[this.from];
+		var t = this.mp.molecule.atoms[this.to];
 
-		if(this.stereo == MP_STEREO_UP || f.getElement() == t.getElement())
+		if(this.stereo == MP_STEREO_UP)
 		{
-			this.cache.gradient = JmolAtomColorsHashHex[f.getElement()];
+			this.cache.bondColor = JmolAtomColorsHashHex["C"];
+		}
+		else if(f.element == t.element)
+		{
+			this.cache.bondColor = JmolAtomColorsHashHex[f.element];
 		}
 		else
 		{
-			this.cache.gradient = mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
-			this.cache.gradient.addColorStop(mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.getElement()]);
-			this.cache.gradient.addColorStop(mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.getElement()]);
+			this.cache.bondColor = this.mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
+			this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.element]);
+			this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.element]);
 		}
+	}
+	else//fallback, this color is actually not used
+	{
+		this.cache.bondColor = this.mp.settings.bond.color;
 	}
 
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
 		//TODO: connect one double CIS-TRANS bond to [0] endpoint
-		var ends = multiplyAll(mp.settings.bond.delta[MP_BOND_DOUBLE], mp.settings.bond.deltaScale);
+		var ends = multiplyAll(this.mp.settings.bond.delta[MP_BOND_DOUBLE],
+				this.mp.settings.bond.deltaScale);
 		this.cache.ctd = {
-			from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends),
-			to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends)
+			from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
+			to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends)
 		};
 	}
 	else if(this.stereo == MP_STEREO_UP)//wedge bond
 	{
 		this.cache.wedge = {
-			far: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]),
-			near: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from,
-					multiplyAll(mp.settings.bond.delta[MP_BOND_WEDGEHASH], mp.settings.bond.deltaScale))
+			far: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]),
+			near: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
+					multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
+						this.mp.settings.bond.deltaScale))
 		}
 	}
 	else if(this.stereo == MP_STEREO_DOWN)//hash bond
 	{
-		var far = mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, [0]);
-		var near = mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from,
-				multiplyAll(mp.settings.bond.delta[MP_BOND_WEDGEHASH], mp.settings.bond.deltaScale));
+		var far = this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]);
+		var near = this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
+				multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
+					this.mp.settings.bond.deltaScale));
 
 		var dx1 = near[0].x - far[0].x;
 		var dy1 = near[0].y - far[0].y;
 		var dx2 = near[1].x - far[0].x;
 		var dy2 = near[1].y - far[0].y;
 		var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-		var w = mp.settings.bond.width * scale;
-		var s = mp.settings.bond.hashLineSpace * scale;
+		var w = this.mp.settings.bond.width * scale;
+		var s = this.mp.settings.bond.hashLineSpace * scale;
 
 		this.cache.hashLines = [];
 		while(d1 - s - w > 0)
@@ -361,116 +261,114 @@ MPBond.prototype.update = function(mp)
 	}
 	else if(this.type >= MP_BOND_DOUBLE && this.type <= MP_BOND_TRIPLE)
 	{
-		var ends = multiplyAll(mp.settings.bond.delta[this.type], mp.settings.bond.deltaScale);
+		var ends = multiplyAll(this.mp.settings.bond.delta[this.type],
+				this.mp.settings.bond.deltaScale);
 		this.cache.bond = {
-			from: mp.molecule.atoms[this.from].calculateBondVertices(mp, line.to, ends),
-			to: mp.molecule.atoms[this.to].calculateBondVertices(mp, line.from, ends.reverse())
+			from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
+			to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends.reverse())
 		};
 	}
 }
 
-MPBond.prototype.getAngle = function(mp, from)
+MPBond.prototype.getAngle = function(from)
 {
-	if(mp.molecule.atoms[this.from].equals(from))
+	//Note: flip y coords
+	if(this.mp.molecule.atoms[this.from].equals(from))
 		return Math.atan2(
-			from.getY() - mp.molecule.atoms[this.to].getY(),//y coords are flipped
-			mp.molecule.atoms[this.to].getX() - from.getX());
+			from.getY() - this.mp.molecule.atoms[this.to].getY(),
+			this.mp.molecule.atoms[this.to].getX() - from.getX());
 	else
 		return Math.atan2(
-			from.getY() - mp.molecule.atoms[this.from].getY(),
-			mp.molecule.atoms[this.from].getX() - from.getX());
-}
-
-MPBond.prototype.getCenterLine = function(mp)
-{
-	return {
-		from: mp.molecule.atoms[this.from].getPosition(),
-		to: mp.molecule.atoms[this.to].getPosition()
-	};
+			from.getY() - this.mp.molecule.atoms[this.from].getY(),
+			this.mp.molecule.atoms[this.from].getX() - from.getX());
 }
 
 /**
  * Render methods
  */
 
-MPBond.prototype.drawStateColor = function(mp)
+MPBond.prototype.drawStateColor = function()
 {
-	if(this.display == "hover" || this.display == "active" || this.display == "selected")
+	this.validate();
+
+	if(this.display == "hover" || this.display == "active")
 	{
-		mp.ctx.beginPath();
+		this.mp.ctx.beginPath();
 
-		var f = this.cache.line.from[0];
-		var t = this.cache.line.to[0];
-		if(mp.molecule.atoms[this.from].getDisplay() != "normal")
-			f = mp.molecule.atoms[this.from].getPosition();
-		if(mp.molecule.atoms[this.to].getDisplay() != "normal")
-			t = mp.molecule.atoms[this.to].getPosition();
+		var f = this.line.from;
+		var t = this.line.to;
+		if(this.mp.molecule.atoms[this.from].display != "normal")
+			f = this.mp.molecule.atoms[this.from].center;
+		if(this.mp.molecule.atoms[this.to].display != "normal")
+			t = this.mp.molecule.atoms[this.to].center;
 
-		mp.ctx.moveTo(f.x, f.y);
-		mp.ctx.lineTo(t.x, t.y);
+		this.mp.ctx.moveTo(f.x, f.y);
+		this.mp.ctx.lineTo(t.x, t.y);
 
-		mp.ctx.strokeStyle = mp.settings.bond[this.display].color;
-		mp.ctx.stroke();
+		this.mp.ctx.strokeStyle = this.mp.settings.bond[this.display].color;
+		this.mp.ctx.stroke();
 	}
 }
 
-MPBond.prototype.drawBond = function(mp)
+MPBond.prototype.drawBond = function()
 {
+	this.validate();
+
 	if(this.display == "hidden") return;
 
-	var scale = mp.settings.bond.scale;
-	var line = this.getCenterLine(mp);
+	var scale = this.mp.settings.bond.scale;
+	var ctx = this.mp.ctx;
 
-	if(mp.settings.bond.gradient.enabled && !mp.settings.atom.miniLabel)
+	if(this.mp.settings.bond.colored && !this.mp.settings.atom.miniLabel)
 	{
-		mp.ctx.strokeStyle = this.cache.gradient;
-		if(this.stereo == MP_STEREO_UP) mp.ctx.fillStyle = this.cache.gradient;
+		ctx.strokeStyle = this.cache.bondColor;
+		if(this.stereo == MP_STEREO_UP) ctx.fillStyle = this.cache.bondColor;
 	}
 
 	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
-		mp.ctx.beginPath();
-		mp.ctx.moveTo(this.cache.ctd.from[0].x, this.cache.ctd.from[0].y);
-		mp.ctx.lineTo(this.cache.ctd.to[0].x, this.cache.ctd.to[0].y);
-		mp.ctx.moveTo(this.cache.ctd.from[1].x, this.cache.ctd.from[1].y);
-		mp.ctx.lineTo(this.cache.ctd.to[1].x, this.cache.ctd.to[1].y);
-		mp.ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(this.cache.ctd.from[0].x, this.cache.ctd.from[0].y);
+		ctx.lineTo(this.cache.ctd.to[0].x, this.cache.ctd.to[0].y);
+		ctx.moveTo(this.cache.ctd.from[1].x, this.cache.ctd.from[1].y);
+		ctx.lineTo(this.cache.ctd.to[1].x, this.cache.ctd.to[1].y);
+		ctx.stroke();
 	}
 	else if(this.stereo == MP_STEREO_UP)//wedge bond
 	{
-		mp.ctx.beginPath();
-		mp.ctx.moveTo(this.cache.wedge.far[0].x, this.cache.wedge.far[0].y);
-		mp.ctx.lineTo(this.cache.wedge.near[0].x, this.cache.wedge.near[0].y);
-		mp.ctx.lineTo(this.cache.wedge.near[1].x, this.cache.wedge.near[1].y);
-		mp.ctx.closePath();
-		mp.ctx.fill();
-		mp.ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(this.cache.wedge.far[0].x, this.cache.wedge.far[0].y);
+		ctx.lineTo(this.cache.wedge.near[0].x, this.cache.wedge.near[0].y);
+		ctx.lineTo(this.cache.wedge.near[1].x, this.cache.wedge.near[1].y);
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
 	}
 	else if(this.stereo == MP_STEREO_DOWN)//hash bond
 	{
-		mp.ctx.beginPath();
+		ctx.beginPath();
 		for(var i = 0; i < this.cache.hashLines.length; i++)
 		{
-			mp.ctx.moveTo(this.cache.hashLines[i].from.x, this.cache.hashLines[i].from.y);
-			mp.ctx.lineTo(this.cache.hashLines[i].to.x, this.cache.hashLines[i].to.y);
+			ctx.moveTo(this.cache.hashLines[i].from.x, this.cache.hashLines[i].from.y);
+			ctx.lineTo(this.cache.hashLines[i].to.x, this.cache.hashLines[i].to.y);
 		}
-		mp.ctx.stroke();
+		ctx.stroke();
 	}
 	else if(this.type == MP_BOND_SINGLE)
 	{
-		mp.ctx.beginPath();
-		mp.ctx.moveTo(this.cache.line.from[0].x, this.cache.line.from[0].y);
-		mp.ctx.lineTo(this.cache.line.to[0].x, this.cache.line.to[0].y);
-		mp.ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(this.line.from.x, this.line.from.y);
+		ctx.lineTo(this.line.to.x, this.line.to.y);
+		ctx.stroke();
 	}
 	else if(this.type > 0 && this.type <= MP_BOND_TRIPLE)
 	{
-		mp.ctx.beginPath();
+		ctx.beginPath();
 		for(var i = 0; i < this.cache.bond.from.length; i++)
 		{
-			mp.ctx.moveTo(this.cache.bond.from[i].x, this.cache.bond.from[i].y);
-			mp.ctx.lineTo(this.cache.bond.to[i].x, this.cache.bond.to[i].y);
+			ctx.moveTo(this.cache.bond.from[i].x, this.cache.bond.from[i].y);
+			ctx.lineTo(this.cache.bond.to[i].x, this.cache.bond.to[i].y);
 		}
-		mp.ctx.stroke();
+		ctx.stroke();
 	}
 }

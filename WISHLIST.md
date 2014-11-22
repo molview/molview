@@ -19,9 +19,9 @@ Wishlist
 - Add THREE.RaytracingRenderer to GLmol
 - Add PDBe binding in order to replace RCSB
 - Add protein solvents display
-- Add switch for multiple protein assmblies
-- Add electron density maps for macromolecules
 - Add dotted H-bonds and SS-bonds for proteins
+- Add switch for multiple protein assemblies
+- Add electron density maps for macromolecules
 - Create interactive macromolecule exploration mode
 
 - Add CIF loader to GLmol
@@ -29,7 +29,7 @@ Wishlist
 - Add COD mirror
 - Integrate COD image API
 - Integrate MinData.org data
-- Integrate Smorf viewer (carved crystals)
+- Integrate Smorf viewer (gemstones)
 
 - Add own SpectrumView
 - Add ChemSpider PHP binding
@@ -39,5 +39,6 @@ Wishlist
 - Add client-side structural formula depiction using JavaScript
 - Add server-side structural formula rendering using NodeJS
 - Add backend services using CDK and the Google Cloud Platform
-- Add plugin framework and developer SDK
 - Add reaction animations using the MACiE database
+- Add plugin framework and developer SDK
+- Add Android app based on CrossWalk

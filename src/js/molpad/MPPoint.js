@@ -1,0 +1,210 @@
+/**
+ * This file is part of MolView (http://molview.org)
+ * Copyright (c) 2014, Herman Bergwerf
+ *
+ * MolView is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MolView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+function MPPoint(x, y)
+{
+	this.x = x || 0;
+	this.y = y || 0;
+}
+
+MPPoint.prototype.clone = function()
+{
+	return new MPPoint(this.x, this.y);
+}
+
+MPPoint.prototype.equals = function(point)
+{
+	return this.x == point.x && this.y == point.y;
+}
+
+MPPoint.prototype.replace = function(x, y)
+{
+	this.x = x;
+	this.y = y;
+}
+
+MPPoint.prototype.translate = function(x, y)
+{
+	this.x += x;
+	this.y += y;
+}
+
+MPPoint.prototype.scale = function(scale)
+{
+	this.x *= scale;
+	this.y *= scale;
+}
+
+/**
+ * Rotate a this point around a given center using a given angle
+ * @param {MPPoint} c Center
+ * @param {MPPoint} a Angle
+ */
+MPPoint.prototype.rotateAroundCenter = function(c, a)
+{
+	var dx = this.x - c.x;
+	var dy = this.y - c.y;
+	this.x = dx * Math.cos(-a) - dy * Math.sin(-a) + c.x;
+	this.y = dx * Math.sin(-a) + dy * Math.cos(-a) + c.y;
+}
+
+/**
+ * Calculate angle between the x-axis and a given center where this is the center
+ * @param {MPPoint} to
+ */
+MPPoint.prototype.angleTo = function(to)
+{
+	return Math.atan2(-to.y + this.y, to.x - this.x);//flip y-axis
+}
+
+/**
+ * Checks if the given point is inside the given circle
+ * @param  {MPPoint} center Circle center
+ * @param  {Float}   radius Cricle radius
+ * @return {Boolean}
+ */
+MPPoint.prototype.inCircle = function(center, radius)
+{
+	return (this.x - center.x) * (this.x - center.x) +
+		(this.y - center.y) * (this.y - center.y) < radius * radius;
+}
+
+/**
+ * Calculates if point is NOT inside an R radius from line ab
+ * @param  {MPPoint}  a Line vertex a
+ * @param  {MPPoint}  b Line vertex b
+ * @param  {Float}    r Radius around line
+ * @return {Boolean}
+ */
+MPPoint.prototype.inLineBox = function(a, b, r)
+{
+	var bl = {}, tr = {};//bottom left, top right
+	if(a.x < b.x) { bl.x = a.x, tr.x = b.x; }
+	else		  { bl.x = b.x, tr.x = a.x; }
+	if(a.y < b.y) { bl.y = a.y, tr.y = b.y; }
+	else		  { bl.y = b.y, tr.y = a.y; }
+
+	return !(this.x < bl.x - r || this.x > tr.x + r
+		  || this.y < bl.y - r || this.y > tr.y + r);
+}
+
+/**
+ * Calculates if point is NOT inside an R radius from point a
+ * @param  {MPPoint}  a Point a
+ * @param  {Float}    r Radius around line
+ * @return {Boolean}
+ */
+MPPoint.prototype.inCircleBox = function(a, r)
+{
+	return !(this.x < a.x - r || this.x > a.x + r
+		  || this.y < a.y - r || this.y > a.y + r);
+}
+
+MPPoint.prototype.inRect = function(point, rect)
+{
+}
+
+MPPoint.prototype.inPolygon = function(point, polygon)
+{
+}
+
+/**
+ * Calculate shortest distance between a point and a line
+ * @param  {MPPoint} a Line vertex a
+ * @param  {MPPoint} b Line vertex b
+ * @return {Float}
+ */
+MPPoint.prototype.lineDistance = function(a, b)
+{
+	var A = this.x - a.x;
+	var B = this.y - a.y;
+	var C = b.x - a.x;
+	var D = b.y - a.y;
+
+	var dot = A * C + B * D;
+	var len_sq = C * C + D * D;
+	var param = dot / len_sq;
+
+	var xx, yy;
+
+	if(param < 0 || (a.x == b.x && a.y == b.y))
+	{
+		xx = a.x;
+		yy = a.y;
+	}
+	else if(param > 1)
+	{
+		xx = b.x;
+		yy = b.y;
+	}
+	else
+	{
+		xx = a.x + param * C;
+		yy = a.y + param * D;
+	}
+
+	var dx = this.x - xx;
+	var dy = this.y - yy;
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
+MPPoint.prototype.fromPointer = function(e)
+{
+	var oe = e.originalEvent;
+	if(oe.targetTouches && oe.targetTouches.length > 0)
+	{
+		this.replace(oe.targetTouches[0].pageX, oe.targetTouches[0].pageY);
+	}
+	else
+	{
+		this.replace(e.pageX, e.pageY);
+	}
+
+	return this;
+}
+
+MPPoint.prototype.fromRelativePointer = function(e, mpctx)
+{
+	this.fromPointer(e);
+
+	this.x = (this.x - mpctx.offset.left) * mpctx.devicePixelRatio;
+	this.y = (this.y - mpctx.offset.top) * mpctx.devicePixelRatio;
+	this.x = (this.x - mpctx.matrix[4]) / mpctx.matrix[0];
+	this.y = (this.y - mpctx.matrix[5]) / mpctx.matrix[3];
+
+	return this;
+}
+
+MPPoint.prototype.fromMultiTouchCenter = function(e)
+{
+	var t = e.originalEvent.targetTouches;
+	if(t.length > 1)
+	{
+		this.x = t[0].pageX;
+		this.y = t[0].pageY;
+		for(var i = 1; i < t.length; i++)
+		{
+			this.x += t[i].pageX;
+			this.y += t[i].pageY;
+		}
+		this.x /= t.length;
+		this.y /= t.length;
+	}
+
+	return this;
+}

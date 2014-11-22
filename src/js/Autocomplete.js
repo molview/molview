@@ -421,10 +421,7 @@ var Autocomplete = {
 				var val = $("#search-input").val();
 				if(Autocomplete.cache[val] === undefined)
 				{
-					Loader.PubChem.loadName(val, function()
-					{
-						Messages.process(Loader.CIRsearch, "search");
-					});
+					Loader.PubChem.loadName(val, true);
 				}
 				else
 				{
@@ -447,10 +444,7 @@ var Autocomplete = {
 				}
 				else//PubChem compound
 				{
-					Loader.PubChem.loadName(this.records[this.i].label, function()
-					{
-						Messages.alert("load_fail");
-					});
+					Loader.PubChem.loadName(this.records[this.i].label);
 				}
 
 				this.refresh();

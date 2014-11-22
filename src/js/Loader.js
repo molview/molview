@@ -62,8 +62,10 @@ var Loader = {
 
 	/**
 	 * Resolve structure identifier from the #search-input using the CIR
+	 * @param {String}  test    Alernative search string
+	 * @param {Boolean} noReset Disable progress resetting
 	 */
-	CIRsearch: function()
+	CIRsearch: function(text, noReset)
 	{
 		if(!Request.CIR.available)
 		{
@@ -71,9 +73,9 @@ var Loader = {
 			return;
 		}
 
-		Progress.reset(3);
+		if(!noReset) Progress.reset(3);
 
-		var query = $("#search-input").val();
+		var query = text || $("#search-input").val();
 
 		Request.CIRsearch(query, function(mol2d, mol3d, text)
 		{
@@ -205,16 +207,27 @@ var Loader = {
 			});
 		},
 
-		loadName: function(name, error)
+		loadName: function(name, cirfallback)
 		{
-			Progress.reset(5);
+			Progress.reset(cirfallback ? 9 : 6);
 
 			Messages.process(function()
 			{
 				Request.PubChem.nameToCID(name, function(cid)
 				{
+					Progress.increment();
 					Loader.PubChem._loadCID(cid, ucfirst(name));
-				}, error);
+				}, function()
+				{
+					if(cirfallback)
+					{
+						Loader.CIRsearch(name, true);
+					}
+					else
+					{
+						Messages.alert("load_fail");
+					}
+				});
 			}, "compound");
 		},
 

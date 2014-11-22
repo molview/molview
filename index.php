@@ -80,6 +80,9 @@ Query parameters:
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="MolView" />
 		<?php
+			//url
+			echo '<meta property="og:url" content="http://'.$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"].'" />';
+
 			//title
 			echo '<meta name="twitter:title" property="og:title" content="'.$metadata["title"].'" />';
 			echo '<meta itemprop="name" content="'.$metadata["title"].'" />';
@@ -540,7 +543,7 @@ Query parameters:
 							</li>
 						</ul>
 						<p id="about-links">
-							MolView v2.3.1
+							MolView v2.3.2
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
@@ -600,8 +603,8 @@ Query parameters:
 								<h4>Left toolbar</h4>
 								<p style="margin-top: 10px;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.jpg" alt="Left toolbar" /></p>
 								<ol>
-									<li><b>Bonds:</b> pick one of the bond types and create bonds by clicking the canvas, add bonds to atoms or modify bonds by clicking existing bonds</li>
-									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and create fragments by clicking the canvas or add fragments to atoms</li>
+									<li><b>Bonds:</b> pick one of the bond types and click the canvas to create create bonds, click atoms to add bonds and click bonds to modify bonds</li>
+									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and click the canvas to create fragments or click atoms to add fragments</li>
 									<li><b>Charge:</b> click atoms to either increment or decrement their charge</li>
 								</ol>
 								<h4>Right toolbar</h4>

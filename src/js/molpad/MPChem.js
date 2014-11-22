@@ -35,7 +35,7 @@ MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 
 	molecule.atoms.each(function(i, atomData)
 	{
-		var atom = new MPAtom({
+		var atom = new MPAtom(scope, {
 			i: i,
 			x: atomData.pp.x * scope.settings.bond.length,
 			y: atomData.pp.y * scope.settings.bond.length,
@@ -52,7 +52,7 @@ MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 		scope.molecule.atoms[bondData.begin].addBond(scope.molecule.bonds.length);
 		scope.molecule.atoms[bondData.end].addBond(scope.molecule.bonds.length);
 
-		var bond = new MPBond({
+		var bond = new MPBond(scope, {
 			i: i,
 			type: bondData.type,
 			stereo: bondData.stereo,
@@ -63,7 +63,7 @@ MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 		scope.molecule.bonds.push(bond);
 	});
 
-	if(this.settings.drawSkeletonFormula || forceRemoveHydrogen)
+	if(this.settings.skeletonDisplay || forceRemoveHydrogen)
 	{
 		this.removeImplicitHydrogen();
 	}
@@ -108,11 +108,11 @@ MolPad.prototype.getPlainData = function()
 
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		molecule.atoms.push(this.molecule.atoms[i].getPlainData());
+		molecule.atoms.push(this.molecule.atoms[i].getConfig());
 	}
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
-		molecule.bonds.push(this.molecule.bonds[i].getPlainData());
+		molecule.bonds.push(this.molecule.bonds[i].getConfig());
 	}
 
 	return molecule;
@@ -124,14 +124,84 @@ MolPad.prototype.loadPlainData = function(data)
 
 	for(var i = 0; i < data.atoms.length; i++)
 	{
-		this.molecule.atoms.push(new MPAtom(data.atoms[i]));
+		this.molecule.atoms.push(new MPAtom(this, data.atoms[i]));
 	}
 	for(var i = 0; i < data.bonds.length; i++)
 	{
-		this.molecule.bonds.push(new MPBond(data.bonds[i]));
+		this.molecule.bonds.push(new MPBond(this, data.bonds[i]));
 	}
 
 	this.redraw(true);
+}
+
+/**
+ * Create fragment from fragment data which is created using MPFragment
+ * @param  {Object} fragment Fragment data
+ * @return {Object}          New fragment data
+ */
+MolPad.prototype.createFragment = function(fragment)
+{
+	var ret = [];
+
+	for(var i = 0; i < fragment.atoms.length; i++)
+	{
+		var atom = new MPAtom(this, {
+			i: this.molecule.atoms.length,
+			x: fragment.atoms[i].center.x,
+			y: fragment.atoms[i].center.y,
+			element: fragment.atoms[i].element
+		});
+
+		this.molecule.atoms.push(atom);
+		ret.push(atom.index);
+	}
+
+	for(var i = 0; i < fragment.bonds.length; i++)
+	{
+		var bond = new MPBond(this, {
+			i: this.molecule.bonds.length,
+			type: fragment.bonds[i].type,
+			stereo: MP_STEREO_NONE,
+			from: ret[fragment.bonds[i].from],
+			to: ret[fragment.bonds[i].to]
+		});
+
+		this.molecule.atoms[bond.from].addBond(bond.index);
+		this.molecule.atoms[bond.to].addBond(bond.index);
+		this.molecule.bonds.push(bond);
+	}
+
+	return ret;
+}
+
+/**
+ * Rotate array of atoms around a center using the angle between the center
+ * and a given point and an optional number of clampSteps
+ *
+ * @param  {MPPoint} center
+ * @param  {MPPoint} point
+ * @param  {Array}   atoms        Array of atom indices
+ * @param  {Float}   currentAngle Current rotation angle of the selction
+ * @param  {Float}   startAngle   Start rotation angle used for angle clamping
+ * @param  {Integer} clampSteps   Number of steps the angle should be clamped to
+ * @param  {Boolean} forced       Forced update
+ * @return {Float}                New currentAngle
+ */
+MolPad.prototype.rotateAtoms = function(center, point, atoms, currentAngle, startAngle, clampSteps, forced)
+{
+	var a = currentAngle;
+	if(clampSteps !== undefined) a = clampedAngle(startAngle, center, point, clampSteps);
+	else a = center.angleTo(point);
+
+	if(a != currentAngle || forced)
+	{
+		for(var i = 0; i < atoms.length; i++)
+		{
+			this.molecule.atoms[atoms[i]].rotateAroundCenter(center, a - currentAngle);
+		}
+		return a;
+	}
+	else return currentAngle;
 }
 
 MolPad.prototype.removeAtom = function(index)
@@ -146,8 +216,8 @@ MolPad.prototype.removeAtom = function(index)
  */
 MolPad.prototype.removeBond = function(index)
 {
-	var f = this.molecule.bonds[index].getFrom();
-	var t = this.molecule.bonds[index].getTo();
+	var f = this.molecule.bonds[index].from;
+	var t = this.molecule.bonds[index].to;
 	this.molecule.atoms.splice(f > t ? f : t, 1);
 	this.molecule.atoms.splice(f < t ? f : t, 1);
 	this.molecule.bonds.splice(index, 1);
@@ -156,24 +226,29 @@ MolPad.prototype.removeBond = function(index)
 
 MolPad.prototype.updateIndices = function(index)
 {
+	/* CAUTION: nobody is allowed to execute any methods during this process.
+	Therefore, only manual data modifications should be used */
+
 	var atomIndexMap = {}, bondIndexMap = {};
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		atomIndexMap[this.molecule.atoms[i].getIndex()] = i;
-		this.molecule.atoms[i].setIndex(i);
+		atomIndexMap[this.molecule.atoms[i].index] = i;
+		this.molecule.atoms[i].index = i;
+		this.molecule.atoms[i].valid = false;
 	}
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
 		var bond = this.molecule.bonds[i];
-		var from = atomIndexMap[bond.getFrom()];
-		var to = atomIndexMap[bond.getTo()];
+		var from = atomIndexMap[bond.from];
+		var to = atomIndexMap[bond.to];
 
 		if(from !== undefined && to !== undefined)
 		{
-			bondIndexMap[bond.getIndex()] = i;
-			bond.setIndex(i);
-			bond.setFrom(from);
-			bond.setTo(to);
+			bondIndexMap[bond.index] = i;
+			bond.index = i;
+			bond.from = from;
+			bond.to = to;
+			bond.valid = false;//manual invalidate
 		}
 		else
 		{
@@ -184,6 +259,23 @@ MolPad.prototype.updateIndices = function(index)
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
 		this.molecule.atoms[i].mapBonds(bondIndexMap);
+	}
+
+	//map indices of tool data
+	if(this.tool.tmp.selection)
+	{
+		for(var i = 0; i < this.tool.tmp.selection.length; i++)
+		{
+			if(atomIndexMap[this.tool.tmp.selection[i]] !== undefined)
+			{
+				this.tool.tmp.selection[i] = atomIndexMap[this.tool.tmp.selection[i]];
+			}
+			else
+			{
+				this.tool.tmp.selection.splice(i, 1);
+				i--;
+			}
+		}
 	}
 }
 

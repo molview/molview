@@ -63,25 +63,28 @@ var Link = {
 			url += "&bg=" + Model.bg.colorName;
 		}
 
-		if(Model.chain.type == "ribbon" || Model.chain.type == "cylinders"
-		|| Model.chain.type == "btube" || Model.chain.type == "ctrace")
+		if(Model.isPDB())
 		{
-			url += "&chainType=" + Model.chain.type;
-		}
-		if(Model.chain.bonds)
-		{
-			if(Model.chain.type == "none")
+			if(Model.chain.type == "ribbon" || Model.chain.type == "cylinders"
+			|| Model.chain.type == "btube" || Model.chain.type == "ctrace")
 			{
-				url += "&chainType=bonds";
+				url += "&chainType=" + Model.chain.type;
 			}
-			else
+			if(Model.chain.bonds)
 			{
-				url += "&chainBonds=true"
+				if(Model.chain.type == "none")
+				{
+					url += "&chainType=bonds";
+				}
+				else
+				{
+					url += "&chainBonds=true"
+				}
 			}
-		}
-		if(Model.chain.color)
-		{
-			url += "&chainColor=" + Model.chain.color;
+			if(Model.chain.color)
+			{
+				url += "&chainColor=" + Model.chain.color;
+			}
 		}
 
 		Link.embedHTML = '<iframe style="width: ' + $("#embed-width").val() + '; height: ' + $("#embed-height").val() + ';" frameborder="0" src="' + url + '"></iframe>';
