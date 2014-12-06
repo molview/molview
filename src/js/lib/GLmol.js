@@ -379,19 +379,7 @@ var GLmol = (function()
 			me.redraw();
 		});
 
-		jQuery(window).bind('mouseup touchend touchcancel', function(e)
-		{
-			me.isDragging = false;
-
-			if(!(e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1))
-			{
-				me.multiTouch = false;
-			}
-
-			me.redraw();
-		});
-
-		jQuery(window).bind('mousemove touchmove', function(e)
+		function onPointerMove(e)
 		{
 			if(!me.scene) return;
 			if(!me.isDragging) return;
@@ -475,7 +463,28 @@ var GLmol = (function()
 			}
 
 			me.redraw();
-		});
+		}
+
+		function onPointerUp(e)
+		{
+			me.isDragging = false;
+
+			if(!(e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1))
+			{
+				me.multiTouch = false;
+			}
+
+			me.redraw();
+		}
+
+		jQuery(window).bind('mousemove touchmove', onPointerMove);
+		jQuery(window).bind('mouseup touchend touchcancel', onPointerUp);
+
+		if(parent != window)//fix pointer loss in iframes
+		{
+			jQuery(parent).bind('mousemove touchmove', onPointerMove);
+			jQuery(parent).bind('mouseup touchend touchcancel', onPointerUp);
+		}
 	};
 
 	/**

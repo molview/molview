@@ -52,13 +52,13 @@ Query parameters:
 - cid = load CID
 - pdbid = load PDBID
 - codid = load CIF from COD
-- layout = model || sketcher || hsplit || vsplit
-- menu = on || off
-- dialog = about || help || share || embed
 - mode = balls || stick || vdw || wireframe || line
 - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
 - chainBonds = true || false
 - chainColor = ss || spectrum || chain || residue || polarity || bfactor
+- layout = model || sketcher || hsplit || vsplit
+- menu = on || off
+- dialog = about || help || share || embed
 - bg = black || gray || white
 -->
 
@@ -108,8 +108,8 @@ Query parameters:
 		?>
 
 		<!-- CSS -->
-		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
-		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
+		<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+		<link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview-app.min.css" />
 		<?php
 			if($touch)

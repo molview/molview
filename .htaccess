@@ -1,11 +1,11 @@
 Options +FollowSymlinks
 RewriteEngine on
 
-ErrorDocument 400 /molview/page.php?id=400
-ErrorDocument 401 /molview/page.php?id=401
-ErrorDocument 403 /molview/page.php?id=403
-ErrorDocument 404 /molview/page.php?id=404
-ErrorDocument 500 /molview/page.php?id=500
+ErrorDocument 400 /repos/molview/page.php?id=400
+ErrorDocument 401 /repos/molview/page.php?id=401
+ErrorDocument 403 /repos/molview/page.php?id=403
+ErrorDocument 404 /repos/molview/page.php?id=404
+ErrorDocument 500 /repos/molview/page.php?id=500
 
 # HTTPS redirection
 # RewriteCond %{HTTP:CF-Visitor} '"scheme":"http"'

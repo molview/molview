@@ -1,44 +1,54 @@
 Wishlist
 ========
 
+Main interface
+--------------
 - Material Design
-- Add touch menu drawer
-- Add "Open in MolView" button
-- Add Preferences dialog
-- Add functional groups to Sketcher
-- Add Lewis dot structures display to Sketcher
-- Add PDB/ligand representation to Sketcher using PoseView
-- Add Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
-- Add MolView home website (pages: features, about, manual, changelog, license, feedback)
+- Touch menu drawer
+- Preferences dialog
+- Autocomplete for SMILES, InChi, InChiKey and Molecular Formula
+- Dataset checklist for common Autocomplete autofill sources
+- Dynamic CIF cell size in crystal menu
 
-- Revise GLmol (API) and event model
-- Add Model auto-rotate mode
-- Add EDTSurf (protein surfaces) implementation to GLmol
-- Add newest THREE.js version to GLmol
-- Add THREE.CanvasRenderer to GLmol
-- Add THREE.RaytracingRenderer to GLmol
-- Add PDBe binding in order to replace RCSB
-- Add protein solvents display
-- Add dotted H-bonds and SS-bonds for proteins
-- Add switch for multiple protein assemblies
-- Add electron density maps for macromolecules
-- Create interactive macromolecule exploration mode
+Sketcher
+--------
+- Functional groups in the Sketcher
+- Lewis dot structures display in the Sketcher
+- PDB/ligand representation in the Sketcher (have a look at PoseView)
 
-- Add CIF loader to GLmol
-- Add dynamic CIF cell size
-- Add COD mirror
-- Integrate COD image API
-- Integrate MinData.org data
-- Integrate Smorf viewer (gemstones)
+Model
+-----
+- Model auto-rotate mode
+- EDTSurf (protein surfaces) implementation in GLmol
+- THREE.js upgrade for GLmol
+- THREE.CanvasRenderer for GLmol
+- THREE.RaytracingRenderer for GLmol
+- CIF loader for GLmol
+- Protein solvents display
+- Dotted H-bonds and SS-bonds for proteins
+- Switch for multiple protein assemblies
+- Electron density maps for macromolecules
+- Interactive macromolecule exploration mode
 
-- Add own SpectrumView
-- Add ChemSpider PHP binding
-- Add OpenData spectra from ChemSpider
-- Add IR spectrum analysis and search database
-- Add support for JMV (JSON MolView data) files (local, gdrive, dropbox)
-- Add client-side structural formula depiction using JavaScript
-- Add server-side structural formula rendering using NodeJS
-- Add backend services using CDK and the Google Cloud Platform
-- Add reaction animations using the MACiE database
-- Add plugin framework and developer SDK
-- Add Android app based on CrossWalk
+Datasets
+--------
+- Crystal morphology from Smorf viewer (special collection)
+- Reaction animations using the MACiE database (special collection)
+- Reaction animations from ChemTube3D (special collection)
+- PDBe binding in order to replace RCSB
+- ChemSpider PHP binding
+- OpenData spectra from ChemSpider
+- New SpectrumView to display more spectra types
+- IR spectrum analysis and search database
+- COD image API
+- COD mirror
+
+Misc
+----
+- ChartBeat instead of Google Analytics
+- MolView home website (pages: features, about, manual, changelog, license, feedback)
+- JMV (JSON MolView data) files (local, gdrive, dropbox)
+- Client-side structural formula depiction using JavaScript
+- Server-side structural formula rendering using NodeJS
+- Plugin framework and developer SDK
+- Android app based on CrossWalk

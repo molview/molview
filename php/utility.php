@@ -17,7 +17,7 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$directory = "/molview/";
+$directory = "/repos/molview/";
 $root = "http://".$_SERVER["HTTP_HOST"].$directory;
 
 function is_below_IE10()

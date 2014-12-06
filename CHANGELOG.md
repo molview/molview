@@ -5,10 +5,12 @@
 - Revised MolPad refresh cycle
 - Removed implicit H atoms from calculated fragments
 - Removed protein display information in embed URL for non-proteins
+- Removed inconsistent layer close event tracking
+- Added query parameter preloading to Model
 - Fixed Autocomplete submit Progress reset in CIR fallback
 - Fixed MolPad multiTouch to mouseDrag transition
-+ TODO: fix GLmol embed mouseout bug
-+ TODO: fix embed ?mode not applied before first redraw
+- Fixed bad contrast for .alert-message links
+- Fixed GLmol in iframe pointer loss bug
 
 ## 2.3.1
 

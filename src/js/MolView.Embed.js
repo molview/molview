@@ -35,6 +35,7 @@ var MolView = {
 		MolView.devicePixelRatio = window.devicePixelRatio || (MolView.mobile ? 1.5 : 1.0);
 
 		this.query = getQuery();
+		Model.preloadQuery(this.query);
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
 		{
 			this.loadDefault = false;
@@ -60,7 +61,6 @@ var MolView = {
 
 		Model.init((function()
 		{
-			//execute query commands
 			$.each(this.query, function(key, value)
 			{
 				if(key == "q")
@@ -86,42 +86,6 @@ var MolView = {
 				else if(key == "codid")
 				{
 					Loader.COD.loadCODID(value, document.title);
-				}
-				else if(key == "mode")
-				{
-					if(value == "balls" || value == "stick"
-					|| value == "vdw" || value == "wireframe"
-					|| value == "line")
-					{
-						Model.setRepresentation(value);
-					}
-				}
-				else if(key == "chainType")
-				{
-					if(value == "ribbon" || value == "cylinders"
-					|| value == "btube" || value == "ctrace")
-					{
-						Model.setChainType(value, true);
-					}
-
-					if(value == "bonds")
-					{
-						Model.setChainType("none", true);
-						Model.setChainBonds(true, true);
-					}
-				}
-				else if(key == "chainBonds")
-				{
-					Model.setChainBonds(value == "true", true);
-				}
-				else if(key == "chainColor")
-				{
-					if(value == "ss" || value == "spectrum"
-					|| value == "chain" || value == "residue"
-					|| value == "polarity"|| value == "bfactor")
-					{
-						Model.setChainColor(value, true);
-					}
 				}
 				else if(key == "bg")
 				{

@@ -102,6 +102,7 @@ var MolView = {
 		History.init();
 		Link.init();
 
+		Model.preloadQuery(this.query);
 		if(this.query.q || this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid)
 		{
 			this.loadDefault = false;
@@ -218,7 +219,6 @@ var MolView = {
 		$(".layer .btn.close").on(this.trigger, function(e)
 		{
 			MolView.setLayer("main");
-			MolView.pushEvent("button", "click", "layer close", 0);
 		});
 
 		//enable expandable expanding
@@ -439,41 +439,6 @@ var MolView = {
 			else if(key == "dialog")
 			{
 				MolView.showDialog(value);
-			}
-			else if(key == "mode")
-			{
-				if(value == "balls") Actions.model_balls();
-				else if(value == "stick") Actions.model_stick();
-				else if(value == "vdw") Actions.model_vdw();
-				else if(value == "wireframe") Actions.model_wireframe();
-				else if(value == "line") Actions.model_line();
-			}
-			else if(key == "chainType")
-			{
-				if(value == "ribbon" || value == "cylinders"
-				|| value == "btube" || value == "ctrace")
-				{
-					Model.setChainType(value, true);
-				}
-
-				if(value == "bonds")
-				{
-					Model.setChainType("none", true);
-					Model.setChainBonds(true, true);
-				}
-			}
-			else if(key == "chainBonds")
-			{
-				Model.setChainBonds(value == "true", true);
-			}
-			else if(key == "chainColor")
-			{
-				if(value == "ss" || value == "spectrum"
-				|| value == "chain" || value == "residue"
-				|| value == "polarity" || value == "bfactor")
-				{
-					Model.setChainColor(value, true);
-				}
 			}
 			else if(key == "bg")
 			{

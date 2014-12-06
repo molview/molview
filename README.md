@@ -49,11 +49,12 @@ Build
 -----
 Instructions:
 
-1. Copy all files to a server with PHP and .htaccess + mod_rewrite support
-2. Configure ErrorDocument in `.htaccess` to point to `page.php`
-3. Configure $directory in `php/utility.php` to point to the MolView root directory
-4. Make sure npm, grunt, the Inkscape and the ImageMagick CLI are installed
-5. Run `./build.sh fetch`
+1. Copy all files to a server with PHP + php5-curl + .htaccess + mod_rewrite support
+2. Configure $directory in `php/utility.php` to point to the MolView root directory
+3. Configure ErrorDocument in `.htaccess` to point to `page.php`
+4. Make sure the Inkscape and the ImageMagick CLI are installed
+5. Install npm and install local npm modules
+6. Run `./build.sh fetch`
 
 Committing
 ---------

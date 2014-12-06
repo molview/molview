@@ -29,8 +29,6 @@ fi
 if [[ $1 != "render" ]]
 	then
 
-	# Install node modules and run bower and grunt
-	npm install
 	bower install
 	grunt
 

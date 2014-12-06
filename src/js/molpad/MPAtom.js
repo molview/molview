@@ -415,10 +415,12 @@ MPAtom.prototype.invalidate = function(newCenter)
 }
 
 /**
- * Invalidates all connected bonds
+ * Invalidates all connected bonds and itself
  */
 MPAtom.prototype.invalidateBonds =  function()
 {
+	this.valid = false;
+
 	for(var i = 0; i < this.bonds.length; i++)
 	{
 		this.mp.molecule.bonds[this.bonds[i]].invalidateFrom(this.index, false);

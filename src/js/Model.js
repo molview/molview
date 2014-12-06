@@ -77,6 +77,57 @@ var Model = {
 	},
 
 	/**
+	 * Preload Model settings from query object
+	 * @param {Object} query Query object
+	 * @param {String} rnd   Temporary renderer string
+	 */
+	preloadQuery: function(query, rnd)
+	{
+		var scope = this;
+		$.each(query, function(key, value)
+		{
+			if(key == "mode")
+			{
+				if(oneOf(value, ["balls", "stick", "vdw", "wireframe", "line"]))
+				{
+					$(".r-mode").removeClass("checked");
+					$("#action-model-" + value).addClass("checked");
+					scope.representation = value;
+				}
+			}
+			else if(key == "chainType")
+			{
+				if(oneOf(value, ["ribbon", "cylinders", "btube", "ctrace"]))
+				{
+					$(".chain-type").removeClass("checked");
+					$("#action-chain-type-" + value).addClass("checked");
+					scope.chain.type = value;
+				}
+
+				if(value == "bonds")
+				{
+					$(".chain-type").removeClass("checked");
+					scope.chain.type = "none";
+					scope.chain.bonds = true;
+				}
+			}
+			else if(key == "chainBonds")
+			{
+				scope.chain.bonds = true;
+			}
+			else if(key == "chainColor")
+			{
+				if(oneOf(value, ["ss", "spectrum", "chain", "residue", "polarity", "bfactor"]))
+				{
+					$(".chain-color").removeClass("checked");
+					$("#action-chain-color-" + value).addClass("checked");
+					scope.chain.color = value;
+				}
+			}
+		});
+	},
+
+	/**
 	 * @return {Boolean} True if current render engine is GLmol
 	 */
 	isGLmol: function()
@@ -236,12 +287,11 @@ var Model = {
 	 */
 	setRepresentation: function(mode)
 	{
+		if(!oneOf(mode, ["balls", "stick", "vdw", "wireframe", "line"]))
+			return;
+
 		$(".r-mode").removeClass("checked");
-		if(mode == "balls") $("#action-model-balls").addClass("checked");
-		else if(mode == "stick") $("#action-model-stick").addClass("checked");
-		else if(mode == "vdw") $("#action-model-vdw").addClass("checked");
-		else if(mode == "wireframe") $("#action-model-wireframe").addClass("checked");
-		else if(mode == "line") $("#action-model-line").addClass("checked");
+		$("#action-model-" + mode).addClass("checked");
 
 		this.representation = mode;
 
@@ -260,6 +310,9 @@ var Model = {
 	 */
 	setChainType: function(type, force)
 	{
+		if(!oneOf(type, ["ribbon", "cylinders", "btube", "ctrace"]))
+			return;
+
 		if(this.isPDB() || force)
 		{
 			if(this.isGLmol()
