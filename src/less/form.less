@@ -21,7 +21,8 @@
 
 .form-box
 {
-	margin-bottom: 1px;
+	margin-bottom: 1px;/* to fill :hover border-bottom-width */
+
 	color: @foreground;
 	font-size: 12pt;
 	font-family: 'Open Sans', sans-serif;
@@ -145,13 +146,21 @@ input[type="text"].alert + .input-focus
 /* select */
 select
 {
-	.form-box;
-
 	cursor: pointer;
 	margin-top: 10px;
 	margin-left: 10px;
-	padding: 4px;
+	padding: 5px;
 	max-width: 300px;
+
+	color: @foreground;
+	font-size: 12pt;
+	font-family: 'Open Sans', sans-serif;
+	text-decoration: none;
+}
+
+select:focus
+{
+	outline: none;
 }
 
 option
@@ -163,10 +172,10 @@ option
 input[type="checkbox"]
 {
 	cursor: pointer;
-	margin-bottom: 4px;
+	margin-bottom: 8px;
 	vertical-align: middle;
-	width: 16px;
-	height: 16px;
+	width: 18px;
+	height: 18px;
 }
 
 /* button */

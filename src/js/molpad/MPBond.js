@@ -67,6 +67,14 @@ MPBond.prototype.getConfig = function()
 	};
 }
 
+MPBond.prototype.getLine = function()
+{
+	return {
+		from: this.mp.molecule.atoms[this.from].center,
+		to: this.mp.molecule.atoms[this.to].center
+	}
+}
+
 MPBond.prototype.setIndex = function(index) { this.index = index; }
 
 MPBond.prototype.setType = function(type)
@@ -135,7 +143,7 @@ MPBond.prototype.hasAtom = function(i)
 	return this.from == i || this.to == i;
 }
 
-MPBond.prototype.oppositeAtom = function(i)
+MPBond.prototype.getOppositeAtom = function(i)
 {
 	return this.from == i ? this.to : this.from;
 }

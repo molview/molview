@@ -204,6 +204,93 @@ MolPad.prototype.rotateAtoms = function(center, point, atoms, currentAngle, star
 	else return currentAngle;
 }
 
+/**
+ * Merge atom src into atom dest
+ * @param {Integer} src  Index of srd atom
+ * @param {Integer} dest Index of dest atom
+ */
+MolPad.prototype.mergeAtoms = function(src, dest)
+{
+	var _src = this.molecule.atoms[src];
+	var _dest = this.molecule.atoms[dest];
+	for(var j = 0; j < _src.bonds.length; j++)//transfer bonds
+	{
+		/* only transfer bond if bond destination is not
+		already included in the current set of bonds */
+		var n = _dest.getNeighborBond(this.molecule.bonds[_src.bonds[j]]
+				.getOppositeAtom(src));
+		if(n == -1)
+		{
+			this.molecule.bonds[_src.bonds[j]].replaceAtom(src, dest);
+			_dest.addBond(_src.bonds[j]);
+		}
+		else if(this.molecule.bonds[_src.bonds[j]].type == MP_BOND_SINGLE)
+		{
+			//always force single bond over any other bond types
+			this.molecule.bonds[n].setType(MP_BOND_SINGLE);
+		}
+	}
+
+	//carbon atoms are less important
+	if(_dest.element == "C")
+	{
+		_dest.setElement(_src.element);
+	}
+
+	this.molecule.atoms.splice(src, 1);//remove atom
+	this.updateIndices();
+}
+
+/**
+ * Collapse set of atom indices into the entire molecule
+ * @param {Array}   atoms  Atom indices
+ * @param {Boolean} retain Set wether the set should be merged from or to
+ */
+MolPad.prototype.collapseAtoms = function(atoms, retain)
+{
+	for(var i = 0; i < atoms.length; i++)
+	{
+		for(var j = 0; j < this.molecule.atoms.length; j++)
+		{
+			if(atoms.indexOf(j) != -1) continue;
+
+			if(this.molecule.atoms[atoms[i]].center.inCircle(
+					this.molecule.atoms[j].center, this.settings.atom.radiusScaled))
+			{
+				this.mergeAtoms(j, atoms[i]);
+			}
+		}
+	}
+}
+
+/**
+ * Collapse set of atom indices into the entire molecule
+ * @param {Array}   atoms  Atom indices
+ * @param {Boolean} retain Set wether the set should be merged from or to
+ */
+MolPad.prototype.countCollapses = function(atoms, retain)
+{
+	var ret = 0;
+	for(var i = 0; i < atoms.length; i++)
+	{
+		for(var j = 0; j < this.molecule.atoms.length; j++)
+		{
+			if(atoms.indexOf(j) != -1) continue;
+
+			if(this.molecule.atoms[atoms[i]].center.inCircle(
+					this.molecule.atoms[j].center, this.settings.atom.radiusScaled))
+			{
+				ret++;
+			}
+		}
+	}
+	return ret;
+}
+
+/**
+ * Remove an atom with the given index from the current molecule
+ * @param {Integer} index Atom index
+ */
 MolPad.prototype.removeAtom = function(index)
 {
 	this.molecule.atoms.splice(index, 1);
@@ -211,7 +298,7 @@ MolPad.prototype.removeAtom = function(index)
 }
 
 /**
- * Remove bond from the current molecule
+ * Remove a bond with the given index from the current molecule
  * @param {Integer} index Bond index
  */
 MolPad.prototype.removeBond = function(index)

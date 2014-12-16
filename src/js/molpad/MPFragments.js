@@ -25,7 +25,8 @@
  * 5. you can rotate the fragment coordinates around (0, 0)
  * 6. the first atom in each fragment.toAtom is the atom you have to connect to
  *    when adding the fragment to an atom
- * 7. all atoms/bonds after frag.size are H atoms/bonds
+ * 7. the first and the last atom in each fragment.toBond are the atoms
+ *    you have to merge with (first => from, last => to)
  */
 var MPFragments = {
 	benzene: {},
@@ -41,26 +42,36 @@ var MPFragments = {
 	init: function()
 	{
 	//generate all fragments
-	this.benzene = this.generate(6, true);
-	this.cyclopropane = this.generate(3, false);
-	this.cyclobutane = this.generate(4, false);
-	this.cyclopentane = this.generate(5, false);
-	this.cyclohexane = this.generate(6, false);
-	this.cycloheptane = this.generate(7, false);
+	this.benzene = this.generateRing(6, true);
+	this.cyclopropane = this.generateRing(3, false);
+	this.cyclobutane = this.generateRing(4, false);
+	this.cyclopentane = this.generateRing(5, false);
+	this.cyclohexane = this.generateRing(6, false);
+	this.cycloheptane = this.generateRing(7, false);
 	},
 
-	generate: function(vertices, alternating)
+	generateRing: function(vertices, alternating)
 	{
 		var as = 2 * Math.PI / vertices;//angle step
 		var r = 0.5 / Math.sin(as / 2) * this.length;
 
 		var ret = {
-			full: this.createRing(vertices, alternating),
-			toAtom: this.translate(this.createRing(vertices, alternating), r, 0)//r to move bond to the left
+			full: this.createRing(vertices, alternating ? 2 : 0),
+			toAtom: this.translate(this.createRing(vertices, alternating ? 2 : 0), r, 0),//move bond start to (0,0)
+			toBond: this.rotate(this.translate(this.createRing(vertices, alternating ? 2 : 0), r, 0),
+					{ x: 0, y: 0 }, (Math.PI - as) / 2)//move bond start to (0,0), make first bond horizontal
 		};
 		return ret;
 	},
 
+	/**
+	 * Create ring data
+	 * @param {Integer} vertices    Number of ring vertices
+	 * @param {Integer} alternating Double/single bond alternation:
+	 *                              0 = none
+	 *                              1 = first double on odd bonds
+	 *                              2 = first double on even bonds
+	 */
 	createRing: function(vertices, alternating)
 	{
 		var frag = { atoms: [], bonds: [] };
@@ -73,14 +84,14 @@ var MPFragments = {
 			//move a = 0 to left side to apply rule 4
 			frag.atoms.push({
 				center: new MPPoint(
-					r * Math.cos(Math.PI + as * i),
+					r * Math.cos(Math.PI + as * i),//start at the left side
 					r * Math.sin(Math.PI + as * i)),
 				element: "C"
 			});
 			frag.bonds.push({
 				from: i,
 				to: i + 1 < vertices ? i + 1 : 0,
-				type: alternating ? (i % 2 == 0 ? MP_BOND_SINGLE : MP_BOND_DOUBLE) : MP_BOND_SINGLE
+				type: alternating != 0 ? (i % 2 == (2 - alternating) ? MP_BOND_SINGLE : MP_BOND_DOUBLE) : MP_BOND_SINGLE
 			});
 		}
 

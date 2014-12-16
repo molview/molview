@@ -52,6 +52,9 @@ MolPad.prototype.update = function(scaleOnly)
 	this.settings.bond.scale = this.getScale() < this.settings.bond.minScale ?
 			this.settings.bond.minScale / this.getScale() : 1;
 
+	this.settings.atom.radiusScaled = this.settings.atom.radius * this.settings.atom.scale;
+	this.settings.bond.radiusScaled = this.settings.bond.radius * this.settings.bond.scale;
+
 	//atom.scale is the first dynamic scale factor
 	if(!scaleOnly || this.settings.atom.scale != oldAtomScale)
 	{

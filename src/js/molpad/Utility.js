@@ -16,6 +16,15 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+function lineLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4)
+{
+    var div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    return {
+        x: ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / div,
+        y: ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / div
+    };
+}
+
 /**
  * Calculate angle between two angles where from is the first encountered angle
  * in counter clockwise direction

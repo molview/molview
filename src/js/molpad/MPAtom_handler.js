@@ -114,7 +114,7 @@ MPAtom.prototype.getHandler = function()
 							bond.setTo(i);
 
 							//check if new target atom is a neighbor of this atom
-							var n = scope.isNeighborAtom(i);
+							var n = scope.getNeighborBond(i);
 							if(n != -1 && n != this.tool.tmp.bond)
 							{
 								//if so, check if we handled this neighbor before
@@ -223,7 +223,7 @@ MPAtom.prototype.getHandler = function()
 				};
 				this.tool.tmp.currentAngle = this.tool.tmp.startAngle;
 
-				//roate new fragment using the startAngle
+				//rotate new fragment using the startAngle
 				MPFragments.rotate(this.tool.tmp.frag,
 						scope.center, this.tool.tmp.startAngle);
 
@@ -246,12 +246,11 @@ MPAtom.prototype.getHandler = function()
 				}
 				else
 				{
-					this.molecule.atoms[scope.index].mergeWith(this.tool.tmp.selection[0]);
+					this.mergeAtoms(this.tool.tmp.selection[0], scope.index);
 				}
 			},
 			onPointerMove: function(e)
 			{
-				e.preventDefault();
 				var p = new MPPoint().fromRelativePointer(e, this);
 
 				//check if pointer is outside no-rotate circle
@@ -273,7 +272,6 @@ MPAtom.prototype.getHandler = function()
 			scope: this,
 			onPointerDown: function(e)
 			{
-				e.preventDefault();
 				scope.setCharge(scope.charge + this.tool.data.charge);
 			}
 		};
@@ -284,7 +282,6 @@ MPAtom.prototype.getHandler = function()
 			scope: this,
 			onPointerDown: function(e)
 			{
-				e.preventDefault();
 				this.removeAtom(scope.index);
 			}
 		};
@@ -295,7 +292,6 @@ MPAtom.prototype.getHandler = function()
 			scope: this,
 			onPointerMove: function(e)
 			{
-				e.preventDefault();
 				this.setCursor("move");
 				var p = new MPPoint().fromRelativePointer(e, this);
 				scope.translate(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
@@ -311,7 +307,7 @@ MPAtom.prototype.handle = function(point, type)
 
 	this.validate();
 
-	var r = this.mp.settings.atom.radius * this.mp.settings.atom.scale;
+	var r = this.mp.settings.atom.radiusScaled;
 
 	if(this.line.area.point)
 	{

@@ -273,6 +273,7 @@ MolPad.prototype.clear = function(cb)
 {
 	this.saveToStack();
 	this.molecule = { atoms: [], bonds: [] };
+	this.resetMatrix();
 	this.redraw();
 }
 
@@ -296,7 +297,7 @@ MolPad.prototype.saveToStack = function()
 MolPad.prototype.undo = function(noRedo)
 {
 	this.dismissHandler();
-	
+
 	if(this.stack.length > 0)
 	{
 		if(!noRedo)

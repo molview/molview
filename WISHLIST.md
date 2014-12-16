@@ -14,7 +14,9 @@ Sketcher
 --------
 - Functional groups in the Sketcher
 - Lewis dot structures display in the Sketcher
-- PDB/ligand representation in the Sketcher (have a look at PoseView)
+- Draw protein ligands in the Sketcher
+- PoseView protein display: http://poseview.zbh.uni-hamburg.de
+- URL API for embedded or linked Sketcher (create new inheritance model)
 
 Model
 -----
@@ -45,10 +47,11 @@ Datasets
 
 Misc
 ----
-- ChartBeat instead of Google Analytics
+- MolView blog based on git repository
 - MolView home website (pages: features, about, manual, changelog, license, feedback)
 - JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Client-side structural formula depiction using JavaScript
 - Server-side structural formula rendering using NodeJS
+- Server-side protein thumbnail rendering using NodeJS and PV (http://github.com/biasmv/pv)
 - Plugin framework and developer SDK
 - Android app based on CrossWalk

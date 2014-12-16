@@ -16,13 +16,12 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-MPBond.prototype.getHandler = function(mp)
+MPBond.prototype.getHandler = function()
 {
-	//TODO: fragment to bond tool
 	//TODO: bond drag collapsing
 
 	var scope = this;
-	if(mp.tool.type == "bond")
+	if(this.mp.tool.type == "bond")
 	{
 		return {
 			scope: this,
@@ -57,7 +56,94 @@ MPBond.prototype.getHandler = function(mp)
 			}
 		};
 	}
-	else if(mp.tool.type == "erase")
+	else if(this.mp.tool.type == "fragment" && this.mp.tool.data.frag.toBond !== undefined)
+	{
+		return {
+			scope: this,
+			onPointerDown: function(e)
+			{
+				var p = new MPPoint().fromRelativePointer(e, this);
+				var f = this.molecule.atoms[scope.from].center;
+				var t = this.molecule.atoms[scope.to].center;
+				var a = f.angleTo(t);
+
+				//clone new fragment and transform it
+				this.tool.tmp = {
+					frag: MPFragments.rotate(
+						MPFragments.translate(
+							MPFragments.scale(
+								MPFragments.clone(this.tool.data.frag.toBond),
+								this.settings.bond.length),
+							f.x, f.y), f, a)
+				};
+
+				//create the fragment and store the new fragment data
+				this.tool.tmp.selection = this.createFragment(this.tool.tmp.frag);
+
+				//IMPORTANT: do not merge the other way around or the scope will be lost
+				this.mergeAtoms(this.tool.tmp.selection[0], scope.from);
+				this.mergeAtoms(this.tool.tmp.selection[this.tool.tmp.selection.length - 1], scope.to);
+
+				//resolve tool.tmp.side
+				var s = 0;
+				for(var i = 0; i < this.tool.tmp.selection.length; i++)
+				{
+					s += this.molecule.atoms[this.tool.tmp.selection[i]].center.lineSide(scope.getLine());
+				}
+				this.tool.tmp.side = s > 0 ? 1 : -1;
+
+				//get number collapsing atoms
+				var collA = this.countCollapses(this.tool.tmp.selection);
+
+				//mirror fragment
+				for(var i = 0; i < this.tool.tmp.selection.length; i++)
+				{
+					this.molecule.atoms[this.tool.tmp.selection[i]].center.mirror(
+							scope.getLine(), -this.tool.tmp.side);
+				}
+
+				//get new number collapsing atoms
+				var collB = this.countCollapses(this.tool.tmp.selection);
+
+				//mirror back if old number of collapsing atoms is lower
+				if(collA < collB)
+				{
+					for(var i = 0; i < this.tool.tmp.selection.length; i++)
+					{
+						this.molecule.atoms[this.tool.tmp.selection[i]].center.mirror(
+								scope.getLine(), this.tool.tmp.side);
+					}
+				}
+				else
+				{
+					this.tool.tmp.side = -this.tool.tmp.side;
+				}
+			},
+			onPointerMove: function(e)
+			{
+				e.preventDefault();
+				var p = new MPPoint().fromRelativePointer(e, this);
+				var s = p.lineSide(scope.getLine());
+
+				//check if pointer is outside no-rotate circle
+				if(s != this.tool.tmp.side && s != 0)
+				{
+					this.tool.tmp.side = s;
+
+					for(var i = 0; i < this.tool.tmp.selection.length; i++)
+					{
+						this.molecule.atoms[this.tool.tmp.selection[i]].center.mirror(scope.getLine(), s);
+						this.molecule.atoms[this.tool.tmp.selection[i]].invalidate();
+					}
+				}
+			},
+			onPointerUp: function(e)
+			{
+				this.collapseAtoms(this.tool.tmp.selection);
+			}
+		};
+	}
+	else if(this.mp.tool.type == "erase")
 	{
 		return {
 			scope: this,
@@ -87,9 +173,6 @@ MPBond.prototype.getHandler = function(mp)
 			},
 			onPointerUp: function(e)
 			{
-				this.setCursor("pointer");
-				this.resetEventDisplay();
-				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 				this.molecule.atoms[scope.from].setDisplay("normal");
 				this.molecule.atoms[scope.to].setDisplay("normal");
 			}
@@ -103,7 +186,7 @@ MPBond.prototype.handle = function(point, type)
 
 	this.validate();
 
-	var r = this.mp.settings.bond.radius * this.mp.settings.bond.scale;
+	var r = this.mp.settings.bond.radiusScaled;
 
 	if(point.inLineBox(this.line.from, this.line.to, r))
 	{

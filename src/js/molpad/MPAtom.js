@@ -155,15 +155,15 @@ MPAtom.prototype.isImplicit = function()
 }
 
 /**
- * Checks if the given index is a neighbor atom
+ * Checks if the given index is a neighbor atom and return connecting bond
  * @param  {Integer} idx
  * @return {Integer} Bond index or -1
  */
-MPAtom.prototype.isNeighborAtom = function(idx)
+MPAtom.prototype.getNeighborBond = function(idx)
 {
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		if(this.mp.molecule.bonds[this.bonds[i]].oppositeAtom(this.index) == idx)
+		if(this.mp.molecule.bonds[this.bonds[i]].getOppositeAtom(this.index) == idx)
 		{
 			return this.bonds[i];
 		}
@@ -373,23 +373,6 @@ MPAtom.prototype.addImplicitHydrogen = function()
 }
 
 /**
- * Merge this atom with another atom with the given index
- * @param {Integer} i
- */
-MPAtom.prototype.mergeWith = function(i)
-{
-	var target = this.mp.molecule.atoms[i];
-	for(var j = 0; j < target.bonds.length; j++)
-	{
-		this.mp.molecule.bonds[target.bonds[j]].replaceAtom(i, this.index);
-		this.addBond(target.bonds[j]);
-	}
-
-	this.mp.molecule.atoms.splice(i, 1);
-	this.mp.updateIndices();
-}
-
-/**
  * Invalidate render data of this atom and neighbor bonds.
  * In most cases, only the label size has changed. Since bond vertices are based
  * on the from/to atom center, 2nd level neighbor bonds do not change
@@ -474,8 +457,7 @@ MPAtom.prototype.drawStateColor = function()
 		if(this.line.area.point)
 		{
 			this.mp.ctx.arc(this.line.area.point.x, this.line.area.point.y,
-					this.mp.settings.atom.radius * this.mp.settings.atom.scale,
-					0, 2 * Math.PI);
+					this.mp.settings.atom.radiusScaled, 0, 2 * Math.PI);
 			this.mp.ctx.fillStyle = this.mp.settings.atom[this.display].color;
 			this.mp.ctx.fill();
 		}

@@ -2,15 +2,21 @@
 
 ## 2.3.2
 
+- TODO: Change URL scheme for 3D model embedding (/embed to /model)
 - Revised MolPad refresh cycle
+- Added fragment to bond tool to MolPad
+- Added fragment to bond collapsing and side detection
+- Added zoom reset when MolPad is cleared
+- Added query parameter preloading to Model
 - Removed implicit H atoms from calculated fragments
 - Removed protein display information in embed URL for non-proteins
 - Removed inconsistent layer close event tracking
-- Added query parameter preloading to Model
+- Reverted HTML select style to native style
 - Fixed Autocomplete submit Progress reset in CIR fallback
 - Fixed MolPad multiTouch to mouseDrag transition
 - Fixed bad contrast for .alert-message links
 - Fixed GLmol in iframe pointer loss bug
+- Fixed wrong font-family in layout vector drawings
 
 ## 2.3.1
 

@@ -50,6 +50,42 @@ MPPoint.prototype.scale = function(scale)
 	this.y *= scale;
 }
 
+MPPoint.prototype.mirror = function(line, side)
+{
+	if(this.lineSide(line) != side)
+	{
+		//http://stackoverflow.com/questions/3306838
+		var dx = line.to.x - line.from.x;
+		var dy = line.to.y - line.from.y;
+
+		if(dx == 0)
+		{
+			this.x = 2 * line.from.x - this.x;
+		}
+		else
+		{
+			var a = dy / dx;
+			var c = line.from.y - a * line.from.x;//c = y - ax
+			var d = (this.x + ((this.y - c) * a)) / (1 + a * a);
+			this.x = 2 * d - this.x;
+			this.y = 2 * d * a - this.y + 2 * c;
+		}
+	}
+}
+
+/**
+ * Find on which side of a line the given point is
+ * @param  {Object} point { x: 0, y: 0 }
+ * @param  {Object} line  { from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }
+ * @return {Integer}      -1: left, 0: on the line, +1: right
+ */
+MPPoint.prototype.lineSide = function(line)
+{
+    var s = Math.sign((line.to.x - line.from.x) * (this.y - line.from.y) -
+    		(line.to.y - line.from.y) * (this.x - line.from.x));
+	return s > 0 ? 1 : s < 0 ? -1 : 0;
+}
+
 /**
  * Rotate a this point around a given center using a given angle
  * @param {MPPoint} c Center
@@ -119,8 +155,18 @@ MPPoint.prototype.inRect = function(point, rect)
 {
 }
 
-MPPoint.prototype.inPolygon = function(point, polygon)
+MPPoint.prototype.inPolygon = function(polygon)
 {
+	var c = false;
+	for(var i = 0, j = polygon.length - 1; i < polygon.length; j = i++)
+	{
+		if((polygon[i].y > this.y) != (polygon[j].y > this.y) &&
+			this.x < ((polygon[j].x - polygon[i].x) * (this.y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x))
+		{
+			c = !c;
+		}
+	}
+	return c;
 }
 
 /**
