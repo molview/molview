@@ -206,13 +206,16 @@ MolPad.prototype.rotateAtoms = function(center, point, atoms, currentAngle, star
 
 /**
  * Merge atom src into atom dest
- * @param {Integer} src  Index of srd atom
- * @param {Integer} dest Index of dest atom
+ * @param   {Integer} src     Index of srd atom
+ * @param   {Integer} dest    Index of dest atom
+ * @param   {Boolean} reverse Reverse src and dest but retain old dest atom
+ * @return  {Array}           New index mapping
  */
-MolPad.prototype.mergeAtoms = function(src, dest)
+MolPad.prototype.mergeAtoms = function(src, dest, reverse)
 {
 	var _src = this.molecule.atoms[src];
 	var _dest = this.molecule.atoms[dest];
+	_dest.center.replace(_src.center);
 	for(var j = 0; j < _src.bonds.length; j++)//transfer bonds
 	{
 		/* only transfer bond if bond destination is not
@@ -238,15 +241,15 @@ MolPad.prototype.mergeAtoms = function(src, dest)
 	}
 
 	this.molecule.atoms.splice(src, 1);//remove atom
-	this.updateIndices();
+	return this.updateIndices();
 }
 
 /**
  * Collapse set of atom indices into the entire molecule
- * @param {Array}   atoms  Atom indices
- * @param {Boolean} retain Set wether the set should be merged from or to
+ * @param {Array}   atoms   Atom indices
+ * @param {Boolean} reverse If set, the $atoms centers will not be used
  */
-MolPad.prototype.collapseAtoms = function(atoms, retain)
+MolPad.prototype.collapseAtoms = function(atoms, reverse)
 {
 	for(var i = 0; i < atoms.length; i++)
 	{
@@ -257,7 +260,9 @@ MolPad.prototype.collapseAtoms = function(atoms, retain)
 			if(this.molecule.atoms[atoms[i]].center.inCircle(
 					this.molecule.atoms[j].center, this.settings.atom.radiusScaled))
 			{
-				this.mergeAtoms(j, atoms[i]);
+				var map = this.mergeAtoms(j, atoms[i], reverse);
+				atoms = mapArray(atoms, map.amap);
+				break;//atoms[i] has been handled
 			}
 		}
 	}
@@ -311,7 +316,11 @@ MolPad.prototype.removeBond = function(index)
 	this.updateIndices();
 }
 
-MolPad.prototype.updateIndices = function(index)
+/**
+ *
+ * @return {Array} New index mapping
+ */
+MolPad.prototype.updateIndices = function()
 {
 	/* CAUTION: nobody is allowed to execute any methods during this process.
 	Therefore, only manual data modifications should be used */
@@ -364,6 +373,11 @@ MolPad.prototype.updateIndices = function(index)
 			}
 		}
 	}
+
+	return {
+		amap: atomIndexMap,
+		bmap: bondIndexMap
+	};
 }
 
 MolPad.prototype.removeImplicitHydrogen = function()

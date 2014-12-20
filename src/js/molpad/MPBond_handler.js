@@ -18,8 +18,6 @@
 
 MPBond.prototype.getHandler = function()
 {
-	//TODO: bond drag collapsing
-
 	var scope = this;
 	if(this.mp.tool.type == "bond")
 	{
@@ -175,6 +173,7 @@ MPBond.prototype.getHandler = function()
 			{
 				this.molecule.atoms[scope.from].setDisplay("normal");
 				this.molecule.atoms[scope.to].setDisplay("normal");
+				this.collapseAtoms([scope.from, scope.to]);
 			}
 		};
 	}

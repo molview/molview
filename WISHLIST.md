@@ -12,11 +12,12 @@ Main interface
 
 Sketcher
 --------
-- Functional groups in the Sketcher
-- Lewis dot structures display in the Sketcher
-- Draw protein ligands in the Sketcher
-- PoseView protein display: http://poseview.zbh.uni-hamburg.de
-- URL API for embedded or linked Sketcher (create new inheritance model)
+- Soft hydrogens
+- Functional groups
+- Lewis dot structures display
+- Polymer units implementation
+- PoseView like protein display: http://poseview.zbh.uni-hamburg.de
+- URL API for /embed.sketcher (create new inheritance model)
 
 Model
 -----

@@ -18,10 +18,9 @@
 
 MPAtom.prototype.getHandler = function()
 {
+	//TODO: calculateNewBondAngle use lone-pairs and valence
 	//TODO: implement carbon chain
 	//TODO: drag atom if bond count is filled
-	//TODO: always enable horizontal/vertical rotate clamping
-	//TODO: atom drag collapsing
 
 	var scope = this;
 	if(this.mp.tool.type == "atom")
@@ -194,15 +193,11 @@ MPAtom.prototype.getHandler = function()
 						this.updateIndices();
 					}
 				}
-
-				this.resetEventDisplay();
-				scope.setDisplay(e.type == "mouseup" ? "hover" : "normal");
 			}
 		};
 	}
 	else if(this.mp.tool.type == "fragment")
 	{
-		//TODO: merge into exisiting atoms
 		return {
 			scope: this,
 			onPointerDown: function(e)
@@ -296,6 +291,10 @@ MPAtom.prototype.getHandler = function()
 				var p = new MPPoint().fromRelativePointer(e, this);
 				scope.translate(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
 				this.pointer.old.r = p;
+			},
+			onPointerUp: function(e)
+			{
+				this.collapseAtoms([scope.index], true);
 			}
 		};
 	}

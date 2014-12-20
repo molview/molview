@@ -250,18 +250,7 @@ MPAtom.prototype.addBond = function(bond)
  */
 MPAtom.prototype.mapBonds = function(map)
 {
-	for(var i = 0; i < this.bonds.length; i++)
-	{
-		if(map[this.bonds[i]] !== undefined)
-		{
-			this.bonds[i] = map[this.bonds[i]];
-		}
-		else
-		{
-			this.bonds.splice(i, 1);
-			i--;
-		}
-	}
+	this.bonds = mapArray(this.bonds, map);
 
 	/* CAUTION: this.invalidate should not be triggerd since it might
 	hurt the mapping process */

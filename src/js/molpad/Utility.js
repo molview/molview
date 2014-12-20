@@ -53,6 +53,30 @@ function clampedAngle(start, center, point, steps)
 }
 
 /**
+ * Maps an array using a given map, removes all elements which are not
+ * in the map
+ * @param {Array}  array
+ * @param {Object} map
+ */
+function mapArray(array, map)
+{
+    for(var i = 0; i < array.length; i++)
+	{
+		if(map[array[i]] !== undefined)
+		{
+			array[i] = map[array[i]];
+		}
+		else
+		{
+			array.splice(i, 1);
+			i--;
+		}
+	}
+
+    return array;
+}
+
+/**
  * Multiply all values in an array with a given multiplier into new array
  * @param  {Array} array
  * @param  {Float} mult

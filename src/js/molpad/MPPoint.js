@@ -32,10 +32,16 @@ MPPoint.prototype.equals = function(point)
 	return this.x == point.x && this.y == point.y;
 }
 
-MPPoint.prototype.replace = function(x, y)
+MPPoint.prototype.set = function(x, y)
 {
 	this.x = x;
 	this.y = y;
+}
+
+MPPoint.prototype.replace = function(p)
+{
+	this.x = p.x;
+	this.y = p.y;
 }
 
 MPPoint.prototype.translate = function(x, y)
@@ -214,11 +220,11 @@ MPPoint.prototype.fromPointer = function(e)
 	var oe = e.originalEvent;
 	if(oe.targetTouches && oe.targetTouches.length > 0)
 	{
-		this.replace(oe.targetTouches[0].pageX, oe.targetTouches[0].pageY);
+		this.set(oe.targetTouches[0].pageX, oe.targetTouches[0].pageY);
 	}
 	else
 	{
-		this.replace(e.pageX, e.pageY);
+		this.set(e.pageX, e.pageY);
 	}
 
 	return this;

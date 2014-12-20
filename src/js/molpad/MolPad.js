@@ -230,15 +230,21 @@ function MolPad(container, devicePixelRatio, buttons)
 	 */
 	if(navigator.platform.toLowerCase().indexOf("mac") >= 0)
 	{
-		jQuery(document).bind("keydown", "meta+z", function(){ scope.undo(); });
-		jQuery(document).bind("keydown", "meta+y", function(){ scope.redo(); });
-		jQuery(document).bind("keydown", "meta+shift+z", function(){ scope.redo(); });
+		jQuery(document).bind("keydown", "meta+z", function(e)
+				{ e.preventDefault(); scope.undo(); });
+		jQuery(document).bind("keydown", "meta+y", function(e)
+				{ e.preventDefault(); scope.redo(); });
+		jQuery(document).bind("keydown", "meta+shift+z", function(e)
+				{ e.preventDefault(); scope.redo(); });
 	}
 	else
 	{
-		jQuery(document).bind("keydown", "ctrl+z", function(){ scope.undo(); });
-		jQuery(document).bind("keydown", "ctrl+y", function(){ scope.redo(); });
-		jQuery(document).bind("keydown", "ctrl+shift+z", function(){ scope.redo(); });
+		jQuery(document).bind("keydown", "ctrl+z", function(e)
+				{ e.preventDefault(); scope.undo(); });
+		jQuery(document).bind("keydown", "ctrl+y", function(e)
+				{ e.preventDefault(); scope.redo(); });
+		jQuery(document).bind("keydown", "ctrl+shift+z", function(e)
+				{ e.preventDefault(); scope.redo(); });
 	}
 }
 

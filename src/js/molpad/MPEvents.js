@@ -165,6 +165,11 @@ MolPad.prototype.onPointerUp = function(e)
 
 	if(this.pointer.handler)
 	{
+		if(this.pointer.handler.onPointerUp)
+		{
+			this.pointer.handler.onPointerUp.call(this, e);
+		}
+
 		if(this.pointer.handler.scope)
 		{
 			this.setCursor("pointer");
@@ -175,11 +180,6 @@ MolPad.prototype.onPointerUp = function(e)
 		else
 		{
 			this.setCursor("default");
-		}
-
-		if(this.pointer.handler.onPointerUp)
-		{
-			this.pointer.handler.onPointerUp.call(this, e);
 		}
 
 		this.validate();
