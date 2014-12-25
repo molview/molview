@@ -147,14 +147,14 @@ function MolPad(container, devicePixelRatio, buttons)
 		touchGrab: false
 	};
 
-	this.hasChanged = false;//TODO: revise
 	this.valid = true;
+	this.copy = { atoms: [], bonds: [], fingerprint: "" };
 	this.stack = [];
 	this.reverseStack = [];
-	this.buttons = buttons;
 	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
 	this.devicePixelRatio = devicePixelRatio || 1;
 
+	this.buttons = buttons;
 	this.container = jQuery(container);
 	this.offset = this.container.offset();
 	this.canvas = document.createElement("canvas");
@@ -261,7 +261,7 @@ MolPad.prototype.forAllObjects = function(func)
 }
 
 /**
- * Basic MolPad API
+ * MolPad API
  */
 
 MolPad.prototype.setTool = function(type, data)
@@ -277,27 +277,44 @@ MolPad.prototype.onChange = function(cb)
 
 MolPad.prototype.clear = function(cb)
 {
-	this.saveToStack();
 	this.molecule = { atoms: [], bonds: [] };
-	this.resetMatrix();
+
+	//retain old molecule translation in case of an undo
+	this.scaleAbsolute(1 / this.matrix[0], this.width() / 2, this.height() / 2);
+
 	this.redraw();
+	this.updateCopy();
 }
 
 MolPad.prototype.changed = function()
 {
-	this.hasChanged = true;
 	if(this.changeCallback)
 	{
 		this.changeCallback();
 	}
 }
 
-MolPad.prototype.saveToStack = function()
+MolPad.prototype.updateCopy = function()
 {
-	this.stack.push(this.getPlainData());
-	if(this.stack.length > this.settings.maxStackSize) this.stack.shift();
-	jQuery(this.buttons.undo).removeClass("tool-button-disabled");
-	this.changed();//assumption since saveToStack should only be called before changes
+	var fingerprint = this.getFingerprint();
+
+	if(fingerprint != this.copy.fingerprint)
+	{
+		this.reverseStack = [];
+		jQuery(this.buttons.redo).addClass("tool-button-disabled");
+
+		this.stack.push(this.copy);
+		if(this.stack.length > this.settings.maxStackSize)
+		{
+			this.stack.shift();
+		}
+
+		this.copy = this.getPlainData();
+		this.copy.fingerprint = fingerprint;
+
+		jQuery(this.buttons.undo).removeClass("tool-button-disabled");
+		this.changed();
+	}
 }
 
 MolPad.prototype.undo = function(noRedo)
@@ -308,11 +325,12 @@ MolPad.prototype.undo = function(noRedo)
 	{
 		if(!noRedo)
 		{
-			this.reverseStack.push(this.getPlainData());
+			this.reverseStack.push(this.copy);
 			jQuery(this.buttons.redo).removeClass("tool-button-disabled");
 		}
 
-		this.loadPlainData(this.stack.pop());
+		this.copy = this.stack.pop();
+		this.loadPlainData(this.copy);
 	}
 
 	if(this.stack.length == 0)
@@ -329,9 +347,11 @@ MolPad.prototype.redo = function()
 
 	if(this.reverseStack.length > 0)
 	{
-		this.saveToStack();
-		this.loadPlainData(this.reverseStack.pop());
-		this.changed();
+		this.stack.push(this.copy);
+		jQuery(this.buttons.undo).removeClass("tool-button-disabled");
+
+		this.copy = this.reverseStack.pop();
+		this.loadPlainData(this.copy);
 	}
 
 	if(this.reverseStack.length == 0)
@@ -368,6 +388,7 @@ MolPad.prototype.displaySkeleton = function(yes)
 	else this.addImplicitHydrogen();
 
 	this.validate();
+	this.updateCopy();
 }
 
 MolPad.prototype.setColored = function(yes)

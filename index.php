@@ -509,7 +509,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 						</div>
-						<p id="donate-msg">We believe MolView should be accessible for free for everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it fast and free! This way we can also continue to add more awesome features, which require more resources, to MolView.</p>
+						<p id="donate-msg">We believe MolView should be accessible for free to everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it fast and free! This way we can also continue to add more awesome features, which require more resources, to MolView.</p>
 						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 							<input type="hidden" name="cmd" value="_s-xclick" />
 							<input type="hidden" name="hosted_button_id" value="88QDZTWLV9GXG" />
@@ -526,7 +526,7 @@ Query parameters:
 								<ul>
 									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Chemical 2D data reader/writer</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
-									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.8</a>: 3D render engine</li>
+									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.9</a>: 3D render engine</li>
 									<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1</a>: 3D render engine and spectrum display</li>
 								</ul>
 							</li>

@@ -73,9 +73,8 @@ MolPad.prototype.onPointerDown = function(e)
 		this.pointer.targetTouchesNumber = oe.targetTouches.length;
 		this.pointer.touchGrab = true;
 
-		if(this.hasChanged)
+		if(this.isChanged())
 		{
-			this.hasChanged = false;
 			this.undo(true);
 		}
 
@@ -90,11 +89,6 @@ MolPad.prototype.onPointerDown = function(e)
 		this.handleEvent(this.pointer.old.r, "active", function(obj)
 		{
 			this.pointer.handler = obj.getHandler(this);
-
-			if(this.pointer.handler !== undefined)
-			{
-				this.saveToStack();
-			}
 		});
 
 		if(this.pointer.handler == undefined)
@@ -161,7 +155,6 @@ MolPad.prototype.onPointerUp = function(e)
 	}
 
 	var oe = e.originalEvent;
-	this.hasChanged = false;
 
 	if(this.pointer.handler)
 	{
@@ -202,11 +195,13 @@ MolPad.prototype.onPointerUp = function(e)
 		else if(oe.targetTouches.length == 0)
 		{
 			this.pointer.handler = undefined;
+			this.updateCopy();
 		}
 	}
 	else
 	{
 		this.pointer.handler = undefined;
+		this.updateCopy();
 	}
 }
 
@@ -218,11 +213,11 @@ MolPad.prototype.onBlur = function(e)
 MolPad.prototype.dismissHandler = function()
 {
 	this.resetEventDisplay();
-	this.hasChanged = false;
 	this.setCursor("default");
 	this.pointer.targetTouchesNumber = 0;
 	this.pointer.handler = undefined;
 	this.validate();
+	this.updateCopy();
 }
 
 MolPad.prototype.resetEventDisplay = function()
@@ -352,8 +347,6 @@ MolPad.prototype.getHandler = function()
 		return {
 			onPointerDown: function(e)
 			{
-				this.saveToStack();
-
 				var p = new MPPoint().fromRelativePointer(e, this);
 				var atom = new MPAtom(this, {
 					i: this.molecule.atoms.length,
@@ -372,8 +365,6 @@ MolPad.prototype.getHandler = function()
 		return {
 			onPointerDown: function(e)
 			{
-				this.saveToStack();
-
 				var p = new MPPoint().fromRelativePointer(e, this);
 
 				var atom1 = new MPAtom(this, {
@@ -413,8 +404,6 @@ MolPad.prototype.getHandler = function()
 		return {
 			onPointerDown: function(e)
 			{
-				this.saveToStack();
-
 				var p = new MPPoint().fromRelativePointer(e, this);
 
 				var frag = MPFragments.translate(

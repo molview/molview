@@ -55,8 +55,9 @@ function clampedAngle(start, center, point, steps)
 /**
  * Maps an array using a given map, removes all elements which are not
  * in the map
- * @param {Array}  array
- * @param {Object} map
+ * @param  {Array}  array
+ * @param  {Object} map
+ * @return {Array}
  */
 function mapArray(array, map)
 {

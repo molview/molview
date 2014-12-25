@@ -16,6 +16,7 @@
 ### MolPad
 
 - Revised refresh cycle
+- Revised history logic
 - Added fragment to bond tool
 - Added fragment to bond collapsing and side detection
 - Added atom and bond drag collapsing

@@ -46,6 +46,11 @@ function MPBond(mp, obj)
 	this.mp.invalidate();
 }
 
+/**
+ * Retruns data which can be used as input by the Ketcher fork
+ * @param {Object} mp
+ * @return {Object}
+ */
 MPBond.prototype.getKetcherData = function()
 {
 	return new chem.Struct.Bond({
@@ -56,6 +61,10 @@ MPBond.prototype.getKetcherData = function()
 	});
 }
 
+/**
+ * Retruns config data which can be used to reconstruct this object
+ * @return {Object}
+ */
 MPBond.prototype.getConfig = function()
 {
 	return {
@@ -65,6 +74,16 @@ MPBond.prototype.getConfig = function()
 		from: this.from,
 		to: this.to
 	};
+}
+
+/**
+ * Retruns MPBond string which can be compared to other MPBond strings
+ * @return {String}
+ */
+MPBond.prototype.toString = function()
+{
+	return this.type.toString()
+		+ this.stereo.toString();
 }
 
 MPBond.prototype.getLine = function()
@@ -126,11 +145,36 @@ MPBond.prototype.replaceAtom = function(i, n)
 	this.invalidate();
 }
 
+/**
+ * Compares all properties of this bond with a plain MPBond configuration object
+ * @param  {Object} config
+ * @return {Boolean}
+ */
+MPBond.prototype.compare = function(config)
+{
+	return config.i == this.index
+		&& config.type == this.type
+		&& config.stereo == this.stereo
+		&& config.from == this.from
+		&& config.to == this.to;
+}
+
+/**
+ * Checks if this MPBond is equal to another MPBond
+ * @param  {MPBond} bond
+ * @return {Booelan}
+ */
 MPBond.prototype.equals = function(bond)
 {
 	return bond.from == this.from && bond.to == this.to;
 }
 
+/**
+ * Checks if this bond is a pair of the given elements
+ * @param  {String} a
+ * @param  {String} b
+ * @return {Booelan}
+ */
 MPBond.prototype.isPair = function(a, b)
 {
 	var _a = this.mp.molecule.atoms[this.from].element;
@@ -138,11 +182,21 @@ MPBond.prototype.isPair = function(a, b)
 	return _a == a && _b == b || _a == b && _b == a;
 }
 
+/**
+ * Checks if this bond is bonded to the given MPAtom.index
+ * @param  {Integer} i
+ * @return {Booelan}
+ */
 MPBond.prototype.hasAtom = function(i)
 {
 	return this.from == i || this.to == i;
 }
 
+/**
+ * Get the atom index of the atom on the other side of the given MPAtom.index
+ * @param  {Integer} i
+ * @return {Integer}
+ */
 MPBond.prototype.getOppositeAtom = function(i)
 {
 	return this.from == i ? this.to : this.from;

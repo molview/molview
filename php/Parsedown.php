@@ -1312,6 +1312,11 @@ class Parsedown
 
         $Span = $this->identifyLink($Excerpt);
 
+        if ($Span === null)
+        {
+            return;
+        }
+
         $Span['extent'] ++;
 
         $Span['element'] = array(
@@ -1355,7 +1360,7 @@ class Parsedown
             return;
         }
 
-        if (preg_match('/^\([ ]*([^ ]+)(?:[ ]+(".+?"|\'.+?\'))?[ ]*\)/', $remainder, $matches))
+        if (preg_match('/^\([ ]*([^ ]+?)(?:[ ]+(".+?"|\'.+?\'))?[ ]*\)/', $remainder, $matches))
         {
             $Element['attributes']['href'] = $matches[1];
 

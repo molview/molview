@@ -10,7 +10,7 @@ a similar web application.
 
   - [Ketcher](http://ggasoftware.com/opensource/ketcher): Chemical 2D data reader/writer
   - [GLmol v0.47](http://webglmol.sourceforge.jp/index-en.html): primary 3D render engine
-  - [JSmol v14.3.8](http://sourceforge.net/projects/jsmol/): 3D render engine
+  - [JSmol v14.3.9](http://sourceforge.net/projects/jsmol/): 3D render engine
   - [ChemDoodle Web Components v6.0.1](http://web.chemdoodle.com/): 3D render engine
     and spectrum display
 
@@ -62,7 +62,7 @@ Below are all tests you have to pass before committing changes
 
 ### Unstable build
 1. Successfully run the build script
-2. Check if the following embed features are still working as expected:
+2. Check if the embedding is still working as expected:
     1. [2POR](embed?pdbid=2por&chainColor=residue&chainBonds=true&chainType=cylinders&mode=vdw) (PDBID loading & protein representation)
     2. [LSD](embed?smiles=O=C%28[C@@]%28[H]%291C=C2C3C=CC=C4C=3C%28=CN4[H]%29C[C@@]2%28[H]%29N%28C%29C1%29N%28CC%29CC&bg=white) (SMILES resolving & background color)
     3. [Mustard gas](embed?cid=10461&mode=wireframe) (CID loading & molecule representation)

@@ -24,8 +24,6 @@
  */
 MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 {
-	this.saveToStack();
-
 	this.molecule = { atoms: [], bonds: [] };
 
 	var molecule = chem.Molfile.parseCTFile(mol.split("\n"));
@@ -69,6 +67,7 @@ MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 	}
 
 	this.center();
+	this.updateCopy();
 }
 
 MolPad.prototype.getMOL = function()
@@ -132,6 +131,18 @@ MolPad.prototype.loadPlainData = function(data)
 	}
 
 	this.redraw(true);
+}
+
+MolPad.prototype.getFingerprint = function()
+{
+	var array = [];
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		array.push(this.molecule.atoms[i].toString())
+	}
+
+	array.sort();
+	return array.join("");
 }
 
 /**
@@ -215,7 +226,7 @@ MolPad.prototype.mergeAtoms = function(src, dest, reverse)
 {
 	var _src = this.molecule.atoms[src];
 	var _dest = this.molecule.atoms[dest];
-	_dest.center.replace(_src.center);
+	if(reverse) _dest.center.replace(_src.center);
 	for(var j = 0; j < _src.bonds.length; j++)//transfer bonds
 	{
 		/* only transfer bond if bond destination is not
@@ -258,11 +269,12 @@ MolPad.prototype.collapseAtoms = function(atoms, reverse)
 			if(atoms.indexOf(j) != -1) continue;
 
 			if(this.molecule.atoms[atoms[i]].center.inCircle(
-					this.molecule.atoms[j].center, this.settings.atom.radiusScaled))
+					this.molecule.atoms[j].center,
+					2 * this.settings.atom.radiusScaled))//diameter
 			{
 				var map = this.mergeAtoms(j, atoms[i], reverse);
 				atoms = mapArray(atoms, map.amap);
-				break;//atoms[i] has been handled
+				break;//the old atoms[i] has been handled
 			}
 		}
 	}
@@ -310,8 +322,18 @@ MolPad.prototype.removeBond = function(index)
 {
 	var f = this.molecule.bonds[index].from;
 	var t = this.molecule.bonds[index].to;
-	this.molecule.atoms.splice(f > t ? f : t, 1);
-	this.molecule.atoms.splice(f < t ? f : t, 1);
+
+	//remove connected atoms if this is the last bond
+	if(this.molecule.atoms[f].bonds.length == 1)
+	{
+		this.molecule.atoms.splice(f, 1);
+		if(t > f) t--;
+	}
+	if(this.molecule.atoms[t].bonds.length == 1)
+	{
+		this.molecule.atoms.splice(t, 1);
+	}
+
 	this.molecule.bonds.splice(index, 1);
 	this.updateIndices();
 }

@@ -410,6 +410,7 @@ var MineralNames = {
 		{ "name": "Bismite", "codid": "9012546" },
 		{ "name": "Bismoclite", "codid": "1011175" },
 		{ "name": "Bismuth", "codid": "5000215" },
+		{ "name": "bismuth barium iron oxide fluoride", "codid": "4341652" },
 		{ "name": "Bismuthinite", "codid": "9003468" },
 		{ "name": "Bismutite", "codid": "9004677" },
 		{ "name": "Bismutocolumbite", "codid": "9009419" },

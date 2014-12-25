@@ -137,7 +137,7 @@ MPBond.prototype.getHandler = function()
 			},
 			onPointerUp: function(e)
 			{
-				this.collapseAtoms(this.tool.tmp.selection);
+				this.collapseAtoms(this.tool.tmp.selection.slice());
 			}
 		};
 	}
@@ -149,6 +149,9 @@ MPBond.prototype.getHandler = function()
 			{
 				e.preventDefault();
 				this.removeBond(scope.index);
+
+				//dismiss all further calls to this handler
+				this.pointer.handler = undefined;
 			}
 		};
 	}

@@ -64,7 +64,7 @@ MPPoint.prototype.mirror = function(line, side)
 		var dx = line.to.x - line.from.x;
 		var dy = line.to.y - line.from.y;
 
-		if(dx == 0)
+		if(Math.abs(dx) < 0.001)
 		{
 			this.x = 2 * line.from.x - this.x;
 		}

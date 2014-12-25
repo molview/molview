@@ -29,7 +29,7 @@ function MPAtom(mp, obj)
 	this.element = obj.element || "C";
 	this.charge = obj.charge || 0;
 	this.isotope = obj.isotope || 0;
-	this.bonds = obj.bonds || [];
+	this.bonds = obj.bonds !== undefined ? obj.bonds.slice() : [];//deep copy
 	this.display = "normal";
 
 	this.valid = false;
@@ -41,7 +41,8 @@ MPAtom.prototype.getY = function() { return this.center.y; }
 
 /**
  * Retruns data which can be used as input by the Ketcher fork
- * @param {Object}
+ * @param {Object} mp
+ * @return {Object}
  */
 MPAtom.prototype.getKetcherData = function(mp)
 {
@@ -58,7 +59,7 @@ MPAtom.prototype.getKetcherData = function(mp)
 
 /**
  * Retruns config data which can be used to reconstruct this object
- * @param {Object}
+ * @return {Object}
  */
 MPAtom.prototype.getConfig = function()
 {
@@ -69,8 +70,28 @@ MPAtom.prototype.getConfig = function()
 		element: this.element,
 		charge: this.charge,
 		isotope: this.isotope,
-		bonds: this.bonds.slice(0, this.bonds.length)
+		bonds: this.bonds.slice()
 	};
+}
+
+/**
+ * Retruns MPAtom string which can be compared to other MPAtom strings
+ * @return {String}
+ */
+MPAtom.prototype.toString = function()
+{
+	var str = this.center.x.toString()
+		+ this.center.y.toString()
+		+ this.element.toString()
+		+ this.charge.toString()
+		+ this.isotope.toString();
+
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		str += this.mp.molecule.bonds[this.bonds[i]].toString();
+	}
+
+	return str;
 }
 
 /**
