@@ -193,6 +193,22 @@ MPAtom.prototype.getNeighborBond = function(idx)
 }
 
 /**
+ * Returns if this atom has any neighbor atoms which are not selected
+ */
+MPAtom.prototype.hasUnselectedNeighbors = function()
+{
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		if(!this.mp.molecule.atoms[this.mp.molecule.bonds[this.bonds[i]]
+			.getOppositeAtom(this.index)].selected)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Checks if this atom is visible in the drawing based on MolPad display settings
  */
 MPAtom.prototype.isVisible = function()

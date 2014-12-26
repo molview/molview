@@ -18,10 +18,12 @@
 - Revised refresh cycle
 - Revised history logic
 - Added selection tool
+- Added selection rotation tool
 - Added fragment to bond tool
 - Added fragment to bond collapsing and side detection
 - Added atom and bond drag collapsing
 - Added zoom reset when canvas is cleared
+- Added zoom to molecule center when using mousewheel
 - Fixed inverted bonds between overlapping atoms
 - Fixed transition from multiTouch to single touch mouseDrag
 

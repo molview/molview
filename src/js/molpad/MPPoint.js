@@ -44,6 +44,32 @@ MPPoint.prototype.replace = function(p)
 	this.y = p.y;
 }
 
+MPPoint.prototype.add = function(p)
+{
+	this.x += p.x;
+	this.y += p.y;
+}
+
+MPPoint.prototype.addX = function(a) { this.x += a; }
+MPPoint.prototype.addY = function(a) { this.y += a; }
+
+MPPoint.prototype.divide = function(div)
+{
+	this.x /= div;
+	this.y /= div;
+}
+MPPoint.prototype.divideX = function(a) { this.x /= a; }
+MPPoint.prototype.divideY = function(a) { this.y /= a; }
+
+MPPoint.prototype.multiply = function(mult)
+{
+	this.x *= mult;
+	this.y *= mult;
+}
+
+MPPoint.prototype.multiplyX = function(a) { this.x *= a; }
+MPPoint.prototype.multiplyY = function(a) { this.y *= a; }
+
 MPPoint.prototype.translate = function(x, y)
 {
 	this.x += x;
@@ -106,7 +132,8 @@ MPPoint.prototype.rotateAroundCenter = function(c, a)
 }
 
 /**
- * Calculate angle between the x-axis and a given center where this is the center
+ * Calculate angle between the x-asix and the 'to' point where this point
+ * is the center point
  * @param {MPPoint} to
  */
 MPPoint.prototype.angleTo = function(to)

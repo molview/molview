@@ -145,6 +145,11 @@ MolPad.prototype.getFingerprint = function()
 	return array.join("");
 }
 
+MolPad.prototype.isChanged = function()
+{
+	return this.getFingerprint() != this.copy.fingerprint;
+}
+
 /**
  * Create fragment from fragment data which is created using MPFragment
  * @param  {Object} fragment Fragment data
@@ -183,30 +188,6 @@ MolPad.prototype.createFragment = function(fragment)
 	}
 
 	return ret;
-}
-
-/**
- * Clear the current selection
- */
-MolPad.prototype.clearSelection = function()
-{
-	for(var i = 0; i < this.tool.selection.length; i++)
-	{
-		if(this.tool.selection[i] > this.molecule.atoms.length)
-		{
-			this.tool.selection.splice(i, 1);
-			i--;
-		}
-		else
-		{
-			this.molecule.atoms[this.tool.selection[i]].select(false);
-			i--;
-		}
-	}
-	for(var i = 0; i < this.molecule.bonds.length; i++)
-	{
-		this.molecule.bonds[i].select(false);
-	}
 }
 
 /**

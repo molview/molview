@@ -289,6 +289,15 @@ MPAtom.prototype.getHandler = function()
 	{
 		return {
 			scope: this,
+			onPointerDown: function(e)
+			{
+				var p = new MPPoint().fromRelativePointer(e, this);
+				if(this.tool.tmp.rotationCenter !== undefined)
+				{
+					this.tool.tmp.startAngle = this.tool.tmp.currentAngle =
+						this.tool.tmp.rotationCenter.angleTo(p);
+				}
+			},
 			onPointerMove: function(e)
 			{
 				this.setCursor("move");
@@ -296,7 +305,18 @@ MPAtom.prototype.getHandler = function()
 
 				if(scope.selected)
 				{
-					this.translateSelection(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
+					if(this.tool.tmp.rotationCenter === undefined || this.tool.tmp.centerAtom == scope.index)
+					{
+						this.translateSelection(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
+					}
+					else
+					{
+						this.tool.tmp.currentAngle = this.rotateAtoms(
+								this.tool.tmp.rotationCenter, p, this.tool.selection,
+								this.tool.tmp.currentAngle,
+								this.tool.tmp.startAngle,
+								this.settings.bond.rotateSteps);
+					}
 				}
 				else
 				{
