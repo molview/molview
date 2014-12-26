@@ -317,7 +317,7 @@ Query parameters:
 					<div id="molpad" class="sketcher">
 						<div id="chem-tools" class="toolbar">
 							<div class="toolbar-inner">
-								<div id="action-mp-bond-single" class="tool-button primary-tool tool-button-selected" title="Single bond"></div>
+								<div id="action-mp-bond-single" class="tool-button primary-tool" title="Single bond"></div>
 								<div id="action-mp-bond-double" class="tool-button primary-tool" title="Double bond"></div>
 								<div id="action-mp-bond-triple" class="tool-button primary-tool" title="Triple bond"></div>
 								<div id="action-mp-bond-wedge" class="tool-button primary-tool" title="Wedge bond"></div>
@@ -343,9 +343,9 @@ Query parameters:
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
 								<div id="action-mp-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
-								<!-- <div class="horizontal-separator"></div>
+								<<div class="horizontal-separator"></div>
 								<div id="action-mp-rect" class="tool-button tool-button-horizontal primary-tool" title="Rectangle selection"></div>
-								<div id="action-mp-lasso" class="tool-button tool-button-horizontal primary-tool" title="Lasso selection"></div> -->
+								<div id="action-mp-lasso" class="tool-button tool-button-horizontal primary-tool" title="Lasso selection"></div>
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-color-mode" class="tool-button tool-button-horizontal enabled" title="Toggle color mode"></div>
 								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula"></div>

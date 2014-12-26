@@ -186,6 +186,55 @@ MolPad.prototype.createFragment = function(fragment)
 }
 
 /**
+ * Clear the current selection
+ */
+MolPad.prototype.clearSelection = function()
+{
+	for(var i = 0; i < this.tool.selection.length; i++)
+	{
+		if(this.tool.selection[i] > this.molecule.atoms.length)
+		{
+			this.tool.selection.splice(i, 1);
+			i--;
+		}
+		else
+		{
+			this.molecule.atoms[this.tool.selection[i]].select(false);
+			i--;
+		}
+	}
+	for(var i = 0; i < this.molecule.bonds.length; i++)
+	{
+		this.molecule.bonds[i].select(false);
+	}
+}
+
+/**
+ * Translates current selection
+ * @param {Float} dx Horizontal translation
+ * @param {Float} dy Vertical translation
+ */
+MolPad.prototype.translateSelection = function(dx, dy)
+{
+	for(var i = 0; i < this.tool.selection.length; i++)
+	{
+		this.molecule.atoms[this.tool.selection[i]].translate(dx, dy);
+	}
+}
+
+/**
+ * Remove current selection
+ */
+MolPad.prototype.removeSelection = function()
+{
+	for(var i = 0; i < this.tool.selection.length; i++)
+	{
+		this.removeAtom(this.tool.selection[i]);
+		i--;
+	}
+}
+
+/**
  * Rotate array of atoms around a center using the angle between the center
  * and a given point and an optional number of clampSteps
  *
@@ -380,17 +429,17 @@ MolPad.prototype.updateIndices = function()
 	}
 
 	//map indices of tool data
-	if(this.tool.tmp.selection)
+	if(this.tool.selection)
 	{
-		for(var i = 0; i < this.tool.tmp.selection.length; i++)
+		for(var i = 0; i < this.tool.selection.length; i++)
 		{
-			if(atomIndexMap[this.tool.tmp.selection[i]] !== undefined)
+			if(atomIndexMap[this.tool.selection[i]] !== undefined)
 			{
-				this.tool.tmp.selection[i] = atomIndexMap[this.tool.tmp.selection[i]];
+				this.tool.selection[i] = atomIndexMap[this.tool.selection[i]];
 			}
 			else
 			{
-				this.tool.tmp.selection.splice(i, 1);
+				this.tool.selection.splice(i, 1);
 				i--;
 			}
 		}

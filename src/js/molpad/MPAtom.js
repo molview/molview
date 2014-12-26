@@ -30,8 +30,8 @@ function MPAtom(mp, obj)
 	this.charge = obj.charge || 0;
 	this.isotope = obj.isotope || 0;
 	this.bonds = obj.bonds !== undefined ? obj.bonds.slice() : [];//deep copy
+	this.selected = false;
 	this.display = "normal";
-
 	this.valid = false;
 	this.mp.invalidate();
 }
@@ -219,6 +219,28 @@ MPAtom.prototype.isVisible = function()
 		return true;
 	}
 	else return true;
+}
+
+/**
+ * Selects or deselects this MPAtom
+ * @param {Boolean} select
+ */
+MPAtom.prototype.select = function(select)
+{
+	this.selected = select;
+	var idx = this.mp.tool.selection.indexOf(this.index);
+	if(idx == -1)
+	{
+		if(select)
+		{
+			this.mp.tool.selection.push(this.index);
+		}
+	}
+	else if(!select)
+	{
+		this.mp.tool.selection.splice(idx, 1);
+	}
+	this.mp.invalidate();
 }
 
 /**
@@ -461,21 +483,24 @@ MPAtom.prototype.drawStateColor = function()
 {
 	this.validate();
 
-	if(this.display == "hover" || this.display == "active")
+	if(this.display == "hover" || this.display == "active" ||
+			(this.display == "normal" && this.selected))
 	{
+		var d = this.selected ? "selected" : this.display;
+
 		this.mp.ctx.beginPath();
 		if(this.line.area.point)
 		{
 			this.mp.ctx.arc(this.line.area.point.x, this.line.area.point.y,
 					this.mp.settings.atom.radiusScaled, 0, 2 * Math.PI);
-			this.mp.ctx.fillStyle = this.mp.settings.atom[this.display].color;
+			this.mp.ctx.fillStyle = this.mp.settings.atom[d].color;
 			this.mp.ctx.fill();
 		}
 		else
 		{
 			this.mp.ctx.moveTo(this.line.area.left.x, this.line.area.left.y);
 			this.mp.ctx.lineTo(this.line.area.right.x, this.line.area.right.y);
-			this.mp.ctx.strokeStyle = this.mp.settings.atom[this.display].color;
+			this.mp.ctx.strokeStyle = this.mp.settings.atom[d].color;
 			this.mp.ctx.stroke();
 		}
 	}

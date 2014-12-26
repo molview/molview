@@ -157,8 +157,22 @@ MPPoint.prototype.inCircleBox = function(a, r)
 		  || this.y < a.y - r || this.y > a.y + r);
 }
 
-MPPoint.prototype.inRect = function(point, rect)
+MPPoint.prototype.inRect = function(rect)
 {
+	//clone to prevent from reference cluttering
+	var x = rect.x, y = rect.y, w = rect.width, h = rect.height;
+	if(w < 0)
+	{
+		w = -w;
+		x -= w;
+	}
+	if(h < 0)
+	{
+		h = -h;
+		y -= h;
+	}
+	return this.x > x && this.x < x + w
+		&& this.y > y && this.y < y + h;
 }
 
 MPPoint.prototype.inPolygon = function(polygon)
@@ -213,6 +227,11 @@ MPPoint.prototype.lineDistance = function(a, b)
 	var dx = this.x - xx;
 	var dy = this.y - yy;
 	return Math.sqrt(dx * dx + dy * dy);
+}
+
+MPPoint.prototype.distanceTo = function(p)
+{
+	return Math.sqrt((p.x - this.x) * (p.x - this.x) + (p.y - this.y) * (p.y - this.y));
 }
 
 MPPoint.prototype.fromPointer = function(e)

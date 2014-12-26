@@ -48,7 +48,7 @@ Datasets
 
 Misc
 ----
-- MolView blog based on git repository
+- MolView blog based on Jekyll
 - MolView home website (pages: features, about, manual, changelog, license, feedback)
 - JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Client-side structural formula depiction using JavaScript

@@ -53,7 +53,7 @@ function MolPad(container, devicePixelRatio, buttons)
 				color: "#8f8"
 			},
 			selected: {
-				color: "#afa"
+				color: "#8f8"
 			},
 			delta: [
 				[],//no bond
@@ -78,11 +78,14 @@ function MolPad(container, devicePixelRatio, buttons)
 			straightDev: Math.PI / 10
 		},
 		atom: {
+			hover: {
+				color: "#bfb"
+			},
 			active: {
 				color: "#8f8"
 			},
-			hover: {
-				color: "#bfb"
+			selected: {
+				color: "#8f8"
 			},
 			label: {
 				fontStyle: "bold",
@@ -132,7 +135,8 @@ function MolPad(container, devicePixelRatio, buttons)
 		data: {
 			type: MP_BOND_SINGLE
 		},
-		tmp: {}
+		tmp: {},
+		selection: []
 	};
 
 	this.pointer = {
@@ -278,6 +282,7 @@ MolPad.prototype.onChange = function(cb)
 MolPad.prototype.clear = function(cb)
 {
 	this.molecule = { atoms: [], bonds: [] };
+	this.tool.selection = [];
 
 	//retain old molecule translation in case of an undo
 	this.scaleAbsolute(1 / this.matrix[0], this.width() / 2, this.height() / 2);

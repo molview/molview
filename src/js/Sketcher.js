@@ -54,6 +54,7 @@ var Sketcher = {
 				});
 			this.molpad.displaySkeleton(Preferences.get("sketcher", "skeletal_formula", true));
 			this.setColored(Preferences.get("sketcher", "colored", true));
+			this.setTool($("#action-mp-lasso"), "select", { type: "lasso" });
 
 			if(MolView.loadDefault)
 			{

@@ -40,8 +40,9 @@ function MPBond(mp, obj)
 	this.stereo = obj.stereo || MP_STEREO_NONE;
 	this.from = obj.from || 0;
 	this.to = obj.to || 0;
+	this.selected = false;
 	this.display = "normal";
-
+	this.hidden = false;//used internally to hide inverted bonds
 	this.valid = false;
 	this.mp.invalidate();
 }
@@ -83,7 +84,8 @@ MPBond.prototype.getConfig = function()
 MPBond.prototype.toString = function()
 {
 	return this.type.toString()
-		+ this.stereo.toString();
+		+ this.stereo.toString()
+		+ this.to - this.from;//store up/down bond direction
 }
 
 MPBond.prototype.getLine = function()
@@ -203,6 +205,16 @@ MPBond.prototype.getOppositeAtom = function(i)
 }
 
 /**
+ * Selects or deselects this MPBond
+ * @param {Boolean} select
+ */
+MPBond.prototype.select = function(select)
+{
+	this.selected = select;
+	this.mp.invalidate();
+}
+
+/**
  * Invalidate this bond
  * If this bond changes, secondary bonds of invisible atom are always invalidated
  */
@@ -240,95 +252,107 @@ MPBond.prototype.validate = function()
 	if(this.valid) return;
 	this.valid = true;
 
-	var scale = this.mp.settings.bond.scale;
-
-	this.cache = {};
-	this.line = {
-		from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0])[0],
-		to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, [0])[0]
-	};
-
-	if(this.mp.settings.bond.colored)
+	if(this.mp.molecule.atoms[this.from].center.distanceTo(
+			this.mp.molecule.atoms[this.to].center) <=
+			(this.mp.molecule.atoms[this.from].isVisible() && this.mp.molecule.atoms[this.to].isVisible() ?
+			2 : 1) * this.mp.settings.atom.radius)
 	{
-		var f = this.mp.molecule.atoms[this.from];
-		var t = this.mp.molecule.atoms[this.to];
-
-		if(this.stereo == MP_STEREO_UP)
-		{
-			this.cache.bondColor = JmolAtomColorsHashHex["C"];
-		}
-		else if(f.element == t.element)
-		{
-			this.cache.bondColor = JmolAtomColorsHashHex[f.element];
-		}
-		else
-		{
-			this.cache.bondColor = this.mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
-			this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.element]);
-			this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.element]);
-		}
+		this.hidden = true;
 	}
-	else//fallback, this color is actually not used
+	else
 	{
-		this.cache.bondColor = this.mp.settings.bond.color;
-	}
+		this.hidden = false;
 
-	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
-	{
-		//TODO: connect one double CIS-TRANS bond to [0] endpoint
-		var ends = multiplyAll(this.mp.settings.bond.delta[MP_BOND_DOUBLE],
-				this.mp.settings.bond.deltaScale);
-		this.cache.ctd = {
-			from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
-			to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends)
+		var scale = this.mp.settings.bond.scale;
+
+		this.cache = {};
+		this.line = {
+			from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0])[0],
+			to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, [0])[0]
 		};
-	}
-	else if(this.stereo == MP_STEREO_UP)//wedge bond
-	{
-		this.cache.wedge = {
-			far: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]),
-			near: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
+
+		if(this.mp.settings.bond.colored)
+		{
+			var f = this.mp.molecule.atoms[this.from];
+			var t = this.mp.molecule.atoms[this.to];
+
+			if(this.stereo == MP_STEREO_UP)
+			{
+				this.cache.bondColor = JmolAtomColorsHashHex["C"];
+			}
+			else if(f.element == t.element)
+			{
+				this.cache.bondColor = JmolAtomColorsHashHex[f.element];
+			}
+			else
+			{
+				this.cache.bondColor = this.mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
+				this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.element]);
+				this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.element]);
+			}
+		}
+		else//fallback, this color is actually not used
+		{
+			this.cache.bondColor = this.mp.settings.bond.color;
+		}
+
+		if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
+		{
+			//TODO: connect one double CIS-TRANS bond to [0] endpoint
+			var ends = multiplyAll(this.mp.settings.bond.delta[MP_BOND_DOUBLE],
+					this.mp.settings.bond.deltaScale);
+			this.cache.ctd = {
+				from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
+				to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends)
+			};
+		}
+		else if(this.stereo == MP_STEREO_UP)//wedge bond
+		{
+			this.cache.wedge = {
+				far: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]),
+				near: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
+						multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
+							this.mp.settings.bond.deltaScale))
+			}
+		}
+		else if(this.stereo == MP_STEREO_DOWN)//hash bond
+		{
+			var far = this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]);
+			var near = this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
 					multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
-						this.mp.settings.bond.deltaScale))
+						this.mp.settings.bond.deltaScale));
+
+			var dx1 = near[0].x - far[0].x;
+			var dy1 = near[0].y - far[0].y;
+			var dx2 = near[1].x - far[0].x;
+			var dy2 = near[1].y - far[0].y;
+			var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+			var w = this.mp.settings.bond.width * scale;
+			var s = this.mp.settings.bond.hashLineSpace * scale;
+
+			this.cache.hashLines = [];
+			while(d1 - s - w > 0)
+			{
+				var mult = (d1 - s - w) / d1;
+				d1 *= mult;
+				dx1 *= mult; dy1 *= mult;
+				dx2 *= mult; dy2 *= mult;
+
+				this.cache.hashLines.push({
+					from: { x: far[0].x + dx1, y: far[0].y + dy1 },
+					to: { x: far[0].x + dx2, y: far[0].y + dy2 }
+				});
+			}
 		}
-	}
-	else if(this.stereo == MP_STEREO_DOWN)//hash bond
-	{
-		var far = this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]);
-		var near = this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
-				multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
-					this.mp.settings.bond.deltaScale));
-
-		var dx1 = near[0].x - far[0].x;
-		var dy1 = near[0].y - far[0].y;
-		var dx2 = near[1].x - far[0].x;
-		var dy2 = near[1].y - far[0].y;
-		var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-		var w = this.mp.settings.bond.width * scale;
-		var s = this.mp.settings.bond.hashLineSpace * scale;
-
-		this.cache.hashLines = [];
-		while(d1 - s - w > 0)
+		else if(this.type >= MP_BOND_DOUBLE && this.type <= MP_BOND_TRIPLE)
 		{
-			var mult = (d1 - s - w) / d1;
-			d1 *= mult;
-			dx1 *= mult; dy1 *= mult;
-			dx2 *= mult; dy2 *= mult;
-
-			this.cache.hashLines.push({
-				from: { x: far[0].x + dx1, y: far[0].y + dy1 },
-				to: { x: far[0].x + dx2, y: far[0].y + dy2 }
-			});
+			var ends = multiplyAll(this.mp.settings.bond.delta[this.type],
+					this.mp.settings.bond.deltaScale);
+			this.cache.bond = {
+				from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
+				to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends.reverse())
+			};
 		}
-	}
-	else if(this.type >= MP_BOND_DOUBLE && this.type <= MP_BOND_TRIPLE)
-	{
-		var ends = multiplyAll(this.mp.settings.bond.delta[this.type],
-				this.mp.settings.bond.deltaScale);
-		this.cache.bond = {
-			from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
-			to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends.reverse())
-		};
 	}
 }
 
@@ -353,21 +377,31 @@ MPBond.prototype.drawStateColor = function()
 {
 	this.validate();
 
-	if(this.display == "hover" || this.display == "active")
+	if(this.display == "hover" || this.display == "active" ||
+			(this.display == "normal" && this.selected))
 	{
+		var d = this.selected ? "selected" : this.display;
+
 		this.mp.ctx.beginPath();
 
 		var f = this.line.from;
 		var t = this.line.to;
-		if(this.mp.molecule.atoms[this.from].display != "normal")
+
+		//stick to 'from' atom center if 'from' atom is selected (multi-select)
+		if(this.mp.molecule.atoms[this.from].selected)
+		{
 			f = this.mp.molecule.atoms[this.from].center;
-		if(this.mp.molecule.atoms[this.to].display != "normal")
+		}
+		//stick to 'to' atom center if 'to' atom is selected (multi-select)
+		if(this.mp.molecule.atoms[this.to].selected)
+		{
 			t = this.mp.molecule.atoms[this.to].center;
+		}
 
 		this.mp.ctx.moveTo(f.x, f.y);
 		this.mp.ctx.lineTo(t.x, t.y);
 
-		this.mp.ctx.strokeStyle = this.mp.settings.bond[this.display].color;
+		this.mp.ctx.strokeStyle = this.mp.settings.bond[d].color;
 		this.mp.ctx.stroke();
 	}
 }
@@ -375,8 +409,7 @@ MPBond.prototype.drawStateColor = function()
 MPBond.prototype.drawBond = function()
 {
 	this.validate();
-
-	if(this.display == "hidden") return;
+	if(this.hidden || this.display == "hidden") return;
 
 	var scale = this.mp.settings.bond.scale;
 	var ctx = this.mp.ctx;

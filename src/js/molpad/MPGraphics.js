@@ -31,16 +31,28 @@ MolPad.prototype.invalidate = function()
 	this.valid = false;
 }
 
+/**
+ * Makes sure the canvas is updated
+ * @return {Boolean} Indicates if redraw has been executed
+ */
 MolPad.prototype.validate = function()
 {
 	if(!this.valid)
 	{
 		this.valid = true;
 		this.redraw();
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
-MolPad.prototype.update = function(scaleOnly)
+/**
+ * Updates metrics
+ */
+MolPad.prototype.update = function()
 {
 	var oldAtomScale = this.settings.atom.scale;
 
@@ -55,8 +67,8 @@ MolPad.prototype.update = function(scaleOnly)
 	this.settings.atom.radiusScaled = this.settings.atom.radius * this.settings.atom.scale;
 	this.settings.bond.radiusScaled = this.settings.bond.radius * this.settings.bond.scale;
 
-	//atom.scale is the first dynamic scale factor
-	if(!scaleOnly || this.settings.atom.scale != oldAtomScale)
+	//if metrics are changed, atom.scale will always be amongst them
+	if(this.settings.atom.scale != oldAtomScale)
 	{
 		for(var i = 0; i < this.molecule.atoms.length; i++)
 		{
@@ -154,7 +166,10 @@ MolPad.prototype.draw = function()
 			}
 		}
 
-		this.ctx.fill();
+		this.ctx.mozFillRule = "evenodd";
+		this.ctx.msFillRule = "evenodd";
+		this.ctx.fillRule = "evenodd";
+		this.ctx.fill("evenodd");
 		this.ctx.stroke();
 	}
 

@@ -68,6 +68,12 @@ MolPad.prototype.onPointerDown = function(e)
 	this.pointer.old.p.fromPointer(e);
 	this.pointer.old.r.fromRelativePointer(e, this);
 
+	if(["erase", "drag", "select"].indexOf(this.tool.type) == -1)
+	{
+		this.clearSelection();
+	}
+	this.tool.tmp = {};
+
 	if(oe.targetTouches && oe.targetTouches.length > 1)
 	{
 		this.pointer.targetTouchesNumber = oe.targetTouches.length;
@@ -287,11 +293,11 @@ MolPad.prototype.multiTouchHandler = {
 	}
 }
 
-//TODO: fully implement selection tool
 MolPad.prototype.selectionToolHandler = {
 	onPointerDown: function(e)
 	{
 		this.setCursor("pointer");
+		this.clearSelection();
 		var p = new MPPoint().fromRelativePointer(e, this);
 
 		if(this.tool.data.type == "rect")
@@ -308,10 +314,7 @@ MolPad.prototype.selectionToolHandler = {
 		else//lasso
 		{
 			this.tool.tmp = {
-				points: [{
-					x: p.x,
-					y: p.y
-				}]
+				points: [p.clone()]
 			};
 		}
 	},
@@ -325,15 +328,33 @@ MolPad.prototype.selectionToolHandler = {
 		{
 			this.tool.tmp.rect.width = p.x - this.tool.tmp.rect.x;
 			this.tool.tmp.rect.height = p.y - this.tool.tmp.rect.y;
+
+			//refresh selection
+			for(var i = 0; i < this.molecule.atoms.length; i++)
+			{
+				this.molecule.atoms[i].handleRectSelect(this.tool.tmp.rect);
+			}
 		}
 		else//lasso
 		{
 			this.tool.tmp.points.push(p);
+
+			//refresh selection
+			for(var i = 0; i < this.molecule.atoms.length; i++)
+			{
+				this.molecule.atoms[i].handlePolygonSelect(this.tool.tmp.points);
+			}
+		}
+
+		//refresh bond display style
+		for(var i = 0; i < this.molecule.bonds.length; i++)
+		{
+			this.molecule.bonds[i].handleSelect();
 		}
 
 		this.redraw();
 	},
-	onPointerUp: function(e)
+	onPointerUp: function()
 	{
 		this.tool.tmp = {};
 		this.redraw();

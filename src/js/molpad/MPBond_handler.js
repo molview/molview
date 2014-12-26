@@ -76,39 +76,39 @@ MPBond.prototype.getHandler = function()
 				};
 
 				//create the fragment and store the new fragment data
-				this.tool.tmp.selection = this.createFragment(this.tool.tmp.frag);
+				this.tool.selection = this.createFragment(this.tool.tmp.frag);
 
 				//IMPORTANT: do not merge the other way around or the scope will be lost
-				this.mergeAtoms(this.tool.tmp.selection[0], scope.from);
-				this.mergeAtoms(this.tool.tmp.selection[this.tool.tmp.selection.length - 1], scope.to);
+				this.mergeAtoms(this.tool.selection[0], scope.from);
+				this.mergeAtoms(this.tool.selection[this.tool.selection.length - 1], scope.to);
 
 				//resolve tool.tmp.side
 				var s = 0;
-				for(var i = 0; i < this.tool.tmp.selection.length; i++)
+				for(var i = 0; i < this.tool.selection.length; i++)
 				{
-					s += this.molecule.atoms[this.tool.tmp.selection[i]].center.lineSide(scope.getLine());
+					s += this.molecule.atoms[this.tool.selection[i]].center.lineSide(scope.getLine());
 				}
 				this.tool.tmp.side = s > 0 ? 1 : -1;
 
 				//get number collapsing atoms
-				var collA = this.countCollapses(this.tool.tmp.selection);
+				var collA = this.countCollapses(this.tool.selection);
 
 				//mirror fragment
-				for(var i = 0; i < this.tool.tmp.selection.length; i++)
+				for(var i = 0; i < this.tool.selection.length; i++)
 				{
-					this.molecule.atoms[this.tool.tmp.selection[i]].center.mirror(
+					this.molecule.atoms[this.tool.selection[i]].center.mirror(
 							scope.getLine(), -this.tool.tmp.side);
 				}
 
 				//get new number collapsing atoms
-				var collB = this.countCollapses(this.tool.tmp.selection);
+				var collB = this.countCollapses(this.tool.selection);
 
 				//mirror back if old number of collapsing atoms is lower
 				if(collA < collB)
 				{
-					for(var i = 0; i < this.tool.tmp.selection.length; i++)
+					for(var i = 0; i < this.tool.selection.length; i++)
 					{
-						this.molecule.atoms[this.tool.tmp.selection[i]].center.mirror(
+						this.molecule.atoms[this.tool.selection[i]].center.mirror(
 								scope.getLine(), this.tool.tmp.side);
 					}
 				}
@@ -128,16 +128,16 @@ MPBond.prototype.getHandler = function()
 				{
 					this.tool.tmp.side = s;
 
-					for(var i = 0; i < this.tool.tmp.selection.length; i++)
+					for(var i = 0; i < this.tool.selection.length; i++)
 					{
-						this.molecule.atoms[this.tool.tmp.selection[i]].center.mirror(scope.getLine(), s);
-						this.molecule.atoms[this.tool.tmp.selection[i]].invalidate();
+						this.molecule.atoms[this.tool.selection[i]].center.mirror(scope.getLine(), s);
+						this.molecule.atoms[this.tool.selection[i]].invalidate();
 					}
 				}
 			},
 			onPointerUp: function(e)
 			{
-				this.collapseAtoms(this.tool.tmp.selection.slice());
+				this.collapseAtoms(this.tool.selection.slice());
 			}
 		};
 	}
@@ -148,7 +148,9 @@ MPBond.prototype.getHandler = function()
 			onPointerDown: function(e)
 			{
 				e.preventDefault();
-				this.removeBond(scope.index);
+
+				if(scope.selected) this.removeSelection();
+				else this.removeBond(scope.index);
 
 				//dismiss all further calls to this handler
 				this.pointer.handler = undefined;
@@ -167,8 +169,15 @@ MPBond.prototype.getHandler = function()
 				var dx = p.x - this.pointer.old.r.x;
 				var dy = p.y - this.pointer.old.r.y;
 
-				this.molecule.atoms[scope.from].translate(dx, dy);
-				this.molecule.atoms[scope.to].translate(dx, dy);
+				if(scope.selected)
+				{
+					this.translateSelection(dx, dy);
+				}
+				else
+				{
+					this.molecule.atoms[scope.from].translate(dx, dy);
+					this.molecule.atoms[scope.to].translate(dx, dy);
+				}
 
 				this.pointer.old.r = p;
 			},
@@ -176,12 +185,20 @@ MPBond.prototype.getHandler = function()
 			{
 				this.molecule.atoms[scope.from].setDisplay("normal");
 				this.molecule.atoms[scope.to].setDisplay("normal");
-				this.collapseAtoms([scope.from, scope.to]);
+
+				if(scope.selected) this.collapseAtoms(this.tool.selection.slice(), true);
+				else this.collapseAtoms([scope.from, scope.to], true);
 			}
 		};
 	}
 }
 
+/**
+ * Handler for mouse events
+ * @param  {MPPoint} point Event origin
+ * @param  {String}  type  Event type (hover || active)
+ * @return {Boolean}       Indicates if event is handled by this MPBond
+ */
 MPBond.prototype.handle = function(point, type)
 {
 	if(this.display == "hidden") return false;
@@ -206,4 +223,10 @@ MPBond.prototype.handle = function(point, type)
 
 	this.setDisplay("normal");
 	return false;
+}
+
+MPBond.prototype.handleSelect = function()
+{
+	this.select(this.mp.tool.selection.indexOf(this.from) != -1
+			 && this.mp.tool.selection.indexOf(this.to) != -1);
 }

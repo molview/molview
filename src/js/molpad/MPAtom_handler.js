@@ -223,7 +223,7 @@ MPAtom.prototype.getHandler = function()
 						scope.center, this.tool.tmp.startAngle);
 
 				//create the fragment and store the new fragment data
-				this.tool.tmp.selection = this.createFragment(this.tool.tmp.frag);
+				this.tool.selection = this.createFragment(this.tool.tmp.frag);
 
 				if(bondConnection)
 				{
@@ -232,7 +232,7 @@ MPAtom.prototype.getHandler = function()
 						type: MP_BOND_SINGLE,
 						stereo: MP_STEREO_NONE,
 						from: scope.index,
-						to: this.tool.tmp.selection[0]
+						to: this.tool.selection[0]
 					});
 
 					scope.addBond(connection.index);
@@ -241,7 +241,7 @@ MPAtom.prototype.getHandler = function()
 				}
 				else
 				{
-					this.mergeAtoms(this.tool.tmp.selection[0], scope.index);
+					this.mergeAtoms(this.tool.selection[0], scope.index);
 				}
 			},
 			onPointerMove: function(e)
@@ -253,7 +253,7 @@ MPAtom.prototype.getHandler = function()
 				{
 					//if so, rotate the target fragment around this atom
 					this.tool.tmp.currentAngle = this.rotateAtoms(
-							scope.center, p, this.tool.tmp.selection,
+							scope.center, p, this.tool.selection,
 							this.tool.tmp.currentAngle,
 							this.tool.tmp.startAngle,
 							this.settings.bond.rotateSteps);
@@ -277,7 +277,11 @@ MPAtom.prototype.getHandler = function()
 			scope: this,
 			onPointerDown: function(e)
 			{
-				this.removeAtom(scope.index);
+				if(scope.selected) this.removeSelection();
+				else this.removeAtom(scope.index);
+
+				//dismiss all further calls to this handler
+				this.pointer.handler = undefined;
 			}
 		};
 	}
@@ -289,17 +293,33 @@ MPAtom.prototype.getHandler = function()
 			{
 				this.setCursor("move");
 				var p = new MPPoint().fromRelativePointer(e, this);
-				scope.translate(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
+
+				if(scope.selected)
+				{
+					this.translateSelection(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
+				}
+				else
+				{
+					scope.translate(p.x - this.pointer.old.r.x, p.y - this.pointer.old.r.y);
+				}
+
 				this.pointer.old.r = p;
 			},
 			onPointerUp: function(e)
 			{
-				this.collapseAtoms([scope.index], true);
+				if(scope.selected) this.collapseAtoms(this.tool.selection.slice(), true);
+				else this.collapseAtoms([scope.index], true);
 			}
 		};
 	}
 }
 
+/**
+ * Handler for mouse events
+ * @param  {MPPoint} point Event origin
+ * @param  {String}  type  Event type (hover || active)
+ * @return {Boolean}       Indicates if event is handled by this MPAtom
+ */
 MPAtom.prototype.handle = function(point, type)
 {
 	if(this.display == "hidden") return false;
@@ -333,4 +353,14 @@ MPAtom.prototype.handle = function(point, type)
 
 	this.setDisplay("normal");
 	return false;
+}
+
+MPAtom.prototype.handleRectSelect = function(rect)
+{
+	this.select(this.center.inRect(rect));
+}
+
+MPAtom.prototype.handlePolygonSelect = function(polygon)
+{
+	this.select(this.center.inPolygon(polygon));
 }
