@@ -16,6 +16,8 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var PI2 = 2 * Math.PI;
+
 function lineLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4)
 {
     var div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
@@ -26,6 +28,16 @@ function lineLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4)
 }
 
 /**
+ * Calculate on which side b is relative to a in counter clockwise direction
+ * @param {Float} a
+ * @param {Float} b
+ */
+function radSide(a, b)
+{
+    return angleBetween(a, b) < Math.PI ? 1 : -1;
+}
+
+/**
  * Calculate angle between two angles where from is the first encountered angle
  * in counter clockwise direction
  * @param {Float} from
@@ -33,9 +45,15 @@ function lineLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4)
  */
 function angleBetween(from, to)
 {
-	if(to <= from)//to is actually larger than 2PI and therefore smaller than from
+    //loop till all angles are 0 <= a <= Math.PI
+    while(from < 0) from += PI2;
+    while(from > PI2) from -= PI2;
+    while(to < 0) to += PI2;
+    while(to > PI2) to -= PI2;
+
+	if(to <= from)//the point 'to' on a circle is actually 2PI behind
 	{
-		return to - from + 2 * Math.PI;
+		return to - from + PI2;
 	}
 	else
 	{
@@ -43,11 +61,18 @@ function angleBetween(from, to)
 	}
 }
 
-//TODO: always clamp horizontal or vertical angle
+/**
+ * Calculate the given clamped angle between a point and a center
+ * @param  {Float}   start  Angle offset
+ * @param  {MPPoint} center Center of rotation
+ * @param  {MPPoint} point  Target point
+ * @param  {Float}   steps  Number of rotation steps in one circle
+ * @return {Float}
+ */
 function clampedAngle(start, center, point, steps)
 {
 	var a = center.angleTo(point);
-	var clampFactor = steps / (2 * Math.PI);
+	var clampFactor = steps / PI2;
 	return Math.round((a - start) * clampFactor) / clampFactor
 			+ start;//clamp to x steps, normalize to startAngle
 }
@@ -89,6 +114,16 @@ function multiplyAll(array, mult)
 	for(var i = 0; i < array.length; i++)
 		ret.push(array[i] * mult);
 	return ret;
+}
+
+/**
+ * Also defined in main MolView Utility but this makes MolPad standalone
+ * @param {String} nail
+ * @param {Array}  haystack
+ */
+function oneOf(nail, haystack)
+{
+	return haystack.indexOf(nail) != -1;
 }
 
 function getMultiTouchDelta(e)

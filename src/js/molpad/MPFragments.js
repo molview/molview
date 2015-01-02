@@ -52,7 +52,7 @@ var MPFragments = {
 
 	generateRing: function(vertices, alternating)
 	{
-		var as = 2 * Math.PI / vertices;//angle step
+		var as = PI2 / vertices;//angle step
 		var r = 0.5 / Math.sin(as / 2) * this.length;
 
 		var ret = {
@@ -75,7 +75,7 @@ var MPFragments = {
 	createRing: function(vertices, alternating)
 	{
 		var frag = { atoms: [], bonds: [] };
-		var as = 2 * Math.PI / vertices;//angle step
+		var as = PI2 / vertices;//angle step
 		var r = 0.5 / Math.sin(as / 2) * this.length;
 
 		//ring

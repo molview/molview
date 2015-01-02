@@ -112,29 +112,33 @@ MPAtom.prototype.calculateCenterLine = function()
 	var scale = this.mp.settings.atom.scale;
 	var text = {};
 
-	this.setFont("label");
+	this.mp.setFont("element");
 	text.labelWidth = this.isVisible() ? this.mp.ctx.measureText("" + this.element).width : 0;
 	var w = text.labelWidth;
 
 	if(this.isotope > 0)
 	{
-		this.setFont("isotope");
-		text.isotopeHeight = this.mp.settings.atom.isotope.fontSize * scale;
+		this.mp.setFont("isotope");
+		text.isotopeHeight = this.mp.settings.fonts.isotope.fontSize * scale;
 		text.isotopeWidth = this.mp.ctx.measureText("" + this.isotope).width +
-				this.mp.settings.atom.isotope.pad * scale;
+				this.mp.settings.atom.isotope.padding * scale;//padding before element label
 		w += text.isotopeWidth;
 	}
 
 	if(this.charge != 0)
 	{
-		this.setFont("charge");
-		text.chargeHeight = this.mp.settings.atom.charge.fontSize * scale;
+		this.mp.setFont("charge");
+		text.chargeHeight = this.mp.settings.fonts.charge.fontSize * scale;
 		text.chargeWidth = this.mp.ctx.measureText("" + this.getChargeLabel()).width;
-		text.labelWidth += this.mp.settings.atom.isotope.pad * scale;
-		w += text.chargeWidth + this.mp.settings.atom.isotope.pad * scale;
+
+		//add padding between element and charge
+		text.labelWidth += this.mp.settings.atom.charge.padding * scale;
+
+		//add chargeWidth to total width + additional label padding
+		w += text.chargeWidth + this.mp.settings.atom.charge.padding * scale;
 	}
 
-	var h = this.mp.settings.atom.label.fontSize * scale;
+	var h = this.mp.settings.fonts.element.fontSize * scale;
 	var halfw = w / 2;
 	text.offsetLeft = -halfw;
 	text.offsetTop = h / 2;
@@ -161,19 +165,28 @@ MPAtom.prototype.calculateCenterLine = function()
 }
 
 /**
- * Calculate bond attach vertices for a bond from $begin to $this.center
+ * _calculateBondVertices wrapper with origin atom index as argument
  * @param  {Integer} from Origin atom index
- * @param  {Array}   ends Requested end vertices perpendicular to the end of line $begin$this.center
- *                        (values are in counter clockwise direction)
+ * @param  {Array}   ends
  * @return {Array}        Calculated ends
  */
 MPAtom.prototype.calculateBondVertices = function(from, ends)
 {
-	//TODO: implement bonding site for collapsed groups (only left or right)
-
-	this.validate();
-
 	var begin = this.mp.molecule.atoms[from].center;
+	return this._calculateBondVertices(begin, ends);
+}
+
+/**
+ * Calculate bond attach vertices for a bond from $begin to $this.center
+ * @param  {MPPoint} begin Origin point
+ * @param  {Array}   ends  Requested end vertices perpendicular to the end of line $begin$this.center
+ *                         (values are in counter clockwise direction)
+ * @return {Array}         Calculated ends
+ */
+MPAtom.prototype._calculateBondVertices = function(begin, ends)
+{
+	//TODO: implement bonding site for collapsed groups (only left or right)
+	this.validate();
 
 	if(begin.x == this.center.x)
 	{
@@ -182,10 +195,10 @@ MPAtom.prototype.calculateBondVertices = function(from, ends)
 		var below = begin.y < this.center.y;
 		for(var i = 0; i < ends.length; i++)
 		{
-			ret.push({
+			ret.push(MPPFO({
 				x: this.center.x + (below ? ends[i] : -ends[i]),//counter clockwise
 				y: this.center.y + (below ? -r : r)
-			});
+			}));
 		}
 		return ret;
 	}
@@ -196,10 +209,10 @@ MPAtom.prototype.calculateBondVertices = function(from, ends)
 		var right = begin.x > this.center.x;
 		for(var i = 0; i < ends.length; i++)
 		{
-			ret.push({
+			ret.push(MPPFO({
 				x: this.center.x + (right ? r : -r),
 				y: this.center.y + (right ? ends[i] : -ends[i])//counter clockwise
-			});
+			}));
 		}
 		return ret;
 	}
@@ -226,10 +239,10 @@ MPAtom.prototype.calculateBondVertices = function(from, ends)
 			var ret = [];
 			for(var i = 0; i < ends.length; i++)
 			{
-				ret.push({
+				ret.push(MPPFO({
 					x: -B * ends[i],
 					y: A * ends[i]
-				});
+				}));
 			}
 
 			//translate to real center
@@ -277,10 +290,10 @@ MPAtom.prototype.calculateBondVertices = function(from, ends)
 		var ret = [];
 		for(var i = 0; i < ends.length; i++)
 		{
-			ret.push({
+			ret.push(MPPFO({
 				x: x - B * ends[i],
 				y: y + A * ends[i]
-			});
+			}));
 		}
 		return ret;
 	}

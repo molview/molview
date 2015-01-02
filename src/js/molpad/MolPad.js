@@ -41,6 +41,56 @@ function MolPad(container, devicePixelRatio, buttons)
 		minZoom: 0.01,
 		skeletonDisplay: true,
 		relativePadding: 0.15,
+		fonts: {
+			element: {
+				fontStyle: "bold",
+				fontFamily: 'sans-serif',//"Open Sans", sans-serif
+				fontSize: 12//in pt
+			},
+			charge: {
+				fontStyle: "bold",
+				fontFamily: 'sans-serif',
+				fontSize: 8
+			},
+			isotope: {
+				fontStyle: "bold",
+				fontFamily: 'sans-serif',
+				fontSize: 8
+			},
+			chainSize: {
+				fontStyle: "normal",
+				fontFamily: 'sans-serif',
+				fontSize: 12
+			},
+		},
+		atom: {
+			hover: {
+				color: "#bfb"
+			},
+			active: {
+				color: "#8f8"
+			},
+			selected: {
+				color: "#8f8"
+			},
+			charge: {
+				padding: 1
+			},
+			isotope: {
+				padding: 1
+			},
+			scale: 1,
+			radius: 12,//radius around atom center-line
+			color: "#111",
+			colored: true,
+			lineCap: "round",
+			circleClamp: 15,//label width > circleClamp: atom center = line
+			minAddRotateLength: 12,
+			minScale: 1 / 1.5,//12 * 1 / 1.5 = 8
+			maxMiniLabelScale: 1 / 5.0,
+			miniLabelSize: 25,
+			miniLabel: false
+		},
 		bond: {
 			gradient: {
 				from: 0.4,
@@ -77,68 +127,46 @@ function MolPad(container, devicePixelRatio, buttons)
 			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
 			straightDev: Math.PI / 10
 		},
-		atom: {
-			hover: {
-				color: "#bfb"
-			},
-			active: {
-				color: "#8f8"
-			},
-			selected: {
-				color: "#8f8"
-			},
-			label: {
-				fontStyle: "bold",
-				fontFamily: 'sans-serif',//"Open Sans", sans-serif
-				fontSize: 12,//in pt
-			},
-			charge: {
-				fontStyle: "bold",
-				fontFamily: 'sans-serif',
-				fontSize: 8,
-				pad: 1
-			},
-			isotope: {
-				fontStyle: "bold",
-				fontFamily: 'sans-serif',
-				fontSize: 8,
-				pad: 1
-			},
-			scale: 1,
-			radius: 12,//radius around atom center-line
-			color: "#111111",
-			colored: true,
+		chain: {
+			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
+			devAngle: Math.PI / 6,//30deg, deviation angle
+			padding: 2,
+			strokeStyle: "#f50",
 			lineCap: "round",
-			circleClamp: 15,//label width > circleClamp: atom center = line
-			minAddRotateLength: 12,
-			minScale: 1 / 1.5,//12 * 1 / 1.5 = 8
-			maxMiniLabelScale: 1 / 5.0,
-			miniLabelSize: 25,
-			miniLabel: false
+			lineJoin: "round",
+			color: "#f50"
 		},
 		select: {
 			fillStyle: "rgba(255, 85, 0, 0.3)",
-			strokeStyle: "#ff5500",
+			strokeStyle: "#f50",
 			lineWidth: 2,
 			lineCap: "round",
 			lineJoin: "round"
 		}
 	};
 
+	//molecule data
 	this.molecule = {
 		atoms: [],
 		bonds: []
 	};
 
+	//active tool data
 	this.tool = {
 		type: "bond",//bond || fragment || chain || charge || erase || drag || select || atom
 		data: {
 			type: MP_BOND_SINGLE
 		},
-		tmp: {},
-		selection: []
+		selection: [],
+		rotationCenter: {}
 	};
 
+	//keydown tracker
+	this.keys = {
+		ctrl: false
+	};
+
+	//event pointer data
 	this.pointer = {
 		old: {
 			p: new MPPoint(),
@@ -151,6 +179,7 @@ function MolPad(container, devicePixelRatio, buttons)
 		touchGrab: false
 	};
 
+	//graphics data
 	this.valid = true;
 	this.copy = { atoms: [], bonds: [], fingerprint: "" };
 	this.stack = [];
@@ -158,6 +187,7 @@ function MolPad(container, devicePixelRatio, buttons)
 	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
 	this.devicePixelRatio = devicePixelRatio || 1;
 
+	//UI data
 	this.buttons = buttons;
 	this.container = jQuery(container);
 	this.offset = this.container.offset();
@@ -194,7 +224,7 @@ function MolPad(container, devicePixelRatio, buttons)
 		}
 		else if(e.originalEvent.wheelDelta)
 		{
-			scope.onScroll(e.originalEvent.wheelDelta / 120);
+			scope.onScroll(e.originalEvent.wheelDelta / 120, e);
 		}
 	});
 
@@ -250,6 +280,21 @@ function MolPad(container, devicePixelRatio, buttons)
 		jQuery(document).bind("keydown", "ctrl+shift+z", function(e)
 				{ e.preventDefault(); scope.redo(); });
 	}
+
+	jQuery(document).on("keydown", function(e)
+	{
+		scope.keys.ctrl = e.ctrlKey;
+
+		if(e.keyCode == 46)//forward backspace
+		{
+			scope.removeSelection();
+			scope.validate();
+		}
+	});
+	jQuery(document).on("keyup", function(e)
+	{
+		scope.keys.ctrl = e.ctrlKey;
+	});
 }
 
 MolPad.prototype.forAllObjects = function(func)
@@ -399,8 +444,8 @@ MolPad.prototype.displaySkeleton = function(yes)
 MolPad.prototype.setColored = function(yes)
 {
 	this.settings.atom.colored = this.settings.bond.colored = yes;
-	this.settings.atom.isotope.fontStyle = this.settings.atom.label.fontStyle =
-			this.settings.atom.charge.fontStyle = yes ? "bold" : "normal";
+	this.settings.fonts.isotope.fontStyle = this.settings.fonts.element.fontStyle =
+			this.settings.fonts.charge.fontStyle = yes ? "bold" : "normal";
 	this.redraw(true);
 }
 

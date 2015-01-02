@@ -22,6 +22,15 @@ function MPPoint(x, y)
 	this.y = y || 0;
 }
 
+/**
+ * MPPoint From Object
+ * @param {Object} obj
+ */
+function MPPFO(obj)
+{
+	return new MPPoint(obj.x, obj.y);
+}
+
 MPPoint.prototype.clone = function()
 {
 	return new MPPoint(this.x, this.y);
@@ -270,7 +279,7 @@ MPPoint.prototype.fromPointer = function(e)
 	}
 	else
 	{
-		this.set(e.pageX, e.pageY);
+		this.set(oe.pageX, oe.pageY);
 	}
 
 	return this;

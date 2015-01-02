@@ -87,6 +87,24 @@ MolPad.prototype.setCursor = function(type)
 	this.container.css("cursor", type);
 }
 
+/**
+ * Set font for label rendering
+ * @param {String} type Font type (label settings are in MolPad.settings.font[type])
+ */
+MolPad.prototype.setFont = function(type)
+{
+	//note that all fonts are scaled using the atom scale
+	var font = this.settings.fonts[type].fontStyle + " " +
+			Math.round((this.settings.fonts[type].fontSize
+				* this.settings.atom.scale) * 96 / 72) + "px " +
+			this.settings.fonts[type].fontFamily;
+
+	if(font != this.ctx.font)
+	{
+		this.ctx.font = font;
+	}
+}
+
 MolPad.prototype.draw = function()
 {
 	this.pendingFrame = false;
@@ -106,18 +124,18 @@ MolPad.prototype.draw = function()
 					   this.matrix[3], this.matrix[4], this.matrix[5]);
 
 	//draw state (hover/active)
-	this.ctx.lineWidth = 2 * this.settings.atom.radius * this.settings.atom.scale;
-	this.ctx.lineCap = this.settings.atom.lineCap;
-	for(var i = 0; i < this.molecule.atoms.length; i++)
-	{
-		this.molecule.atoms[i].drawStateColor(this);
-	}
-
 	this.ctx.lineWidth = 2 * this.settings.bond.radius * this.settings.bond.scale;
 	this.ctx.lineCap = this.settings.bond.lineCap;
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
-		this.molecule.bonds[i].drawStateColor(this);
+		this.molecule.bonds[i].drawStateColor();
+	}
+
+	this.ctx.lineWidth = 2 * this.settings.atom.radius * this.settings.atom.scale;
+	this.ctx.lineCap = this.settings.atom.lineCap;
+	for(var i = 0; i < this.molecule.atoms.length; i++)
+	{
+		this.molecule.atoms[i].drawStateColor();
 	}
 
 	//draw bonds
@@ -127,50 +145,20 @@ MolPad.prototype.draw = function()
 	this.ctx.lineJoin = this.settings.bond.lineJoin;
 	for(var i = 0; i < this.molecule.bonds.length; i++)
 	{
-		this.molecule.bonds[i].drawBond(this);
+		this.molecule.bonds[i].drawBond();
 	}
 
 	//draw atoms
 	this.ctx.fillStyle = this.ctx.strokeStyle = this.settings.atom.color;
 	for(var i = 0; i < this.molecule.atoms.length; i++)
 	{
-		this.molecule.atoms[i].drawLabel(this);
+		this.molecule.atoms[i].drawLabel();
 	}
 
-	//draw selection tool
-	if(this.tool.type == "select")
+	//run custom handler drawing function
+	if(this.pointer.handler && this.pointer.handler.onDraw)
 	{
-		this.ctx.fillStyle = this.settings.select.fillStyle;
-		this.ctx.strokeStyle = this.settings.select.strokeStyle;
-		this.ctx.lineWidth = this.settings.select.lineWidth / this.getScale();
-		this.ctx.lineCap = this.settings.select.lineCap;
-		this.ctx.lineJoin = this.settings.select.lineJoin;
-		this.ctx.setLineDash([
-			2 / this.getScale(),
-			5 / this.getScale()
-		]);
-
-		this.ctx.beginPath();
-
-		if(this.tool.tmp.rect)
-		{
-			this.ctx.rect(this.tool.tmp.rect.x, this.tool.tmp.rect.y,
-					this.tool.tmp.rect.width, this.tool.tmp.rect.height);
-		}
-		else if(this.tool.tmp.points)//lasso
-		{
-			for(var i = 0; i < this.tool.tmp.points.length; i++)
-			{
-				if(i == 0) this.ctx.moveTo(this.tool.tmp.points[i].x, this.tool.tmp.points[i].y);
-				else this.ctx.lineTo(this.tool.tmp.points[i].x, this.tool.tmp.points[i].y);
-			}
-		}
-
-		this.ctx.mozFillRule = "evenodd";
-		this.ctx.msFillRule = "evenodd";
-		this.ctx.fillRule = "evenodd";
-		this.ctx.fill("evenodd");
-		this.ctx.stroke();
+		this.pointer.handler.onDraw(this);
 	}
 
 	this.ctx.restore();

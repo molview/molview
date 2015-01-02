@@ -216,6 +216,44 @@ MolPad.prototype.removeSelection = function()
 }
 
 /**
+ * Updates select state for all bonds
+ */
+MolPad.prototype.updateBondSelection = function()
+{
+	for(var i = 0; i < this.molecule.bonds.length; i++)
+	{
+		this.molecule.bonds[i].handleSelect();
+	}
+}
+
+/**
+ * Updates selection rotationCenter
+ */
+MolPad.prototype.updateRotationCenter = function()
+{
+	var v = [];
+	for(var i = 0; i < this.tool.selection.length; i++)
+	{
+		if(this.molecule.atoms[this.tool.selection[i]].hasUnselectedNeighbors())
+		{
+			v.push(this.tool.selection[i]);
+		}
+	}
+
+	if(v.length == 1 && this.tool.selection.length > 1)
+	{
+		this.tool.rotationCenter = {
+			atom: v[0],
+			point: this.molecule.atoms[v[0]].center
+		};
+	}
+	else
+	{
+		this.tool.rotationCenter = {};//clear previous rotation center
+	}
+}
+
+/**
  * Rotate array of atoms around a center using the angle between the center
  * and a given point and an optional number of clampSteps
  *
@@ -287,10 +325,11 @@ MolPad.prototype.mergeAtoms = function(src, dest, reverse)
 
 /**
  * Collapse set of atom indices into the entire molecule
- * @param {Array}   atoms   Atom indices
- * @param {Boolean} reverse If set, the $atoms centers will not be used
+ * @param {Array}   atoms        Atom indices
+ * @param {Boolean} reverse      If set, the $atoms centers will not be used
+ * @param {Boolean} refreshBonds Refresh select state for all bonds
  */
-MolPad.prototype.collapseAtoms = function(atoms, reverse)
+MolPad.prototype.collapseAtoms = function(atoms, reverse, refreshBonds)
 {
 	for(var i = 0; i < atoms.length; i++)
 	{
@@ -298,9 +337,12 @@ MolPad.prototype.collapseAtoms = function(atoms, reverse)
 		{
 			if(atoms.indexOf(j) != -1) continue;
 
+			var distance = (!this.molecule.atoms[atoms[i]].isVisible()
+						 && !this.molecule.atoms[j].isVisible() ? 1 : 2)
+							* this.settings.atom.radiusScaled;
+
 			if(this.molecule.atoms[atoms[i]].center.inCircle(
-					this.molecule.atoms[j].center,
-					2 * this.settings.atom.radiusScaled))//diameter
+					this.molecule.atoms[j].center, distance))
 			{
 				var map = this.mergeAtoms(j, atoms[i], reverse);
 				atoms = mapArray(atoms, map.amap);
@@ -308,6 +350,8 @@ MolPad.prototype.collapseAtoms = function(atoms, reverse)
 			}
 		}
 	}
+
+	if(refreshBonds) this.updateBondSelection();
 }
 
 /**
@@ -342,6 +386,7 @@ MolPad.prototype.removeAtom = function(index)
 {
 	this.molecule.atoms.splice(index, 1);
 	this.updateIndices();
+	this.invalidate();
 }
 
 /**

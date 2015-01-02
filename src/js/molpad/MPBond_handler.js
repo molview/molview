@@ -18,37 +18,34 @@
 
 MPBond.prototype.getHandler = function()
 {
-	var scope = this;
 	if(this.mp.tool.type == "bond")
 	{
 		return {
 			scope: this,
-			onPointerDown: function(e)
+			onPointerDown: function(e, mp)
 			{
 				//TODO: implement up to up bonds
 
-				e.preventDefault();
-
-				if(this.tool.data.type)
+				if(mp.tool.data.type)
 				{
-					scope.setType(this.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
-						(scope.type == MP_BOND_TRIPLE || scope.stereo != MP_STEREO_NONE) ? this.tool.data.type :
-							scope.type == MP_BOND_SINGLE ? MP_BOND_DOUBLE : MP_BOND_SINGLE);
-					scope.setStereo(MP_STEREO_NONE);
+					this.scope.setType(mp.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
+						(this.scope.type == MP_BOND_TRIPLE || this.scope.stereo != MP_STEREO_NONE) ? mp.tool.data.type :
+							this.scope.type == MP_BOND_SINGLE ? MP_BOND_DOUBLE : MP_BOND_SINGLE);
+					this.scope.setStereo(MP_STEREO_NONE);
 				}
-				else if(this.tool.data.stereo)
+				else if(mp.tool.data.stereo)
 				{
-					scope.setType(MP_BOND_SINGLE);
+					this.scope.setType(MP_BOND_SINGLE);
 
-					if(scope.stereo == this.tool.data.stereo)
+					if(this.scope.stereo == mp.tool.data.stereo)
 					{
-						var f = scope.from;
-						scope.setFrom(scope.to);
-						scope.setTo(f);
+						var f = this.scope.from;
+						this.scope.setFrom(this.scope.to);
+						this.scope.setTo(f);
 					}
 					else
 					{
-						scope.setStereo(this.tool.data.stereo);
+						this.scope.setStereo(mp.tool.data.stereo);
 					}
 				}
 			}
@@ -58,86 +55,97 @@ MPBond.prototype.getHandler = function()
 	{
 		return {
 			scope: this,
-			onPointerDown: function(e)
+			data: {},
+			onPointerDown: function(e, mp)
 			{
-				var p = new MPPoint().fromRelativePointer(e, this);
-				var f = this.molecule.atoms[scope.from].center;
-				var t = this.molecule.atoms[scope.to].center;
+				var p = new MPPoint().fromRelativePointer(e, mp);
+				var f = mp.molecule.atoms[this.scope.from].center;
+				var t = mp.molecule.atoms[this.scope.to].center;
 				var a = f.angleTo(t);
 
 				//clone new fragment and transform it
-				this.tool.tmp = {
-					frag: MPFragments.rotate(
-						MPFragments.translate(
-							MPFragments.scale(
-								MPFragments.clone(this.tool.data.frag.toBond),
-								this.settings.bond.length),
-							f.x, f.y), f, a)
-				};
+				this.data.frag= MPFragments.rotate(
+					MPFragments.translate(
+						MPFragments.scale(
+							MPFragments.clone(mp.tool.data.frag.toBond),
+							mp.settings.bond.length),
+						f.x, f.y), f, a);
 
 				//create the fragment and store the new fragment data
-				this.tool.selection = this.createFragment(this.tool.tmp.frag);
+				mp.tool.selection = mp.createFragment(this.data.frag);
 
 				//IMPORTANT: do not merge the other way around or the scope will be lost
-				this.mergeAtoms(this.tool.selection[0], scope.from);
-				this.mergeAtoms(this.tool.selection[this.tool.selection.length - 1], scope.to);
+				mp.mergeAtoms(mp.tool.selection[0], this.scope.from);
+				mp.mergeAtoms(mp.tool.selection[mp.tool.selection.length - 1], this.scope.to);
 
-				//resolve tool.tmp.side
+				//resolve this.data.side
 				var s = 0;
-				for(var i = 0; i < this.tool.selection.length; i++)
+				for(var i = 0; i < mp.tool.selection.length; i++)
 				{
-					s += this.molecule.atoms[this.tool.selection[i]].center.lineSide(scope.getLine());
+					s += mp.molecule.atoms[mp.tool.selection[i]].center.lineSide(this.scope.getLine());
 				}
-				this.tool.tmp.side = s > 0 ? 1 : -1;
+				this.data.side = s > 0 ? 1 : -1;
 
 				//get number collapsing atoms
-				var collA = this.countCollapses(this.tool.selection);
+				var collA = mp.countCollapses(mp.tool.selection);
 
 				//mirror fragment
-				for(var i = 0; i < this.tool.selection.length; i++)
+				for(var i = 0; i < mp.tool.selection.length; i++)
 				{
-					this.molecule.atoms[this.tool.selection[i]].center.mirror(
-							scope.getLine(), -this.tool.tmp.side);
+					mp.molecule.atoms[mp.tool.selection[i]].center.mirror(
+							this.scope.getLine(), -this.data.side);
 				}
 
 				//get new number collapsing atoms
-				var collB = this.countCollapses(this.tool.selection);
+				var collB = mp.countCollapses(mp.tool.selection);
+
+				//check if new fragment is already added
+				if(collA == mp.tool.selection.length && collB == mp.tool.selection.length)
+				{
+					this.data.lock = true;
+					mp.removeSelection();
+					return;
+				}
 
 				//mirror back if old number of collapsing atoms is lower
 				if(collA < collB)
 				{
-					for(var i = 0; i < this.tool.selection.length; i++)
+					for(var i = 0; i < mp.tool.selection.length; i++)
 					{
-						this.molecule.atoms[this.tool.selection[i]].center.mirror(
-								scope.getLine(), this.tool.tmp.side);
+						mp.molecule.atoms[mp.tool.selection[i]].center.mirror(
+								this.scope.getLine(), this.data.side);
 					}
+
+					this.data.lock = collB == mp.tool.selection.length;
 				}
 				else
 				{
-					this.tool.tmp.side = -this.tool.tmp.side;
+					this.data.side = -this.data.side;
+					this.data.lock = collA == mp.tool.selection.length;
 				}
 			},
-			onPointerMove: function(e)
+			onPointerMove: function(e, mp)
 			{
-				e.preventDefault();
-				var p = new MPPoint().fromRelativePointer(e, this);
-				var s = p.lineSide(scope.getLine());
+				if(this.data.lock) return;//do not mirror fragment if mirror is useless
+				var p = new MPPoint().fromRelativePointer(e, mp);
+				var s = p.lineSide(this.scope.getLine());
 
 				//check if pointer is outside no-rotate circle
-				if(s != this.tool.tmp.side && s != 0)
+				if(s != this.data.side && s != 0)
 				{
-					this.tool.tmp.side = s;
+					this.data.side = s;
 
-					for(var i = 0; i < this.tool.selection.length; i++)
+					for(var i = 0; i < mp.tool.selection.length; i++)
 					{
-						this.molecule.atoms[this.tool.selection[i]].center.mirror(scope.getLine(), s);
-						this.molecule.atoms[this.tool.selection[i]].invalidate();
+						mp.molecule.atoms[mp.tool.selection[i]].center.mirror(this.scope.getLine(), s);
+						mp.molecule.atoms[mp.tool.selection[i]].invalidate();
 					}
 				}
 			},
-			onPointerUp: function(e)
+			onPointerUp: function(e, mp)
 			{
-				this.collapseAtoms(this.tool.selection.slice());
+				mp.collapseAtoms(mp.tool.selection.slice());
+				mp.clearToolData();//clears selection
 			}
 		};
 	}
@@ -145,15 +153,13 @@ MPBond.prototype.getHandler = function()
 	{
 		return {
 			scope: this,
-			onPointerDown: function(e)
+			onPointerDown: function(e, mp)
 			{
-				e.preventDefault();
-
-				if(scope.selected) this.removeSelection();
-				else this.removeBond(scope.index);
+				if(this.scope.selected) mp.removeSelection();
+				else mp.removeBond(this.scope.index);
 
 				//dismiss all further calls to this handler
-				this.pointer.handler = undefined;
+				mp.pointer.handler = undefined;
 			}
 		};
 	}
@@ -161,33 +167,52 @@ MPBond.prototype.getHandler = function()
 	{
 		return {
 			scope: this,
-			onPointerMove: function(e)
+			data: {},
+			onPointerDown: function(e, mp)
 			{
-				e.preventDefault();
-				this.setCursor("move");
-				var p = new MPPoint().fromRelativePointer(e, this);
-				var dx = p.x - this.pointer.old.r.x;
-				var dy = p.y - this.pointer.old.r.y;
+				mp.molecule.atoms[this.scope.from].setDisplay("active");
+				mp.molecule.atoms[this.scope.to].setDisplay("active");
+			},
+			onPointerMove: function(e, mp)
+			{
+				mp.setCursor("move");
+				var p = new MPPoint().fromRelativePointer(e, mp);
+				var dx = p.x - mp.pointer.old.r.x;
+				var dy = p.y - mp.pointer.old.r.y;
+				this.data.moved = true;
 
-				if(scope.selected)
+				if(this.scope.selected)
 				{
-					this.translateSelection(dx, dy);
+					mp.translateSelection(dx, dy);
 				}
 				else
 				{
-					this.molecule.atoms[scope.from].translate(dx, dy);
-					this.molecule.atoms[scope.to].translate(dx, dy);
+					mp.molecule.atoms[this.scope.from].translate(dx, dy);
+					mp.molecule.atoms[this.scope.to].translate(dx, dy);
 				}
 
-				this.pointer.old.r = p;
+				mp.pointer.old.r = p;
 			},
-			onPointerUp: function(e)
+			onPointerUp: function(e, mp)
 			{
-				this.molecule.atoms[scope.from].setDisplay("normal");
-				this.molecule.atoms[scope.to].setDisplay("normal");
+				mp.molecule.atoms[this.scope.from].setDisplay("normal");
+				mp.molecule.atoms[this.scope.to].setDisplay("normal");
 
-				if(scope.selected) this.collapseAtoms(this.tool.selection.slice(), true);
-				else this.collapseAtoms([scope.from, scope.to], true);
+				if(!this.data.moved && oneOf(mp.tool.type, ["select", "drag"]))
+				{
+					this.scope.select(!this.scope.selected, true);
+					mp.updateBondSelection();
+					mp.updateRotationCenter();
+				}
+				else
+				{
+					if(this.scope.selected) mp.collapseAtoms(mp.tool.selection.slice(), true, true);
+					else mp.collapseAtoms([this.scope.from, this.scope.to], true, true);
+
+					/* process possible changes to
+					rotation center caused by collapsing */
+					mp.updateRotationCenter();
+				}
 			}
 		};
 	}

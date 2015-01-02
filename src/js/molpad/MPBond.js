@@ -207,11 +207,22 @@ MPBond.prototype.getOppositeAtom = function(i)
 /**
  * Selects or deselects this MPBond
  * @param {Boolean} select
+ * @param {Boolean} neighborsToo
  */
-MPBond.prototype.select = function(select)
+MPBond.prototype.select = function(select, neighborsToo)
 {
-	this.selected = select;
-	this.mp.invalidate();
+	if(this.selected != select)
+	{
+		this.selected = select;
+
+		if(neighborsToo)
+		{
+			this.mp.molecule.atoms[this.from].select(select);
+			this.mp.molecule.atoms[this.to].select(select);
+		}
+
+		this.mp.invalidate();
+	}
 }
 
 /**
@@ -356,17 +367,23 @@ MPBond.prototype.validate = function()
 	}
 }
 
+/**
+ * Returns the from.angleTo(to)
+ * @param  {Integer} from From atom index
+ * @return {Float}
+ */
 MPBond.prototype.getAngle = function(from)
 {
-	//Note: flip y coords
 	if(this.mp.molecule.atoms[this.from].equals(from))
-		return Math.atan2(
-			from.getY() - this.mp.molecule.atoms[this.to].getY(),
-			this.mp.molecule.atoms[this.to].getX() - from.getX());
+	{
+		return this.mp.molecule.atoms[this.from].center.angleTo(
+			this.mp.molecule.atoms[this.to].center);
+	}
 	else
-		return Math.atan2(
-			from.getY() - this.mp.molecule.atoms[this.from].getY(),
-			this.mp.molecule.atoms[this.from].getX() - from.getX());
+	{
+		return this.mp.molecule.atoms[this.to].center.angleTo(
+			this.mp.molecule.atoms[this.from].center);
+	}
 }
 
 /**

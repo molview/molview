@@ -239,24 +239,29 @@ MPAtom.prototype.isVisible = function()
 
 /**
  * Selects or deselects this MPAtom
- * @param {Boolean} select
+ * @param  {Boolean} select
  */
 MPAtom.prototype.select = function(select)
 {
-	this.selected = select;
-	var idx = this.mp.tool.selection.indexOf(this.index);
-	if(idx == -1)
+	if(!(this.selected == select &&
+			//make sure this.index is not in the selection while
+			(this.mp.tool.selection.indexOf(this.index) != -1) == select))
 	{
-		if(select)
+		this.selected = select;
+		var idx = this.mp.tool.selection.indexOf(this.index);
+		if(idx == -1)
 		{
-			this.mp.tool.selection.push(this.index);
+			if(select)
+			{
+				this.mp.tool.selection.push(this.index);
+			}
 		}
+		else if(!select)
+		{
+			this.mp.tool.selection.splice(idx, 1);
+		}
+		this.mp.invalidate();
 	}
-	else if(!select)
-	{
-		this.mp.tool.selection.splice(idx, 1);
-	}
-	this.mp.invalidate();
 }
 
 /**
@@ -476,23 +481,6 @@ MPAtom.prototype.validate = function()
  */
 
 /**
- * Set font for MPAtom label rendering
- * @param {String} type Label type (label settings are in MolPad.settings.atom[type])
- */
-MPAtom.prototype.setFont = function(type)
-{
-	var font = this.mp.settings.atom[type].fontStyle + " " +
-			Math.round((this.mp.settings.atom[type].fontSize
-				* this.mp.settings.atom.scale) * 96 / 72) + "px " +
-			this.mp.settings.atom[type].fontFamily;
-
-	if(font != this.mp.ctx.font)
-	{
-		this.mp.ctx.font = font;
-	}
-}
-
-/**
  * Draw additional MPAtom background based on MPAtom.display
  */
 MPAtom.prototype.drawStateColor = function()
@@ -508,7 +496,7 @@ MPAtom.prototype.drawStateColor = function()
 		if(this.line.area.point)
 		{
 			this.mp.ctx.arc(this.line.area.point.x, this.line.area.point.y,
-					this.mp.settings.atom.radiusScaled, 0, 2 * Math.PI);
+					this.mp.settings.atom.radiusScaled, 0, PI2);
 			this.mp.ctx.fillStyle = this.mp.settings.atom[d].color;
 			this.mp.ctx.fill();
 		}
@@ -549,19 +537,19 @@ MPAtom.prototype.drawLabel = function()
 
 			if(this.isotope > 0)
 			{
-				this.setFont("isotope");
+				this.mp.setFont("isotope");
 				this.mp.ctx.fillText("" + this.isotope, x, this.center.y +
 						this.line.text.offsetTop - this.line.text.isotopeHeight);
 				x += this.line.text.isotopeWidth;
 			}
 
-			this.setFont("label");
+			this.mp.setFont("element");
 			this.mp.ctx.fillText("" + this.element, x, this.center.y + this.line.text.offsetTop);
 			x += this.line.text.labelWidth;
 
 			if(this.charge != 0)
 			{
-				this.setFont("charge");
+				this.mp.setFont("charge");
 				this.mp.ctx.fillText(this.getChargeLabel(), x, this.center.y +
 						this.line.text.offsetTop - this.line.text.chargeHeight);
 			}

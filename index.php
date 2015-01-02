@@ -330,7 +330,7 @@ Query parameters:
 								<div id="action-mp-frag-cyclohexane" class="tool-button primary-tool" title="Cyclohexane"></div>
 								<div id="action-mp-frag-cycloheptane" class="tool-button primary-tool" title="Cycloheptane"></div>
 								<div class="vertical-separator"></div>
-								<!-- <div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div> -->
+								<div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div>
 								<div id="action-mp-charge-add" class="tool-button primary-tool" title="Charge +">e<sup>+</sup></div>
 								<div id="action-mp-charge-sub" class="tool-button primary-tool" title="Charge -">e<sup>&minus;</sup></div>
 							</div>
@@ -339,7 +339,7 @@ Query parameters:
 							<div class="toolbar-inner hstack">
 								<div id="action-mp-clear" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="action-mp-eraser" class="tool-button tool-button-horizontal primary-tool" title="Erase"></div>
-								<div id="action-mp-drag" class="tool-button tool-button-horizontal primary-tool" title="Drag atoms and bonds"></div>
+								<!-- <div id="action-mp-drag" class="tool-button tool-button-horizontal primary-tool" title="Drag atoms and bonds"></div> -->
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
 								<div id="action-mp-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
@@ -487,7 +487,7 @@ Query parameters:
 			<div id="dialog-click-area">
 				<div id="dialog-wrapper">
 					<div class="dialog" id="start-dialog">
-						<h1>Welcome to MolView <a target="_blank" href="http://github.com/molview"><img id="agpl-logo" src="img/agpl.svg" alt="AGPL" /></a></h1>
+						<h1>Welcome to MolView <a id="agpl-logo-wrapper" target="_blank" href="http://github.com/molview"><img id="agpl-logo" src="img/agpl.svg" alt="AGPL" /></a></h1>
 						<p>MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome!</p>
 						<p id="allow-tracking-wrapper">
 							<input id="allow-tracking" type="checkbox" />

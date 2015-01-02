@@ -21,7 +21,8 @@ Sketcher
 
 Model
 -----
-- Model auto-rotate mode
+- Top toolbar
+- Auto-rotate mode
 - EDTSurf (protein surfaces) implementation in GLmol
 - THREE.js upgrade for GLmol
 - THREE.CanvasRenderer for GLmol
