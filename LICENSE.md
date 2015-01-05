@@ -2,7 +2,7 @@ License
 =======
 ```
 MolView (http://molview.org)
-Copyright (c) 2014, Herman Bergwerf
+Copyright (c) 2014, 2015 Herman Bergwerf
 
 MolView is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by

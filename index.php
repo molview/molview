@@ -29,7 +29,7 @@ else if(isset($pdbid)) $contentClass = "layout-model";
 
 <!--
 This file is part of MolView (http://molview.org)
-Copyright (c) 2014, Herman Bergwerf
+Copyright (c) 2014, 2015 Herman Bergwerf
 
 MolView is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -339,11 +339,11 @@ Query parameters:
 							<div class="toolbar-inner hstack">
 								<div id="action-mp-clear" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="action-mp-eraser" class="tool-button tool-button-horizontal primary-tool" title="Erase"></div>
-								<!-- <div id="action-mp-drag" class="tool-button tool-button-horizontal primary-tool" title="Drag atoms and bonds"></div> -->
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-undo" class="tool-button tool-button-horizontal tool-button-disabled" title="Undo"></div>
 								<div id="action-mp-redo" class="tool-button tool-button-horizontal tool-button-disabled" title="Redo"></div>
 								<<div class="horizontal-separator"></div>
+								<div id="action-mp-drag" class="tool-button tool-button-horizontal primary-tool" title="Drag atoms and bonds"></div>
 								<div id="action-mp-rect" class="tool-button tool-button-horizontal primary-tool" title="Rectangle selection"></div>
 								<div id="action-mp-lasso" class="tool-button tool-button-horizontal primary-tool" title="Lasso selection"></div>
 								<div class="horizontal-separator"></div>
@@ -520,13 +520,13 @@ Query parameters:
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>
 						<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
-						This web application is built on top of the JavaScript libraries and online services listed below. I also drew inspiration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar web application.</p>
+						This web application is built on top of the JavaScript libraries and online services listed below. I drew some inspiration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar web application.</p>
 						<ul>
 							<li>JavaScript libraries
 								<ul>
 									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Chemical 2D data reader/writer</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
-									<li><a class="link" href="http://sourceforge.net/projects/jsmol/" target="_blank" title="JSmol">JSmol v14.3.9</a>: 3D render engine</li>
+									<li><a class="link" href="http://chemapps.stolaf.edu/jmol/zip/" target="_blank" title="JSmol">JSmol v14.3.9</a>: 3D render engine</li>
 									<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1</a>: 3D render engine and spectrum display</li>
 								</ul>
 							</li>
@@ -547,7 +547,7 @@ Query parameters:
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
-							Copyright &copy; 2014 <a class="link" target="_blank" rel="author" title="Personal website" href="https://hermanbergwerf.com">Herman Bergwerf</a>
+							Copyright &copy; 2014, 2015 <a class="link" target="_blank" rel="author" title="Personal website" href="https://hermanbergwerf.com">Herman Bergwerf</a>
 							&nbsp;+&nbsp;
 							<a class="link" href="changelog" target="_blank">Changelog</a>
 							&nbsp;+&nbsp;

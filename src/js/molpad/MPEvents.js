@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,109 +16,249 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+MolPad.prototype.setupEventHandling = function()
+{
+	//keydown tracker
+	this.keys = {
+		ctrl: false
+	};
+
+	//event pointer data
+	this.pointer = {
+		old: {
+			p: new MPPoint(),
+			r: new MPPoint(),
+			c: new MPPoint(),
+			d: 0,
+		},
+		handler: undefined,
+		touches: 0,
+		touchGrab: false
+	};
+
+	var scope = this;
+
+	/**
+	 * Mousewheel handler
+	 */
+
+	this.container.on('DOMMouseScroll mousewheel', function(e)
+	{
+		e.preventDefault();
+
+		if(e.originalEvent.detail)
+		{
+			scope.onScroll(e.originalEvent.detail / 3, e);
+		}
+		else if(e.originalEvent.wheelDelta)
+		{
+			scope.onScroll(e.originalEvent.wheelDelta / 120, e);
+		}
+	});
+
+	/**
+	 * Event pointer handlers
+	 */
+
+	this.container.on("contextmenu", function(e)
+	{
+		return false;
+	});
+	this.container.on("mousedown touchstart", function(e)
+	{
+		e.preventDefault();
+		scope.onPointerDown(e);
+		scope.validate();
+	});
+	this.container.on("mousemove", function(e)
+	{
+		scope.onMouseMoveInContainer(e);
+		scope.validate();
+	});
+	this.container.on("mouseout", function(e)
+	{
+		scope.onMouseOut(e);
+		scope.validate();
+	});
+	jQuery(window).on("mousemove touchmove", function(e)
+	{
+		scope.onPointerMove(e);
+		scope.validate();
+	});
+	jQuery(window).on("mouseup touchend touchcancel", function(e)
+	{
+		scope.onPointerUp(e);
+		scope.validate();
+	});
+	jQuery(window).on("blur", function(e)
+	{
+		scope.onBlur(e);
+	});
+
+	/**
+	 * Keyboard handlers
+	 */
+
+	if(navigator.platform.toLowerCase().indexOf("mac") >= 0)
+	{
+		jQuery(document).bind("keydown", "meta+z", function(e)
+				{ e.preventDefault(); scope.undo(); });
+		jQuery(document).bind("keydown", "meta+y", function(e)
+				{ e.preventDefault(); scope.redo(); });
+		jQuery(document).bind("keydown", "meta+shift+z", function(e)
+				{ e.preventDefault(); scope.redo(); });
+	}
+	else
+	{
+		jQuery(document).bind("keydown", "ctrl+z", function(e)
+				{ e.preventDefault(); scope.undo(); });
+		jQuery(document).bind("keydown", "ctrl+y", function(e)
+				{ e.preventDefault(); scope.redo(); });
+		jQuery(document).bind("keydown", "ctrl+shift+z", function(e)
+				{ e.preventDefault(); scope.redo(); });
+	}
+
+	jQuery(document).on("keydown", function(e)
+	{
+		scope.keys.ctrl = e.ctrlKey;
+
+		if(e.keyCode == 46)//forward backspace
+		{
+			scope.sel.remove();
+			scope.validate();
+		}
+	});
+	jQuery(document).on("keyup", function(e)
+	{
+		scope.keys.ctrl = e.ctrlKey;
+	});
+}
+
 MolPad.prototype.onScroll = function(delta, e)
 {
-	var s = 1 + this.settings.zoomSpeed * delta;
-	if(this.matrix[0] * s < this.settings.minZoom) s = this.settings.minZoom / this.matrix[0];
+	var s = 1 + this.s.zoomSpeed * delta;
+	if(this.matrix[0] * s < this.s.minZoom) s = this.s.minZoom / this.matrix[0];
 	var p = new MPPoint().fromPointer(e);
 	p.x -= this.offset.left;
 	p.y -= this.offset.top;
 
-	/*
-	Transform center into absolute point
-	relative pointer transformations:
-	this.x = (this.x - mpctx.offset.left) * mpctx.devicePixelRatio;
-	this.y = (this.y - mpctx.offset.top) * mpctx.devicePixelRatio;
-	this.x = (this.x - mpctx.matrix[4]) / mpctx.matrix[0];
-	this.y = (this.y - mpctx.matrix[5]) / mpctx.matrix[3];
-	 */
-
-	/*
-	var center = new MPPoint();
-	for(var i = 0; i < this.molecule.atoms.length; i++)
+	if(this.s.zoomType == MP_ZOOM_TO_COG)
 	{
-		center.add(this.molecule.atoms[i].center);
-	}
-	center.divide(this.molecule.atoms.length);
-	center.multiplyX(this.matrix[0]);
-	center.multiplyY(this.matrix[3]);
-	center.addX(this.matrix[4]);
-	center.addY(this.matrix[5]);
-	center.divide(this.devicePixelRatio);
-	this.scaleAbsolute(s, center.x, center.y);
-	*/
+		/*
+		Transform molecule center into absolute point;
+		relative pointer transformations
+		--------------------------------
+		this.x = (this.x - mpctx.offset.left) * mpctx.devicePixelRatio;
+		this.y = (this.y - mpctx.offset.top) * mpctx.devicePixelRatio;
+		this.x = (this.x - mpctx.matrix[4]) / mpctx.matrix[0];
+		this.y = (this.y - mpctx.matrix[5]) / mpctx.matrix[3];
+		*/
 
-	var f = 0.8;
-	var hw = this.container.width() / 2, hh = this.container.height() / 2;
-	this.scaleAbsolute(s, hw - (hw - p.x) * f, hh - (hh - p.y) * f);
+		var center = new MPPoint();
+		for(var i = 0; i < this.mol.atoms.length; i++)
+		{
+			center.add(this.mol.atoms[i].center);
+		}
+		center.divide(this.mol.atoms.length);
+
+		/*
+		reversed transformation to transform
+		relative point into absolute pointer
+		*/
+		center.multiplyX(this.matrix[0]);
+		center.multiplyY(this.matrix[3]);
+		center.addX(this.matrix[4]);
+		center.addY(this.matrix[5]);
+		center.divide(this.devicePixelRatio);
+
+		this.scaleAbsolute(s, center.x, center.y);
+	}
+	else
+	{
+		this.scaleAbsolute(s, p.x, p.y);
+	}
+
 	this.redraw(true);
 }
 
 MolPad.prototype.onPointerDown = function(e)
 {
-	if(e.type == "mousedown" && this.pointer.targetTouchesNumber == 0)
+	/*
+	If this is a mouse event and there are no touches registered:
+		make sure touch grabbing is disabled
+	If touch grabbing is disabled and this is a mouse event:
+		Abort handler
+	 */
+	if(e.type == "mousedown")
 	{
-		this.pointer.touchGrab = false;
+		if(this.pointer.touches == 0)
+		{
+			this.pointer.touchGrab = false;
+		}
+		else if(this.pointer.touchGrab)
+		{
+			return;
+		}
 	}
-	else if(e.type == "mousedown" && this.pointer.touchGrab)
+	else if(e.type == "touchdown")
 	{
-		return;
+		this.pointer.touchGrab = true;
+		this.pointer.touches = oe.targetTouches.length || 1;
 	}
 
+	//retrieve event data
 	var oe = e.originalEvent;
 	this.pointer.old.p.fromPointer(e);
 	this.pointer.old.r.fromRelativePointer(e, this);
+	this.pointer.handler = undefined;
 
-	if(!oneOf(this.tool.type, ["erase", "select",  "drag"]))
+	//clear selection if the current tool is not erase, select or drag
+	if(!oneOf(this.tool.type, ["erase", "select", "drag"]))
 	{
-		this.clearToolData();
+		this.sel.clear();
 	}
 
+	//check if there are multiple touches in this event
 	if(oe.targetTouches && oe.targetTouches.length > 1)
 	{
-		//simulate pointer up for old single pointer handler
+		//simulate pointer up for old single pointer handler in order
+		//to dismiss the old handler properly
 		if(this.pointer.handler && this.pointer.handler.onPointerUp)
 		{
 			this.pointer.handler.onPointerUp(e, this);
 		}
 		//undo single pointer changes
-		if(this.isChanged())
+		if(this.mol.isChanged())
 		{
 			this.undo(true);
 		}
-
-		this.pointer.targetTouchesNumber = oe.targetTouches.length;
-		this.pointer.touchGrab = true;
+		//update multitouch event data
+		this.pointer.touches = oe.targetTouches.length;
 		this.pointer.old.c.fromMultiTouchCenter(e);
 		this.pointer.old.d = getMultiTouchDelta(e);
 		this.pointer.handler = this.multiTouchHandler;
 	}
 	else if(e.which == 1 || (oe.targetTouches && oe.targetTouches.length == 1))
 	{
-		this.pointer.handler = undefined;
-
+		//redefine handler and execute onPointerDown
 		this.handleEvent(this.pointer.old.r, "active", function(obj)
 		{
 			this.pointer.handler = obj.getHandler(this);
 		});
-
 		if(this.pointer.handler == undefined)
 		{
 			this.pointer.handler = this.getHandler();
 		}
-
-		if(this.pointer.handler && this.pointer.handler.onPointerDown)
-		{
-			this.pointer.handler.onPointerDown(e, this);
-			this.validate();
-		}
 	}
-	else if(e.which == 2)
+	else if(e.which == 2 || e.which == 3)
 	{
 		this.pointer.handler = this.mouseDragHandler;
 	}
 
-	this.validate();
+	if(this.pointer.handler && this.pointer.handler.onPointerDown)
+	{
+		this.pointer.handler.onPointerDown(e, this);
+	}
 }
 
 MolPad.prototype.onMouseMoveInContainer = function(e)
@@ -127,7 +267,6 @@ MolPad.prototype.onMouseMoveInContainer = function(e)
 	{
 		return;//dimiss mouse events if touch is active
 	}
-
 	if(this.pointer.handler === undefined)
 	{
 		this.hoverHandler.onPointerMove(e, this);
@@ -140,7 +279,6 @@ MolPad.prototype.onMouseOut = function(e)
 	{
 		this.resetEventDisplay();
 		this.setCursor("default");
-		this.validate();
 	}
 }
 
@@ -153,8 +291,8 @@ MolPad.prototype.onPointerMove = function(e)
 
 	if(this.pointer.handler && this.pointer.handler.onPointerMove)
 	{
+		e.preventDefault();
 		this.pointer.handler.onPointerMove(e, this);
-		this.validate();
 	}
 }
 
@@ -185,8 +323,6 @@ MolPad.prototype.onPointerUp = function(e)
 		{
 			this.setCursor("default");
 		}
-
-		this.validate();
 	}
 	else
 	{
@@ -196,7 +332,7 @@ MolPad.prototype.onPointerUp = function(e)
 	//only one multi-touch pointer left: switch to dragHandler
 	if(oe.targetTouches)
 	{
-		this.pointer.targetTouchesNumber = oe.targetTouches.length;
+		this.pointer.touches = oe.targetTouches.length;
 
 		if(oe.targetTouches.length == 1)
 		{
@@ -208,18 +344,19 @@ MolPad.prototype.onPointerUp = function(e)
 		else if(oe.targetTouches.length == 0)
 		{
 			this.pointer.handler = undefined;
-			this.updateCopy();
+			this.mol.updateCopy();
 		}
 	}
 	else
 	{
 		this.pointer.handler = undefined;
-		this.updateCopy();
+		this.mol.updateCopy();
 	}
 }
 
 MolPad.prototype.onBlur = function(e)
 {
+	this.keys.ctrl = false;
 	this.dismissHandler();
 }
 
@@ -232,57 +369,30 @@ MolPad.prototype.onBlur = function(e)
 MolPad.prototype.handleEvent = function(point, type, callback)
 {
 	var completed = false;
-	for(var i = 0; i < this.molecule.atoms.length; i++)
+	for(var i = 0; i < this.mol.atoms.length; i++)
 	{
 		if(completed)
 		{
-			this.molecule.atoms[i].setDisplay("normal");
+			this.mol.atoms[i].setDisplay("normal");
 		}
-		else if(this.molecule.atoms[i].handle(point, type))
+		else if(this.mol.atoms[i].handle(point, type))
 		{
 			completed = true;
-			callback.call(this, this.molecule.atoms[i]);
+			callback.call(this, this.mol.atoms[i]);
 		}
 	}
-	for(var i = 0; i < this.molecule.bonds.length; i++)
+	for(var i = 0; i < this.mol.bonds.length; i++)
 	{
 		if(completed)
 		{
-			this.molecule.bonds[i].setDisplay("normal");
+			this.mol.bonds[i].setDisplay("normal");
 		}
-		else if(this.molecule.bonds[i].handle(point, type))
+		else if(this.mol.bonds[i].handle(point, type))
 		{
 			completed = true;
-			callback.call(this, this.molecule.bonds[i]);
+			callback.call(this, this.mol.bonds[i]);
 		}
 	}
-}
-
-/**
- * Clears all temporary tool data
- */
-MolPad.prototype.clearToolData = function()
-{
-	//clear selection
-	for(var i = 0; i < this.tool.selection.length; i++)
-	{
-		if(this.tool.selection[i] > this.molecule.atoms.length)
-		{
-			this.tool.selection.splice(i, 1);
-			i--;
-		}
-		else
-		{
-			this.molecule.atoms[this.tool.selection[i]].select(false);
-			i--;
-		}
-	}
-	for(var i = 0; i < this.molecule.bonds.length; i++)
-	{
-		this.molecule.bonds[i].select(false);
-	}
-
-	this.tool.rotationCenter = {};
 }
 
 /**
@@ -293,12 +403,12 @@ MolPad.prototype.clearToolData = function()
 MolPad.prototype.dismissHandler = function()
 {
 	this.resetEventDisplay();
-	this.clearToolData();
+	this.sel.clear();
 	this.setCursor("default");
-	this.pointer.targetTouchesNumber = 0;
+	this.pointer.touches = 0;
 	this.pointer.handler = undefined;
 	this.validate();
-	this.updateCopy();
+	this.mol.updateCopy();
 }
 
 /**
@@ -306,7 +416,9 @@ MolPad.prototype.dismissHandler = function()
  */
 MolPad.prototype.resetEventDisplay = function()
 {
-	this.forAllObjects(function(obj){ obj.setDisplay("normal"); });
+	this.mol.exec(function(obj) {
+		obj.setDisplay("normal");
+	}, true, true);
 }
 
 /**
@@ -316,7 +428,6 @@ MolPad.prototype.resetEventDisplay = function()
 MolPad.prototype.hoverHandler = {
 	onPointerMove: function(e, mp)
 	{
-		e.preventDefault();
 		mp.setCursor("default");
 		var p = new MPPoint().fromRelativePointer(e, mp);
 
@@ -324,8 +435,6 @@ MolPad.prototype.hoverHandler = {
 		{
 			mp.setCursor("pointer");
 		});
-
-		mp.validate();
 	}
 }
 
@@ -334,7 +443,6 @@ MolPad.prototype.mouseDragHandler = {
 	onPointerMove: function(e, mp)
 	{
 		mp.setCursor("move");
-		e.preventDefault();
 		var p = new MPPoint().fromPointer(e);
 		this.data.moved = true;
 
@@ -349,7 +457,7 @@ MolPad.prototype.mouseDragHandler = {
 	{
 		if(!this.data.moved)
 		{
-			mp.clearToolData();
+			mp.sel.clear();
 		}
 
 		mp.setCursor("default");
@@ -359,7 +467,6 @@ MolPad.prototype.mouseDragHandler = {
 MolPad.prototype.multiTouchHandler = {
 	onPointerMove: function(e, mp)
 	{
-		e.preventDefault();
 		var c = new MPPoint().fromMultiTouchCenter(e);
 		var d = getMultiTouchDelta(e);
 
@@ -370,9 +477,10 @@ MolPad.prototype.multiTouchHandler = {
 			(c.x - mp.offset.left) * mp.devicePixelRatio,
 			(c.y - mp.offset.top) * mp.devicePixelRatio);
 
+		//update event data
 		mp.pointer.old.c = c;
 		mp.pointer.old.d = d;
-		mp.pointer.old.p.fromPointer(e);//transites smoothly to mouseDragHandler
+		mp.pointer.old.p.fromPointer(e);//for smooth transition to mouseDragHandler
 		mp.redraw(true);
 	}
 }
@@ -381,11 +489,11 @@ MolPad.prototype.selectionToolHandler = {
 	data: {},
 	onDraw: function(mp)
 	{
-		mp.ctx.fillStyle = mp.settings.select.fillStyle;
-		mp.ctx.strokeStyle = mp.settings.select.strokeStyle;
-		mp.ctx.lineWidth = mp.settings.select.lineWidth / mp.getScale();
-		mp.ctx.lineCap = mp.settings.select.lineCap;
-		mp.ctx.lineJoin = mp.settings.select.lineJoin;
+		mp.ctx.fillStyle = mp.s.select.fillStyle;
+		mp.ctx.strokeStyle = mp.s.select.strokeStyle;
+		mp.ctx.lineWidth = mp.s.select.lineWidth / mp.getScale();
+		mp.ctx.lineCap = mp.s.select.lineCap;
+		mp.ctx.lineJoin = mp.s.select.lineJoin;
 		mp.ctx.setLineDash([
 			2 / mp.getScale(),
 			5 / mp.getScale()
@@ -424,12 +532,15 @@ MolPad.prototype.selectionToolHandler = {
 
 		if(!mp.keys.ctrl)
 		{
-			mp.clearToolData();
-			this.data.selectionAdd = [];
+			mp.sel.clear();
+			this.data.selAdd = { atoms: [], bonds: [] };
 		}
 		else
 		{
-			this.data.selectionAdd = mp.tool.selection.slice();
+			this.data.selAdd = {
+				atoms: mp.sel.cache.atoms.slice(),
+				bonds: mp.sel.cache.bonds.slice()
+			};
 		}
 
 		if(mp.tool.data.type == "rect")
@@ -448,7 +559,6 @@ MolPad.prototype.selectionToolHandler = {
 	},
 	onPointerMove: function(e, mp)
 	{
-		e.preventDefault();
 		mp.setCursor("default");
 		var p = new MPPoint().fromRelativePointer(e, mp);
 
@@ -458,34 +568,37 @@ MolPad.prototype.selectionToolHandler = {
 			this.data.rect.height = p.y - this.data.rect.y;
 
 			//refresh selection
-			for(var i = 0; i < mp.molecule.atoms.length; i++)
-			{
-				mp.molecule.atoms[i].handleRectSelect(this.data.rect);
-			}
+			var rect = this.data.rect;
+			mp.mol.exec(function(obj) {
+				obj.handleRectSelect(rect);
+			}, true, true);
 		}
 		else//lasso
 		{
 			this.data.points.push(p);
 
 			//refresh selection
-			for(var i = 0; i < mp.molecule.atoms.length; i++)
-			{
-				mp.molecule.atoms[i].handlePolygonSelect(this.data.points);
-			}
+			var polygon = this.data.points;
+			mp.mol.exec(function(obj) {
+				obj.handlePolygonSelect(polygon);
+			}, true, true);
 		}
 
-		//select additional atoms
-		for(var i = 0; i < this.data.selectionAdd.length; i++)
+		//select additional atoms/bonds
+		for(var i = 0; i < this.data.selAdd.atoms.length; i++)
 		{
-			mp.molecule.atoms[this.data.selectionAdd[i]].select(true);
+			mp.mol.atoms[this.data.selAdd.atoms[i]].select(true);
+		}
+		for(var i = 0; i < this.data.selAdd.bonds.length; i++)
+		{
+			mp.mol.bonds[this.data.selAdd.bonds[i]].select(true);
 		}
 
-		mp.updateBondSelection();
 		mp.invalidate();
 	},
 	onPointerUp: function(e, mp)
 	{
-		mp.updateRotationCenter();
+		mp.sel.updateRotationCenter();
 		mp.invalidate();
 	}
 }
@@ -499,12 +612,12 @@ MolPad.prototype.getHandler = function()
 			{
 				var p = new MPPoint().fromRelativePointer(e, mp);
 				var atom = new MPAtom(mp, {
-					i: mp.molecule.atoms.length,
+					i: mp.mol.atoms.length,
 					x: p.x,
 					y: p.y,
 					element: mp.tool.data.element
 				});
-				mp.molecule.atoms.push(atom);
+				mp.mol.atoms.push(atom);
 				mp.pointer.handler.scope = atom;
 			}
 		};
@@ -517,34 +630,52 @@ MolPad.prototype.getHandler = function()
 				var p = new MPPoint().fromRelativePointer(e, mp);
 
 				var atom1 = new MPAtom(mp, {
-					i: mp.molecule.atoms.length,
-					x: p.x - mp.settings.bond.length / 2,
+					i: mp.mol.atoms.length,
+					x: p.x - mp.s.bond.length / 2,
 					y: p.y,
-					element: "C"
+					element: "C",
+					selected: true
 				});
-				mp.molecule.atoms.push(atom1);
+				mp.mol.atoms.push(atom1);
 
 				var atom2 = new MPAtom(mp, {
-					i: mp.molecule.atoms.length,
-					x: p.x + mp.settings.bond.length / 2,
+					i: mp.mol.atoms.length,
+					x: p.x + mp.s.bond.length / 2,
 					y: p.y,
-					element: "C"
+					element: "C",
+					selected: true
 				});
-				mp.molecule.atoms.push(atom2);
+				mp.mol.atoms.push(atom2);
 
 				var bond = new MPBond(mp, {
-					i: mp.molecule.bonds.length,
+					i: mp.mol.bonds.length,
 					from: atom1.index,
 					to: atom2.index,
 					type: mp.tool.data.type,
-					stereo: mp.tool.data.stereo
+					stereo: mp.tool.data.stereo,
+					selected: true
 				});
-				mp.molecule.bonds.push(bond);
+				mp.mol.bonds.push(bond);
 
 				atom1.addBond(bond.index);
 				atom2.addBond(bond.index);
 
 				mp.pointer.handler.scope = bond;
+
+				mp.sel.update();
+				mp.sel.center = p.clone();
+				//this will cause the pointer to sel center line to be
+				//perpendicular to the newly created bond
+				mp.sel.currentAngle = mp.sel.startAngle = .5 * Math.PI;
+			},
+			onPointerMove: function(e, mp)
+			{
+				var p = new MPPoint().fromRelativePointer(e, mp);
+				mp.sel.rotate(p);
+			},
+			onPointerUp: function(e, mp)
+			{
+				mp.sel.clear();
 			}
 		};
 	}
@@ -557,10 +688,22 @@ MolPad.prototype.getHandler = function()
 
 				var frag = MPFragments.translate(
 						MPFragments.scale(MPFragments.clone(mp.tool.data.frag.full),
-							mp.settings.bond.length),
+							mp.s.bond.length),
 							p.x, p.y);
 
-				mp.createFragment(frag);
+				mp.mol.createFragment(frag, true);
+
+				mp.sel.center = p.clone();
+				mp.sel.currentAngle = mp.sel.startAngle = 0;
+			},
+			onPointerMove: function(e, mp)
+			{
+				var p = new MPPoint().fromRelativePointer(e, mp);
+				mp.sel.rotate(p);
+			},
+			onPointerUp: function(e, mp)
+			{
+				mp.sel.clear();
 			}
 		};
 	}
@@ -572,11 +715,11 @@ MolPad.prototype.getHandler = function()
 				var p = new MPPoint().fromRelativePointer(e, mp);
 
 				var atom = new MPAtom(mp, {
-					i: mp.molecule.atoms.length,
+					i: mp.mol.atoms.length,
 					x: p.x, y: p.y,
 					element: "C"
 				});
-				mp.molecule.atoms.push(atom);
+				mp.mol.atoms.push(atom);
 				mp.pointer.handler = atom.getHandler();
 			}
 		};

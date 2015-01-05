@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -59,93 +59,87 @@ MPBond.prototype.getHandler = function()
 			onPointerDown: function(e, mp)
 			{
 				var p = new MPPoint().fromRelativePointer(e, mp);
-				var f = mp.molecule.atoms[this.scope.from].center;
-				var t = mp.molecule.atoms[this.scope.to].center;
+				var f = mp.mol.atoms[this.scope.from].center;
+				var t = mp.mol.atoms[this.scope.to].center;
 				var a = f.angleTo(t);
 
 				//clone new fragment and transform it
-				this.data.frag= MPFragments.rotate(
+				this.data.frag = MPFragments.rotate(
 					MPFragments.translate(
 						MPFragments.scale(
 							MPFragments.clone(mp.tool.data.frag.toBond),
-							mp.settings.bond.length),
+							mp.s.bond.length),
 						f.x, f.y), f, a);
 
-				//create the fragment and store the new fragment data
-				mp.tool.selection = mp.createFragment(this.data.frag);
+				//create and select the fragment and store the new fragment data
+				var frag = mp.mol.createFragment(this.data.frag, true);
 
 				//IMPORTANT: do not merge the other way around or the scope will be lost
-				mp.mergeAtoms(mp.tool.selection[0], this.scope.from);
-				mp.mergeAtoms(mp.tool.selection[mp.tool.selection.length - 1], this.scope.to);
+				frag.atoms = mapArray(frag.atoms, mp.mol.mergeAtoms(frag.atoms[0], this.scope.from).amap);
+				frag.atoms = mapArray(frag.atoms, mp.mol.mergeAtoms(frag.atoms[frag.atoms.length - 1], this.scope.to).amap);
 
-				//resolve this.data.side
+				//resolve selection.mirrorSide
 				var s = 0;
-				for(var i = 0; i < mp.tool.selection.length; i++)
+				for(var i = 0; i < frag.atoms.length; i++)
 				{
-					s += mp.molecule.atoms[mp.tool.selection[i]].center.lineSide(this.scope.getLine());
+					s += mp.mol.atoms[frag.atoms[i]].center.lineSide(this.scope.getLine());
 				}
-				this.data.side = s > 0 ? 1 : -1;
+				mp.sel.mirrorSide = s > 0 ? 1 : -1;
 
 				//get number collapsing atoms
-				var collA = mp.countCollapses(mp.tool.selection);
+				var collA = mp.mol.countCollapses(frag.atoms);
 
 				//mirror fragment
-				for(var i = 0; i < mp.tool.selection.length; i++)
+				for(var i = 0; i < frag.atoms.length; i++)
 				{
-					mp.molecule.atoms[mp.tool.selection[i]].center.mirror(
-							this.scope.getLine(), -this.data.side);
+					mp.mol.atoms[frag.atoms[i]].center.mirror(
+							this.scope.getLine(), -mp.sel.mirrorSide);
 				}
 
 				//get new number collapsing atoms
-				var collB = mp.countCollapses(mp.tool.selection);
+				var collB = mp.mol.countCollapses(frag.atoms);
 
 				//check if new fragment is already added
-				if(collA == mp.tool.selection.length && collB == mp.tool.selection.length)
+				if(collA == frag.atoms.length && collB == frag.atoms.length)
 				{
 					this.data.lock = true;
-					mp.removeSelection();
+
+					//deselect this
+					this.scope.select(false);
+					mp.mol.atoms[this.scope.from].select(false);
+					mp.mol.atoms[this.scope.to].select(false);
+
+					mp.sel.remove();
 					return;
 				}
 
 				//mirror back if old number of collapsing atoms is lower
 				if(collA < collB)
 				{
-					for(var i = 0; i < mp.tool.selection.length; i++)
+					for(var i = 0; i < frag.atoms.length; i++)
 					{
-						mp.molecule.atoms[mp.tool.selection[i]].center.mirror(
-								this.scope.getLine(), this.data.side);
+						mp.mol.atoms[frag.atoms[i]].center.mirror(
+								this.scope.getLine(), mp.sel.mirrorSide);
 					}
 
-					this.data.lock = collB == mp.tool.selection.length;
+					this.data.lock = collB == frag.atoms.length;
 				}
 				else
 				{
-					this.data.side = -this.data.side;
-					this.data.lock = collA == mp.tool.selection.length;
+					mp.sel.mirrorSide = -mp.sel.mirrorSide;
+					this.data.lock = collA == frag.atoms.length;
 				}
 			},
 			onPointerMove: function(e, mp)
 			{
 				if(this.data.lock) return;//do not mirror fragment if mirror is useless
 				var p = new MPPoint().fromRelativePointer(e, mp);
-				var s = p.lineSide(this.scope.getLine());
-
-				//check if pointer is outside no-rotate circle
-				if(s != this.data.side && s != 0)
-				{
-					this.data.side = s;
-
-					for(var i = 0; i < mp.tool.selection.length; i++)
-					{
-						mp.molecule.atoms[mp.tool.selection[i]].center.mirror(this.scope.getLine(), s);
-						mp.molecule.atoms[mp.tool.selection[i]].invalidate();
-					}
-				}
+				mp.sel.mirror(this.scope.getLine(), p);
 			},
 			onPointerUp: function(e, mp)
 			{
-				mp.collapseAtoms(mp.tool.selection.slice());
-				mp.clearToolData();//clears selection
+				mp.sel.collapse();
+				mp.sel.clear();
 			}
 		};
 	}
@@ -155,8 +149,8 @@ MPBond.prototype.getHandler = function()
 			scope: this,
 			onPointerDown: function(e, mp)
 			{
-				if(this.scope.selected) mp.removeSelection();
-				else mp.removeBond(this.scope.index);
+				if(this.scope.isSelected()) mp.sel.remove();
+				else mp.mol.removeBond(this.scope.index);
 
 				//dismiss all further calls to this handler
 				mp.pointer.handler = undefined;
@@ -168,50 +162,45 @@ MPBond.prototype.getHandler = function()
 		return {
 			scope: this,
 			data: {},
-			onPointerDown: function(e, mp)
-			{
-				mp.molecule.atoms[this.scope.from].setDisplay("active");
-				mp.molecule.atoms[this.scope.to].setDisplay("active");
-			},
 			onPointerMove: function(e, mp)
 			{
 				mp.setCursor("move");
 				var p = new MPPoint().fromRelativePointer(e, mp);
 				var dx = p.x - mp.pointer.old.r.x;
 				var dy = p.y - mp.pointer.old.r.y;
-				this.data.moved = true;
 
-				if(this.scope.selected)
+				if(Math.sqrt(dx * dx, dy * dy) > mp.s.draggingThreshold || this.data.moved)
 				{
-					mp.translateSelection(dx, dy);
-				}
-				else
-				{
-					mp.molecule.atoms[this.scope.from].translate(dx, dy);
-					mp.molecule.atoms[this.scope.to].translate(dx, dy);
-				}
+					this.data.moved = true;
 
-				mp.pointer.old.r = p;
+					if(this.scope.isSelected())
+					{
+						mp.sel.translate(dx, dy);
+					}
+					else
+					{
+						mp.mol.atoms[this.scope.from].translate(dx, dy);
+						mp.mol.atoms[this.scope.to].translate(dx, dy);
+					}
+
+					mp.pointer.old.r = p;
+				}
 			},
 			onPointerUp: function(e, mp)
 			{
-				mp.molecule.atoms[this.scope.from].setDisplay("normal");
-				mp.molecule.atoms[this.scope.to].setDisplay("normal");
-
 				if(!this.data.moved && oneOf(mp.tool.type, ["select", "drag"]))
 				{
-					this.scope.select(!this.scope.selected, true);
-					mp.updateBondSelection();
-					mp.updateRotationCenter();
+					this.scope.select(!this.scope.isSelected());
+					mp.sel.updateRotationCenter();
 				}
 				else
 				{
-					if(this.scope.selected) mp.collapseAtoms(mp.tool.selection.slice(), true, true);
-					else mp.collapseAtoms([this.scope.from, this.scope.to], true, true);
+					if(this.scope.isSelected()) mp.sel.collapse();
+					else mp.mol.collapseAtoms([this.scope.from, this.scope.to], true);
 
 					/* process possible changes to
 					rotation center caused by collapsing */
-					mp.updateRotationCenter();
+					mp.sel.updateRotationCenter();
 				}
 			}
 		};
@@ -226,21 +215,15 @@ MPBond.prototype.getHandler = function()
  */
 MPBond.prototype.handle = function(point, type)
 {
-	if(this.display == "hidden") return false;
-
 	this.validate();
+	if(this.isHidden()) return false;//maybe this is hidden in the validation
 
-	var r = this.mp.settings.bond.radiusScaled;
+	var r = this.mp.s.bond.radiusScaled;
 
 	if(point.inLineBox(this.line.from, this.line.to, r))
 	{
 		if(point.lineDistance(this.line.from, this.line.to) <= r)
 		{
-			if(type == "active" && this.mp.tool.type == "drag")
-			{
-				this.mp.molecule.atoms[this.from].setDisplay("active");
-				this.mp.molecule.atoms[this.to].setDisplay("active");
-			}
 			this.setDisplay(type);
 			return true;
 		}
@@ -250,8 +233,12 @@ MPBond.prototype.handle = function(point, type)
 	return false;
 }
 
-MPBond.prototype.handleSelect = function()
+MPBond.prototype.handleRectSelect = function(rect)
 {
-	this.select(this.mp.tool.selection.indexOf(this.from) != -1
-			 && this.mp.tool.selection.indexOf(this.to) != -1);
+	this.select(this.line.center.inRect(rect));
+}
+
+MPBond.prototype.handlePolygonSelect = function(polygon)
+{
+	this.select(this.line.center.inPolygon(polygon));
 }

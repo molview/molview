@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,13 +41,13 @@ var MPFragments = {
 
 	init: function()
 	{
-	//generate all fragments
-	this.benzene = this.generateRing(6, true);
-	this.cyclopropane = this.generateRing(3, false);
-	this.cyclobutane = this.generateRing(4, false);
-	this.cyclopentane = this.generateRing(5, false);
-	this.cyclohexane = this.generateRing(6, false);
-	this.cycloheptane = this.generateRing(7, false);
+		//generate all fragments
+		this.benzene = this.generateRing(6, true);
+		this.cyclopropane = this.generateRing(3, false);
+		this.cyclobutane = this.generateRing(4, false);
+		this.cyclopentane = this.generateRing(5, false);
+		this.cyclohexane = this.generateRing(6, false);
+		this.cycloheptane = this.generateRing(7, false);
 	},
 
 	generateRing: function(vertices, alternating)
@@ -76,7 +76,7 @@ var MPFragments = {
 	{
 		var frag = { atoms: [], bonds: [] };
 		var as = PI2 / vertices;//angle step
-		var r = 0.5 / Math.sin(as / 2) * this.length;
+		frag.r = 0.5 / Math.sin(as / 2) * this.length;
 
 		//ring
 		for(var i = 0; i < vertices; i++)
@@ -84,8 +84,8 @@ var MPFragments = {
 			//move a = 0 to left side to apply rule 4
 			frag.atoms.push({
 				center: new MPPoint(
-					r * Math.cos(Math.PI + as * i),//start at the left side
-					r * Math.sin(Math.PI + as * i)),
+					frag.r * Math.cos(Math.PI + as * i),//start at the left side
+					frag.r * Math.sin(Math.PI + as * i)),
 				element: "C"
 			});
 			frag.bonds.push({
@@ -100,7 +100,7 @@ var MPFragments = {
 
 	clone: function(frag)
 	{
-		var copy = { atoms: [], bonds: [], size: frag.size };
+		var copy = { atoms: [], bonds: [], r: frag.r };
 
 		for(var i = 0; i < frag.atoms.length; i++)
 		{

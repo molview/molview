@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,7 +40,7 @@ MPAtom.prototype.getHandler = function()
 				var p = new MPPoint().fromRelativePointer(e, mp);
 
 				//check if pointer is outside no-rotate circle
-				if(!p.inCircle(this.scope.center, mp.settings.atom.minAddRotateLength))
+				if(!p.inCircle(this.scope.center, mp.s.atom.minAddRotateLength))
 				{
 					//create target atom if no target atom has been created yet
 					if(this.data.atom == -1)
@@ -56,18 +56,18 @@ MPAtom.prototype.getHandler = function()
 					}
 
 					//rotate the target atom around this atom
-					this.data.currentAngle = mp.rotateAtoms(
+					this.data.currentAngle = mp.mol.rotateAtoms(
 							this.scope.center, p, [this.data.atom],
 							this.data.currentAngle,
 							this.data.startAngle,
-							mp.settings.bond.rotateSteps);
+							mp.s.bond.rotateSteps);
 				}
 			},
 			onPointerUp: function(e, mp)
 			{
 				if(this.data.atom != -1)
 				{
-					mp.collapseAtoms([this.data.atom], true);
+					mp.mol.collapseAtoms([this.data.atom], true);
 				}
 			}
 		};
@@ -91,26 +91,26 @@ MPAtom.prototype.getHandler = function()
 			onPointerMove: function(e, mp)
 			{
 				var p = new MPPoint().fromRelativePointer(e, mp);
-				var bond = mp.molecule.bonds[this.data.bond];
+				var bond = mp.mol.bonds[this.data.bond];
 
 				//check for hovered secondary atoms
-				for(var i = 0; i < mp.molecule.atoms.length; i++)
+				for(var i = 0; i < mp.mol.atoms.length; i++)
 				{
 					//this atom and the new atom do not participate
 					if(i == this.scope.index || i == this.data.atom) continue;
 
 					//check for hover using active as event type
-					if(mp.molecule.atoms[i].handle(p, "active"))
+					if(mp.mol.atoms[i].handle(p, "active"))
 					{
 						//skip if the hovered atom is already the target atom
 						if(bond.to != i)
 						{
 							//reset old target atom to normal display
 							//(for the almost impossible case MPAtom.handle is not reached yet)
-							mp.molecule.atoms[bond.to].setDisplay("normal");
+							mp.mol.atoms[bond.to].setDisplay("normal");
 
 							//hide newly created target atom
-							mp.molecule.atoms[this.data.atom].setDisplay("hidden");
+							mp.mol.atoms[this.data.atom].setDisplay("hidden");
 
 							//set target atom to new atom
 							bond.setTo(i);
@@ -127,7 +127,7 @@ MPAtom.prototype.getHandler = function()
 
 									//and hide the neighbor bond
 									//(in order to replace it with this bond)
-									mp.molecule.bonds[n].setDisplay("hidden");
+									mp.mol.bonds[n].setDisplay("hidden");
 								}
 							}
 							else
@@ -136,7 +136,7 @@ MPAtom.prototype.getHandler = function()
 								if(this.data.neighbor !== undefined)
 								{
 									//if so, show this bond again and remove it from this.data
-									mp.molecule.bonds[this.data.neighbor].setDisplay("normal");
+									mp.mol.bonds[this.data.neighbor].setDisplay("normal");
 									this.data.neighbor = undefined;
 								}
 							}
@@ -151,13 +151,13 @@ MPAtom.prototype.getHandler = function()
 				if(bond.to != this.data.atom)
 				{
 					//reshow newly created atom, this wil also invalidate the new bond
-					mp.molecule.atoms[this.data.atom].setDisplay("normal");
+					mp.mol.atoms[this.data.atom].setDisplay("normal");
 
 					//check if there is a neighbor bond we handled before
 					if(this.data.neighbor !== undefined)
 					{
 						//if so, reshow this bond again and remove it from this.data
-						mp.molecule.bonds[this.data.neighbor].setDisplay("normal");
+						mp.mol.bonds[this.data.neighbor].setDisplay("normal");
 						this.data.neighbor = undefined;
 					}
 
@@ -166,39 +166,39 @@ MPAtom.prototype.getHandler = function()
 				}
 
 				//check if pointer is outside no-rotate circle
-				if(!p.inCircle(this.scope.center, mp.settings.atom.minAddRotateLength))
+				if(!p.inCircle(this.scope.center, mp.s.atom.minAddRotateLength))
 				{
 					//if so, rotate the target atom around this atom
-					this.data.currentAngle = mp.rotateAtoms(
+					this.data.currentAngle = mp.mol.rotateAtoms(
 							this.scope.center, p, [this.data.atom],
 							this.data.currentAngle,
 							this.data.startAngle,
-							mp.settings.bond.rotateSteps);
+							mp.s.bond.rotateSteps);
 				}
 			},
 			onPointerUp: function(e, mp)
 			{
 				//get final target atom
-				var to = mp.molecule.bonds[this.data.bond].to;
+				var to = mp.mol.bonds[this.data.bond].to;
 
 				//check if final target atom is the newly created one
 				if(to != this.data.atom)
 				{
 					//if not, add the newly created bond to the real target atom
-					mp.molecule.atoms[to].addBond(this.data.bond);
-					mp.molecule.atoms.pop();//and pop the last atom (old target)
+					mp.mol.atoms[to].addBond(this.data.bond);
+					mp.mol.atoms.pop();//and pop the last atom (old target)
 
 					//if final target is connected via an old neighbor bond
 					if(this.data.neighbor !== undefined)
 					{
 						//then remove the old neighbor
-						mp.molecule.bonds.splice(this.data.neighbor, 1);
-						mp.updateIndices();
+						mp.mol.bonds.splice(this.data.neighbor, 1);
+						mp.mol.updateIndices();
 					}
 				}
 				else//try merging target atom with an existing one
 				{
-					mp.collapseAtoms([to], true);
+					mp.mol.collapseAtoms([to], true);
 				}
 			}
 		};
@@ -220,36 +220,44 @@ MPAtom.prototype.getHandler = function()
 							MPFragments.translate(
 								MPFragments.clone(mp.tool.data.frag.toAtom),
 								bondConnection ? 1 : 0, 0),
-							mp.settings.bond.length),
-							this.scope.center.x, this.scope.center.y),
-					startAngle: this.scope.calculateNewBondAngle()
+							mp.s.bond.length),
+							this.scope.center.x, this.scope.center.y)
 				};
-				this.data.currentAngle = this.data.startAngle;
 
-				//rotate new fragment using the startAngle
+				//make sure the selection is cleared
+				mp.sel.clear();
+
+				//setup selection parameters
+				mp.sel.currentAngle = mp.sel.startAngle =
+						this.scope.calculateNewBondAngle();
+				mp.sel.center = this.scope.center.clone();
+
+				//rotate new fragment using .sel.centerthe currentAngle
 				MPFragments.rotate(this.data.frag,
-						this.scope.center, this.data.startAngle);
+						this.scope.center, mp.sel.currentAngle);
 
-				//create the fragment and store the new fragment data
-				mp.tool.selection = mp.createFragment(this.data.frag);
+				//create and select the fragment and store the new fragment data
+				var frag = mp.mol.createFragment(this.data.frag, true);
 
 				if(bondConnection)
 				{
 					var connection = new MPBond(mp, {
-						i: mp.molecule.bonds.length,
+						i: mp.mol.bonds.length,
 						type: MP_BOND_SINGLE,
 						stereo: MP_STEREO_NONE,
 						from: this.scope.index,
-						to: mp.tool.selection[0]
+						to: frag.atoms[0],
+						selected: true
 					});
 
+					this.scope.select(true);
 					this.scope.addBond(connection.index);
-					mp.molecule.atoms[connection.to].addBond(connection.index);
-					mp.molecule.bonds.push(connection);
+					mp.mol.atoms[connection.to].addBond(connection.index);
+					mp.mol.bonds.push(connection);
 				}
 				else
 				{
-					mp.mergeAtoms(mp.tool.selection[0], this.scope.index);
+					mp.mol.mergeAtoms(frag.atoms[0], this.scope.index);
 				}
 			},
 			onPointerMove: function(e, mp)
@@ -257,20 +265,16 @@ MPAtom.prototype.getHandler = function()
 				var p = new MPPoint().fromRelativePointer(e, mp);
 
 				//check if pointer is outside no-rotate circle
-				if(!p.inCircle(this.scope.center, mp.settings.atom.minAddRotateLength))
+				if(!p.inCircle(this.scope.center, mp.s.atom.minAddRotateLength))
 				{
-					//if so, rotate the target fragment around this atom
-					this.data.currentAngle = mp.rotateAtoms(
-							this.scope.center, p, mp.tool.selection,
-							this.data.currentAngle,
-							this.data.startAngle,
-							mp.settings.bond.rotateSteps);
+					//if so, rotate the selection (fragment) around this atom
+					mp.sel.rotate(p);
 				}
 			},
 			onPointerUp: function(e, mp)
 			{
-				mp.collapseAtoms(mp.tool.selection.slice());
-				mp.clearToolData();//clears selection
+				mp.sel.collapse();
+				mp.sel.clear();
 			}
 		};
 	}
@@ -291,20 +295,20 @@ MPAtom.prototype.getHandler = function()
 			scope: this,
 			data: {
 				startAngle: 0,
-				length: this.mp.settings.bond.length * Math.cos(this.mp.settings.chain.devAngle),
+				length: this.mp.s.bond.length * Math.cos(this.mp.s.chain.devAngle),
 				chain: [],//chain vertices
-				ca: undefined//connecting bond angle
+				ra: undefined//repel angle
 			},
 			onDraw: function(mp)
 			{
 				//draw chain
-				mp.ctx.strokeStyle = mp.settings.chain.strokeStyle;
-				mp.ctx.lineWidth = mp.settings.bond.width * mp.settings.bond.scale;
-				mp.ctx.lineCap = mp.settings.chain.lineCap;
-				mp.ctx.lineJoin = mp.settings.chain.lineJoin;
+				mp.ctx.strokeStyle = mp.s.chain.strokeStyle;
+				mp.ctx.lineWidth = mp.s.bond.width * mp.s.bond.scale;
+				mp.ctx.lineCap = mp.s.chain.lineCap;
+				mp.ctx.lineJoin = mp.s.chain.lineJoin;
 				mp.ctx.setLineDash([
-					2 * mp.settings.bond.scale,
-					5 * mp.settings.bond.scale
+					2 * mp.s.bond.scale,
+					5 * mp.s.bond.scale
 				]);
 
 				mp.ctx.beginPath();
@@ -321,16 +325,16 @@ MPAtom.prototype.getHandler = function()
 				if(this.data.chain.length > 0)
 				{
 					mp.setFont("chainSize");
-					mp.ctx.fillStyle = mp.settings.chain.color;
+					mp.ctx.fillStyle = mp.s.chain.color;
 
 					//calculate label dimensions
 					var text = "" + this.data.size;
 					var w = mp.ctx.measureText(text).width;
-					var h = mp.settings.atom.scale * mp.settings.fonts.chainSize.fontSize;
+					var h = mp.s.atom.scale * mp.s.fonts.chainSize.fontSize;
 
 					//calculate label center
 					var lblc = this.data.chain[this.data.chain.length - 1].clone();//label center
-					var r = mp.settings.atom.scale * mp.settings.chain.padding + (w > h ? w : h);//radius from last carbon atom to size label center
+					var r = mp.s.atom.scale * mp.s.chain.padding + (w > h ? w : h);//radius from last carbon atom to size label center
 					lblc.x += r * Math.cos(this.data.a);
 					lblc.y += r * Math.sin(-this.data.a);//flip y-axis
 					lblc.x -= w / 2;
@@ -347,11 +351,18 @@ MPAtom.prototype.getHandler = function()
 				//calculate starting deviation side
 				if(this.scope.bonds.length == 1)
 				{
-					this.data.ca = mp.molecule.bonds[this.scope.bonds[0]].getAngle(this.scope) + Math.PI;
+					//rotate angle of bond to the opposite side
+					this.data.ra = posRad(mp.mol.bonds[this.scope.bonds[0]].getAngle(this.scope) + Math.PI);
+				}
+				else if(this.scope.bonds.length == 2)
+				{
+					//rotate new bond angle to opposite side to achieve reversed effect
+					//(the chain will stick to the new bond angle)
+					this.data.ra = posRad(this.scope.calculateNewBondAngle() + Math.PI);
 				}
 				else
 				{
-					this.data.ca = undefined;
+					this.data.ra = undefined;
 				}
 			},
 			onPointerMove: function(e, mp)
@@ -360,7 +371,7 @@ MPAtom.prototype.getHandler = function()
 
 				//calculate new angle
 				var a = clampedAngle(this.data.startAngle, this.scope.center, p,
-						mp.settings.chain.rotateSteps);
+						mp.s.chain.rotateSteps);
 
 				//calculate new size
 				var size = Math.floor(this.scope.center.distanceTo(p) /
@@ -373,16 +384,23 @@ MPAtom.prototype.getHandler = function()
 
 					//calculate deviation side
 					var ds = this.data.a > -Math.PI / 2 && this.data.a < Math.PI / 2 ? 1 : -1;
-					if(this.data.ca !== undefined)
+					var da = this.data.a + ds * mp.s.chain.devAngle;
+					if(this.data.ra !== undefined)
 					{
-						ds *= -radSide(this.data.a, this.data.ca);
+						//copmare alternative and replace current angle with alternative angle
+						var da_alt = this.data.a - ds * mp.s.chain.devAngle;
+						if(smallestAngleBetween(da, this.data.ra) <
+								smallestAngleBetween(da_alt, this.data.ra))
+						{
+							da = da_alt;
+						}
 					}
 
 					//calculate chain vertices
 					var ax = this.data.length * Math.cos(this.data.a);
 					var ay = this.data.length * Math.sin(-this.data.a);//flipped y-axis
-					var bx = mp.settings.bond.length * Math.cos(this.data.a + ds * mp.settings.chain.devAngle);
-					var by = mp.settings.bond.length * Math.sin(-this.data.a - ds * mp.settings.chain.devAngle);
+					var bx = mp.s.bond.length * Math.cos(da);
+					var by = mp.s.bond.length * Math.sin(-da);
 
 					this.data.chain = [];
 					var c = this.scope.center.clone();
@@ -420,21 +438,21 @@ MPAtom.prototype.getHandler = function()
 				for(var i = 1; i < this.data.chain.length; i++)
 				{
 					var atom = new MPAtom(mp, {
-						i: mp.molecule.atoms.length,
+						i: mp.mol.atoms.length,
 						x: this.data.chain[i].x,
 						y: this.data.chain[i].y,
 						element: "C"
 					});
-					mp.molecule.atoms.push(atom);
+					mp.mol.atoms.push(atom);
 					chainIndices.push(atom.index);
 
 					var bond = new MPBond(mp, {
-						i: mp.molecule.bonds.length,
+						i: mp.mol.bonds.length,
 						from: catom.index,
 						to: atom.index,
 						type: MP_BOND_SINGLE
 					});
-					mp.molecule.bonds.push(bond);
+					mp.mol.bonds.push(bond);
 
 					catom.addBond(bond.index);
 					atom.addBond(bond.index);
@@ -442,7 +460,7 @@ MPAtom.prototype.getHandler = function()
 				}
 
 				//collapse chain
-				mp.collapseAtoms(chainIndices, true);
+				mp.mol.collapseAtoms(chainIndices, true);
 			}
 		};
 	}
@@ -452,8 +470,8 @@ MPAtom.prototype.getHandler = function()
 			scope: this,
 			onPointerDown: function(e, mp)
 			{
-				if(this.scope.selected) mp.removeSelection();
-				else mp.removeAtom(this.scope.index);
+				if(this.scope.isSelected()) mp.sel.remove();
+				else mp.mol.removeAtom(this.scope.index);
 
 				//dismiss all further calls to this handler
 				mp.pointer.handler = undefined;
@@ -468,57 +486,58 @@ MPAtom.prototype.getHandler = function()
 			onPointerDown: function(e, mp)
 			{
 				var p = new MPPoint().fromRelativePointer(e, mp);
-				if(mp.tool.rotationCenter.point !== undefined)
+				if(mp.sel.hasCenter())
 				{
-					mp.tool.rotationCenter.startAngle =
-							mp.tool.rotationCenter.currentAngle =
-							mp.tool.rotationCenter.point.angleTo(p);
+					mp.sel.startAngle =
+							mp.sel.currentAngle =
+							mp.sel.center.angleTo(p);
 				}
 			},
 			onPointerMove: function(e, mp)
 			{
 				mp.setCursor("move");
 				var p = new MPPoint().fromRelativePointer(e, mp);
-				this.data.moved = true;
+				var dx = p.x - mp.pointer.old.r.x;
+				var dy = p.y - mp.pointer.old.r.y;
 
-				if(this.scope.selected)
+				if(Math.sqrt(dx * dx, dy * dy) > mp.s.draggingThreshold || this.data.moved)
 				{
-					if(mp.tool.rotationCenter.point === undefined || mp.tool.rotationCenter.atom == this.scope.index)
+					this.data.moved = true;
+
+					if(this.scope.isSelected())
 					{
-						mp.translateSelection(p.x - mp.pointer.old.r.x, p.y - mp.pointer.old.r.y);
+						if(!mp.sel.hasCenter() || mp.sel.centerAtom == this.scope.index)
+						{
+							mp.sel.translate(dx, dy);
+						}
+						else
+						{
+							mp.sel.rotate(p);
+						}
 					}
 					else
 					{
-						mp.tool.rotationCenter.currentAngle = mp.rotateAtoms(
-								mp.tool.rotationCenter.point, p, mp.tool.selection,
-								mp.tool.rotationCenter.currentAngle,
-								mp.tool.rotationCenter.startAngle,
-								mp.settings.bond.rotateSteps);
+						this.scope.translate(p.x - mp.pointer.old.r.x, p.y - mp.pointer.old.r.y);
 					}
-				}
-				else
-				{
-					this.scope.translate(p.x - mp.pointer.old.r.x, p.y - mp.pointer.old.r.y);
-				}
 
-				mp.pointer.old.r = p;
+					mp.pointer.old.r = p;
+				}
 			},
 			onPointerUp: function(e, mp)
 			{
 				if(!this.data.moved && oneOf(mp.tool.type, ["select", "drag"]))
 				{
-					this.scope.select(!this.scope.selected);
-					mp.updateBondSelection();
-					mp.updateRotationCenter();
+					this.scope.select(!this.scope.isSelected());
+					mp.sel.updateRotationCenter();
 				}
 				else
 				{
-					if(this.scope.selected) mp.collapseAtoms(mp.tool.selection.slice(), true, true);
-					else mp.collapseAtoms([this.scope.index], true, true);
+					if(this.scope.isSelected()) mp.sel.collapse();
+					else mp.mol.collapseAtoms([this.scope.index], true);
 
 					/* process possible changes to
 					rotation center caused by collapsing */
-					mp.updateRotationCenter();
+					mp.sel.updateRotationCenter();
 				}
 			}
 		};
@@ -533,11 +552,10 @@ MPAtom.prototype.getHandler = function()
  */
 MPAtom.prototype.handle = function(point, type)
 {
-	if(this.display == "hidden") return false;
-
 	this.validate();
+	if(this.isHidden()) return false;//maybe this is hidden in the validation
 
-	var r = this.mp.settings.atom.radiusScaled;
+	var r = this.mp.s.atom.radiusScaled;
 
 	if(this.line.area.point)
 	{

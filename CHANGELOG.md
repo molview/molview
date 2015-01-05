@@ -12,22 +12,25 @@
 - Fixed bad contrast for .alert-message links
 - Fixed GLmol in iframe pointer loss bug
 - Fixed wrong font-family in layout vector drawings
-= Fixed AGPL logo scaling in IE
+- Fixed AGPL logo scaling in IE
 
 ### MolPad
 
 - Revised refresh cycle
 - Revised history logic
+- Added MPSelection and MPMolecule
 - Added multi-select tool
-= Added individual bond/atom selection
+- Added individual atom and bond selection
+- Added rotation tool for new standalone bonds or fragments
 - Added selection rotation tool
-= Added chain creation tool
-- Added atom and bond drag collapsing
+- Added chain creation tool
 - Added fragment to bond tool
-- Added fragment to bond collapsing and side detection
-= Added DEL hotkey to delete the current selection
+- Added atom and bond collapsing
+- Added DEL hotkey to delete the current selection
 - Added zoom reset when canvas is cleared
-- Added zoom to molecule center when using mousewheel
+- Added zoom to mouse pointer when using mousewheel
+- Added right mouse-button for canvas translation
+- Added atom and bond dragging threshold
 - Fixed inverted bonds between overlapping atoms
 - Fixed transition from multiTouch to single touch mouseDrag
 

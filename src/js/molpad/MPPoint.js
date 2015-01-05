@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -122,7 +122,7 @@ MPPoint.prototype.mirror = function(line, side)
  */
 MPPoint.prototype.lineSide = function(line)
 {
-    var s = Math.sign((line.to.x - line.from.x) * (this.y - line.from.y) -
+    var s = sign((line.to.x - line.from.x) * (this.y - line.from.y) -
     		(line.to.y - line.from.y) * (this.x - line.from.x));
 	return s > 0 ? 1 : s < 0 ? -1 : 0;
 }

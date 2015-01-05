@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,12 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var MP_ZOOM_TO_COG = 0;
+var MP_ZOOM_TO_POINTER = 1;
+
 /**
  * Initialize MolPad in the given container
  * TODO: larger touch targets on high DPI screens
- * TODO: rotate/move selection tool
- * TODO: delete selection on DEL
  * TODO: element/valence based handler actions
  * TODO: add implicit hydrogen as subset of MPAtom
  * TODO: collapse newly added implicit H atoms if !skeleton
@@ -35,12 +36,14 @@ function MolPad(container, devicePixelRatio, buttons)
 	 * Settings
 	 * @type {Object}
 	 */
-	this.settings = {
+	this.s = {
 		maxStackSize: 100,
+		zoomType: MP_ZOOM_TO_POINTER,
 		zoomSpeed: 0.2,
 		minZoom: 0.01,
 		skeletonDisplay: true,
 		relativePadding: 0.15,
+		draggingThreshold: 2,
 		fonts: {
 			element: {
 				fontStyle: "bold",
@@ -145,168 +148,23 @@ function MolPad(container, devicePixelRatio, buttons)
 		}
 	};
 
-	//molecule data
-	this.molecule = {
-		atoms: [],
-		bonds: []
-	};
-
 	//active tool data
 	this.tool = {
 		type: "bond",//bond || fragment || chain || charge || erase || drag || select || atom
-		data: {
-			type: MP_BOND_SINGLE
-		},
-		selection: [],
-		rotationCenter: {}
+		data: { type: MP_BOND_SINGLE },
+		selection: []//TMP
 	};
 
-	//keydown tracker
-	this.keys = {
-		ctrl: false
-	};
+	this.mol = new MPMolecule(this);
+	this.sel = new MPSelection(this);
 
-	//event pointer data
-	this.pointer = {
-		old: {
-			p: new MPPoint(),
-			r: new MPPoint(),
-			c: new MPPoint(),
-			d: 0,
-		},
-		handler: undefined,
-		targetTouchesNumber: 0,
-		touchGrab: false
-	};
-
-	//graphics data
-	this.valid = true;
-	this.copy = { atoms: [], bonds: [], fingerprint: "" };
-	this.stack = [];
-	this.reverseStack = [];
-	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
-	this.devicePixelRatio = devicePixelRatio || 1;
-
-	//UI data
 	this.buttons = buttons;
 	this.container = jQuery(container);
 	this.offset = this.container.offset();
-	this.canvas = document.createElement("canvas");
+	this.devicePixelRatio = devicePixelRatio || 1;
 
-	this.canvas.width = this.container.width() * this.devicePixelRatio;
-	this.canvas.height = this.container.height() * this.devicePixelRatio;
-	this.canvas.style.width = this.container.width() + "px";
-	this.canvas.style.height = this.container.height() + "px";
-
-	container.appendChild(this.canvas);
-	this.ctx = this.canvas.getContext("2d");
-	this.pendingFrame = false;//used to prevent requestAnimationFrame stacking
-	this.updated = false;//used to update only before a real redraw
-
-	var scope = this;
-
-	/**
-	 * Event basics
-	 * - pointerdown: start action
-	 * - pointermove: execute action
-	 * - pointerup: finish action
-	 * - multipointer: dismiss action and start multitouch action
-	 * - multipointer => single pointer: translate
-	 */
-
-	jQuery(container).on('DOMMouseScroll mousewheel', function(e)
-	{
-		e.preventDefault();
-
-		if(e.originalEvent.detail)
-		{
-			scope.onScroll(e.originalEvent.detail / 3, e);
-		}
-		else if(e.originalEvent.wheelDelta)
-		{
-			scope.onScroll(e.originalEvent.wheelDelta / 120, e);
-		}
-	});
-
-	jQuery(container).on("mousedown touchstart", function(e)
-	{
-		e.preventDefault();
-		scope.onPointerDown(e);
-	});
-
-	jQuery(container).on("mousemove", function(e)
-	{
-		scope.onMouseMoveInContainer(e);
-	});
-
-	jQuery(container).on("mouseout", function(e)
-	{
-		scope.onMouseOut(e);
-	});
-
-	jQuery(window).on("mousemove touchmove", function(e)
-	{
-		scope.onPointerMove(e);
-	});
-
-	jQuery(window).on("mouseup touchend touchcancel", function(e)
-	{
-		scope.onPointerUp(e);
-	});
-
-	jQuery(window).on("blur", function(e)
-	{
-		scope.onBlur(e);
-	});
-
-	/**
-	 * Keyboard shortcuts
-	 */
-	if(navigator.platform.toLowerCase().indexOf("mac") >= 0)
-	{
-		jQuery(document).bind("keydown", "meta+z", function(e)
-				{ e.preventDefault(); scope.undo(); });
-		jQuery(document).bind("keydown", "meta+y", function(e)
-				{ e.preventDefault(); scope.redo(); });
-		jQuery(document).bind("keydown", "meta+shift+z", function(e)
-				{ e.preventDefault(); scope.redo(); });
-	}
-	else
-	{
-		jQuery(document).bind("keydown", "ctrl+z", function(e)
-				{ e.preventDefault(); scope.undo(); });
-		jQuery(document).bind("keydown", "ctrl+y", function(e)
-				{ e.preventDefault(); scope.redo(); });
-		jQuery(document).bind("keydown", "ctrl+shift+z", function(e)
-				{ e.preventDefault(); scope.redo(); });
-	}
-
-	jQuery(document).on("keydown", function(e)
-	{
-		scope.keys.ctrl = e.ctrlKey;
-
-		if(e.keyCode == 46)//forward backspace
-		{
-			scope.removeSelection();
-			scope.validate();
-		}
-	});
-	jQuery(document).on("keyup", function(e)
-	{
-		scope.keys.ctrl = e.ctrlKey;
-	});
-}
-
-MolPad.prototype.forAllObjects = function(func)
-{
-	for(var i = 0; i < this.molecule.atoms.length; i++)
-	{
-		if(func.call(this, this.molecule.atoms[i])) return;
-	}
-	for(var i = 0; i < this.molecule.bonds.length; i++)
-	{
-		if(func.call(this, this.molecule.bonds[i])) return;
-	}
+	this.setupEventHandling();
+	this.setupGraphics();
 }
 
 /**
@@ -326,130 +184,103 @@ MolPad.prototype.onChange = function(cb)
 
 MolPad.prototype.clear = function(cb)
 {
-	this.molecule = { atoms: [], bonds: [] };
-	this.tool.selection = [];
+	this.mol.clear();
+	this.sel.update();
 
 	//retain old molecule translation in case of an undo
 	this.scaleAbsolute(1 / this.matrix[0], this.width() / 2, this.height() / 2);
 
-	this.redraw();
-	this.updateCopy();
+	this.redraw(true);
+	this.mol.updateCopy();
 }
 
 MolPad.prototype.changed = function()
 {
-	if(this.changeCallback)
-	{
-		this.changeCallback();
-	}
+	jQuery(this.buttons.undo).toggleClass("tool-button-disabled", this.mol.stack.length == 0);
+	jQuery(this.buttons.redo).toggleClass("tool-button-disabled", this.mol.reverseStack.length == 0);
+	if(this.changeCallback !== undefined) this.changeCallback();
 }
 
-MolPad.prototype.updateCopy = function()
-{
-	var fingerprint = this.getFingerprint();
-
-	if(fingerprint != this.copy.fingerprint)
-	{
-		this.reverseStack = [];
-		jQuery(this.buttons.redo).addClass("tool-button-disabled");
-
-		this.stack.push(this.copy);
-		if(this.stack.length > this.settings.maxStackSize)
-		{
-			this.stack.shift();
-		}
-
-		this.copy = this.getPlainData();
-		this.copy.fingerprint = fingerprint;
-
-		jQuery(this.buttons.undo).removeClass("tool-button-disabled");
-		this.changed();
-	}
-}
-
-MolPad.prototype.undo = function(noRedo)
+MolPad.prototype.undo = function(noRedoPush)
 {
 	this.dismissHandler();
-
-	if(this.stack.length > 0)
-	{
-		if(!noRedo)
-		{
-			this.reverseStack.push(this.copy);
-			jQuery(this.buttons.redo).removeClass("tool-button-disabled");
-		}
-
-		this.copy = this.stack.pop();
-		this.loadPlainData(this.copy);
-	}
-
-	if(this.stack.length == 0)
-	{
-		jQuery(this.buttons.undo).addClass("tool-button-disabled");
-	}
-
-	this.changed();
+	if(this.mol.undo(noRedoPush)) this.changed();
 }
 
 MolPad.prototype.redo = function()
 {
 	this.dismissHandler();
-
-	if(this.reverseStack.length > 0)
-	{
-		this.stack.push(this.copy);
-		jQuery(this.buttons.undo).removeClass("tool-button-disabled");
-
-		this.copy = this.reverseStack.pop();
-		this.loadPlainData(this.copy);
-	}
-
-	if(this.reverseStack.length == 0)
-	{
-		jQuery(this.buttons.redo).addClass("tool-button-disabled");
-	}
+	if(this.mol.redo()) this.changed();
 }
 
 MolPad.prototype.displaySkeleton = function(yes)
 {
-	if(yes == this.settings.skeletonDisplay) return;
+	if(yes == this.s.skeletonDisplay) return;
 
 	this.dismissHandler();
 
 	if(yes)
 	{
 		//so all new invisible carbons are invalidated
-		this.settings.skeletonDisplay = true;
+		this.s.skeletonDisplay = true;
 	}
-	for(var i = 0; i < this.molecule.atoms.length; i++)
+	for(var i = 0; i < this.mol.atoms.length; i++)
 	{
-		if(!this.molecule.atoms[i].isVisible())
+		if(!this.mol.atoms[i].isVisible())
 		{
-			this.molecule.atoms[i].invalidate(false);
+			this.mol.atoms[i].invalidate(false);
 		}
 	}
 	if(!yes)
 	{
 		//so all invisible carbon atoms are inavalidated before becoming visibile
-		this.settings.skeletonDisplay = false;
+		this.s.skeletonDisplay = false;
 	}
 
-	if(yes) this.removeImplicitHydrogen();
-	else this.addImplicitHydrogen();
+	if(yes) this.mol.removeImplicitHydrogen();
+	else this.mol.addImplicitHydrogen();
 
 	this.validate();
-	this.updateCopy();
+	this.mol.updateCopy();
 }
 
 MolPad.prototype.setColored = function(yes)
 {
-	this.settings.atom.colored = this.settings.bond.colored = yes;
-	this.settings.fonts.isotope.fontStyle = this.settings.fonts.element.fontStyle =
-			this.settings.fonts.charge.fontStyle = yes ? "bold" : "normal";
+	this.s.atom.colored = this.s.bond.colored = yes;
+	this.s.fonts.isotope.fontStyle = this.s.fonts.element.fontStyle =
+			this.s.fonts.charge.fontStyle = yes ? "bold" : "normal";
 	this.redraw(true);
 }
 
 MolPad.prototype.toDataURL = function()
 {
 	return this.canvas.toDataURL("image/png");
+}
+
+/**
+ * Load molfile
+ * @param {String}  mol
+ * @param {Boolean} forceRemoveHydrogen
+ */
+MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
+{
+	this.mol.loadMOL(mol);
+
+	if(this.s.skeletonDisplay || forceRemoveHydrogen)
+	{
+		this.mol.removeImplicitHydrogen();
+	}
+
+	this.center();
+	this.mol.updateCopy();
+}
+
+MolPad.prototype.getMOL = function()
+{
+	return this.mol.getMOL();
+}
+
+MolPad.prototype.getSMILES = function()
+{
+	return this.mol.getSMILES();
 }

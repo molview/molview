@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -100,6 +100,6 @@ $renderer = new Parsedown();
 		<div id="content">
 			<?php echo $renderer->text($md); ?>
 		</div>
-		<?php if($copyrightMap[$id]) echo '<div id="footer">Copyright &copy; 2014 Herman Bergwerf</div>'; ?>
+		<?php if($copyrightMap[$id]) echo '<div id="footer">Copyright &copy; 2014, 2015 Herman Bergwerf</div>'; ?>
 	</body>
 </html>

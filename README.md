@@ -2,7 +2,7 @@ MolView
 =======
 MolView is a web application for drawing, searching and viewing chemical
 structures. This web application is built on top of the JavaScript libraries
-and online services listed below. I also drew inspiration from the
+and online services listed below. I drew some inspiration from the
 [Virtual Model Kit](http://chemagic.com/JSmolVMK2.htm),
 a similar web application.
 
@@ -10,7 +10,7 @@ a similar web application.
 
   - [Ketcher](http://ggasoftware.com/opensource/ketcher): Chemical 2D data reader/writer
   - [GLmol v0.47](http://webglmol.sourceforge.jp/index-en.html): primary 3D render engine
-  - [JSmol v14.3.9](http://sourceforge.net/projects/jsmol/): 3D render engine
+  - [JSmol v14.3.9](http://chemapps.stolaf.edu/jmol/zip/): 3D render engine
   - [ChemDoodle Web Components v6.0.1](http://web.chemdoodle.com/): 3D render engine
     and spectrum display
 
@@ -28,7 +28,7 @@ License
 -------
 ```
 MolView (http://molview.org)
-Copyright (c) 2014, Herman Bergwerf
+Copyright (c) 2014, 2015 Herman Bergwerf
 
 MolView is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by

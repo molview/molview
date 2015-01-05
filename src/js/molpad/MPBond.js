@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,7 +40,7 @@ function MPBond(mp, obj)
 	this.stereo = obj.stereo || MP_STEREO_NONE;
 	this.from = obj.from || 0;
 	this.to = obj.to || 0;
-	this.selected = false;
+	this.selected = obj.selected || false;
 	this.display = "normal";
 	this.hidden = false;//used internally to hide inverted bonds
 	this.valid = false;
@@ -91,8 +91,8 @@ MPBond.prototype.toString = function()
 MPBond.prototype.getLine = function()
 {
 	return {
-		from: this.mp.molecule.atoms[this.from].center,
-		to: this.mp.molecule.atoms[this.to].center
+		from: this.mp.mol.atoms[this.from].center,
+		to: this.mp.mol.atoms[this.to].center
 	}
 }
 
@@ -172,6 +172,22 @@ MPBond.prototype.equals = function(bond)
 }
 
 /**
+ * Wrapper for MPBond.selected (for maintainability)
+ */
+MPBond.prototype.isSelected = function()
+{
+	return this.selected;
+}
+
+/**
+ * Checks is this MPBond is hidden (not the same as invisible)
+ */
+MPBond.prototype.isHidden = function()
+{
+	return this.display == "hidden" || this.hidden;
+}
+
+/**
  * Checks if this bond is a pair of the given elements
  * @param  {String} a
  * @param  {String} b
@@ -179,8 +195,8 @@ MPBond.prototype.equals = function(bond)
  */
 MPBond.prototype.isPair = function(a, b)
 {
-	var _a = this.mp.molecule.atoms[this.from].element;
-	var _b = this.mp.molecule.atoms[this.to].element;
+	var _a = this.mp.mol.atoms[this.from].element;
+	var _b = this.mp.mol.atoms[this.to].element;
 	return _a == a && _b == b || _a == b && _b == a;
 }
 
@@ -207,20 +223,13 @@ MPBond.prototype.getOppositeAtom = function(i)
 /**
  * Selects or deselects this MPBond
  * @param {Boolean} select
- * @param {Boolean} neighborsToo
  */
-MPBond.prototype.select = function(select, neighborsToo)
+MPBond.prototype.select = function(select)
 {
-	if(this.selected != select)
+	if(this.isSelected() != select)
 	{
 		this.selected = select;
-
-		if(neighborsToo)
-		{
-			this.mp.molecule.atoms[this.from].select(select);
-			this.mp.molecule.atoms[this.to].select(select);
-		}
-
+		this.mp.sel.update();
 		this.mp.invalidate();
 	}
 }
@@ -233,10 +242,10 @@ MPBond.prototype.invalidate = function()
 {
 	this.valid = false;
 
-	if(!this.mp.molecule.atoms[this.from].isVisible())
-		this.mp.molecule.atoms[this.from].invalidateBonds();
-	if(!this.mp.molecule.atoms[this.to].isVisible())
-		this.mp.molecule.atoms[this.to].invalidateBonds();
+	if(!this.mp.mol.atoms[this.from].isVisible())
+		this.mp.mol.atoms[this.from].invalidateBonds();
+	if(!this.mp.mol.atoms[this.to].isVisible())
+		this.mp.mol.atoms[this.to].invalidateBonds();
 
 	this.mp.invalidate();
 }
@@ -249,9 +258,9 @@ MPBond.prototype.invalidateFrom = function(from, updateSecondary)
 	{
 		var t = from == this.from ? this.to : this.from;
 
-		if(updateSecondary && !this.mp.molecule.atoms[t].isVisible())
+		if(updateSecondary && !this.mp.mol.atoms[t].isVisible())
 		{
-			this.mp.molecule.atoms[t].invalidateBonds();
+			this.mp.mol.atoms[t].invalidateBonds();
 		}
 	}
 
@@ -263,10 +272,11 @@ MPBond.prototype.validate = function()
 	if(this.valid) return;
 	this.valid = true;
 
-	if(this.mp.molecule.atoms[this.from].center.distanceTo(
-			this.mp.molecule.atoms[this.to].center) <=
-			(this.mp.molecule.atoms[this.from].isVisible() && this.mp.molecule.atoms[this.to].isVisible() ?
-			2 : 1) * this.mp.settings.atom.radius)
+	if(this.mp.mol.atoms[this.from].center.distanceTo(
+			this.mp.mol.atoms[this.to].center) <=
+			((this.mp.mol.atoms[this.from].isVisible() ? 1 : 0) +
+			(this.mp.mol.atoms[this.to].isVisible() ? 1 : 0)) *
+			this.mp.s.atom.radius)
 	{
 		this.hidden = true;
 	}
@@ -274,18 +284,22 @@ MPBond.prototype.validate = function()
 	{
 		this.hidden = false;
 
-		var scale = this.mp.settings.bond.scale;
+		var scale = this.mp.s.bond.scale;
 
 		this.cache = {};
 		this.line = {
-			from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0])[0],
-			to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, [0])[0]
+			from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0])[0],
+			to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, [0])[0]
 		};
+		this.line.center = new MPPFO({
+			x: (this.line.from.x + this.line.to.x) / 2,
+			y: (this.line.from.y + this.line.to.y) / 2
+		});
 
-		if(this.mp.settings.bond.colored)
+		if(this.mp.s.bond.colored)
 		{
-			var f = this.mp.molecule.atoms[this.from];
-			var t = this.mp.molecule.atoms[this.to];
+			var f = this.mp.mol.atoms[this.from];
+			var t = this.mp.mol.atoms[this.to];
 
 			if(this.stereo == MP_STEREO_UP)
 			{
@@ -298,48 +312,48 @@ MPBond.prototype.validate = function()
 			else
 			{
 				this.cache.bondColor = this.mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
-				this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.from, JmolAtomColorsHashHex[f.element]);
-				this.cache.bondColor.addColorStop(this.mp.settings.bond.gradient.to, JmolAtomColorsHashHex[t.element]);
+				this.cache.bondColor.addColorStop(this.mp.s.bond.gradient.from, JmolAtomColorsHashHex[f.element]);
+				this.cache.bondColor.addColorStop(this.mp.s.bond.gradient.to, JmolAtomColorsHashHex[t.element]);
 			}
 		}
 		else//fallback, this color is actually not used
 		{
-			this.cache.bondColor = this.mp.settings.bond.color;
+			this.cache.bondColor = this.mp.s.bond.color;
 		}
 
 		if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 		{
 			//TODO: connect one double CIS-TRANS bond to [0] endpoint
-			var ends = multiplyAll(this.mp.settings.bond.delta[MP_BOND_DOUBLE],
-					this.mp.settings.bond.deltaScale);
+			var ends = multiplyAll(this.mp.s.bond.delta[MP_BOND_DOUBLE],
+					this.mp.s.bond.deltaScale);
 			this.cache.ctd = {
-				from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
-				to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends)
+				from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
+				to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, ends)
 			};
 		}
 		else if(this.stereo == MP_STEREO_UP)//wedge bond
 		{
 			this.cache.wedge = {
-				far: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]),
-				near: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
-						multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
-							this.mp.settings.bond.deltaScale))
+				far: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]),
+				near: this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
+						multiplyAll(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
+							this.mp.s.bond.deltaScale))
 			}
 		}
 		else if(this.stereo == MP_STEREO_DOWN)//hash bond
 		{
-			var far = this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, [0]);
-			var near = this.mp.molecule.atoms[this.to].calculateBondVertices(this.from,
-					multiplyAll(this.mp.settings.bond.delta[MP_BOND_WEDGEHASH],
-						this.mp.settings.bond.deltaScale));
+			var far = this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]);
+			var near = this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
+					multiplyAll(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
+						this.mp.s.bond.deltaScale));
 
 			var dx1 = near[0].x - far[0].x;
 			var dy1 = near[0].y - far[0].y;
 			var dx2 = near[1].x - far[0].x;
 			var dy2 = near[1].y - far[0].y;
 			var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-			var w = this.mp.settings.bond.width * scale;
-			var s = this.mp.settings.bond.hashLineSpace * scale;
+			var w = this.mp.s.bond.width * scale;
+			var s = this.mp.s.bond.hashLineSpace * scale;
 
 			this.cache.hashLines = [];
 			while(d1 - s - w > 0)
@@ -357,11 +371,11 @@ MPBond.prototype.validate = function()
 		}
 		else if(this.type >= MP_BOND_DOUBLE && this.type <= MP_BOND_TRIPLE)
 		{
-			var ends = multiplyAll(this.mp.settings.bond.delta[this.type],
-					this.mp.settings.bond.deltaScale);
+			var ends = multiplyAll(this.mp.s.bond.delta[this.type],
+					this.mp.s.bond.deltaScale);
 			this.cache.bond = {
-				from: this.mp.molecule.atoms[this.from].calculateBondVertices(this.to, ends),
-				to: this.mp.molecule.atoms[this.to].calculateBondVertices(this.from, ends.reverse())
+				from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
+				to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, ends.reverse())
 			};
 		}
 	}
@@ -374,15 +388,15 @@ MPBond.prototype.validate = function()
  */
 MPBond.prototype.getAngle = function(from)
 {
-	if(this.mp.molecule.atoms[this.from].equals(from))
+	if(this.mp.mol.atoms[this.from].equals(from))
 	{
-		return this.mp.molecule.atoms[this.from].center.angleTo(
-			this.mp.molecule.atoms[this.to].center);
+		return this.mp.mol.atoms[this.from].center.angleTo(
+			this.mp.mol.atoms[this.to].center);
 	}
 	else
 	{
-		return this.mp.molecule.atoms[this.to].center.angleTo(
-			this.mp.molecule.atoms[this.from].center);
+		return this.mp.mol.atoms[this.to].center.angleTo(
+			this.mp.mol.atoms[this.from].center);
 	}
 }
 
@@ -393,11 +407,12 @@ MPBond.prototype.getAngle = function(from)
 MPBond.prototype.drawStateColor = function()
 {
 	this.validate();
+	if(this.isHidden()) return;//maybe this is hidden in the validation
 
 	if(this.display == "hover" || this.display == "active" ||
-			(this.display == "normal" && this.selected))
+			(this.display == "normal" && this.isSelected()))
 	{
-		var d = this.selected ? "selected" : this.display;
+		var d = this.isSelected() ? "selected" : this.display;
 
 		this.mp.ctx.beginPath();
 
@@ -405,20 +420,20 @@ MPBond.prototype.drawStateColor = function()
 		var t = this.line.to;
 
 		//stick to 'from' atom center if 'from' atom is selected (multi-select)
-		if(this.mp.molecule.atoms[this.from].selected)
+		if(this.mp.mol.atoms[this.from].isSelected())
 		{
-			f = this.mp.molecule.atoms[this.from].center;
+			f = this.mp.mol.atoms[this.from].center;
 		}
 		//stick to 'to' atom center if 'to' atom is selected (multi-select)
-		if(this.mp.molecule.atoms[this.to].selected)
+		if(this.mp.mol.atoms[this.to].isSelected())
 		{
-			t = this.mp.molecule.atoms[this.to].center;
+			t = this.mp.mol.atoms[this.to].center;
 		}
 
 		this.mp.ctx.moveTo(f.x, f.y);
 		this.mp.ctx.lineTo(t.x, t.y);
 
-		this.mp.ctx.strokeStyle = this.mp.settings.bond[d].color;
+		this.mp.ctx.strokeStyle = this.mp.s.bond[d].color;
 		this.mp.ctx.stroke();
 	}
 }
@@ -426,12 +441,12 @@ MPBond.prototype.drawStateColor = function()
 MPBond.prototype.drawBond = function()
 {
 	this.validate();
-	if(this.hidden || this.display == "hidden") return;
+	if(this.isHidden()) return;//maybe this is hidden in the validation
 
-	var scale = this.mp.settings.bond.scale;
+	var scale = this.mp.s.bond.scale;
 	var ctx = this.mp.ctx;
 
-	if(this.mp.settings.bond.colored && !this.mp.settings.atom.miniLabel)
+	if(this.mp.s.bond.colored && !this.mp.s.atom.miniLabel)
 	{
 		ctx.strokeStyle = this.cache.bondColor;
 		if(this.stereo == MP_STEREO_UP) ctx.fillStyle = this.cache.bondColor;

@@ -1,6 +1,6 @@
 /**
 * This file is part of MolView (http://molview.org)
-* Copyright (c) 2014, Herman Bergwerf
+* Copyright (c) 2014, 2015 Herman Bergwerf
 *
 * MolView is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -26,8 +26,6 @@
  */
 MPAtom.prototype.calculateNewBondAngle = function(n)
 {
-	this.validate();
-
 	if(this.bonds.length == 0) return 0;
 
 	//create bond map with bond angles
@@ -36,7 +34,7 @@ MPAtom.prototype.calculateNewBondAngle = function(n)
 	{
 		bondMap.push({
 			i: this.bonds[i],
-			a: this.mp.molecule.bonds[this.bonds[i]].getAngle(this)
+			a: this.mp.mol.bonds[this.bonds[i]].getAngle(this)
 		});
 	}
 
@@ -99,9 +97,7 @@ MPAtom.prototype.calculateNewBondAngle = function(n)
  */
 MPAtom.prototype.calculateCenterLine = function()
 {
-	this.validate();
-
-	if(this.mp.settings.atom.miniLabel)
+	if(this.mp.s.atom.miniLabel)
 	{
 		return {
 			text: { offsetLeft: 0, offsetTop: 0 },
@@ -109,7 +105,7 @@ MPAtom.prototype.calculateCenterLine = function()
 		};
 	}
 
-	var scale = this.mp.settings.atom.scale;
+	var scale = this.mp.s.atom.scale;
 	var text = {};
 
 	this.mp.setFont("element");
@@ -119,33 +115,33 @@ MPAtom.prototype.calculateCenterLine = function()
 	if(this.isotope > 0)
 	{
 		this.mp.setFont("isotope");
-		text.isotopeHeight = this.mp.settings.fonts.isotope.fontSize * scale;
+		text.isotopeHeight = this.mp.s.fonts.isotope.fontSize * scale;
 		text.isotopeWidth = this.mp.ctx.measureText("" + this.isotope).width +
-				this.mp.settings.atom.isotope.padding * scale;//padding before element label
+				this.mp.s.atom.isotope.padding * scale;//padding before element label
 		w += text.isotopeWidth;
 	}
 
 	if(this.charge != 0)
 	{
 		this.mp.setFont("charge");
-		text.chargeHeight = this.mp.settings.fonts.charge.fontSize * scale;
+		text.chargeHeight = this.mp.s.fonts.charge.fontSize * scale;
 		text.chargeWidth = this.mp.ctx.measureText("" + this.getChargeLabel()).width;
 
 		//add padding between element and charge
-		text.labelWidth += this.mp.settings.atom.charge.padding * scale;
+		text.labelWidth += this.mp.s.atom.charge.padding * scale;
 
 		//add chargeWidth to total width + additional label padding
-		w += text.chargeWidth + this.mp.settings.atom.charge.padding * scale;
+		w += text.chargeWidth + this.mp.s.atom.charge.padding * scale;
 	}
 
-	var h = this.mp.settings.fonts.element.fontSize * scale;
+	var h = this.mp.s.fonts.element.fontSize * scale;
 	var halfw = w / 2;
 	text.offsetLeft = -halfw;
 	text.offsetTop = h / 2;
 
-	if(w > this.mp.settings.atom.circleClamp)
+	if(w > this.mp.s.atom.circleClamp)
 	{
-		var pad = this.mp.settings.atom.radius * scale - h / 2;
+		var pad = this.mp.s.atom.radius * scale - h / 2;
 		return {
 			text: text,
 			area: {
@@ -172,7 +168,7 @@ MPAtom.prototype.calculateCenterLine = function()
  */
 MPAtom.prototype.calculateBondVertices = function(from, ends)
 {
-	var begin = this.mp.molecule.atoms[from].center;
+	var begin = this.mp.mol.atoms[from].center;
 	return this._calculateBondVertices(begin, ends);
 }
 
@@ -188,10 +184,11 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 	//TODO: implement bonding site for collapsed groups (only left or right)
 	this.validate();
 
-	if(begin.x == this.center.x)
+	if(begin.x == this.center.x
+			|| this.hidden)//provide fallback
 	{
 		var ret = [];
-		var r = this.isVisible() ? this.mp.settings.atom.radius : 0;
+		var r = this.isVisible() ? this.mp.s.atom.radius : 0;
 		var below = begin.y < this.center.y;
 		for(var i = 0; i < ends.length; i++)
 		{
@@ -205,7 +202,7 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 	else if(begin.y == this.center.y)
 	{
 		var ret = [];
-		var r = this.isVisible() ? this.line.area.half  || this.mp.settings.atom.radius : 0;
+		var r = this.isVisible() ? this.line.area.half  || this.mp.s.atom.radius : 0;
 		var right = begin.x > this.center.x;
 		for(var i = 0; i < ends.length; i++)
 		{
@@ -272,7 +269,7 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 		}
 
 		var acbc = Math.abs(ac.x - bc.x);//distance between align center and bond center
-		var r = this.mp.settings.atom.radius;
+		var r = this.mp.s.atom.radius;
 		var dx = begin.x - bc.x;
 		var dy = begin.y - bc.y;
 		var d = Math.sqrt(dx * dx + dy * dy);

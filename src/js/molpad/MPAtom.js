@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +30,7 @@ function MPAtom(mp, obj)
 	this.charge = obj.charge || 0;
 	this.isotope = obj.isotope || 0;
 	this.bonds = obj.bonds !== undefined ? obj.bonds.slice() : [];//deep copy
-	this.selected = false;
+	this.selected = obj.selected || false;
 	this.display = "normal";
 	this.valid = false;
 	this.mp.invalidate();
@@ -44,12 +44,12 @@ MPAtom.prototype.getY = function() { return this.center.y; }
  * @param {Object} mp
  * @return {Object}
  */
-MPAtom.prototype.getKetcherData = function(mp)
+MPAtom.prototype.getKetcherData = function()
 {
 	return new chem.Struct.Atom({
 		pp: {
-			x: this.center.x / mp.settings.bond.length,
-			y: this.center.y / mp.settings.bond.length
+			x: this.center.x / this.mp.s.bond.length,
+			y: this.center.y / this.mp.s.bond.length
 		},
 		label: this.element,
 		charge: this.charge,
@@ -88,7 +88,7 @@ MPAtom.prototype.toString = function()
 
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		str += this.mp.molecule.bonds[this.bonds[i]].toString();
+		str += this.mp.mol.bonds[this.bonds[i]].toString();
 	}
 
 	return str;
@@ -156,23 +156,20 @@ MPAtom.prototype.equals = function(atom)
 }
 
 /**
- * Finds this MPAtom if it is an implicit hydrogen atom
- * All H atoms bonded to a C atom without stereo information are considered implicit
- * @return {Boolean}    Indicates if this atom is implicit
+ * Returns number of selected bonds
+ * @return {Integer}
  */
-MPAtom.prototype.isImplicit = function()
+MPAtom.prototype.getSelectedBonds = function()
 {
-	if(this.element == "H" && this.isotope == 0 &&
-			this.charge == 0 && this.bonds.length == 1)
+	var ret = 0;
+	for(var i = 0; i < this.bonds.length; i++)
 	{
-		var bond = this.mp.molecule.bonds[this.bonds[0]];
-		if(bond.type == MP_BOND_SINGLE && bond.stereo == MP_STEREO_NONE &&
-			bond.isPair("C", "H"))
+		if(this.mp.mol.bonds[this.bonds[i]].isSelected())
 		{
-			return true;
+			ret++;
 		}
 	}
-	return false;
+	return ret;
 }
 
 /**
@@ -184,7 +181,7 @@ MPAtom.prototype.getNeighborBond = function(idx)
 {
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		if(this.mp.molecule.bonds[this.bonds[i]].getOppositeAtom(this.index) == idx)
+		if(this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index) == idx)
 		{
 			return this.bonds[i];
 		}
@@ -199,8 +196,8 @@ MPAtom.prototype.hasUnselectedNeighbors = function()
 {
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		if(!this.mp.molecule.atoms[this.mp.molecule.bonds[this.bonds[i]]
-			.getOppositeAtom(this.index)].selected)
+		if(!this.mp.mol.atoms[this.mp.mol.bonds[this.bonds[i]]
+			.getOppositeAtom(this.index)].isSelected())
 		{
 			return true;
 		}
@@ -209,24 +206,60 @@ MPAtom.prototype.hasUnselectedNeighbors = function()
 }
 
 /**
- * Checks if this atom is visible in the drawing based on MolPad display settings
+ * Wrapper for MPAtom.selected (for maintainability)
+ */
+MPAtom.prototype.isSelected = function()
+{
+	return this.selected;
+}
+
+/**
+ * Finds this MPAtom if it is an implicit hydrogen atom
+ * All H atoms bonded to a C atom without stereo information are considered implicit
+ * @return {Boolean}    Indicates if this atom is implicit
+ */
+MPAtom.prototype.isImplicit = function()
+{
+	if(this.element == "H" && this.isotope == 0 &&
+			this.charge == 0 && this.bonds.length == 1)
+	{
+		var bond = this.mp.mol.bonds[this.bonds[0]];
+		if(bond.type == MP_BOND_SINGLE && bond.stereo == MP_STEREO_NONE &&
+			bond.isPair("C", "H"))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Checks is this MPAtom is hidden (not the same as invisible)
+ */
+MPAtom.prototype.isHidden = function()
+{
+	return this.display == "hidden" || this.hidden;
+}
+
+/**
+ * Checks if this MPAtom is visible in the drawing based on MolPad display settings
  */
 MPAtom.prototype.isVisible = function()
 {
-	if(this.display == "hidden")
+	if(this.isHidden())
 	{
 		return false;
 	}
-	else if(this.mp.settings.skeletonDisplay)
+	else if(this.mp.s.skeletonDisplay)
 	{
 		if(this.element == "C" && this.charge == 0 && this.isotope == 0)
 		{
 			var singleBonds = 0;
 			if(this.bonds.length == 0) return true;
 			else if(this.bonds.length == 2 &&
-				this.mp.molecule.bonds[this.bonds[0]].type ==
-				this.mp.molecule.bonds[this.bonds[1]].type &&
-				this.mp.molecule.bonds[this.bonds[0]].type == MP_BOND_DOUBLE)
+				this.mp.mol.bonds[this.bonds[0]].type ==
+				this.mp.mol.bonds[this.bonds[1]].type &&
+				this.mp.mol.bonds[this.bonds[0]].type == MP_BOND_DOUBLE)
 			{
 				return true;
 			}
@@ -239,27 +272,14 @@ MPAtom.prototype.isVisible = function()
 
 /**
  * Selects or deselects this MPAtom
- * @param  {Boolean} select
+ * @param {Boolean} select
  */
 MPAtom.prototype.select = function(select)
 {
-	if(!(this.selected == select &&
-			//make sure this.index is not in the selection while
-			(this.mp.tool.selection.indexOf(this.index) != -1) == select))
+	if(this.isSelected() != select)
 	{
 		this.selected = select;
-		var idx = this.mp.tool.selection.indexOf(this.index);
-		if(idx == -1)
-		{
-			if(select)
-			{
-				this.mp.tool.selection.push(this.index);
-			}
-		}
-		else if(!select)
-		{
-			this.mp.tool.selection.splice(idx, 1);
-		}
+		this.mp.sel.update();
 		this.mp.invalidate();
 	}
 }
@@ -290,7 +310,7 @@ MPAtom.prototype.getBondCount = function()
 	var ret = 0;
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		ret += this.mp.molecule.bonds[this.bonds[i]].type;
+		ret += this.mp.mol.bonds[this.bonds[i]].type;
 	}
 	return ret;
 }
@@ -348,14 +368,14 @@ MPAtom.prototype.replaceBond = function(o, n)
 MPAtom.prototype.addNewBond = function(config)
 {
 	var atom = new MPAtom(this.mp, {
-		i: this.mp.molecule.atoms.length,
-		x: this.getX() + (config.length || this.mp.settings.bond.length) * Math.cos(config.a),
-		y: this.getY() - (config.length || this.mp.settings.bond.length) * Math.sin(config.a),//y axis is flipped
+		i: this.mp.mol.atoms.length,
+		x: this.getX() + (config.length || this.mp.s.bond.length) * Math.cos(config.a),
+		y: this.getY() - (config.length || this.mp.s.bond.length) * Math.sin(config.a),//y axis is flipped
 		element: config.element || "C"
 	});
 
 	var bond = new MPBond(this.mp, {
-		i: this.mp.molecule.bonds.length,
+		i: this.mp.mol.bonds.length,
 		type: config.type || MP_BOND_SINGLE,
 		stereo: config.stereo || MP_STEREO_NONE,
 		from: this.index,
@@ -365,8 +385,8 @@ MPAtom.prototype.addNewBond = function(config)
 	atom.addBond(bond.index);
 	this.addBond(bond.index);
 
-	this.mp.molecule.atoms.push(atom);
-	this.mp.molecule.bonds.push(bond);
+	this.mp.mol.atoms.push(atom);
+	this.mp.mol.bonds.push(bond);
 
 	return {
 		atom: atom.index,
@@ -386,25 +406,25 @@ MPAtom.prototype.addImplicitHydrogen = function()
 	{
 		if(this.getBondCount() == 2 && this.bonds.length == 2)
 		{
-			var af = this.mp.molecule.bonds[this.bonds[0]].getAngle(this);
-			var at = this.mp.molecule.bonds[this.bonds[1]].getAngle(this);
+			var af = this.mp.mol.bonds[this.bonds[0]].getAngle(this);
+			var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
 			var da = Math.max(af, at) - Math.min(af, at);
 
 			//do only display 2 Hydrogens on one side if the bonds are not parallel
-			if(da < Math.PI - this.mp.settings.bond.straightDev ||
-				da > Math.PI + this.mp.settings.bond.straightDev)
+			if(da < Math.PI - this.mp.s.bond.straightDev ||
+				da > Math.PI + this.mp.s.bond.straightDev)
 			{
 				var a = this.calculateNewBondAngle(2);
 				if(a == 0) return;
 
 				this.addNewBond({
 					a: a[0],
-					length: this.mp.settings.bond.lengthHydrogen,
+					length: this.mp.s.bond.lengthHydrogen,
 					element: "H"
 				});
 				this.addNewBond({
 					a: a[1],
-					length: this.mp.settings.bond.lengthHydrogen,
+					length: this.mp.s.bond.lengthHydrogen,
 					element: "H"
 				});
 
@@ -418,7 +438,7 @@ MPAtom.prototype.addImplicitHydrogen = function()
 			var a = this.calculateNewBondAngle();
 			this.addNewBond({
 				a: a,
-				length: this.mp.settings.bond.lengthHydrogen,
+				length: this.mp.s.bond.lengthHydrogen,
 				element: "H"
 			});
 		}
@@ -443,8 +463,8 @@ MPAtom.prototype.invalidate = function(newCenter)
 	{
 		/* in some cases, addBond is called while the bond
 		has not been created yet like in MolPad.loadMol */
-		if(this.mp.molecule.bonds[this.bonds[i]] === undefined) continue;
-		this.mp.molecule.bonds[this.bonds[i]].invalidateFrom(this.index, newCenter);
+		if(this.mp.mol.bonds[this.bonds[i]] === undefined) continue;
+		this.mp.mol.bonds[this.bonds[i]].invalidateFrom(this.index, newCenter);
 	}
 
 	this.mp.invalidate();
@@ -459,7 +479,7 @@ MPAtom.prototype.invalidateBonds =  function()
 
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		this.mp.molecule.bonds[this.bonds[i]].invalidateFrom(this.index, false);
+		this.mp.mol.bonds[this.bonds[i]].invalidateFrom(this.index, false);
 	}
 
 	this.mp.invalidate();
@@ -486,25 +506,26 @@ MPAtom.prototype.validate = function()
 MPAtom.prototype.drawStateColor = function()
 {
 	this.validate();
+	if(this.isHidden()) return;//maybe this is hidden in the validation
 
 	if(this.display == "hover" || this.display == "active" ||
-			(this.display == "normal" && this.selected))
+			(this.display == "normal" && this.isSelected()))
 	{
-		var d = this.selected ? "selected" : this.display;
+		var d = this.isSelected() ? "selected" : this.display;
 
 		this.mp.ctx.beginPath();
 		if(this.line.area.point)
 		{
 			this.mp.ctx.arc(this.line.area.point.x, this.line.area.point.y,
-					this.mp.settings.atom.radiusScaled, 0, PI2);
-			this.mp.ctx.fillStyle = this.mp.settings.atom[d].color;
+					this.mp.s.atom.radiusScaled, 0, PI2);
+			this.mp.ctx.fillStyle = this.mp.s.atom[d].color;
 			this.mp.ctx.fill();
 		}
 		else
 		{
 			this.mp.ctx.moveTo(this.line.area.left.x, this.line.area.left.y);
 			this.mp.ctx.lineTo(this.line.area.right.x, this.line.area.right.y);
-			this.mp.ctx.strokeStyle = this.mp.settings.atom[d].color;
+			this.mp.ctx.strokeStyle = this.mp.s.atom[d].color;
 			this.mp.ctx.stroke();
 		}
 	}
@@ -521,14 +542,14 @@ MPAtom.prototype.drawLabel = function()
 
 	if(this.isVisible())
 	{
-		if(this.mp.settings.atom.colored)
+		if(this.mp.s.atom.colored)
 		{
 			this.mp.ctx.fillStyle = JmolAtomColorsHashHex[this.element];
 		}
 
-		if(this.mp.settings.atom.miniLabel)
+		if(this.mp.s.atom.miniLabel)
 		{
-			var s = this.mp.settings.atom.miniLabelSize;
+			var s = this.mp.s.atom.miniLabelSize;
 			this.mp.ctx.fillRect(this.center.x - s / 2, this.center.y - s / 2, s, s);
 		}
 		else

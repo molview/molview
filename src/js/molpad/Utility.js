@@ -1,6 +1,6 @@
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, Herman Bergwerf
+ * Copyright (c) 2014, 2015 Herman Bergwerf
  *
  * MolView is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +38,28 @@ function radSide(a, b)
 }
 
 /**
+ * Normalize angle to value between 0 and 2PI
+ * @param {Float} a
+ */
+function posRad(a)
+{
+    while(a < 0) a += PI2;
+    while(a > PI2) a -= PI2;
+    return a;
+}
+
+/**
+ * Calcualte smallest angle between two angles
+ * @param {Float} a
+ * @param {Float} b
+ */
+function smallestAngleBetween(a, b)
+{
+    var d = Math.abs(posRad(a) - posRad(b));
+    return d < PI2 - d ? d : PI2 - d;
+}
+
+/**
  * Calculate angle between two angles where from is the first encountered angle
  * in counter clockwise direction
  * @param {Float} from
@@ -45,11 +67,8 @@ function radSide(a, b)
  */
 function angleBetween(from, to)
 {
-    //loop till all angles are 0 <= a <= Math.PI
-    while(from < 0) from += PI2;
-    while(from > PI2) from -= PI2;
-    while(to < 0) to += PI2;
-    while(to > PI2) to -= PI2;
+    from = posRad(from);
+    to = posRad(to);
 
 	if(to <= from)//the point 'to' on a circle is actually 2PI behind
 	{
@@ -73,8 +92,8 @@ function clampedAngle(start, center, point, steps)
 {
 	var a = center.angleTo(point);
 	var clampFactor = steps / PI2;
-	return Math.round((a - start) * clampFactor) / clampFactor
-			+ start;//clamp to x steps, normalize to startAngle
+	return posRad(Math.round((a - start) * clampFactor) / clampFactor
+			+ start);//clamp to x steps, normalize to startAngle
 }
 
 /**
@@ -136,4 +155,12 @@ function getMultiTouchDelta(e)
 		var dy = Math.abs(t[0].pageY - t[1].pageY);
 		return Math.sqrt(dx * dx + dy * dy);
 	}
+}
+
+function sign(x)
+{
+    //polyfill from Mozilla
+    x = +x;// convert to a number
+    if(x === 0 || isNaN(x)) return x
+    return x > 0 ? 1 : -1
 }
