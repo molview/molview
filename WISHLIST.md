@@ -51,6 +51,8 @@ Misc
 ----
 - MolView blog based on Jekyll
 - MolView home website (pages: features, about, manual, changelog, license, feedback)
+- MolView manual as single wikitext collection
+- Images and animations for MolView web manual
 - JMV (JSON MolView data) files (local, gdrive, dropbox)
 - Client-side structural formula depiction using JavaScript
 - Server-side structural formula rendering using NodeJS

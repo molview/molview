@@ -586,30 +586,38 @@ Query parameters:
 						<div class="expandable">
 							<div class="expandable-title"><span>Drawing structural formulas</span></div>
 							<div class="expandable-content">
-								<p>You can draw structural formulas using the Sketcher component.</p>
+								<p>MolView consists of two main parts, a structural formula editor and a 3D model viewer. The structural formula editor is surround by three toolbars which contain the tools you can use in the editor. Once you’ve drawn a molecule, you can click the 2D to 3D button to convert the molecule into a 3D model which is then displayed in the viewer. Below is a list of all sketch tools.</p>
 								<h4>Top toolbar</h4>
 								<p style="margin-top: 10px;"><img style="display: inline-block; max-height: 40px;" src="img/help/SketcherTopToolbar.jpg" alt="Top toolbar" /></p>
-								<ol>
-									<li><b>Trash:</b> clears the entire canvas</li>
-									<li><b>Eraser:</b> click atoms or bonds to erase them</li>
-									<li><b>Drag:</b> drag atoms and bonds around</li>
-									<li><b>Undo/redo:</b> navigate trough your edit history</li>
+								<ul>
+									<li><b>Trash:</b> clear the entire canvas</li>
+									<li><b>Eraser:</b> erase atoms, bonds or the current selection</li>
+									<li><b>Undo/redo:</b> undo or redo your recent changes</li>
+									<li>
+										<b>Selection tools:</b> all these tool can be used to drag the current selection or individual atoms and bonds. You can add/remove atoms and bonds to the selection by clicking them. If you have selected a separate fragment, you can rotate it by dragging an atom in the selection. You can delete the selection using the <b>DEL</b> key or using the eraser tool. Each tool has different behavior for the right mouse button:
+										<ul>
+											<li><b>Drag:</b> move the entire molecule (you can already use the left mouse button for this)</li>
+											<li><b>Rectangle select:</b> select atoms and bonds using a rectangular selection area</li>
+											<li><b>Lasso select:</b> select atoms and bonds by drawing a freehand selection area</li>
+										</ul>
+									</li>
 									<li><b>Color mode:</b> display atoms and bonds using colors</li>
 									<li><b>Full mode:</b> displays all C and H atoms instead of skeleton display</li>
 									<li><b>Center:</b> centers the whole molecule</li>
 									<li><b>Clean:</b> cleans the structural formula using an external service</li>
 									<li><b>2D to 3D:</b> converts the structural formula into a 3D model</li>
-								</ol>
+								</ul>
 								<h4>Left toolbar</h4>
 								<p style="margin-top: 10px;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherLeftToolbar.jpg" alt="Left toolbar" /></p>
-								<ol>
-									<li><b>Bonds:</b> pick one of the bond types and click the canvas to create create bonds, click atoms to add bonds and click bonds to modify bonds</li>
-									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and click the canvas to create fragments or click atoms to add fragments</li>
-									<li><b>Charge:</b> click atoms to either increment or decrement their charge</li>
-								</ol>
+								<ul>
+									<li><b>Bonds:</b> pick one of the bond types (single, double, triple, up, down) and add or modify bonds</li>
+									<li><b>Fragments:</b> pick one of the fragments (benzene, cyclopropane, etc.) and add fragments</li>
+									<li><b>Chain:</b> create a chain of carbon atoms</li>
+									<li><b>Charge:</b> increment (+) or decrement (-) the charge of atoms</li>
+								</ul>
 								<h4>Right toolbar</h4>
 								<p style="margin-top: 10px;"><img style="max-height: 40px; display: inline-block;" src="img/help/SketcherRightToolbar.jpg" alt="Right toolbar" /></p>
-								<p>Contains a number of elements and at the bottom a periodic table button which pop-ups a periodic table where you can choose from all elements. If you have selected an element, you can click existing atoms to change their element or click on an empty part of the canvas to create a new atom with the selected element.</p>
+								<p>In this toolbar you can select from a number of elements, you can also pick an element from the periodic table using the last button. You can use the element to create new atoms or modify existing atoms.</p>
 							</div>
 						</div>
 						<div class="expandable">
@@ -683,14 +691,15 @@ Query parameters:
 								<h4>Background</h4>
 								<p>You can switch between a black, gray or white background. The default background is black (exported images from GLmol or ChemDoodle have a transparent background)</p>
 								<h4>Engines</h4>
-								<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. MolView automatically switches to:</p>
+								<p>You can choose from three different render engines: <b>GLmol</b>, <b>Jmol</b> and <b>ChemDoodle</b>. GLmol is used as default render engine. GLmol and ChemDoodle are based on WebGL, a browser technology to support 3D graphics. If WebGL is not available in your browser, Jmol will be used for all rendering.</p>
+								<p>MolView automatically switches to:</p>
 								<ol>
 									<li><b>Jmol</b> if you execute functions from the Jmol menu</li>
 									<li><b>GLmol</b> if you load macromolecules (due to significant higher performance)</li>
 									<li><b>ChemDoodle</b> if you load a crystal structure (GLmol cannot render crystal structures)</li>
 								</ol>
 								<p>You might want to switch back to GLmol when you do no longer need Jmol or ChemDoodle since GLmol has a better performance.</p>
-								<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest biomolecule display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
+								<p>Note that macromolecules are drawn slightly different in each engine. ChemDoodle provides the finest display. You should, however, avoid using ChemDoodle for very large macromolecules.</p>
 								<h4>Model transformation</h4>
 								<p>You can rotate, pan and zoom the 3D model. Use the right button for rotation, the middle button for translation (except for ChemDoodle) and the scrollwheel for zooming. On touch devices, you can rotate the model with one finger and scale the model using two fingers.</p>
 								<h4>Crystallography</h4>

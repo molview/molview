@@ -272,7 +272,7 @@ var GLmolPlugin = {
 		if(this.view)
 		{
 			this.view.setBackground(0x000000, 0);
-			this.view.redraw();
+			this.view.draw();
 
 			var dataURL = "";
 

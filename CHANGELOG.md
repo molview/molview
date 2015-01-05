@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.2
+## 2.3.2 (2015-1-5)
 
 - Added query parameter preloading to Model
 - Added shortcuts default action prevention
@@ -13,6 +13,7 @@
 - Fixed GLmol in iframe pointer loss bug
 - Fixed wrong font-family in layout vector drawings
 - Fixed AGPL logo scaling in IE
+- Fixed GLmol toDataURL with redraw
 
 ### MolPad
 
@@ -34,7 +35,7 @@
 - Fixed inverted bonds between overlapping atoms
 - Fixed transition from multiTouch to single touch mouseDrag
 
-## 2.3.1
+## 2.3.1 (2014-11-18)
 
 - Revised COD search sorting
 - Revised metadata image loading
