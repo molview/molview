@@ -500,7 +500,7 @@ MPAtom.prototype.getHandler = function()
 				var dx = p.x - mp.pointer.old.r.x;
 				var dy = p.y - mp.pointer.old.r.y;
 
-				if(Math.sqrt(dx * dx, dy * dy) > mp.s.draggingThreshold || this.data.moved)
+				if(Math.sqrt(dx * dx + dy * dy) > mp.s.draggingThreshold || this.data.moved)
 				{
 					this.data.moved = true;
 

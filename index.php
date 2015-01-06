@@ -543,7 +543,7 @@ Query parameters:
 							</li>
 						</ul>
 						<p id="about-links">
-							MolView v2.3.2
+							MolView v2.3.3
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>

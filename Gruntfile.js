@@ -2,6 +2,7 @@ var JSUnits = {
 	base:
 	{
 		src: [
+			'src/js/lib/Polyfill.js',
 			'bower_components/jquery/dist/jquery.min.js',
 			'src/js/lib/JSmol.min.js',
 			'src/js/lib/Detector.js',

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.3
+
+- Fixed cross-origin iframe issue
+- Fixed MolPad drag threshold error
+
 ## 2.3.2 (2015-1-5)
 
 - Added query parameter preloading to Model

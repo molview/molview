@@ -314,177 +314,188 @@ var GLmol = (function()
 		/**
 		 * Bind events
 		 */
-		var me = this, container = jQuery(this.container);
 
-		this.container.on('mousedown touchstart', function(e)
+		this.container.on('DOMMouseScroll mousewheel', this.onScroll.bind(this));
+		this.container.on('mousedown touchstart', this.onPointerDown.bind(this));
+		jQuery(window).on('mousemove touchmove', this.onPointerMove.bind(this));
+		jQuery(window).on('mouseup touchend touchcancel', this.onPointerUp.bind(this));
+
+		/*
+		Fix pointer loss in iframes but break cross-domain iframes
+		if(parent != window)
 		{
-			e.preventDefault();
-			if(!me.scene) return;
+			jQuery(parent).bind('mousemove touchmove', this.onPointerMove.bind(this));
+			jQuery(parent).bind('mouseup touchend touchcancel', this.onPointerUp.bind(this));
+		} */
+	};
 
-			var x = e.pageX,
-				y = e.pageY;
+	//mousewheel scaling
+	GLmol.prototype.onScroll = function(e)
+	{
+		e.preventDefault();
+		if(!this.scene) return;
 
-			if(e.originalEvent.targetTouches && e.originalEvent.targetTouches[0])
-			{
-				x = e.originalEvent.targetTouches[0].pageX;
-				y = e.originalEvent.targetTouches[0].pageY;
-			}
+		var scaleFactor = (this.rotationGroup.position.z - this.CAMERA_Z) * 0.3;
+		if(scaleFactor > 2000) scaleFactor = 2000;
 
-			if(e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1)
-			{
-				var t = e.originalEvent.targetTouches;
-				var dx = t[0].pageX - t[1].pageX;
-				var dy = t[0].pageY - t[1].pageY;
-				me.multiTouchD = Math.sqrt(dx * dx + dy * dy);
-				me.multiTouch = true;
-			}
-
-			if(x == undefined) return;
-
-			me.isDragging = true;
-			me.mouseButton = e.which || 1;
-			me.mouseStartX = x;
-			me.mouseStartY = y;
-			me.cq = me.rotationGroup.quaternion;
-			me.cz = me.rotationGroup.position.z;
-			me.currentModelPos = me.modelGroup.position.clone();
-			me.cslabNear = me.slabNear;
-			me.cslabFar = me.slabFar;
-		});
-
-		//mousewheel scaling
-		this.container.on('DOMMouseScroll mousewheel', function(e)
+		if(e.originalEvent.detail)
 		{
-			e.preventDefault();
-			if(!me.scene) return;
-
-			var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.3;
-			if(scaleFactor > 2000) scaleFactor = 2000;
-
-			if(e.originalEvent.detail)
-			{
-				me.rotationGroup.position.z += scaleFactor * e.originalEvent.detail / 10;
-				me.zoom2D += scaleFactor * e.originalEvent.detail / 10;
-			}
-			else if(e.originalEvent.wheelDelta)
-			{
-				me.rotationGroup.position.z -= scaleFactor * e.originalEvent.wheelDelta / 400;
-				me.zoom2D -= 0.5 * scaleFactor * e.originalEvent.wheelDelta / 400;
-			}
-
-			if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
-			if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
-			if(me.zoom2D < 2) me.zoom2D = 2;
-
-			me.redraw();
-		});
-
-		function onPointerMove(e)
+			this.rotationGroup.position.z += scaleFactor * e.originalEvent.detail / 10;
+			this.zoom2D += scaleFactor * e.originalEvent.detail / 10;
+		}
+		else if(e.originalEvent.wheelDelta)
 		{
-			if(!me.scene) return;
-			if(!me.isDragging) return;
-
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			var x = e.pageX,
-				y = e.pageY;
-
-			if(e.originalEvent.targetTouches && e.originalEvent.targetTouches[0])
-			{
-				x = e.originalEvent.targetTouches[0].pageX;
-				y = e.originalEvent.targetTouches[0].pageY;
-			}
-
-			//multi touch zoom
-			if(me.multiTouch && e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1)
-			{
-				var t = e.originalEvent.targetTouches;
-				var dx = t[0].pageX - t[1].pageX;
-				var dy = t[0].pageY - t[1].pageY;
-
-				var d = Math.sqrt(dx * dx + dy * dy);
-				var ratio = d / me.multiTouchD;
-				me.multiTouchD = d;
-
-				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				me.rotationGroup.position.z += scaleFactor * (-ratio + 1);
-				me.zoom2D *= ratio;
-
-				if(me.rotationGroup.position.z > 10000) me.rotationGroup.position.z = 10000;
-				if(me.rotationGroup.position.z < -149) me.rotationGroup.position.z = -149;
-				if(me.zoom2D < 2) me.zoom2D = 2;
-
-				me.redraw();
-			}
-
-			if(me.multiTouch || x == undefined) return;
-
-			var dx = (x - me.mouseStartX) / me.WIDTH;
-			var dy = (y - me.mouseStartY) / me.HEIGHT;
-			var r = Math.sqrt(dx * dx + dy * dy);
-
-			if(me.mouseButton == 1 && e.ctrlKey && e.shiftKey)//slab
-			{
-				me.slabNear = me.cslabNear + dx * 100;
-				me.slabFar = me.cslabFar + dy * 100;
-			}
-			else if(me.mouseButton == 2)//translate
-			{
-				var scaleFactor = (me.rotationGroup.position.z - me.CAMERA_Z) * 0.85;
-				if(scaleFactor < 20) scaleFactor = 20;
-
-				if(me.webglFailed)
-				{
-					dx *= -1;
-					dy *= -1;
-				}
-
-				var translationByScreen = new TV3(-dx * scaleFactor, -dy * scaleFactor, 0);
-				var q = me.rotationGroup.quaternion;
-				var qinv = new THREE.Quaternion(q.x, q.y, q.z, q.w).inverse().normalize();
-				var translation = qinv.multiplyVector3(translationByScreen);
-
-				me.modelGroup.position.x = me.currentModelPos.x + translation.x;
-				me.modelGroup.position.y = me.currentModelPos.y + translation.y;
-				me.modelGroup.position.z = me.currentModelPos.z + translation.z;
-			}
-			else if(me.mouseButton == 1 && r != 0)//rotate
-			{
-				var rs = Math.sin(r * Math.PI) / r;
-				me.dq.x = Math.cos(r * Math.PI);
-				me.dq.y = 0;
-				me.dq.z = rs * dx;
-				me.dq.w = rs * dy;
-
-				me.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
-				me.rotationGroup.quaternion.multiplySelf(me.dq);
-				me.rotationGroup.quaternion.multiplySelf(me.cq);
-			}
-
-			me.redraw();
+			this.rotationGroup.position.z -= scaleFactor * e.originalEvent.wheelDelta / 400;
+			this.zoom2D -= 0.5 * scaleFactor * e.originalEvent.wheelDelta / 400;
 		}
 
-		function onPointerUp(e)
-		{
-			me.isDragging = false;
+		if(this.rotationGroup.position.z > 10000) this.rotationGroup.position.z = 10000;
+		if(this.rotationGroup.position.z < -149) this.rotationGroup.position.z = -149;
+		if(this.zoom2D < 2) this.zoom2D = 2;
 
-			if(!(e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1))
+		this.redraw();
+	};
+
+	GLmol.prototype.onPointerDown = function(e)
+	{
+		e.preventDefault();
+		if(!this.scene) return;
+
+		var x = e.pageX,
+			y = e.pageY;
+
+		if(e.originalEvent.targetTouches && e.originalEvent.targetTouches[0])
+		{
+			x = e.originalEvent.targetTouches[0].pageX;
+			y = e.originalEvent.targetTouches[0].pageY;
+		}
+
+		if(e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1)
+		{
+			var t = e.originalEvent.targetTouches;
+			var dx = t[0].pageX - t[1].pageX;
+			var dy = t[0].pageY - t[1].pageY;
+			this.multiTouchD = Math.sqrt(dx * dx + dy * dy);
+			this.multiTouch = true;
+		}
+
+		if(x == undefined) return;
+
+		this.isDragging = true;
+		this.mouseButton = e.which || 1;
+		this.mouseStartX = x;
+		this.mouseStartY = y;
+		this.cq = this.rotationGroup.quaternion;
+		this.cz = this.rotationGroup.position.z;
+		this.currentModelPos = this.modelGroup.position.clone();
+		this.cslabNear = this.slabNear;
+		this.cslabFar = this.slabFar;
+	};
+
+	GLmol.prototype.onPointerMove = function(e)
+	{
+		if(!this.scene) return;
+		if(!this.isDragging) return;
+
+		e.preventDefault();
+		e.stopImmediatePropagation();
+
+		if(e.which == 0 || (e.originalEvent.targetTouches && e.originalEvent.targetTouches.length == 0))
+		{
+			this.isDragging = false;
+			this.multiTouch = false;
+			this.redraw();
+			return;
+		}
+
+		var x = e.pageX,
+			y = e.pageY;
+
+		if(e.originalEvent.targetTouches && e.originalEvent.targetTouches[0])
+		{
+			x = e.originalEvent.targetTouches[0].pageX;
+			y = e.originalEvent.targetTouches[0].pageY;
+		}
+
+		//multi touch zoom
+		if(this.multiTouch && e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1)
+		{
+			var t = e.originalEvent.targetTouches;
+			var dx = t[0].pageX - t[1].pageX;
+			var dy = t[0].pageY - t[1].pageY;
+
+			var d = Math.sqrt(dx * dx + dy * dy);
+			var ratio = d / this.multiTouchD;
+			this.multiTouchD = d;
+
+			var scaleFactor = (this.rotationGroup.position.z - this.CAMERA_Z) * 0.85;
+			this.rotationGroup.position.z += scaleFactor * (-ratio + 1);
+			this.zoom2D *= ratio;
+
+			if(this.rotationGroup.position.z > 10000) this.rotationGroup.position.z = 10000;
+			if(this.rotationGroup.position.z < -149) this.rotationGroup.position.z = -149;
+			if(this.zoom2D < 2) this.zoom2D = 2;
+
+			this.redraw();
+		}
+
+		if(this.multiTouch || x == undefined) return;
+
+		var dx = (x - this.mouseStartX) / this.WIDTH;
+		var dy = (y - this.mouseStartY) / this.HEIGHT;
+		var r = Math.sqrt(dx * dx + dy * dy);
+
+		if(this.mouseButton == 1 && e.ctrlKey && e.shiftKey)//slab
+		{
+			this.slabNear = this.cslabNear + dx * 100;
+			this.slabFar = this.cslabFar + dy * 100;
+		}
+		else if(this.mouseButton == 2)//translate
+		{
+			var scaleFactor = (this.rotationGroup.position.z - this.CAMERA_Z) * 0.85;
+			if(scaleFactor < 20) scaleFactor = 20;
+
+			if(this.webglFailed)
 			{
-				me.multiTouch = false;
+				dx *= -1;
+				dy *= -1;
 			}
 
-			me.redraw();
+			var translationByScreen = new TV3(-dx * scaleFactor, -dy * scaleFactor, 0);
+			var q = this.rotationGroup.quaternion;
+			var qinv = new THREE.Quaternion(q.x, q.y, q.z, q.w).inverse().normalize();
+			var translation = qinv.multiplyVector3(translationByScreen);
+
+			this.modelGroup.position.x = this.currentModelPos.x + translation.x;
+			this.modelGroup.position.y = this.currentModelPos.y + translation.y;
+			this.modelGroup.position.z = this.currentModelPos.z + translation.z;
 		}
-
-		jQuery(window).bind('mousemove touchmove', onPointerMove);
-		jQuery(window).bind('mouseup touchend touchcancel', onPointerUp);
-
-		if(parent != window)//fix pointer loss in iframes
+		else if(this.mouseButton == 1 && r != 0)//rotate
 		{
-			jQuery(parent).bind('mousemove touchmove', onPointerMove);
-			jQuery(parent).bind('mouseup touchend touchcancel', onPointerUp);
+			var rs = Math.sin(r * Math.PI) / r;
+			this.dq.x = Math.cos(r * Math.PI);
+			this.dq.y = 0;
+			this.dq.z = rs * dx;
+			this.dq.w = rs * dy;
+
+			this.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
+			this.rotationGroup.quaternion.multiplySelf(this.dq);
+			this.rotationGroup.quaternion.multiplySelf(this.cq);
 		}
+
+		this.redraw();
+	};
+
+	GLmol.prototype.onPointerUp = function(e)
+	{
+		this.isDragging = false;
+
+		if(!(e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 1))
+		{
+			this.multiTouch = false;
+		}
+
+		this.redraw();
 	};
 
 	/**
