@@ -66,7 +66,6 @@ MolPad.prototype.setupEventHandling = function()
 	});
 	this.container.on("mousedown touchstart", function(e)
 	{
-		e.preventDefault();
 		scope.onPointerDown(e);
 		scope.validate();
 	});
@@ -183,6 +182,17 @@ MolPad.prototype.onScroll = function(delta, e)
 
 MolPad.prototype.onPointerDown = function(e)
 {
+	/* if(e.target != this.canvas && this.pointer.handler === undefined ||
+			(e.type == "touchstart" && this.pointer.handler === undefined && e.originalEvent.targetTouches.length > 1))
+	{
+		return;
+	} */
+
+	e.preventDefault();
+	e.stopImmediatePropagation();
+
+	var oe = e.originalEvent;
+
 	/*
 	If this is a mouse event and there are no touches registered:
 		make sure touch grabbing is disabled
@@ -200,14 +210,13 @@ MolPad.prototype.onPointerDown = function(e)
 			return;
 		}
 	}
-	else if(e.type == "touchdown")
+	else if(e.type == "touchstart")
 	{
 		this.pointer.touchGrab = true;
 		this.pointer.touches = oe.targetTouches.length || 1;
 	}
 
 	//retrieve event data
-	var oe = e.originalEvent;
 	this.pointer.old.p.fromPointer(e);
 	this.pointer.old.r.fromRelativePointer(e, this);
 	this.pointer.handler = undefined;
@@ -233,7 +242,6 @@ MolPad.prototype.onPointerDown = function(e)
 			this.undo(true);
 		}
 		//update multitouch event data
-		this.pointer.touches = oe.targetTouches.length;
 		this.pointer.old.c.fromMultiTouchCenter(e);
 		this.pointer.old.d = getMultiTouchDelta(e);
 		this.pointer.handler = this.multiTouchHandler;
@@ -263,11 +271,11 @@ MolPad.prototype.onPointerDown = function(e)
 
 MolPad.prototype.onMouseMoveInContainer = function(e)
 {
-	if(this.pointer.touchGrab)
+	if(this.pointer.touchGrab)//dimiss mouse events if touch is active
 	{
-		return;//dimiss mouse events if touch is active
+		return;
 	}
-	if(this.pointer.handler === undefined)
+	else if(this.pointer.handler === undefined)
 	{
 		this.hoverHandler.onPointerMove(e, this);
 	}
@@ -284,12 +292,11 @@ MolPad.prototype.onMouseOut = function(e)
 
 MolPad.prototype.onPointerMove = function(e)
 {
-	if(e.type == "mousemove" && this.pointer.touchGrab)
+	if(e.type == "mousemove" && this.pointer.touchGrab)//dimiss mouse events if touch is active
 	{
 		return;//dimiss mouse events if touch is active
 	}
-
-	if(this.pointer.handler && this.pointer.handler.onPointerMove)
+	else if(this.pointer.handler && this.pointer.handler.onPointerMove)
 	{
 		e.preventDefault();
 		this.pointer.handler.onPointerMove(e, this);
@@ -332,16 +339,24 @@ MolPad.prototype.onPointerUp = function(e)
 	//only one multi-touch pointer left: switch to dragHandler
 	if(oe.targetTouches)
 	{
-		this.pointer.touches = oe.targetTouches.length;
-
-		if(oe.targetTouches.length == 1)
+		if(oe.targetTouches.length > 1)
+		{
+			//update multitouch event data
+			this.pointer.old.d = getMultiTouchDelta(e);
+			this.pointer.old.c = new MPPoint().fromMultiTouchCenter(e);
+		}
+		else if(oe.targetTouches.length == 1)
 		{
 			//reset old pointer for smooth multi to single transition
 			this.pointer.old.p = new MPPoint().fromPointer(e);
 			this.pointer.old.r.fromRelativePointer(e, this);
-			this.pointer.handler = this.mouseDragHandler;
+
+			if(this.pointer.handler !== undefined)
+			{
+				this.pointer.handler = this.mouseDragHandler;
+			}
 		}
-		else if(oe.targetTouches.length == 0)
+		else
 		{
 			this.pointer.handler = undefined;
 			this.mol.updateCopy();
@@ -467,6 +482,12 @@ MolPad.prototype.mouseDragHandler = {
 MolPad.prototype.multiTouchHandler = {
 	onPointerMove: function(e, mp)
 	{
+		if(e.originalEvent.targetTouches.length <= 1)
+		{
+			mp.dismissHandler();
+			return;
+		}
+
 		var c = new MPPoint().fromMultiTouchCenter(e);
 		var d = getMultiTouchDelta(e);
 
@@ -476,6 +497,8 @@ MolPad.prototype.multiTouchHandler = {
 		mp.scaleAbsolute(d / mp.pointer.old.d,
 			(c.x - mp.offset.left) * mp.devicePixelRatio,
 			(c.y - mp.offset.top) * mp.devicePixelRatio);
+
+		console.log(d, mp.pointer.old.d);
 
 		//update event data
 		mp.pointer.old.c = c;

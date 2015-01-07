@@ -4,6 +4,9 @@
 
 - Fixed cross-origin iframe issue
 - Fixed MolPad drag threshold error
+- Fixed MolPad 3+ touches to 2 touches transition
+- Fixed MolPad mouseDragHandler for each single touch onPointerUp
+- Fixed MolPad multiTouchHandler focus loss without onPointerUp
 
 ## 2.3.2 (2015-1-5)
 

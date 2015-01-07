@@ -215,6 +215,7 @@ var GLmol = (function()
 			var b = bg & 0xFF; b /= 255;
 			this.renderer.setClearColor({r:r,g:g,b:b}, 1.0);
 
+			this.eventTarget = this.renderer.domElement;
 			this.container.append(this.renderer.domElement);
 			this.renderer.setSize(this.WIDTH, this.HEIGHT);
 			jQuery(this.renderer.domElement).css({
@@ -228,6 +229,7 @@ var GLmol = (function()
 		{
 			this.canvas2d = jQuery('<canvas></canvas');
 			this.container.append(this.canvas2d);
+			this.eventTarget = this.canvas2d;
 
 			this.canvas2d[0].height = this.HEIGHT;
 			this.canvas2d[0].width = this.WIDTH;
@@ -358,8 +360,16 @@ var GLmol = (function()
 
 	GLmol.prototype.onPointerDown = function(e)
 	{
-		e.preventDefault();
+		/* if(e.target != this.eventTarget && !this.isDragging ||
+				(e.type == "touchstart" && !this.isDragging && e.originalEvent.targetTouches.length > 1))
+		{
+			return;
+		} */
+
 		if(!this.scene) return;
+
+		e.preventDefault();
+		e.stopImmediatePropagation();
 
 		var x = e.pageX,
 			y = e.pageY;
@@ -400,7 +410,8 @@ var GLmol = (function()
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
-		if(e.which == 0 || (e.originalEvent.targetTouches && e.originalEvent.targetTouches.length == 0))
+		if((e.which == 0 && (e.originalEvent.targetTouches === undefined || e.originalEvent.targetTouches.length == 0))
+		|| (e.originalEvent.targetTouches && e.originalEvent.targetTouches.length == 0))
 		{
 			this.isDragging = false;
 			this.multiTouch = false;

@@ -28,6 +28,7 @@ var MP_STEREO_CIS_TRANS = 3;
 var MP_STEREO_EITHER = 4;
 
 /**
+ * TODO: Add bond junctions display
  * Create new MPBond
  * @param {MolPad} mp
  * @param {Object} obj Configuration
@@ -373,9 +374,10 @@ MPBond.prototype.validate = function()
 		{
 			var ends = multiplyAll(this.mp.s.bond.delta[this.type],
 					this.mp.s.bond.deltaScale);
+			var flippedEnds = multiplyAll(ends, -1);
 			this.cache.bond = {
 				from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
-				to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, ends.reverse())
+				to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, flippedEnds)
 			};
 		}
 	}
