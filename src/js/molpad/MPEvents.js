@@ -498,8 +498,6 @@ MolPad.prototype.multiTouchHandler = {
 			(c.x - mp.offset.left) * mp.devicePixelRatio,
 			(c.y - mp.offset.top) * mp.devicePixelRatio);
 
-		console.log(d, mp.pointer.old.d);
-
 		//update event data
 		mp.pointer.old.c = c;
 		mp.pointer.old.d = d;

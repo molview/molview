@@ -18,6 +18,7 @@ Sketcher
 - Polymer units implementation
 - PoseView like protein display: http://poseview.zbh.uni-hamburg.de
 - URL API for /embed.sketcher (create new inheritance model)
+- SVG export (through canvas context wrapper)
 
 Model
 -----
@@ -27,6 +28,7 @@ Model
 - THREE.js upgrade for GLmol
 - THREE.CanvasRenderer for GLmol
 - THREE.RaytracingRenderer for GLmol
+- HQ OBJ export on top of GLmol
 - CIF loader for GLmol
 - Protein solvents display
 - Dotted H-bonds and SS-bonds for proteins
@@ -39,6 +41,7 @@ Datasets
 - Crystal morphology from Smorf viewer (special collection)
 - Reaction animations using the MACiE database (special collection)
 - Reaction animations from ChemTube3D (special collection)
+- More extensive protein autocomplete dataset
 - PDBe binding in order to replace RCSB
 - ChemSpider PHP binding
 - OpenData spectra from ChemSpider

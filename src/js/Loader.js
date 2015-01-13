@@ -110,8 +110,17 @@ var Loader = {
 
 			Request.PubChem.description(cids, function(data)
 			{
+				/**
+				 * In some cases PubChem will return two objects with the same CID
+				 * containing different metadata. For now, we will only use the first
+				 * object in the array and skip the others.
+				 */
+				var used = [];
 				for(var i = 0; i < data.InformationList.Information.length; i++)
 				{
+					var cid = data.InformationList.Information[i].CID;
+					if(used.indexOf(cid) != -1) continue;
+					used.push(cid);
 					SearchGrid.addEntry(data.InformationList.Information[i]);
 				}
 
@@ -159,9 +168,9 @@ var Loader = {
 				Loader.PubChem.i = 0;
 				Loader.PubChem.loadNextSet();
 			},
-			function()
+			function(statusCode)
 			{
-				Messages.alert("search_fail");
+				Messages.alert(statusCode == 404 ? "search_notfound" : "search_fail");
 			});
 		},
 
@@ -193,17 +202,17 @@ var Loader = {
 						listkey = newlistkey;
 						window.setTimeout(lookup, Loader.PubChem.ssli);
 					},
-					function()//error
+					function(statusCode)//error
 					{
-						Messages.alert("structure_search_fail");
+						Messages.alert("search_fail");
 					});
 				}
 
 				lookup();
 			},
-			function()
+			function(statusCode)
 			{
-				Messages.alert("structure_search_fail");
+				Messages.alert(statusCode == 404 ? "search_notfound" : "search_fail");
 			});
 		},
 

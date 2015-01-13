@@ -127,11 +127,25 @@ function mapArray(array, map)
  * @param  {Float} mult
  * @return {Array}
  */
-function multiplyAll(array, mult)
+function transformArrayMult(array, mult)
 {
 	var ret = []
 	for(var i = 0; i < array.length; i++)
 		ret.push(array[i] * mult);
+	return ret;
+}
+
+/**
+ * Copy array into new array and add value
+ * @param  {Array} array
+ * @param  {Float} val
+ * @return {Array}
+ */
+function transformArrayAdd(array, val)
+{
+	var ret = []
+	for(var i = 0; i < array.length; i++)
+		ret.push(array[i] + val);
 	return ret;
 }
 

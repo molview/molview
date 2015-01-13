@@ -2,6 +2,11 @@
 
 ## 2.3.3
 
+= Added full skeletal bond style to MolPad
+= Added aromatic ring detection to MolPad
+= Added red indicator for congested C atoms to MolPad
+= Added not found message to PubChem search
+= Fixed PubChem search duplicate items
 - Fixed cross-origin iframe issue
 - Fixed MolPad drag threshold error
 - Fixed MolPad 3+ touches to 2 touches transition
@@ -73,7 +78,7 @@
 ## 2.3.x
 
 - Replaced MolEdit with MolPad
-- Added skeleton display to MolPad
+- Added skeletal display to MolPad
 - Added event tracking checkbox
 - Fixed load.php redirect loop
 - Fixed GLmol multiTouch issue

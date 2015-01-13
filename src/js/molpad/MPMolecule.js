@@ -16,6 +16,10 @@
  * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Create new molecule data object
+ * @param {MolPad} mp
+ */
 function MPMolecule(mp)
 {
 	this.atoms = [];
@@ -354,7 +358,7 @@ MPMolecule.prototype.collapseAtoms = function(atoms, reverse)
 
 			var distance = (!this.atoms[atoms[i]].isVisible()
 						 && !this.atoms[j].isVisible() ? 1 : 2)
-							* this.mp.s.atom.radiusScaled;
+							* this.mp.s.atom.selectionRadiusScaled;
 
 			if(this.atoms[atoms[i]].center.inCircle(
 					this.atoms[j].center, distance))

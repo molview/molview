@@ -20,6 +20,7 @@ var MP_BOND_SINGLE = 1;
 var MP_BOND_DOUBLE = 2;
 var MP_BOND_TRIPLE = 3;
 var MP_BOND_WEDGEHASH = 4;
+var MP_BOND_CIS = 5;
 
 var MP_STEREO_NONE = 0;
 var MP_STEREO_UP = 1;
@@ -27,8 +28,11 @@ var MP_STEREO_DOWN = 6;
 var MP_STEREO_CIS_TRANS = 3;
 var MP_STEREO_EITHER = 4;
 
+var MP_BOND_REFINE_NONE = 0;
+var MP_BOND_REFINE_FULL_JOIN = 1;
+var MP_BOND_REFINE_SKELETAL_JOIN = 2;
+
 /**
- * TODO: Add bond junctions display
  * Create new MPBond
  * @param {MolPad} mp
  * @param {Object} obj Configuration
@@ -45,6 +49,7 @@ function MPBond(mp, obj)
 	this.display = "normal";
 	this.hidden = false;//used internally to hide inverted bonds
 	this.valid = false;
+	this.refine = MP_BOND_REFINE_NONE;
 	this.mp.invalidate();
 }
 
@@ -132,7 +137,7 @@ MPBond.prototype.setDisplay = function(type)
 	if(type != this.display)
 	{
 		this.display = type;
-		this.invalidate();
+		this.mp.invalidate();
 	}
 }
 
@@ -255,11 +260,16 @@ MPBond.prototype.invalidateFrom = function(from, updateSecondary)
 {
 	this.valid = false;
 
-	if(from !== undefined)
+	if(from !== undefined && updateSecondary)
 	{
 		var t = from == this.from ? this.to : this.from;
 
-		if(updateSecondary && !this.mp.mol.atoms[t].isVisible())
+		//do not update the secondary bonds if the next atom is visible
+		//because bonds connected to visible atoms are not altered by other bonds
+		//in the refinement process except when the next atom was invisible before
+		//the modification which caused this invalidation, therefore, the
+		//backed up value is used
+		if(!this.mp.mol.atoms[t].wasVisible)
 		{
 			this.mp.mol.atoms[t].invalidateBonds();
 		}
@@ -322,63 +332,98 @@ MPBond.prototype.validate = function()
 			this.cache.bondColor = this.mp.s.bond.color;
 		}
 
-		if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
+		if(this.mp.getScale() >= this.mp.s.bond.singleOnlyScale)
 		{
-			//TODO: connect one double CIS-TRANS bond to [0] endpoint
-			var ends = multiplyAll(this.mp.s.bond.delta[MP_BOND_DOUBLE],
-					this.mp.s.bond.deltaScale);
-			this.cache.ctd = {
-				from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
-				to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, ends)
-			};
-		}
-		else if(this.stereo == MP_STEREO_UP)//wedge bond
-		{
-			this.cache.wedge = {
-				far: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]),
-				near: this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
-						multiplyAll(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
-							this.mp.s.bond.deltaScale))
-			}
-		}
-		else if(this.stereo == MP_STEREO_DOWN)//hash bond
-		{
-			var far = this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]);
-			var near = this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
-					multiplyAll(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
-						this.mp.s.bond.deltaScale));
-
-			var dx1 = near[0].x - far[0].x;
-			var dy1 = near[0].y - far[0].y;
-			var dx2 = near[1].x - far[0].x;
-			var dy2 = near[1].y - far[0].y;
-			var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-			var w = this.mp.s.bond.width * scale;
-			var s = this.mp.s.bond.hashLineSpace * scale;
-
-			this.cache.hashLines = [];
-			while(d1 - s - w > 0)
+			if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 			{
-				var mult = (d1 - s - w) / d1;
-				d1 *= mult;
-				dx1 *= mult; dy1 *= mult;
-				dx2 *= mult; dy2 *= mult;
-
-				this.cache.hashLines.push({
-					from: { x: far[0].x + dx1, y: far[0].y + dy1 },
-					to: { x: far[0].x + dx2, y: far[0].y + dy2 }
-				});
+				this.refine = MP_BOND_REFINE_NONE;
+				var ends = transformArrayMult(this.mp.s.bond.delta[MP_BOND_CIS],
+						this.mp.s.bond.deltaScale);
+				this.cache.ctd = {
+					from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
+					to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, ends)
+				};
 			}
-		}
-		else if(this.type >= MP_BOND_DOUBLE && this.type <= MP_BOND_TRIPLE)
-		{
-			var ends = multiplyAll(this.mp.s.bond.delta[this.type],
-					this.mp.s.bond.deltaScale);
-			var flippedEnds = multiplyAll(ends, -1);
-			this.cache.bond = {
-				from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
-				to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, flippedEnds)
-			};
+			else if(this.stereo == MP_STEREO_UP)//wedge bond
+			{
+				this.refine = MP_BOND_REFINE_FULL_JOIN;
+				this.cache.wedge = {
+					far: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]),
+					near: this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
+							transformArrayMult(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
+								this.mp.s.bond.deltaScale))
+				}
+			}
+			else if(this.stereo == MP_STEREO_DOWN)//hash bond
+			{
+				this.refine = MP_BOND_REFINE_NONE;
+				var far = this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]);
+				var near = this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
+						transformArrayMult(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
+							this.mp.s.bond.deltaScale));
+
+				var dx1 = near[0].x - far[0].x;
+				var dy1 = near[0].y - far[0].y;
+				var dx2 = near[1].x - far[0].x;
+				var dy2 = near[1].y - far[0].y;
+				var d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+				var w = this.mp.s.bond.width * scale;
+				var s = this.mp.s.bond.hashLineSpace * scale;
+
+				this.cache.hashLines = [];
+				while(d1 - s - w > 0)
+				{
+					var mult = (d1 - s - w) / d1;
+					d1 *= mult;
+					dx1 *= mult; dy1 *= mult;
+					dx2 *= mult; dy2 *= mult;
+
+					this.cache.hashLines.push({
+						from: { x: far[0].x + dx1, y: far[0].y + dy1 },
+						to: { x: far[0].x + dx2, y: far[0].y + dy2 }
+					});
+				}
+			}
+			else if(this.type == MP_BOND_DOUBLE)
+			{
+				var array = this.mp.s.bond.delta[MP_BOND_DOUBLE];
+				if(this.mp.s.skeletalDisplay &&//skeleton display is enabled
+						(!this.mp.mol.atoms[this.from].isVisible() || !this.mp.mol.atoms[this.to].isVisible()) &&//and at least one atom is visible
+						//and the bond is not a bond which connects:
+						!(this.mp.mol.atoms[this.from].bonds.length == 1 &&//an atom with no other bonds
+							((this.mp.mol.atoms[this.from].isVisible() &&//which is visible
+							this.mp.mol.atoms[this.to].bonds.length > 2) ||//to any atom that is connected to 2+ other atoms
+							this.mp.mol.atoms[this.to].bonds.length == 1)) &&//or to another atom with no other bonds
+						!(this.mp.mol.atoms[this.to].bonds.length == 1 &&
+							((this.mp.mol.atoms[this.to].isVisible() &&
+							this.mp.mol.atoms[this.from].bonds.length > 2) ||//to any atom that is connected to 2+ other atoms
+							this.mp.mol.atoms[this.from].bonds.length == 1)))
+				{
+					this.refine = MP_BOND_REFINE_SKELETAL_JOIN;
+					array = transformArrayAdd(array, -array[0]);
+				}
+				else
+				{
+					this.refine = MP_BOND_REFINE_FULL_JOIN;
+				}
+				var ends = transformArrayMult(array, this.mp.s.bond.deltaScale);
+				var flippedEnds = transformArrayMult(ends, -1);
+				this.cache.bond = {
+					from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
+					to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, flippedEnds)
+				};
+			}
+			else if(this.type == MP_BOND_TRIPLE)
+			{
+				this.refine = MP_BOND_REFINE_SKELETAL_JOIN;
+				var ends = transformArrayMult(this.mp.s.bond.delta[MP_BOND_TRIPLE],
+						this.mp.s.bond.deltaScale);
+				var flippedEnds = transformArrayMult(ends, -1);
+				this.cache.bond = {
+					from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
+					to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, flippedEnds)
+				};
+			}
 		}
 	}
 }
@@ -454,7 +499,14 @@ MPBond.prototype.drawBond = function()
 		if(this.stereo == MP_STEREO_UP) ctx.fillStyle = this.cache.bondColor;
 	}
 
-	if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
+	if(this.mp.getScale() < this.mp.s.bond.singleOnlyScale)
+	{
+		ctx.beginPath();
+		ctx.moveTo(this.line.from.x, this.line.from.y);
+		ctx.lineTo(this.line.to.x, this.line.to.y);
+		ctx.stroke();
+	}
+	else if(this.stereo == MP_STEREO_CIS_TRANS && this.type == MP_BOND_DOUBLE)
 	{
 		ctx.beginPath();
 		ctx.moveTo(this.cache.ctd.from[0].x, this.cache.ctd.from[0].y);
@@ -468,6 +520,7 @@ MPBond.prototype.drawBond = function()
 		ctx.beginPath();
 		ctx.moveTo(this.cache.wedge.far[0].x, this.cache.wedge.far[0].y);
 		ctx.lineTo(this.cache.wedge.near[0].x, this.cache.wedge.near[0].y);
+		ctx.lineTo(this.line.to.x, this.line.to.y);
 		ctx.lineTo(this.cache.wedge.near[1].x, this.cache.wedge.near[1].y);
 		ctx.closePath();
 		ctx.fill();

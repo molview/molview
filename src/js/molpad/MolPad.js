@@ -22,9 +22,9 @@ var MP_ZOOM_TO_POINTER = 1;
 /**
  * Initialize MolPad in the given container
  * TODO: larger touch targets on high DPI screens
- * TODO: element/valence based handler actions
  * TODO: add implicit hydrogen as subset of MPAtom
- * TODO: collapse newly added implicit H atoms if !skeleton
+ * TODO: collapse newly added implicit H atoms if !skeletal
+ * TODO: always on feature for select tool
  *
  * @param {DOMElement} container
  * @param {Float}      devicePixelRatio
@@ -41,7 +41,7 @@ function MolPad(container, devicePixelRatio, buttons)
 		zoomType: MP_ZOOM_TO_POINTER,
 		zoomSpeed: 0.2,
 		minZoom: 0.01,
-		skeletonDisplay: true,
+		skeletalDisplay: true,
 		relativePadding: 0.15,
 		draggingThreshold: 2,
 		fonts: {
@@ -82,13 +82,14 @@ function MolPad(container, devicePixelRatio, buttons)
 			isotope: {
 				padding: 1
 			},
-			scale: 1,
+			scale: 1,//scale relative to global scale (in order to scale up small scales)
 			radius: 12,//radius around atom center-line
+			selectionRadius: 15,//radius around atom center-line
 			color: "#111",
 			colored: true,
 			lineCap: "round",
 			circleClamp: 15,//label width > circleClamp: atom center = line
-			minAddRotateLength: 12,
+			minAddRotateLength: 15,//min drag length to add a bond to an atom using the atom tool
 			minScale: 1 / 1.5,//12 * 1 / 1.5 = 8
 			maxMiniLabelScale: 1 / 5.0,
 			miniLabelSize: 25,
@@ -111,9 +112,10 @@ function MolPad(container, devicePixelRatio, buttons)
 			delta: [
 				[],//no bond
 				[0],//single bond
-				[-3,3],//double bond
-				[-4,0,4],//triple bond
-				[-5,5]//wedge/hash bond
+				[-4,4],//double bond
+				[-6,0,6],//triple bond
+				[-6,6],//wedge/hash bond
+				[0,8]//cis bond
 			],
 			length: 55,
 			lengthHydrogen: 34,
@@ -122,13 +124,14 @@ function MolPad(container, devicePixelRatio, buttons)
 			colored: true,
 			lineCap: "round",
 			lineJoin: "round",
-			width: 1.5,//in px
-			scale: 1,
-			minScale: 1 / 1.5,
-			minDeltaScale: 1 / 2.0,
-			hashLineSpace: 2,
+			width: 1.5,//in relative px
+			scale: 1,//scale relative to global scale (in order to scale up small scales)
+			minScale: 1 / 1.5,//minimal global scale (below this scale the global scale will be scaled up to keep the visual scaling at this scale)
+			minDeltaScale: 1 / 3.0,//scale factor for s.bond.delta
+			singleOnlyScale: 1 / 5.0,//draw only single bonds below this scale
+			hashLineSpace: 2,//space between hash bond lines in relative px
 			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
-			straightDev: Math.PI / 10
+			straightDev: Math.PI / 10//deviation angle to determine if two bonds are straight
 		},
 		chain: {
 			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
@@ -213,16 +216,16 @@ MolPad.prototype.redo = function()
 	if(this.mol.redo()) this.changed();
 }
 
-MolPad.prototype.displaySkeleton = function(yes)
+MolPad.prototype.displaySkeletal = function(yes)
 {
-	if(yes == this.s.skeletonDisplay) return;
+	if(yes == this.s.skeletalDisplay) return;
 
 	this.dismissHandler();
 
 	if(yes)
 	{
 		//so all new invisible carbons are invalidated
-		this.s.skeletonDisplay = true;
+		this.s.skeletalDisplay = true;
 	}
 	for(var i = 0; i < this.mol.atoms.length; i++)
 	{
@@ -234,7 +237,7 @@ MolPad.prototype.displaySkeleton = function(yes)
 	if(!yes)
 	{
 		//so all invisible carbon atoms are inavalidated before becoming visibile
-		this.s.skeletonDisplay = false;
+		this.s.skeletalDisplay = false;
 	}
 
 	if(yes) this.mol.removeImplicitHydrogen();
@@ -266,7 +269,7 @@ MolPad.prototype.loadMOL = function(mol, forceRemoveHydrogen)
 {
 	this.mol.loadMOL(mol);
 
-	if(this.s.skeletonDisplay || forceRemoveHydrogen)
+	if(this.s.skeletalDisplay || forceRemoveHydrogen)
 	{
 		this.mol.removeImplicitHydrogen();
 	}

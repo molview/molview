@@ -215,12 +215,6 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 	}
 	else if(!this.isVisible())
 	{
-		/**
-		 * TODO: implement full skeleton display
-		 * double/triple bonds fit (in ring)
-		 * connected wedge bonds fit
-		 */
-
 		if(ends.length == 1 && ends[0] == 0)
 		{
 			return [{ x: this.center.x, y: this.center.y }];
@@ -293,5 +287,42 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 			}));
 		}
 		return ret;
+	}
+}
+
+/**
+ * Refines bond display for a more sophisticated skeletal display
+ */
+MPAtom.prototype.refineBonds = function()
+{
+	//create bond map with bond angles
+	var bondMap = [];
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		bondMap.push({
+			i: this.bonds[i],
+			a: this.mp.mol.bonds[this.bonds[i]].getAngle(this)
+		});
+	}
+
+	//convert bondMap to sections
+	var sections = [];
+	for(var i = 0; i < bondMap.length; i++)
+	{
+		var from = i == 0 ? bondMap.length - 1 : i - 1;
+		var to = i;
+		sections.push({
+			from: from,
+			to: to,
+			a: angleBetween(bondMap[from].a, bondMap[to].a)
+		});
+	}
+
+	//loop trough sections
+	for(var i = 0; i < sections.length; i++)
+	{
+		//calculate if section should be refined
+
+		//refine section
 	}
 }

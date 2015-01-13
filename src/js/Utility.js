@@ -252,7 +252,7 @@ function AJAX(obj)
 		obj.error = function(jqXHR, textStatus)
 		{
 			if(textStatus != "error") return;
-			obj.defaultError();
+			obj.defaultError(jqXHR.status);
 		}
 	}
 

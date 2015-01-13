@@ -52,11 +52,12 @@ var Messages = {
 	//fails
 	smiles_load_error: "Failed to load structure from sketcher",
 	smiles_load_error_force: "Failed to load structure from sketcher",
-	load_fail: "Failed to load structure",
-	search_fail: "Search has failed",
+	load_fail: "Failed to load structure from its database",
+	search_fail: "The database did not return any records",
+	search_notfound: "The database could not find any matches",
 	structure_search_fail: "Structure search has failed",
 	remote_noreach: "Remote database is not reachable",
-	crystal_2d_fail: "Failed to load a structural formula for this crystal structure",
+	crystal_2d_fail: "Failed to resolve a 2D representation of this crystal structure",
 	no_protein: "The current 3D model is not a protein",
 
 	permDismiss: [
@@ -149,8 +150,8 @@ var Messages = {
 		- smiles_load_error_force
 		- load_fail
 		- search_fail
+		- search_notfound
 		- remote_noreach
-		- structure_search_fail
 		- crystal_2d_fail
 		- no_protein
 		*/

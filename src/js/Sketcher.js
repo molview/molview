@@ -52,7 +52,7 @@ var Sketcher = {
 					undo: "#action-mp-undo",
 					redo: "#action-mp-redo"
 				});
-			this.molpad.displaySkeleton(Preferences.get("sketcher", "skeletal_formula", true));
+			this.molpad.displaySkeletal(Preferences.get("sketcher", "skeletal_formula", true));
 			this.setColored(Preferences.get("sketcher", "colored", true));
 			this.setTool($("#action-mp-lasso"), "select", { type: "lasso" });
 
@@ -246,11 +246,11 @@ var Sketcher = {
 	{
 		if(this.molpad)
 		{
-			var skeleton = !$("#action-mp-skeletal-formula")
+			var skeletal = !$("#action-mp-skeletal-formula")
 					.toggleClass("tool-button-selected")
 					.hasClass("tool-button-selected");
-			Preferences.set("sketcher", "skeletal_formula", skeleton);
-			this.molpad.displaySkeleton(skeleton);
+			Preferences.set("sketcher", "skeletal_formula", skeletal);
+			this.molpad.displaySkeletal(skeletal);
 		}
 	},
 

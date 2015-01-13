@@ -32,6 +32,7 @@ function MPAtom(mp, obj)
 	this.bonds = obj.bonds !== undefined ? obj.bonds.slice() : [];//deep copy
 	this.selected = obj.selected || false;
 	this.display = "normal";
+	this.wasVisible = true;//used for MPBond.prototype.invalidateFrom
 	this.valid = false;
 	this.mp.invalidate();
 }
@@ -141,7 +142,7 @@ MPAtom.prototype.setDisplay = function(type)
 	if(type != this.display)
 	{
 		this.display = type;
-		this.invalidate(false);
+		this.mp.invalidate();
 	}
 }
 
@@ -246,24 +247,42 @@ MPAtom.prototype.isHidden = function()
  */
 MPAtom.prototype.isVisible = function()
 {
+	this.wasVisible = this._isVisible();
+	return this.wasVisible;
+}
+
+MPAtom.prototype._isVisible = function()
+{
 	if(this.isHidden())
 	{
 		return false;
 	}
-	else if(this.mp.s.skeletonDisplay)
+	else if(this.mp.s.skeletalDisplay)
 	{
 		if(this.element == "C" && this.charge == 0 && this.isotope == 0)
 		{
-			var singleBonds = 0;
-			if(this.bonds.length == 0) return true;
-			else if(this.bonds.length == 2 &&
-				this.mp.mol.bonds[this.bonds[0]].type ==
-				this.mp.mol.bonds[this.bonds[1]].type &&
-				this.mp.mol.bonds[this.bonds[0]].type == MP_BOND_DOUBLE)
+			if(this.bonds.length == 0)
 			{
 				return true;
 			}
-			else return false;
+			else
+			{
+				if(this.bonds.length == 2)
+				{
+					var af = this.mp.mol.bonds[this.bonds[0]].getAngle(this);
+					var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
+					var da = Math.max(af, at) - Math.min(af, at);
+
+					//display atom anyway if the bonds are straight
+					if(da > Math.PI - this.mp.s.bond.straightDev &&
+						da < Math.PI + this.mp.s.bond.straightDev)
+					{
+						return true;
+					}
+					else return false;
+				}
+				else return false;
+			}
 		}
 		return true;
 	}
@@ -410,7 +429,7 @@ MPAtom.prototype.addImplicitHydrogen = function()
 			var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
 			var da = Math.max(af, at) - Math.min(af, at);
 
-			//do only display 2 Hydrogens on one side if the bonds are not parallel
+			//do only display 2 Hydrogens on one side if the bonds are not straight
 			if(da < Math.PI - this.mp.s.bond.straightDev ||
 				da > Math.PI + this.mp.s.bond.straightDev)
 			{
@@ -450,7 +469,7 @@ MPAtom.prototype.addImplicitHydrogen = function()
  * In most cases, only the label size has changed. Since bond vertices are based
  * on the from/to atom center, 2nd level neighbor bonds do not change
  * If the center position is updated, the 2nd level neighbor bonds should also
- * be updated if skeleton display is enabled since 1st level bonds might be used
+ * be updated if skeletal display is enabled since 1st level bonds might be used
  * to fit the 2nd level bond more precisely (if !atom.isVisible())
  *
  * @param {Boolean} newCenter Indicates if the center position is updated
@@ -471,7 +490,7 @@ MPAtom.prototype.invalidate = function(newCenter)
 }
 
 /**
- * Invalidates all connected bonds and itself
+ * Invalidate all connected bonds and itself
  */
 MPAtom.prototype.invalidateBonds =  function()
 {
@@ -486,7 +505,7 @@ MPAtom.prototype.invalidateBonds =  function()
 }
 
 /**
- * Validates this MPAtom by updating all its drawing data
+ * Validate this MPAtom by updating all its drawing data
  */
 MPAtom.prototype.validate = function()
 {
@@ -517,7 +536,7 @@ MPAtom.prototype.drawStateColor = function()
 		if(this.line.area.point)
 		{
 			this.mp.ctx.arc(this.line.area.point.x, this.line.area.point.y,
-					this.mp.s.atom.radiusScaled, 0, PI2);
+					this.mp.s.atom.selectionRadiusScaled, 0, PI2);
 			this.mp.ctx.fillStyle = this.mp.s.atom[d].color;
 			this.mp.ctx.fill();
 		}

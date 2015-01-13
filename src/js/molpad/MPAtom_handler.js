@@ -19,7 +19,6 @@
 MPAtom.prototype.getHandler = function()
 {
 	//TODO: calculateNewBondAngle use lone-pairs and valence
-	//TODO: drag atom if bond count is filled
 
 	if(this.mp.tool.type == "atom")
 	{
@@ -290,7 +289,6 @@ MPAtom.prototype.getHandler = function()
 	}
 	else if(this.mp.tool.type == "chain")
 	{
-		//TODO: straight chain when toggling chain button
 		return {
 			scope: this,
 			data: {
@@ -555,7 +553,7 @@ MPAtom.prototype.handle = function(point, type)
 	this.validate();
 	if(this.isHidden()) return false;//maybe this is hidden in the validation
 
-	var r = this.mp.s.atom.radiusScaled;
+	var r = this.mp.s.atom.selectionRadiusScaled;
 
 	if(this.line.area.point)
 	{

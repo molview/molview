@@ -88,6 +88,7 @@ MolPad.prototype.update = function()
 			this.s.bond.minScale / this.getScale() : 1;
 
 	this.s.atom.radiusScaled = this.s.atom.radius * this.s.atom.scale;
+	this.s.atom.selectionRadiusScaled = this.s.atom.selectionRadius * this.s.atom.scale;
 	this.s.bond.radiusScaled = this.s.bond.radius * this.s.bond.scale;
 
 	//if metrics are changed, atom.scale will always be amongst them
@@ -154,14 +155,14 @@ MolPad.prototype.draw = function()
 					   this.matrix[3], this.matrix[4], this.matrix[5]);
 
 	//draw state (hover/active)
-	this.ctx.lineWidth = 2 * this.s.bond.radius * this.s.bond.scale;
+	this.ctx.lineWidth = 2 * this.s.bond.radiusScaled;
 	this.ctx.lineCap = this.s.bond.lineCap;
 	for(var i = 0; i < this.mol.bonds.length; i++)
 	{
 		this.mol.bonds[i].drawStateColor();
 	}
 
-	this.ctx.lineWidth = 2 * this.s.atom.radius * this.s.atom.scale;
+	this.ctx.lineWidth = 2 * this.s.atom.selectionRadiusScaled;
 	this.ctx.lineCap = this.s.atom.lineCap;
 	for(var i = 0; i < this.mol.atoms.length; i++)
 	{

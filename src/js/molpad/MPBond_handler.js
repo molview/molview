@@ -24,8 +24,6 @@ MPBond.prototype.getHandler = function()
 			scope: this,
 			onPointerDown: function(e, mp)
 			{
-				//TODO: implement up to up bonds
-
 				if(mp.tool.data.type)
 				{
 					this.scope.setType(mp.tool.data.type == MP_BOND_TRIPLE ? MP_BOND_TRIPLE :
@@ -173,7 +171,7 @@ MPBond.prototype.getHandler = function()
 				{
 					this.data.moved = true;
 
-					if(this.scope.isSelected())
+					if(this.scope.isSelected() && mp.sel.cache.atoms.length > 0)
 					{
 						mp.sel.translate(dx, dy);
 					}
@@ -192,11 +190,6 @@ MPBond.prototype.getHandler = function()
 				{
 					var s = !this.scope.isSelected();
 					this.scope.select(s);
-					if(s && mp.sel.cache.atoms.length == 0)
-					{
-						mp.mol.atoms[this.scope.from].select(true);
-						mp.mol.atoms[this.scope.to].select(true);
-					}
 					mp.sel.updateRotationCenter();
 				}
 				else

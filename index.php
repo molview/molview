@@ -602,7 +602,7 @@ Query parameters:
 										</ul>
 									</li>
 									<li><b>Color mode:</b> display atoms and bonds using colors</li>
-									<li><b>Full mode:</b> displays all C and H atoms instead of skeleton display</li>
+									<li><b>Full mode:</b> displays all C and H atoms instead of skeletal display</li>
 									<li><b>Center:</b> centers the whole molecule</li>
 									<li><b>Clean:</b> cleans the structural formula using an external service</li>
 									<li><b>2D to 3D:</b> converts the structural formula into a 3D model</li>
