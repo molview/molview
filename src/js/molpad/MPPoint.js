@@ -111,7 +111,9 @@ MPPoint.prototype.mirror = function(line, side)
 			this.x = 2 * d - this.x;
 			this.y = 2 * d * a - this.y + 2 * c;
 		}
+		return true;
 	}
+	else return false;
 }
 
 /**

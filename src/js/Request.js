@@ -353,7 +353,7 @@ var Request = {
 				success: function(data)
 				{
 					Progress.increment();
-					Request.PubChem.data = data.IdentifierList.CID.reverse();
+					Request.PubChem.data = data.IdentifierList.CID;
 					success();
 				}
 			});

@@ -26,7 +26,7 @@ MolPad.prototype.setupGraphics = function()
 	this.canvas.style.height = this.container.height() + "px";
 	this.container.append(this.canvas);
 
-	this.valid = true;
+	this.redrawRequest = false;
 	this.matrix = [ 1, 0, 0, 1, 0, 0 ];
 	this.ctx = this.canvas.getContext("2d");
 	this.updated = false;//used to update only before a real redraw
@@ -49,20 +49,20 @@ MolPad.prototype.resize = function()
 /**
  * Mark the current drawing as invalid
  */
-MolPad.prototype.invalidate = function()
+MolPad.prototype.requestRedraw = function()
 {
-	this.valid = false;
+	this.redrawRequest = true;
 }
 
 /**
  * Validates the current drawing
  * @return {Boolean} Indicates if a redraw will be executed
  */
-MolPad.prototype.validate = function()
+MolPad.prototype.clearRedrawRequest = function()
 {
-	if(!this.valid)
+	if(this.redrawRequest)
 	{
-		this.valid = true;
+		this.redrawRequest = false;
 		this.redraw();
 		return true;
 	}
@@ -94,15 +94,7 @@ MolPad.prototype.update = function()
 	//if metrics are changed, atom.scale will always be amongst them
 	if(this.s.atom.scale != oldAtomScale)
 	{
-		for(var i = 0; i < this.mol.atoms.length; i++)
-		{
-			this.mol.atoms[i].invalidate();
-		}
-
-		for(var i = 0; i < this.mol.bonds.length; i++)
-		{
-			this.mol.bonds[i].invalidate();
-		}
+		this.mol.invalidateAll();
 	}
 }
 

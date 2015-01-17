@@ -170,8 +170,8 @@ function specialEncodeURIComponent(str)
 {
 	$.fn.sizeChanged = function()
 	{
-		return !(this.data("savedWidth") ==  this.width()
-			&& this.data("savedHeight") ==  this.height());
+		return !(this.data("savedWidth") == this.width()
+			  && this.data("savedHeight") == this.height());
 	}
 
 	$.fn.saveSize = function()

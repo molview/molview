@@ -107,12 +107,16 @@ MPAtom.prototype.getHandler = function()
 							//reset old target atom to normal display
 							//(for the almost impossible case MPAtom.handle is not reached yet)
 							mp.mol.atoms[bond.to].setDisplay("normal");
+							mp.mol.atoms[bond.to].removeBond(bond.index);
 
 							//hide newly created target atom
 							mp.mol.atoms[this.data.atom].setDisplay("hidden");
 
 							//set target atom to new atom
 							bond.setTo(i);
+
+							//invalidate new atom
+							mp.mol.atoms[i].addBond(bond.index);
 
 							//check if new target atom is a neighbor of this atom
 							var n = this.scope.getNeighborBond(i);
@@ -161,6 +165,8 @@ MPAtom.prototype.getHandler = function()
 					}
 
 					//reset target atom
+					mp.mol.atoms[bond.to].removeBond(bond.index);
+					mp.mol.atoms[this.data.atom].addBond(bond.index);
 					bond.setTo(this.data.atom);
 				}
 
@@ -425,7 +431,7 @@ MPAtom.prototype.getHandler = function()
 						this.data.chain.unshift(this.scope._calculateBondVertices(this.data.chain[0], [0])[0]);
 					}
 
-					mp.invalidate();
+					mp.requestRedraw();
 				}
 			},
 			onPointerUp: function(e, mp)

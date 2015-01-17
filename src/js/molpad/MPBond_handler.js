@@ -190,6 +190,13 @@ MPBond.prototype.getHandler = function()
 				{
 					var s = !this.scope.isSelected();
 					this.scope.select(s);
+
+					if(mp.sel.cache.atoms.length == 0)
+					{
+						mp.mol.atoms[this.scope.from].select(s);
+						mp.mol.atoms[this.scope.to].select(s);
+					}
+
 					mp.sel.updateRotationCenter();
 				}
 				else

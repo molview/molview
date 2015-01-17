@@ -17,6 +17,32 @@
  */
 
 /**
+ * MPMolecule validation system
+ * ============================
+ * The molecule graphics are kept up to date by a validation system
+ * MPAtoms and MPBonds both have some cached calculations
+ * These calculations can be marked as invalid. If this is the case, they are
+ * recalculated the next time they are validated. Validation is done prior to
+ * the drawing of the MPAtom or MPBond and in calculations which depend on the
+ * cached calculations of is own object.
+ *
+ * There are some invalidation rules:
+ * - MPAtom:
+ *   - When the setup scaling has changed
+ *   - When the atom center has changed
+ *   - When the atom information has changed
+ *   - When a neighbor atom has moved and this atom is not visible
+ *     or the visibility is toggled
+ * - MPBond:
+ *   - When the setup scaling has changed
+ *   - When the bond information has changed
+ *   - when the center of the from/to MPAtom has changed
+ *   - When an MPBond which is connected to a from/to MPAtom is invalidated
+ *     and the connecting atom is invisible (due to skeletal display) or was
+ *     invisible before the MPBond was invalidated
+ */
+
+/**
  * Create new molecule data object
  * @param {MolPad} mp
  */
@@ -94,9 +120,6 @@ MPMolecule.prototype.loadMOL = function(mol)
 
 	molecule.bonds.each(function(i, bondData)
 	{
-		scope.atoms[bondData.begin].addBond(scope.bonds.length);
-		scope.atoms[bondData.end].addBond(scope.bonds.length);
-
 		var bond = new MPBond(scope.mp, {
 			i: i,
 			type: bondData.type,
@@ -106,6 +129,8 @@ MPMolecule.prototype.loadMOL = function(mol)
 		});
 
 		scope.bonds.push(bond);
+		scope.atoms[bondData.begin].bonds.push(bond.index);
+		scope.atoms[bondData.end].bonds.push(bond.index);
 	});
 }
 
@@ -215,6 +240,22 @@ MPMolecule.prototype.isChanged = function()
 }
 
 /**
+ * Invalidate all atoms and bonds
+ */
+MPMolecule.prototype.invalidateAll = function()
+{
+	for(var i = 0; i < this.atoms.length; i++)
+	{
+		this.atoms[i].invalidate();
+		this.atoms[i].invalidateBondRefinement();
+	}
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		this.bonds[i].invalidate();
+	}
+}
+
+/**
  * Create fragment from fragment data which is created using MPFragment
  * @param  {Object}  fragment Fragment data
  * @param  {Boolean} select   Select all new bonds and atoms [optional]
@@ -249,10 +290,11 @@ MPMolecule.prototype.createFragment = function(fragment, select)
 			selected: select
 		});
 
-		this.atoms[bond.from].addBond(bond.index);
-		this.atoms[bond.to].addBond(bond.index);
 		this.bonds.push(bond);
 		ret.bonds.push(bond.index);
+
+		this.atoms[bond.from].addBond(bond.index);
+		this.atoms[bond.to].addBond(bond.index);
 	}
 
 	if(select)
@@ -403,7 +445,6 @@ MPMolecule.prototype.countCollapses = function(atoms)
 MPMolecule.prototype.removeAtom = function(index)
 {
 	this.atoms.splice(index, 1);
-	this.mp.invalidate();
 	return this.updateIndices();
 }
 

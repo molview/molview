@@ -32,9 +32,8 @@ function MPAtom(mp, obj)
 	this.bonds = obj.bonds !== undefined ? obj.bonds.slice() : [];//deep copy
 	this.selected = obj.selected || false;
 	this.display = "normal";
-	this.wasVisible = true;//used for MPBond.prototype.invalidateFrom
 	this.valid = false;
-	this.mp.invalidate();
+	this.mp.requestRedraw();
 }
 
 MPAtom.prototype.getX = function() { return this.center.x; }
@@ -112,25 +111,25 @@ MPAtom.prototype.setIndex = function(index) { this.index = index; }
 MPAtom.prototype.setCenter = function(x, y)
 {
 	this.center.replace(x, y);
-	this.invalidate(true);
+	this.centerChanged();
 }
 
 MPAtom.prototype.setElement = function(element)
 {
 	this.element = element == "D" ? "H" : element;
-	this.invalidate(false);
+	this.labelChanged();
 }
 
 MPAtom.prototype.setCharge = function(charge)
 {
 	this.charge = charge;
-	this.invalidate(false);
+	this.labelChanged();
 }
 
 MPAtom.prototype.setIsotope = function(isotope)
 {
 	this.isotope = isotope;
-	this.invalidate(false);
+	this.labelChanged();
 }
 
 /**
@@ -142,7 +141,7 @@ MPAtom.prototype.setDisplay = function(type)
 	if(type != this.display)
 	{
 		this.display = type;
-		this.mp.invalidate();
+		this.mp.requestRedraw();
 	}
 }
 
@@ -239,7 +238,7 @@ MPAtom.prototype.isImplicit = function()
  */
 MPAtom.prototype.isHidden = function()
 {
-	return this.display == "hidden" || this.hidden;
+	return this.display == "hidden";
 }
 
 /**
@@ -247,46 +246,7 @@ MPAtom.prototype.isHidden = function()
  */
 MPAtom.prototype.isVisible = function()
 {
-	this.wasVisible = this._isVisible();
-	return this.wasVisible;
-}
-
-MPAtom.prototype._isVisible = function()
-{
-	if(this.isHidden())
-	{
-		return false;
-	}
-	else if(this.mp.s.skeletalDisplay)
-	{
-		if(this.element == "C" && this.charge == 0 && this.isotope == 0)
-		{
-			if(this.bonds.length == 0)
-			{
-				return true;
-			}
-			else
-			{
-				if(this.bonds.length == 2)
-				{
-					var af = this.mp.mol.bonds[this.bonds[0]].getAngle(this);
-					var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
-					var da = Math.max(af, at) - Math.min(af, at);
-
-					//display atom anyway if the bonds are straight
-					if(da > Math.PI - this.mp.s.bond.straightDev &&
-						da < Math.PI + this.mp.s.bond.straightDev)
-					{
-						return true;
-					}
-					else return false;
-				}
-				else return false;
-			}
-		}
-		return true;
-	}
-	else return true;
+	return this.wasVisible == true;
 }
 
 /**
@@ -299,17 +259,31 @@ MPAtom.prototype.select = function(select)
 	{
 		this.selected = select;
 		this.mp.sel.update();
-		this.mp.invalidate();
+		this.mp.requestRedraw();
 	}
 }
 
 /**
  * MPPoint.translate wrapper of atom center point
  */
-MPAtom.prototype.translate = function(x, y)
+MPAtom.prototype.translate = function(dx, dy)
 {
-	this.center.translate(x, y);
-	this.invalidate(true);
+	if(Math.abs(dx) + Math.abs(dy) > 0)
+	{
+		this.center.translate(dx, dy);
+		this.centerChanged();
+	}
+}
+
+/**
+ * MPPoint.mirror wrapper of atom center point
+ */
+MPAtom.prototype.mirror = function(line, s)
+{
+	if(this.center.mirror(line, s))
+	{
+		this.centerChanged();
+	}
 }
 
 /**
@@ -318,7 +292,7 @@ MPAtom.prototype.translate = function(x, y)
 MPAtom.prototype.rotateAroundCenter = function(c, a)
 {
 	this.center.rotateAroundCenter(c, a);
-	this.invalidate(true);
+	this.centerChanged();
 }
 
 /**
@@ -340,8 +314,25 @@ MPAtom.prototype.getBondCount = function()
  */
 MPAtom.prototype.addBond = function(bond)
 {
-	this.bonds.push(bond);
-	this.invalidate(false);
+	if(this.bonds.indexOf(bond) == -1)
+	{
+		this.bonds.push(bond);
+		this.bondsChanged();
+	}
+}
+
+/**
+ * Remove bond index from this atom
+ * @param {Integer} bond Bond index
+ */
+MPAtom.prototype.removeBond = function(bond)
+{
+	var i = this.bonds.indexOf(bond);
+	if(i != -1)
+	{
+		this.bonds.splice(i, 1);
+		this.bondsChanged();
+	}
 }
 
 /**
@@ -353,7 +344,13 @@ MPAtom.prototype.addBond = function(bond)
  */
 MPAtom.prototype.mapBonds = function(map)
 {
+	var length = this.bonds.length;
 	this.bonds = mapArray(this.bonds, map);
+
+	if(this.bonds.length != length)
+	{
+		this.bondsChanged();
+	}
 
 	/* CAUTION: this.invalidate should not be triggerd since it might
 	hurt the mapping process */
@@ -375,7 +372,7 @@ MPAtom.prototype.replaceBond = function(o, n)
 		else this.bonds[idx] = n;
 	}
 
-	this.invalidate(false);
+	this.bondsChanged();
 }
 
 /**
@@ -401,11 +398,11 @@ MPAtom.prototype.addNewBond = function(config)
 		to: atom.index
 	});
 
-	atom.addBond(bond.index);
-	this.addBond(bond.index);
-
 	this.mp.mol.atoms.push(atom);
 	this.mp.mol.bonds.push(bond);
+
+	atom.addBond(bond.index);
+	this.addBond(bond.index);
 
 	return {
 		atom: atom.index,
@@ -447,7 +444,6 @@ MPAtom.prototype.addImplicitHydrogen = function()
 					element: "H"
 				});
 
-				this.invalidate(false);
 				return;
 			}
 		}
@@ -465,43 +461,69 @@ MPAtom.prototype.addImplicitHydrogen = function()
 }
 
 /**
- * Invalidate render data of this atom and neighbor bonds.
- * In most cases, only the label size has changed. Since bond vertices are based
- * on the from/to atom center, 2nd level neighbor bonds do not change
- * If the center position is updated, the 2nd level neighbor bonds should also
- * be updated if skeletal display is enabled since 1st level bonds might be used
- * to fit the 2nd level bond more precisely (if !atom.isVisible())
- *
- * @param {Boolean} newCenter Indicates if the center position is updated
+ * Invalidate cached render data
  */
-MPAtom.prototype.invalidate = function(newCenter)
+MPAtom.prototype.invalidate = function()
 {
 	this.valid = false;
-
-	for(var i = 0; i < this.bonds.length; i++)
-	{
-		/* in some cases, addBond is called while the bond
-		has not been created yet like in MolPad.loadMol */
-		if(this.mp.mol.bonds[this.bonds[i]] === undefined) continue;
-		this.mp.mol.bonds[this.bonds[i]].invalidateFrom(this.index, newCenter);
-	}
-
-	this.mp.invalidate();
+	this.mp.requestRedraw();
 }
 
 /**
- * Invalidate all connected bonds and itself
+ * Invalidate refinement of connected bonds
  */
-MPAtom.prototype.invalidateBonds =  function()
+MPAtom.prototype.invalidateBondRefinement = function()
 {
-	this.valid = false;
+
+}
+
+/**
+ * Invalidation helper called when MPAtom.center has changed
+ */
+MPAtom.prototype.centerChanged = function()
+{
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		this.mp.mol.bonds[this.bonds[i]].invalidate();
+		this.mp.mol.atoms[this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index)].bondsChanged(true);
+	}
+
+	this.invalidateBondRefinement();
+}
+
+/**
+ * Invalidation helper called when MPAtom label has changed
+ */
+MPAtom.prototype.labelChanged = function()
+{
+	this.invalidate();
 
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		this.mp.mol.bonds[this.bonds[i]].invalidateFrom(this.index, false);
+		this.mp.mol.bonds[this.bonds[i]].invalidate();
+		this.mp.mol.atoms[this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index)].bondsChanged();
 	}
 
-	this.mp.invalidate();
+	this.invalidateBondRefinement();
+}
+
+/**
+ * Invalidation helper called when connected bonds are changed
+ */
+MPAtom.prototype.bondsChanged = function(moved)
+{
+	this.invalidateBondRefinement();
+
+	var v = this.calculateVisibility();
+	var w = this.isVisible();
+	if(v != w) this.invalidate();
+	if(moved ? (w ? !v : true) : w != v)
+	{
+		for(var i = 0; i < this.bonds.length; i++)
+		{
+			this.mp.mol.bonds[this.bonds[i]].invalidate();
+		}
+	}
 }
 
 /**
@@ -511,7 +533,7 @@ MPAtom.prototype.validate = function()
 {
 	if(this.valid) return;
 	this.valid = true;
-
+	this.wasVisible = this.calculateVisibility();
 	this.line = this.calculateCenterLine();
 }
 
@@ -525,10 +547,10 @@ MPAtom.prototype.validate = function()
 MPAtom.prototype.drawStateColor = function()
 {
 	this.validate();
-	if(this.isHidden()) return;//maybe this is hidden in the validation
 
-	if(this.display == "hover" || this.display == "active" ||
-			(this.display == "normal" && this.isSelected()))
+	if(!this.isHidden() &&
+			(this.display == "hover" || this.display == "active" ||
+			(this.display == "normal" && this.isSelected())))
 	{
 		var d = this.isSelected() ? "selected" : this.display;
 

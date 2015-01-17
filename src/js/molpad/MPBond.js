@@ -50,7 +50,7 @@ function MPBond(mp, obj)
 	this.hidden = false;//used internally to hide inverted bonds
 	this.valid = false;
 	this.refine = MP_BOND_REFINE_NONE;
-	this.mp.invalidate();
+	this.mp.requestRedraw();
 }
 
 /**
@@ -107,25 +107,25 @@ MPBond.prototype.setIndex = function(index) { this.index = index; }
 MPBond.prototype.setType = function(type)
 {
 	this.type = type;
-	this.invalidate();
+	this.changed();
 }
 
 MPBond.prototype.setStereo = function(stereo)
 {
 	this.stereo = stereo;
-	this.invalidate();
+	this.changed();
 }
 
 MPBond.prototype.setFrom = function(from)
 {
 	this.from = from;
-	this.invalidate();
+	this.changed();
 }
 
 MPBond.prototype.setTo = function(to)
 {
 	this.to = to;
-	this.invalidate();
+	this.changed();
 }
 
 /**
@@ -137,7 +137,7 @@ MPBond.prototype.setDisplay = function(type)
 	if(type != this.display)
 	{
 		this.display = type;
-		this.mp.invalidate();
+		this.mp.requestRedraw();
 	}
 }
 
@@ -150,7 +150,7 @@ MPBond.prototype.replaceAtom = function(i, n)
 {
 	if(this.from == i && this.to != n) this.from = n;
 	else if(this.to == i && this.from != n) this.to = n;
-	this.invalidate();
+	this.changed();
 }
 
 /**
@@ -236,46 +236,27 @@ MPBond.prototype.select = function(select)
 	{
 		this.selected = select;
 		this.mp.sel.update();
-		this.mp.invalidate();
+		this.mp.requestRedraw();
 	}
 }
 
 /**
  * Invalidate this bond
- * If this bond changes, secondary bonds of invisible atom are always invalidated
  */
 MPBond.prototype.invalidate = function()
 {
 	this.valid = false;
-
-	if(!this.mp.mol.atoms[this.from].isVisible())
-		this.mp.mol.atoms[this.from].invalidateBonds();
-	if(!this.mp.mol.atoms[this.to].isVisible())
-		this.mp.mol.atoms[this.to].invalidateBonds();
-
-	this.mp.invalidate();
+	this.mp.requestRedraw();
 }
 
-MPBond.prototype.invalidateFrom = function(from, updateSecondary)
+/**
+ * Invalidation helper called when bond is changed
+ */
+MPBond.prototype.changed = function()
 {
-	this.valid = false;
-
-	if(from !== undefined && updateSecondary)
-	{
-		var t = from == this.from ? this.to : this.from;
-
-		//do not update the secondary bonds if the next atom is visible
-		//because bonds connected to visible atoms are not altered by other bonds
-		//in the refinement process except when the next atom was invisible before
-		//the modification which caused this invalidation, therefore, the
-		//backed up value is used
-		if(!this.mp.mol.atoms[t].wasVisible)
-		{
-			this.mp.mol.atoms[t].invalidateBonds();
-		}
-	}
-
-	this.mp.invalidate();
+	this.invalidate();
+	this.mp.mol.atoms[this.from].bondsChanged();
+	this.mp.mol.atoms[this.to].bondsChanged();
 }
 
 MPBond.prototype.validate = function()

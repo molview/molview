@@ -138,6 +138,7 @@ var MolView = {
 
 			if(!$("#main-layer").is(":hidden"))
 			{
+				$("#main-layer").saveSize();
 				Sketcher.resize();
 				Model.resize();
 			}

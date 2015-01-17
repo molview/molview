@@ -95,8 +95,7 @@ MPSelection.prototype.mirror = function(line, pointer)
 
         for(var i = 0; i < this.cache.atoms.length; i++)
         {
-            this.mp.mol.atoms[this.cache.atoms[i]].center.mirror(line, s);
-            this.mp.mol.atoms[this.cache.atoms[i]].invalidate();
+            this.mp.mol.atoms[this.cache.atoms[i]].mirror(line, s);
         }
     }
 }
@@ -111,7 +110,7 @@ MPSelection.prototype.clear = function()
 	}, true, true);
 	this.center = undefined;
 	this.update();
-	this.mp.invalidate();
+	this.mp.requestRedraw();
 }
 
 /**

@@ -2,16 +2,16 @@
 
 ## 2.3.3
 
-= Added full skeletal bond style to MolPad
-= Added aromatic ring detection to MolPad
-= Added red indicator for congested C atoms to MolPad
-= Added not found message to PubChem search
-= Fixed PubChem search duplicate items
+- Revised MolPad invalidation logic
+- Added not found message to PubChem search
+- Fixed PubChem search duplicate items
 - Fixed cross-origin iframe issue
 - Fixed MolPad drag threshold error
 - Fixed MolPad 3+ touches to 2 touches transition
 - Fixed MolPad mouseDragHandler for each single touch onPointerUp
 - Fixed MolPad multiTouchHandler focus loss without onPointerUp
+- Fixed main layer sizeChanged error by adding saveSize to window.onresize
+- Removed PubChem search results reversing (PubChem search API sorting update)
 
 ## 2.3.2 (2015-1-5)
 

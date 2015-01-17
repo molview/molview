@@ -67,27 +67,27 @@ MolPad.prototype.setupEventHandling = function()
 	this.container.on("mousedown touchstart", function(e)
 	{
 		scope.onPointerDown(e);
-		scope.validate();
+		scope.clearRedrawRequest();
 	});
 	this.container.on("mousemove", function(e)
 	{
 		scope.onMouseMoveInContainer(e);
-		scope.validate();
+		scope.clearRedrawRequest();
 	});
 	this.container.on("mouseout", function(e)
 	{
 		scope.onMouseOut(e);
-		scope.validate();
+		scope.clearRedrawRequest();
 	});
 	jQuery(window).on("mousemove touchmove", function(e)
 	{
 		scope.onPointerMove(e);
-		scope.validate();
+		scope.clearRedrawRequest();
 	});
 	jQuery(window).on("mouseup touchend touchcancel", function(e)
 	{
 		scope.onPointerUp(e);
-		scope.validate();
+		scope.clearRedrawRequest();
 	});
 	jQuery(window).on("blur", function(e)
 	{
@@ -124,7 +124,7 @@ MolPad.prototype.setupEventHandling = function()
 		if(e.keyCode == 46)//forward backspace
 		{
 			scope.sel.remove();
-			scope.validate();
+			scope.clearRedrawRequest();
 		}
 	});
 	jQuery(document).on("keyup", function(e)
@@ -422,7 +422,7 @@ MolPad.prototype.dismissHandler = function()
 	this.setCursor("default");
 	this.pointer.touches = 0;
 	this.pointer.handler = undefined;
-	this.validate();
+	this.clearRedrawRequest();
 	this.mol.updateCopy();
 }
 
@@ -466,7 +466,7 @@ MolPad.prototype.mouseDragHandler = {
 					 (p.y - mp.pointer.old.p.y) * mp.devicePixelRatio);
 
 		mp.pointer.old.p = p;
-		mp.invalidate();
+		mp.requestRedraw();
 	},
 	onPointerUp: function(e, mp)
 	{
@@ -615,12 +615,12 @@ MolPad.prototype.selectionToolHandler = {
 			mp.mol.bonds[this.data.selAdd.bonds[i]].select(true);
 		}
 
-		mp.invalidate();
+		mp.requestRedraw();
 	},
 	onPointerUp: function(e, mp)
 	{
 		mp.sel.updateRotationCenter();
-		mp.invalidate();
+		mp.requestRedraw();
 	}
 }
 

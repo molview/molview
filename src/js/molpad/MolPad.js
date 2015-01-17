@@ -216,42 +216,27 @@ MolPad.prototype.redo = function()
 	if(this.mol.redo()) this.changed();
 }
 
-MolPad.prototype.displaySkeletal = function(yes)
+MolPad.prototype.setSkeletalDisplay = function(on)
 {
-	if(yes == this.s.skeletalDisplay) return;
+	if(on == this.s.skeletalDisplay) return;
 
 	this.dismissHandler();
+	this.s.skeletalDisplay = on;
 
-	if(yes)
-	{
-		//so all new invisible carbons are invalidated
-		this.s.skeletalDisplay = true;
-	}
-	for(var i = 0; i < this.mol.atoms.length; i++)
-	{
-		if(!this.mol.atoms[i].isVisible())
-		{
-			this.mol.atoms[i].invalidate(false);
-		}
-	}
-	if(!yes)
-	{
-		//so all invisible carbon atoms are inavalidated before becoming visibile
-		this.s.skeletalDisplay = false;
-	}
-
-	if(yes) this.mol.removeImplicitHydrogen();
+	if(on) this.mol.removeImplicitHydrogen();
 	else this.mol.addImplicitHydrogen();
 
-	this.validate();
+	this.mol.invalidateAll();
+
+	this.clearRedrawRequest();
 	this.mol.updateCopy();
 }
 
-MolPad.prototype.setColored = function(yes)
+MolPad.prototype.setColored = function(on)
 {
-	this.s.atom.colored = this.s.bond.colored = yes;
+	this.s.atom.colored = this.s.bond.colored = on;
 	this.s.fonts.isotope.fontStyle = this.s.fonts.element.fontStyle =
-			this.s.fonts.charge.fontStyle = yes ? "bold" : "normal";
+			this.s.fonts.charge.fontStyle = on ? "bold" : "normal";
 	this.redraw(true);
 }
 

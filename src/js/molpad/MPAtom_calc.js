@@ -290,6 +290,46 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 	}
 }
 
+MPAtom.prototype.calculateVisibility = function()
+{
+	if(this.isHidden())
+	{
+		return false;
+	}
+	else if(this.mp.s.skeletalDisplay)
+	{
+		if(this.element == "C" && this.charge == 0 && this.isotope == 0)
+		{
+			if(this.bonds.length == 0)
+			{
+				return true;
+			}
+			else
+			{
+				if(this.bonds.length == 2
+				&& this.mp.mol.bonds[this.bonds[0]].type == this.mp.mol.bonds[this.bonds[1]].type
+				&& this.mp.mol.bonds[this.bonds[0]].stereo == this.mp.mol.bonds[this.bonds[1]].stereo)
+				{
+					var af = this.mp.mol.bonds[this.bonds[0]].getAngle(this);
+					var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
+					var da = Math.max(af, at) - Math.min(af, at);
+
+					//display atom anyway if the bonds are straight
+					if(da > Math.PI - this.mp.s.bond.straightDev &&
+						da < Math.PI + this.mp.s.bond.straightDev)
+					{
+						return true;
+					}
+					else return false;
+				}
+				else return false;
+			}
+		}
+		return true;
+	}
+	else return true;
+}
+
 /**
  * Refines bond display for a more sophisticated skeletal display
  */
