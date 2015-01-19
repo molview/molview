@@ -91,7 +91,7 @@ var MPFragments = {
 			frag.bonds.push({
 				from: i,
 				to: i + 1 < vertices ? i + 1 : 0,
-				type: alternating != 0 ? (i % 2 == (2 - alternating) ? MP_BOND_SINGLE : MP_BOND_DOUBLE) : MP_BOND_SINGLE
+				type: alternating !== 0 ? (i % 2 === (2 - alternating) ? MP_BOND_SINGLE : MP_BOND_DOUBLE) : MP_BOND_SINGLE
 			});
 		}
 

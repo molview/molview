@@ -46,16 +46,16 @@ var Loader = {
 		History.push(type, content, forceReplace);
 
 		$("#model-source").removeClass("disabled");
-		if(type == "q" || type == "smiles") $("#model-source")
+		if(type === "q" || type === "smiles") $("#model-source")
 			.text("3D model source")
 			.removeAttr().addClass("disabled");
-		else if(type == "cid") $("#model-source")
+		else if(type === "cid") $("#model-source")
 			.text("PubChem source")
 			.attr("href", Request.PubChem.staticURL(content));
-		else if(type == "pdbid") $("#model-source")
+		else if(type === "pdbid") $("#model-source")
 			.text("RCSB source")
 			.attr("href", Request.RCSB.staticURL(content));
-		else if(type == "codid") $("#model-source")
+		else if(type === "codid") $("#model-source")
 			.text("COD source")
 			.attr("href", Request.COD.staticURL(content));
 	},
@@ -119,7 +119,7 @@ var Loader = {
 				for(var i = 0; i < data.InformationList.Information.length; i++)
 				{
 					var cid = data.InformationList.Information[i].CID;
-					if(used.indexOf(cid) != -1) continue;
+					if(used.indexOf(cid) !== -1) continue;
 					used.push(cid);
 					SearchGrid.addEntry(data.InformationList.Information[i]);
 				}
@@ -170,7 +170,7 @@ var Loader = {
 			},
 			function(statusCode)
 			{
-				Messages.alert(statusCode == 404 ? "search_notfound" : "search_fail");
+				Messages.alert(statusCode === 404 ? "search_notfound" : "search_fail");
 			});
 		},
 
@@ -212,7 +212,7 @@ var Loader = {
 			},
 			function(statusCode)
 			{
-				Messages.alert(statusCode == 404 ? "search_notfound" : "search_fail");
+				Messages.alert(statusCode === 404 ? "search_notfound" : "search_fail");
 			});
 		},
 
@@ -542,7 +542,7 @@ var Loader = {
 				{
 					Progress.increment();
 
-					if(data.records[0].smiles == "")
+					if(data.records[0].smiles === "")
 					{
 						cb(null);
 					}
@@ -635,7 +635,7 @@ var Loader = {
 								{
 									Progress.increment();
 
-									if(name.toLowerCase() == PubChem_name.toLowerCase())
+									if(name.toLowerCase() === PubChem_name.toLowerCase())
 									{
 										//convert name to PubChem CID
 										nameToCID(name);
@@ -645,14 +645,14 @@ var Loader = {
 							}
 							else
 							{
-								if(name === undefined || name == "MolView")
+								if(name === undefined || name === "MolView")
 								{
 									//convert CODID to name
 									Request.COD.name(codid, function(data)
 									{
 										Progress.increment();
 
-										if(data.records[0].name != "")
+										if(data.records[0].name !== "")
 										{
 											//convert name to PubChem CID
 											nameToCID(data.records[0].name);
@@ -750,7 +750,7 @@ var Loader = {
 
 			document.title = "MolView";
 
-			if(MolView.layout == "sketcher")
+			if(MolView.layout === "sketcher")
 			{
 				MolView.setLayout("model");
 			}

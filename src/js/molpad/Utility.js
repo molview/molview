@@ -18,15 +18,6 @@
 
 var PI2 = 2 * Math.PI;
 
-function lineLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4)
-{
-    var div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    return {
-        x: ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / div,
-        y: ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / div
-    };
-}
-
 /**
  * Calculate on which side b is relative to a in counter clockwise direction
  * @param {Float} a
@@ -156,7 +147,7 @@ function transformArrayAdd(array, val)
  */
 function oneOf(nail, haystack)
 {
-	return haystack.indexOf(nail) != -1;
+	return haystack.indexOf(nail) !== -1;
 }
 
 function getMultiTouchDelta(e)

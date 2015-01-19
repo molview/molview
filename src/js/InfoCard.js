@@ -93,7 +93,7 @@ var InfoCard = {
 	 */
 	update: function(smiles)
 	{
-		if(this.data["smiles"] != smiles && smiles != "")
+		if(this.data["smiles"] !== smiles && smiles !== "")
 		{
 			$(".chemprop").html("").val("").addClass("chemprop-loading");
 			$("#molecule-image").attr("src", emptyImage);
@@ -236,7 +236,7 @@ var InfoCard = {
 	 */
 	updateImage: function()
 	{
-		if(InfoCard["smiles"] == "") return;
+		if(InfoCard["smiles"] === "") return;
 
 		var img = new Image();
 		img.onload = function()
@@ -265,7 +265,7 @@ var InfoCard = {
 	{
 		InfoCard.getProperty(id, function(prop)
 		{
-			if(id == "mw") prop += " u";//append Units unit (u)
+			if(id === "mw") prop += " u";//append Units unit (u)
 			var out = $("#prop-" + id);
 			if(out.is("input")) out.val(prop).removeClass("chemprop-loading");
 			else out.html(prop).removeClass("chemprop-loading");
@@ -307,7 +307,7 @@ var InfoCard = {
 	{
 		function _fail()
 		{
-			if(id == "isomericsmiles")
+			if(id === "isomericsmiles")
 			{
 				InfoCard.data["isomericsmiles"] = InfoCard.data["smiles"];
 				success(InfoCard.data["isomericsmiles"]);
@@ -324,7 +324,7 @@ var InfoCard = {
 		}
 		else//retrieve property
 		{
-			if(id == "cid")
+			if(id === "cid")
 			{
 				Request.PubChem.smilesToCID(InfoCard.data["smiles"], function(cid)
 				{
@@ -345,11 +345,11 @@ var InfoCard = {
 
 	getPropertyFromPubChem: function(id, success, fail)
 	{
-		if(InfoCard.data["cid"] == -1)
+		if(InfoCard.data["cid"] === -1)
 		{
 			InfoCard.getPropertyFromCIR(id, success, fail);
 		}
-		else if(InfoCard.data["cid"] && id == "cas")
+		else if(InfoCard.data["cid"] && id === "cas")
 		{
 			Request.PubChem.casNumber(InfoCard.data["cid"], function(cas)
 			{
@@ -415,11 +415,11 @@ var InfoCard = {
 				InfoCard.data["isomericsmiles"] || InfoCard.data["smiles"],
 				CIRProps[id], function(data)
 			{
-				if(id == "formula")
+				if(id === "formula")
 				{
 					InfoCard.data["formula"] = InfoCard.processFormula(data);
 				}
-				else if(id == "sysname")
+				else if(id === "sysname")
 				{
 					InfoCard.data["sysname"] = humanize(data);
 				}
@@ -451,7 +451,7 @@ var InfoCard = {
 		{
 			if(InfoCard.PubChem_cache[PubChemProps[id]] !== undefined)
 			{
-				if(id == "formula")
+				if(id === "formula")
 				{
 					InfoCard.data[id] = InfoCard.processFormula(
 						InfoCard.PubChem_cache[PubChemProps[id]]);

@@ -68,6 +68,36 @@ MPMolecule.prototype.clear = function()
 }
 
 /**
+ * Invalidate all atoms and bonds
+ */
+MPMolecule.prototype.invalidateAll = function()
+{
+	for(var i = 0; i < this.atoms.length; i++)
+	{
+		this.atoms[i].invalidate();
+	}
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		this.bonds[i].invalidate();
+	}
+}
+
+/**
+ * Validate all atoms and bonds
+ */
+MPMolecule.prototype.validateAll = function()
+{
+	for(var i = 0; i < this.atoms.length; i++)
+	{
+		this.atoms[i].validate();
+	}
+	for(var i = 0; i < this.bonds.length; i++)
+	{
+		this.bonds[i].validate();
+	}
+}
+
+/**
  * Execute callback for all bonds and or atoms
  * @param {Function} callback
  * @param {Boolean}  atoms
@@ -147,7 +177,7 @@ MPMolecule.prototype.getMOL = function()
  */
 MPMolecule.prototype.getSMILES = function()
 {
-	if(this.atoms.length == 0) throw new Error("No atoms found");
+	if(this.atoms.length === 0) throw new Error("No atoms found");
 	return new chem.SmilesSaver().saveMolecule(this.getKetcherData());
 }
 
@@ -236,23 +266,7 @@ MPMolecule.prototype.getFingerprint = function()
  */
 MPMolecule.prototype.isChanged = function()
 {
-	return this.getFingerprint() != this.copy.fingerprint;
-}
-
-/**
- * Invalidate all atoms and bonds
- */
-MPMolecule.prototype.invalidateAll = function()
-{
-	for(var i = 0; i < this.atoms.length; i++)
-	{
-		this.atoms[i].invalidate();
-		this.atoms[i].invalidateBondRefinement();
-	}
-	for(var i = 0; i < this.bonds.length; i++)
-	{
-		this.bonds[i].invalidate();
-	}
+	return this.getFingerprint() !== this.copy.fingerprint;
 }
 
 /**
@@ -324,7 +338,7 @@ MPMolecule.prototype.rotateAtoms = function(center, point, atoms, currentAngle, 
 	if(clampSteps !== undefined) a = clampedAngle(startAngle, center, point, clampSteps);
 	else a = center.angleTo(point);
 
-	if(a != currentAngle || forced)
+	if(a !== currentAngle || forced)
 	{
 		for(var i = 0; i < atoms.length; i++)
 		{
@@ -356,7 +370,7 @@ MPMolecule.prototype.mergeAtoms = function(src, dest, reverse)
 		already included in the current set of bonds */
 		var n = _dest.getNeighborBond(this.bonds[_src.bonds[j]]
 				.getOppositeAtom(src));
-		if(n == -1)
+		if(n === -1)
 		{
 			this.bonds[_src.bonds[j]].replaceAtom(src, dest);
 			_dest.addBond(_src.bonds[j]);
@@ -368,7 +382,7 @@ MPMolecule.prototype.mergeAtoms = function(src, dest, reverse)
 					|| this.bonds[n].isSelected())
 
 			//always force single bond over any other bond types
-			if(this.bonds[_src.bonds[j]].type == MP_BOND_SINGLE)
+			if(this.bonds[_src.bonds[j]].type === MP_BOND_SINGLE)
 			{
 				this.bonds[n].setType(MP_BOND_SINGLE);
 			}
@@ -376,7 +390,7 @@ MPMolecule.prototype.mergeAtoms = function(src, dest, reverse)
 	}
 
 	//carbon atoms are less important
-	if(_dest.element == "C")
+	if(_dest.element === "C")
 	{
 		_dest.setElement(_src.element);
 	}
@@ -396,7 +410,7 @@ MPMolecule.prototype.collapseAtoms = function(atoms, reverse)
 	{
 		for(var j = 0; j < this.atoms.length; j++)
 		{
-			if(atoms.indexOf(j) != -1) continue;//skip input atoms
+			if(atoms.indexOf(j) !== -1) continue;//skip input atoms
 
 			var distance = (!this.atoms[atoms[i]].isVisible()
 						 && !this.atoms[j].isVisible() ? 1 : 2)
@@ -425,7 +439,7 @@ MPMolecule.prototype.countCollapses = function(atoms)
 	{
 		for(var j = 0; j < this.atoms.length; j++)
 		{
-			if(atoms.indexOf(j) != -1) continue;//skip input atoms
+			if(atoms.indexOf(j) !== -1) continue;//skip input atoms
 
 			if(this.atoms[atoms[i]].center.inCircle(
 					this.atoms[j].center, this.mp.s.atom.radiusScaled))
@@ -458,12 +472,12 @@ MPMolecule.prototype.removeBond = function(index)
 	var t = this.bonds[index].to;
 
 	//remove connected atoms if this is the last bond
-	if(this.atoms[f].bonds.length == 1)
+	if(this.atoms[f].bonds.length === 1)
 	{
 		this.atoms.splice(f, 1);
 		if(t > f) t--;
 	}
-	if(this.atoms[t].bonds.length == 1)
+	if(this.atoms[t].bonds.length === 1)
 	{
 		this.atoms.splice(t, 1);
 	}
@@ -522,7 +536,7 @@ MPMolecule.prototype.updateIndices = function()
 
 MPMolecule.prototype.getBBox = function()
 {
-	if(this.atoms.length == 0)
+	if(this.atoms.length === 0)
 	{
 		return {
 			x: 0,
@@ -542,7 +556,7 @@ MPMolecule.prototype.getBBox = function()
 		var px2 = l.area.right !== undefined ? l.area.right.x : l.area.point.x;
 		var py = l.area.left !== undefined ? l.area.left.y : l.area.point.y;
 
-		if(bottomLeft == undefined)
+		if(bottomLeft === undefined)
 		{
 			bottomLeft = { x: px1, y: py };
 		}
@@ -552,7 +566,7 @@ MPMolecule.prototype.getBBox = function()
 			if(bottomLeft.y > py) bottomLeft.y = py;
 		}
 
-		if(topRight == undefined)
+		if(topRight === undefined)
 		{
 			topRight = { x: px2, y: py };
 		}
@@ -583,7 +597,7 @@ MPMolecule.prototype.updateCopy = function()
 {
     var fingerprint = this.getFingerprint();
 
-    if(fingerprint != this.copy.fingerprint)
+    if(fingerprint !== this.copy.fingerprint)
     {
         this.reverseStack = [];
         this.stack.push(this.copy);

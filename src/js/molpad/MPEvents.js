@@ -121,7 +121,7 @@ MolPad.prototype.setupEventHandling = function()
 	{
 		scope.keys.ctrl = e.ctrlKey;
 
-		if(e.keyCode == 46)//forward backspace
+		if(e.keyCode === 46)//forward backspace
 		{
 			scope.sel.remove();
 			scope.clearRedrawRequest();
@@ -141,7 +141,7 @@ MolPad.prototype.onScroll = function(delta, e)
 	p.x -= this.offset.left;
 	p.y -= this.offset.top;
 
-	if(this.s.zoomType == MP_ZOOM_TO_COG)
+	if(this.s.zoomType === MP_ZOOM_TO_COG)
 	{
 		/*
 		Transform molecule center into absolute point;
@@ -182,8 +182,8 @@ MolPad.prototype.onScroll = function(delta, e)
 
 MolPad.prototype.onPointerDown = function(e)
 {
-	/* if(e.target != this.canvas && this.pointer.handler === undefined ||
-			(e.type == "touchstart" && this.pointer.handler === undefined && e.originalEvent.targetTouches.length > 1))
+	/* if(e.target !== this.canvas && this.pointer.handler === undefined ||
+			(e.type === "touchstart" && this.pointer.handler === undefined && e.originalEvent.targetTouches.length > 1))
 	{
 		return;
 	} */
@@ -199,9 +199,9 @@ MolPad.prototype.onPointerDown = function(e)
 	If touch grabbing is disabled and this is a mouse event:
 		Abort handler
 	 */
-	if(e.type == "mousedown")
+	if(e.type === "mousedown")
 	{
-		if(this.pointer.touches == 0)
+		if(this.pointer.touches === 0)
 		{
 			this.pointer.touchGrab = false;
 		}
@@ -210,7 +210,7 @@ MolPad.prototype.onPointerDown = function(e)
 			return;
 		}
 	}
-	else if(e.type == "touchstart")
+	else if(e.type === "touchstart")
 	{
 		this.pointer.touchGrab = true;
 		this.pointer.touches = oe.targetTouches.length || 1;
@@ -246,19 +246,19 @@ MolPad.prototype.onPointerDown = function(e)
 		this.pointer.old.d = getMultiTouchDelta(e);
 		this.pointer.handler = this.multiTouchHandler;
 	}
-	else if(e.which == 1 || (oe.targetTouches && oe.targetTouches.length == 1))
+	else if(e.which === 1 || (oe.targetTouches && oe.targetTouches.length === 1))
 	{
 		//redefine handler and execute onPointerDown
 		this.handleEvent(this.pointer.old.r, "active", function(obj)
 		{
 			this.pointer.handler = obj.getHandler(this);
 		});
-		if(this.pointer.handler == undefined)
+		if(this.pointer.handler === undefined)
 		{
 			this.pointer.handler = this.getHandler();
 		}
 	}
-	else if(e.which == 2 || e.which == 3)
+	else if(e.which === 2 || e.which === 3)
 	{
 		this.pointer.handler = this.mouseDragHandler;
 	}
@@ -292,7 +292,7 @@ MolPad.prototype.onMouseOut = function(e)
 
 MolPad.prototype.onPointerMove = function(e)
 {
-	if(e.type == "mousemove" && this.pointer.touchGrab)//dimiss mouse events if touch is active
+	if(e.type === "mousemove" && this.pointer.touchGrab)//dimiss mouse events if touch is active
 	{
 		return;//dimiss mouse events if touch is active
 	}
@@ -305,7 +305,7 @@ MolPad.prototype.onPointerMove = function(e)
 
 MolPad.prototype.onPointerUp = function(e)
 {
-	if(e.type == "mouseup" && this.pointer.touchGrab)
+	if(e.type === "mouseup" && this.pointer.touchGrab)
 	{
 		return;//dimiss mouse events if touch is active
 	}
@@ -324,7 +324,7 @@ MolPad.prototype.onPointerUp = function(e)
 			this.setCursor("pointer");
 			this.resetEventDisplay();
 			this.pointer.handler.scope.setDisplay(
-					e.type == "mouseup" ? "hover" : "normal");
+					e.type === "mouseup" ? "hover" : "normal");
 		}
 		else
 		{
@@ -345,7 +345,7 @@ MolPad.prototype.onPointerUp = function(e)
 			this.pointer.old.d = getMultiTouchDelta(e);
 			this.pointer.old.c = new MPPoint().fromMultiTouchCenter(e);
 		}
-		else if(oe.targetTouches.length == 1)
+		else if(oe.targetTouches.length === 1)
 		{
 			//reset old pointer for smooth multi to single transition
 			this.pointer.old.p = new MPPoint().fromPointer(e);
@@ -522,7 +522,7 @@ MolPad.prototype.selectionToolHandler = {
 
 		mp.ctx.beginPath();
 
-		if(mp.tool.data.type == "rect" && this.data.rect)
+		if(mp.tool.data.type === "rect" && this.data.rect)
 		{
 			mp.ctx.rect(this.data.rect.x, this.data.rect.y,
 						this.data.rect.width, this.data.rect.height);
@@ -530,11 +530,11 @@ MolPad.prototype.selectionToolHandler = {
 			mp.ctx.fill();
 			mp.ctx.stroke();
 		}
-		else if(mp.tool.data.type == "lasso" && this.data.points)//lasso
+		else if(mp.tool.data.type === "lasso" && this.data.points)//lasso
 		{
 			for(var i = 0; i < this.data.points.length; i++)
 			{
-				if(i == 0) mp.ctx.moveTo(this.data.points[i].x, this.data.points[i].y);
+				if(i === 0) mp.ctx.moveTo(this.data.points[i].x, this.data.points[i].y);
 				else mp.ctx.lineTo(this.data.points[i].x, this.data.points[i].y);
 			}
 
@@ -564,7 +564,7 @@ MolPad.prototype.selectionToolHandler = {
 			};
 		}
 
-		if(mp.tool.data.type == "rect")
+		if(mp.tool.data.type === "rect")
 		{
 			this.data.rect = {
 				x: p.x,
@@ -583,7 +583,7 @@ MolPad.prototype.selectionToolHandler = {
 		mp.setCursor("default");
 		var p = new MPPoint().fromRelativePointer(e, mp);
 
-		if(mp.tool.data.type == "rect")
+		if(mp.tool.data.type === "rect")
 		{
 			this.data.rect.width = p.x - this.data.rect.x;
 			this.data.rect.height = p.y - this.data.rect.y;
@@ -626,7 +626,7 @@ MolPad.prototype.selectionToolHandler = {
 
 MolPad.prototype.getHandler = function()
 {
-	if(this.tool.type == "atom")
+	if(this.tool.type === "atom")
 	{
 		return {
 			onPointerDown: function(e, mp)
@@ -643,7 +643,7 @@ MolPad.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.tool.type == "bond")
+	else if(this.tool.type === "bond")
 	{
 		return {
 			onPointerDown: function(e, mp)
@@ -700,7 +700,7 @@ MolPad.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.tool.type == "fragment")
+	else if(this.tool.type === "fragment")
 	{
 		return {
 			onPointerDown: function(e, mp)
@@ -728,7 +728,7 @@ MolPad.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.tool.type == "chain")
+	else if(this.tool.type === "chain")
 	{
 		return {
 			onPointerDown: function(e, mp)
@@ -745,7 +745,7 @@ MolPad.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.tool.type == "select")
+	else if(this.tool.type === "select")
 	{
 		return this.selectionToolHandler;
 	}

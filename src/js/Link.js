@@ -30,7 +30,7 @@ var Link = {
 
 	updateShareDialog: function()
 	{
-		if($("#action-resolve").hasClass("resolve-outdated") && MolView.layout != "model") $("#share-2d-not-3d").show();
+		if($("#action-resolve").hasClass("resolve-outdated") && MolView.layout !== "model") $("#share-2d-not-3d").show();
 		else $("#share-2d-not-3d").hide();
 
 		var url = window.location.origin + window.location.pathname;
@@ -48,7 +48,7 @@ var Link = {
 
 	updateEmbedDialog: function()
 	{
-		if($("#action-resolve").hasClass("resolve-outdated") && MolView.layout != "model") $("#embed-2d-not-3d").show();
+		if($("#action-resolve").hasClass("resolve-outdated") && MolView.layout !== "model") $("#embed-2d-not-3d").show();
 		else $("#embed-2d-not-3d").hide();
 
 		var url = window.location.origin + window.location.pathname + "embed?mode=" + Model.representation;
@@ -58,21 +58,21 @@ var Link = {
 			url += "&" + Loader.lastQuery.type + "=" + specialEncodeURIComponent(Loader.lastQuery.content.replace(/^ /, ""));
 		}
 
-		if(Model.bg.colorName != "black")
+		if(Model.bg.colorName !== "black")
 		{
 			url += "&bg=" + Model.bg.colorName;
 		}
 
 		if(Model.isPDB())
 		{
-			if(Model.chain.type == "ribbon" || Model.chain.type == "cylinders"
-			|| Model.chain.type == "btube" || Model.chain.type == "ctrace")
+			if(Model.chain.type === "ribbon" || Model.chain.type === "cylinders"
+			|| Model.chain.type === "btube" || Model.chain.type === "ctrace")
 			{
 				url += "&chainType=" + Model.chain.type;
 			}
 			if(Model.chain.bonds)
 			{
-				if(Model.chain.type == "none")
+				if(Model.chain.type === "none")
 				{
 					url += "&chainType=bonds";
 				}

@@ -46,7 +46,7 @@ var GLmolPlugin = {
 			this.view.defineRepresentation = function()
 			{
 				var all = this.getAllAtoms();
-				if(Model.displayBU && this.protein.biomtChains != "")
+				if(Model.displayBU && this.protein.biomtChains !== "")
 				{
 					all = this.getChain(all, this.protein.biomtChains);
 				}
@@ -60,31 +60,31 @@ var GLmolPlugin = {
 
 				if(Model.isPDB())
 				{
-					if(chain.color == "ss") this.colorByStructure(all, 0xcc00cc, 0x00cccc, 0xcccccc);
-					else if(chain.color == "spectrum") this.colorChainbow(all);
-					else if(chain.color == "chain") this.colorByChain(all, true);
-					else if(chain.color == "residue") this.colorByResidue(all, GLmolAminoColors);
-					else if(chain.color == "polarity") this.colorByPolarity(all, 0xcc0000, 0xcccccc);
-					else if(chain.color == "bfactor") this.colorByBFactor(all);
+					if(chain.color === "ss") this.colorByStructure(all, 0xcc00cc, 0x00cccc, 0xcccccc);
+					else if(chain.color === "spectrum") this.colorChainbow(all);
+					else if(chain.color === "chain") this.colorByChain(all, true);
+					else if(chain.color === "residue") this.colorByResidue(all, GLmolAminoColors);
+					else if(chain.color === "polarity") this.colorByPolarity(all, 0xcc0000, 0xcccccc);
+					else if(chain.color === "bfactor") this.colorByBFactor(all);
 
 					var do_not_smoothen = false;
 
-					if(chain.type == "ribbon")
+					if(chain.type === "ribbon")
 					{
 						this.drawCartoon(asu, all, do_not_smoothen);
 						this.drawCartoonNucleicAcid(asu, all);
 					}
-					else if(chain.type == "cylinders")
+					else if(chain.type === "cylinders")
 					{
 						this.drawHelixAsCylinder(asu, all, 1.6);
 						this.drawCartoonNucleicAcid(asu, all);
 					}
-					else if(chain.type == "btube")
+					else if(chain.type === "btube")
 					{
 						this.drawMainchainTube(asu, all, "CA");
 						this.drawMainchainTube(asu, all, "O3'");
 					}
-					else if(chain.type == "ctrace")
+					else if(chain.type === "ctrace")
 					{
 						this.drawMainchainCurve(asu, all, this.curveWidth, "CA", 1);
 						this.drawMainchainCurve(asu, all, this.curveWidth, "O3'", 1);
@@ -109,32 +109,32 @@ var GLmolPlugin = {
 					this.canvasVDW = false;
 					this.canvasLine = false;
 
-					if(Model.representation == "balls")
+					if(Model.representation === "balls")
 					{
 						this.canvasAtomRadius = 0.4;
 						this.canvasBondWidth = 0.3;
 						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius * 5, true, 0.3);
 					}
-					else if(Model.representation == "stick")
+					else if(Model.representation === "stick")
 					{
 						this.canvasAtomRadius = 0.3;
 						this.canvasBondWidth = 0.6;
 						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius, this.cylinderRadius);
 					}
-					else if(Model.representation == "vdw")
+					else if(Model.representation === "vdw")
 					{
 						this.canvasVDW = true;
 						this.canvasAtomRadius = 0.5;
 						this.canvasBondWidth = 0.3;
 						this.drawAtomsAsSphere(this.modelGroup, hetatm, this.sphereRadius);
 					}
-					else if(Model.representation == "wireframe")
+					else if(Model.representation === "wireframe")
 					{
 						this.canvasAtomRadius = 0.2;
 						this.canvasLine = true;
 						this.drawBondsAsStick(this.modelGroup, hetatm, this.cylinderRadius / 8.0, this.cylinderRadius * 8, true, 0.05);
 					}
-					else if(Model.representation == "line")
+					else if(Model.representation === "line")
 					{
 						this.canvasAtomRadius = 0.0;
 						this.canvasLine = true;
@@ -203,7 +203,7 @@ var GLmolPlugin = {
 
 	loadMOL: function(mol)
 	{
-		if(this.currentModel == mol) return;
+		if(this.currentModel === mol) return;
 
 		if(this.view)
 		{
@@ -214,7 +214,7 @@ var GLmolPlugin = {
 
 	loadPDB: function(pdb)
 	{
-		if(this.currentModel == pdb)
+		if(this.currentModel === pdb)
 		{
 			//make sure to overwrite current matrix
 			this.view.protein.appliedMatrix = undefined;

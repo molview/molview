@@ -86,7 +86,7 @@ var Model = {
 		var scope = this;
 		$.each(query, function(key, value)
 		{
-			if(key == "mode")
+			if(key === "mode")
 			{
 				if(oneOf(value, ["balls", "stick", "vdw", "wireframe", "line"]))
 				{
@@ -95,7 +95,7 @@ var Model = {
 					scope.representation = value;
 				}
 			}
-			else if(key == "chainType")
+			else if(key === "chainType")
 			{
 				if(oneOf(value, ["ribbon", "cylinders", "btube", "ctrace"]))
 				{
@@ -104,18 +104,18 @@ var Model = {
 					scope.chain.type = value;
 				}
 
-				if(value == "bonds")
+				if(value === "bonds")
 				{
 					$(".chain-type").removeClass("checked");
 					scope.chain.type = "none";
 					scope.chain.bonds = true;
 				}
 			}
-			else if(key == "chainBonds")
+			else if(key === "chainBonds")
 			{
 				scope.chain.bonds = true;
 			}
-			else if(key == "chainColor")
+			else if(key === "chainColor")
 			{
 				if(oneOf(value, ["ss", "spectrum", "chain", "residue", "polarity", "bfactor"]))
 				{
@@ -132,7 +132,7 @@ var Model = {
 	 */
 	isGLmol: function()
 	{
-		return Model.engine == "GLmol";
+		return Model.engine === "GLmol";
 	},
 
 	/**
@@ -140,7 +140,7 @@ var Model = {
 	 */
 	isJSmol: function()
 	{
-		return Model.engine == "JSmol";
+		return Model.engine === "JSmol";
 	},
 
 	/**
@@ -148,7 +148,7 @@ var Model = {
 	 */
 	isCDW: function()
 	{
-		return Model.engine == "CDW";
+		return Model.engine === "CDW";
 	},
 
 	/**
@@ -156,7 +156,7 @@ var Model = {
 	 */
 	isMOL: function()
 	{
-		return Model.data.current == "MOL";
+		return Model.data.current === "MOL";
 	},
 
 	/**
@@ -164,7 +164,7 @@ var Model = {
 	 */
 	isPDB: function()
 	{
-		return Model.data.current == "PDB";
+		return Model.data.current === "PDB";
 	},
 
 	/**
@@ -172,7 +172,7 @@ var Model = {
 	 */
 	isCIF: function()
 	{
-		return Model.data.current == "CIF";
+		return Model.data.current === "CIF";
 	},
 
 	/**
@@ -200,17 +200,17 @@ var Model = {
 	 * Initializes the engine if not initialized already
 	 * @param  {String}   engine Render engine id
 	 * @param  {Function} cb     Called when new render engine is loaded
-	 * @return {Boolean}         False if $engine == Model.engine
+	 * @return {Boolean}         False if $engine === Model.engine
 	 */
 	setRenderEngine: function(engine, cb)
 	{
-		if(this.engine == engine)
+		if(this.engine === engine)
 		{
 			if(cb) cb();
 			return;
 		}
 
-		if(engine == "GLmol")
+		if(engine === "GLmol")
 		{
 			if(this.isCIF())
 			{
@@ -224,7 +224,7 @@ var Model = {
 			}
 			else if(!this.GLmol.init(cb)) return;
 		}
-		else if(engine == "JSmol")
+		else if(engine === "JSmol")
 		{
 			if(this.JSmol.ready)
 			{
@@ -233,7 +233,7 @@ var Model = {
 			}
 			else if(!this.JSmol.init(cb)) return;
 		}
-		else if(engine == "CDW")
+		else if(engine === "CDW")
 		{
 			if(this.CDW.ready)
 			{
@@ -246,9 +246,9 @@ var Model = {
 		$("#action-engine-glmol").removeClass("checked");
 		$("#action-engine-jmol").removeClass("checked");
 		$("#action-engine-cdw").removeClass("checked");
-		$("#action-engine-" + (engine == "GLmol" ?
-			"glmol" : (engine == "JSmol" ?
-				"jmol" : (engine == "CDW" ?
+		$("#action-engine-" + (engine === "GLmol" ?
+			"glmol" : (engine === "JSmol" ?
+				"jmol" : (engine === "CDW" ?
 					"cdw" : "")))).addClass("checked");
 	},
 
@@ -260,9 +260,9 @@ var Model = {
 	 */
 	_setRenderEngine: function(engine)
 	{
-		$("#glmol").css("display", (engine == "GLmol") ? "block" : "none");
-		$("#jsmol").css("display", (engine == "JSmol") ? "block" : "none");
-		$("#chemdoodle").css("display", (engine == "CDW") ? "block" : "none");
+		$("#glmol").css("display", (engine === "GLmol") ? "block" : "none");
+		$("#jsmol").css("display", (engine === "JSmol") ? "block" : "none");
+		$("#chemdoodle").css("display", (engine === "CDW") ? "block" : "none");
 
 		this.engine = engine;
 		this.resize();
@@ -317,7 +317,7 @@ var Model = {
 		{
 			if(this.isGLmol()
 			|| (this.isJSmol() && oneOf(type, ["ribbon", "ctrace", "none"]))
-			|| (this.isCDW() && type == "ribbon"))
+			|| (this.isCDW() && type === "ribbon"))
 			{
 				$(".chain-type").removeClass("checked");
 				$("#action-chain-type-" + type).addClass("checked");
@@ -385,7 +385,7 @@ var Model = {
 		if(this.isPDB() || force)
 		{
 			if(this.isGLmol() || this.isJSmol()
-			|| (this.isCDW() && color != "bfactor"))
+			|| (this.isCDW() && color !== "bfactor"))
 			{
 				$(".chain-color").removeClass("checked");
 				$("#action-chain-color-" + color).addClass("checked");
@@ -419,7 +419,7 @@ var Model = {
 		Preferences.set("model", "background", color);
 
 		this.bg.colorName = color;
-		this.bg.hex = color != "white" ? color != "gray" ? 0x000000 : 0xcccccc : 0xffffff;
+		this.bg.hex = color !== "white" ? color !== "gray" ? 0x000000 : 0xcccccc : 0xffffff;
 		this.bg.rgb = [this.bg.hex >> 16, this.bg.hex >> 8 & 0xFF, this.bg.hex & 0xFF];
 		this.bg.jmol = "[" + this.bg.rgb.join() + "]";
 		this.bg.html = "rgb(" + this.bg.rgb.join() + ")";

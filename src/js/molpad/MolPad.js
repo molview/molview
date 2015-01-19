@@ -113,7 +113,7 @@ function MolPad(container, devicePixelRatio, buttons)
 				[],//no bond
 				[0],//single bond
 				[-4,4],//double bond
-				[-6,0,6],//triple bond
+				[-8,8],//triple bond
 				[-6,6],//wedge/hash bond
 				[0,8]//cis bond
 			],
@@ -131,7 +131,9 @@ function MolPad(container, devicePixelRatio, buttons)
 			singleOnlyScale: 1 / 5.0,//draw only single bonds below this scale
 			hashLineSpace: 2,//space between hash bond lines in relative px
 			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
-			straightDev: Math.PI / 10//deviation angle to determine if two bonds are straight
+			straightDev: Math.PI / 10,//deviation angle to determine if two bonds are straight
+			wedgeFitMaxD: 20,//max bond.line.to.distanceTo(wedgeFitPoint)
+			multiBondFitMaxD: 30//max bond.line.to.distanceTo(wedgeFitPoint)
 		},
 		chain: {
 			rotateSteps: 360 / 30,//steps of 30deg, 360 / 30 = 12
@@ -199,8 +201,8 @@ MolPad.prototype.clear = function(cb)
 
 MolPad.prototype.changed = function()
 {
-	jQuery(this.buttons.undo).toggleClass("tool-button-disabled", this.mol.stack.length == 0);
-	jQuery(this.buttons.redo).toggleClass("tool-button-disabled", this.mol.reverseStack.length == 0);
+	jQuery(this.buttons.undo).toggleClass("tool-button-disabled", this.mol.stack.length === 0);
+	jQuery(this.buttons.redo).toggleClass("tool-button-disabled", this.mol.reverseStack.length === 0);
 	if(this.changeCallback !== undefined) this.changeCallback();
 }
 
@@ -218,7 +220,7 @@ MolPad.prototype.redo = function()
 
 MolPad.prototype.setSkeletalDisplay = function(on)
 {
-	if(on == this.s.skeletalDisplay) return;
+	if(on === this.s.skeletalDisplay) return;
 
 	this.dismissHandler();
 	this.s.skeletalDisplay = on;

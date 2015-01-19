@@ -33,9 +33,9 @@ var SearchGrid = {
 			if($("#search-layer").scrollTop() + $("#search-layer").outerHeight()
 					> $("#search-layer > .container").outerHeight())
 			{
-				if(SearchGrid.db == "pubchem") Actions.load_more_pubchem();
-				else if(SearchGrid.db == "rcsb") Actions.load_more_rcsb();
-				else if(SearchGrid.db == "cod") Actions.load_more_cod();
+				if(SearchGrid.db === "pubchem") Actions.load_more_pubchem();
+				else if(SearchGrid.db === "rcsb") Actions.load_more_rcsb();
+				else if(SearchGrid.db === "cod") Actions.load_more_cod();
 			}
 		});
     },
@@ -56,9 +56,9 @@ var SearchGrid = {
     setDatabase: function(db)
     {
         this.db = db;
-		$("#action-load-more-pubchem").css("display", db == "pubchem" ? "block" : "none");
-		$("#action-load-more-rcsb").css("display", db == "rcsb" ? "block" : "none");
-		$("#action-load-more-cod").css("display", db == "cod" ? "block" : "none");
+		$("#action-load-more-pubchem").css("display", db === "pubchem" ? "block" : "none");
+		$("#action-load-more-rcsb").css("display", db === "rcsb" ? "block" : "none");
+		$("#action-load-more-cod").css("display", db === "cod" ? "block" : "none");
     },
 
     /**
@@ -92,7 +92,7 @@ var SearchGrid = {
      */
     addEntry: function(data)
     {
-        if(this.db == "pubchem")
+        if(this.db === "pubchem")
         {
 			/*
 			Search output:
@@ -124,7 +124,7 @@ var SearchGrid = {
 			result.data("title", ucfirst(humanize(data.Title)));
 			result.on("click", function(e)
 			{
-				if(e.which != 2)
+				if(e.which !== 2)
 				{
                     MolView.pushEvent("button", "click", "pubchem search", 0);
 					MolView.setLayer("main");
@@ -133,7 +133,7 @@ var SearchGrid = {
 				}
 			});
         }
-        else if(this.db == "rcsb")
+        else if(this.db === "rcsb")
         {
             /*
 			Search output:
@@ -166,7 +166,7 @@ var SearchGrid = {
 			title.data("pdbid", data.structureId);
 			title.on("click", function(e)
 			{
-				if(e.which != 2)
+				if(e.which !== 2)
 				{
                     MolView.pushEvent("button", "click", "rcsb search", 0);
 					MolView.setLayer("main");
@@ -175,7 +175,7 @@ var SearchGrid = {
 				}
 			});
         }
-        else if(this.db == "cod")
+        else if(this.db === "cod")
         {
             /*
 			Search output:
@@ -226,7 +226,7 @@ var SearchGrid = {
 			title.data("title", title_str);
 			title.on("click", function(e)
 			{
-				if(e.which != 2)
+				if(e.which !== 2)
 				{
                     MolView.pushEvent("button", "click", "cod search", 0);
 					MolView.setLayer("main");

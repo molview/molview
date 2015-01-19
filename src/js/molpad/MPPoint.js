@@ -38,7 +38,7 @@ MPPoint.prototype.clone = function()
 
 MPPoint.prototype.equals = function(point)
 {
-	return this.x == point.x && this.y == point.y;
+	return this.x === point.x && this.y === point.y;
 }
 
 MPPoint.prototype.set = function(x, y)
@@ -93,7 +93,7 @@ MPPoint.prototype.scale = function(scale)
 
 MPPoint.prototype.mirror = function(line, side)
 {
-	if(this.lineSide(line) != side)
+	if(this.lineSide(line) !== side)
 	{
 		//http://stackoverflow.com/questions/3306838
 		var dx = line.to.x - line.from.x;
@@ -218,7 +218,7 @@ MPPoint.prototype.inPolygon = function(polygon)
 	var c = false;
 	for(var i = 0, j = polygon.length - 1; i < polygon.length; j = i++)
 	{
-		if((polygon[i].y > this.y) != (polygon[j].y > this.y) &&
+		if((polygon[i].y > this.y) !== (polygon[j].y > this.y) &&
 			this.x < ((polygon[j].x - polygon[i].x) * (this.y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x))
 		{
 			c = !c;
@@ -246,7 +246,7 @@ MPPoint.prototype.lineDistance = function(a, b)
 
 	var xx, yy;
 
-	if(param < 0 || (a.x == b.x && a.y == b.y))
+	if(param < 0 || (a.x === b.x && a.y === b.y))
 	{
 		xx = a.x;
 		yy = a.y;

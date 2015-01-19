@@ -100,11 +100,11 @@ var Messages = {
 		var ret = true;
 
 		//Do not replace the current message (if present) with model_update
-		if(!(what == "model_update" && !Messages.isEmpty()))
+		if(!(what === "model_update" && !Messages.isEmpty()))
 		{
 			Messages.clear();
 
-			if(what && what != "" && Messages[what] && Messages[what] != "")
+			if(what && what !== "" && Messages[what] && Messages[what] !== "")
 			{
 				$("body").addClass("progress-cursor");
 
@@ -156,7 +156,7 @@ var Messages = {
 		- no_protein
 		*/
 
-		if(cause == "no_canvas_support")
+		if(cause === "no_canvas_support")
 		{
 			window.location = window.location.origin + window.location.pathname + "htmlCanvas";
 			return;
@@ -180,7 +180,7 @@ var Messages = {
 			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
 					function(){ $(this).parent().remove(); }).appendTo(msg);
 
-			if(Messages.permDismiss.indexOf(cause) != -1)
+			if(Messages.permDismiss.indexOf(cause) !== -1)
 			{
 				$('<button class="message-close-btn">Don\'t show again</button>').on(MolView.trigger,
 						function(){ $(this).parent().remove(); Messages.dontShowAgain(cause); }).appendTo(msg);

@@ -44,7 +44,7 @@ AutocompleteBuilder.prototype.sort = function(str, minsim, length)
 		cpy[i].similarity = similar_text(str, cpy[i][this.key].toLowerCase(), true);
 
 		//add 100 to similarity if first characters are the same
-		if(cpy[i][this.key].toLowerCase().indexOf(str) == 0)
+		if(cpy[i][this.key].toLowerCase().indexOf(str) === 0)
 		{
 			cpy[i].similarity += 100;
 		}
@@ -140,7 +140,7 @@ var Autocomplete = {
 		$(".autocomplete-item").removeClass("autocomplete-item-active");
 
 		var target = $(".autocomplete-item").eq(i);
-		if(i != -1)
+		if(i !== -1)
 		{
 			target.addClass("autocomplete-item-active");
 			var position = target.position();
@@ -158,7 +158,7 @@ var Autocomplete = {
 	 */
 	keydown: function(e)
 	{
-		if(this.i == -1)
+		if(this.i === -1)
 		{
 			this.oldText = $("#search-input").val();
 		}
@@ -176,7 +176,7 @@ var Autocomplete = {
 
 				this.i--;
 
-				if(this.i == -1)
+				if(this.i === -1)
 				{
 					$("#search-input").val(this.oldText)
 				}
@@ -204,12 +204,12 @@ var Autocomplete = {
 
 				/* complete input with first record which starts with the input
 				text if you press the right arrow after the end of the input text */
-				if(document.getElementById("search-input").selectionStart == $("#search-input").val().length)
+				if(document.getElementById("search-input").selectionStart === $("#search-input").val().length)
 				{
 					var matches = this.records.filter(function(record)
 					{
 						return record.name.toLowerCase().indexOf(
-							$("#search-input").val().toLowerCase()) == 0;
+							$("#search-input").val().toLowerCase()) === 0;
 					});
 
 					if(matches.length > 0)
@@ -274,7 +274,7 @@ var Autocomplete = {
 				{
 					if(i < mix.length - 1)
 					{
-						if(mix[i].label == mix[i + 1].label)
+						if(mix[i].label === mix[i + 1].label)
 						{
 							//merge into first entry
 							mix[i].codid = mix[i].codid || mix[i + 1].codid;
@@ -287,7 +287,7 @@ var Autocomplete = {
 				}
 
 				Autocomplete.cache[text] = mix;
-				if(text == $("#search-input").val().toLowerCase())
+				if(text === $("#search-input").val().toLowerCase())
 				{
 					Autocomplete.display(Autocomplete.cache[text]);
 				}
@@ -322,7 +322,7 @@ var Autocomplete = {
 		{
 			var li = $('<li class="autocomplete-item"></li>');
 
-			if(records[i].label.toLowerCase().indexOf(text) == 0)
+			if(records[i].label.toLowerCase().indexOf(text) === 0)
 			{
 				$('<span class="autocomplete-label"></span>').html("<b>"
 						+ records[i].label.substr(0, text.length) + "</b>"
@@ -403,7 +403,7 @@ var Autocomplete = {
 			MolView.hideDialogs();
 			MolView.setLayer("main");
 
-			if(this.i == -1)//try to find a record match
+			if(this.i === -1)//try to find a record match
 			{
 				for(var i = 0; i < this.records.length; i++)
 				{
@@ -416,7 +416,7 @@ var Autocomplete = {
 				}
 			}
 
-			if(this.i == -1)//fast search using CIR
+			if(this.i === -1)//fast search using CIR
 			{
 				var val = $("#search-input").val();
 				if(Autocomplete.cache[val] === undefined)

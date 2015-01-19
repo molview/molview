@@ -89,7 +89,7 @@ MPSelection.prototype.mirror = function(line, pointer)
 {
     var s = pointer.lineSide(line);
 
-    if(s != this.mirrorSide && s != 0)
+    if(s !== this.mirrorSide && s !== 0)
     {
         this.mirrorSide = s;
 
@@ -151,7 +151,7 @@ MPSelection.prototype.updateRotationCenter = function()
 		}
 	}
 
-	if(v.length == 1 && this.cache.atoms.length > 1)
+	if(v.length === 1 && this.cache.atoms.length > 1)
 	{
 		this.center = this.mp.mol.atoms[v[0]].center;
         this.centerAtom = v[0];

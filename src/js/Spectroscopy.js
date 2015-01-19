@@ -155,14 +155,14 @@ var Spectroscopy = {
             spectrum.title = ucfirst(humanize(spectrum.title));
             spectrum.yUnit = ucfirst(humanize(spectrum.yUnit));
 
-            if(type == "nist-mass") Spectroscopy.spectrum.specs.plots_flipXAxis = false;
+            if(type === "nist-mass") Spectroscopy.spectrum.specs.plots_flipXAxis = false;
             else Spectroscopy.spectrum.specs.plots_flipXAxis = true;
 
             Spectroscopy.spectrum.loadSpectrum(spectrum);
             $("#spectrum").removeClass("loading");
         }
 
-        if(type == "nmrdb")
+        if(type === "nmrdb")
         {
             if(!this.data["nmrdb"])
             {
@@ -180,7 +180,7 @@ var Spectroscopy = {
             }
             else displayNMRDB();
         }
-        else if(type.indexOf("nist" != -1))
+        else if(type.indexOf("nist" !== -1))
         {
             if(!Spectroscopy.data[type])
             {

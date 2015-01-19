@@ -194,7 +194,7 @@ var MolView = {
 			}
 
 			if(!searchInput.is(e.target) && searchInput.has(e.target).length === 0
-				&& document.activeElement.id == "search-input")
+				&& document.activeElement.id === "search-input")
 				$("#search-input").blur();
 		});
 
@@ -202,7 +202,7 @@ var MolView = {
 		$("#dialog-click-area").on("mousedown", function(e)
 		{
 			var target = e.target || e.srcElement;
-			if(window.getSelection().type != "Range" && !$(document.activeElement).is("input"))
+			if(window.getSelection().type !== "Range" && !$(document.activeElement).is("input"))
 			{
 				if($(target).is(this) || $(target).is("#dialog-wrapper"))
 				{
@@ -413,35 +413,35 @@ var MolView = {
 	{
 		$.each(this.query, function(key, value)
 		{
-			if(key == "q")
+			if(key === "q")
 			{
 				$("#search-input").val(value);
 				Messages.process(Loader.CIRsearch, "search");
 			}
-			else if(key == "smiles")
+			else if(key === "smiles")
 			{
 				Messages.process(function()
 				{
 					Loader.loadSMILES(value, document.title);
 				}, "compound");
 			}
-			else if(key == "cid")
+			else if(key === "cid")
 			{
 				Loader.PubChem.loadCID(value, document.title);
 			}
-			else if(key == "pdbid")
+			else if(key === "pdbid")
 			{
 				Loader.RCSB.loadPDBID(value, value.toUpperCase());
 			}
-			else if(key == "codid")
+			else if(key === "codid")
 			{
 				Loader.COD.loadCODID(value, document.title);
 			}
-			else if(key == "dialog")
+			else if(key === "dialog")
 			{
 				MolView.showDialog(value);
 			}
-			else if(key == "bg")
+			else if(key === "bg")
 			{
 				Model.setBackground(value);
 			}
@@ -479,7 +479,7 @@ var MolView = {
 		$(".layer").hide();
 		$("#" + name + "-layer").show();
 
-		if(name == "main" && ($("#main-layer").sizeChanged() || forceResize))
+		if(name === "main" && ($("#main-layer").sizeChanged() || forceResize))
 		{
 			$("#main-layer").saveSize();
 			Sketcher.resize();
@@ -536,7 +536,7 @@ var MolView = {
 	 */
 	makeModelVisible: function()
 	{
-		if(this.layout == "sketcher")
+		if(this.layout === "sketcher")
 			MolView.setLayout("both");
 	},
 
@@ -545,7 +545,7 @@ var MolView = {
 	 */
 	alertEmptyInput: function()
 	{
-		if(MolView.search_input_timeout != null)
+		if(MolView.search_input_timeout !== null)
 		{
 			window.clearTimeout(MolView.search_input_timeout);
 		}

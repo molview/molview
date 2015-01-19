@@ -92,7 +92,7 @@ MolPad.prototype.update = function()
 	this.s.bond.radiusScaled = this.s.bond.radius * this.s.bond.scale;
 
 	//if metrics are changed, atom.scale will always be amongst them
-	if(this.s.atom.scale != oldAtomScale)
+	if(this.s.atom.scale !== oldAtomScale)
 	{
 		this.mol.invalidateAll();
 	}
@@ -119,7 +119,7 @@ MolPad.prototype.setFont = function(type)
 				* this.s.atom.scale) * 96 / 72) + "px " +
 			this.s.fonts[type].fontFamily;
 
-	if(font != this.ctx.font)
+	if(font !== this.ctx.font)
 	{
 		this.ctx.font = font;
 	}
@@ -137,6 +137,9 @@ MolPad.prototype.draw = function()
 		this.updated = true;
 		this.update();
 	}
+
+	//recalculate where necessary
+	this.mol.validateAll();
 
 	//clear
 	this.ctx.clearRect(0, 0, this.width(), this.height());
@@ -205,7 +208,7 @@ MolPad.prototype.redraw = function(update)
  */
 MolPad.prototype.center = function()
 {
-	if(this.mol.atoms.length == 0) return;
+	if(this.mol.atoms.length === 0) return;
 
 	this.resetMatrix();
 

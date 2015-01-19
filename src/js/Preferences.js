@@ -49,8 +49,8 @@ var Preferences = {
 	get: function(mod, key, def)
 	{
 		var val = window.localStorage[mod + "." + key];
-		if(val == "true") return true;
-		else if(val == "false") return false;
+		if(val === "true") return true;
+		else if(val === "false") return false;
 		else return val || def;
 	},
 

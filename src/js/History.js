@@ -30,7 +30,7 @@ var History = {
 		window.addEventListener('popstate', function(event)
 		{
 			var q = getQuery();
-			if(JSON.stringify(q) != JSON.stringify(MolView.query))
+			if(JSON.stringify(q) !== JSON.stringify(MolView.query))
 			{
 				document.title = "MolView";
 				MolView.query = q;
@@ -54,9 +54,9 @@ var History = {
 		var query = id + "=" + specialEncodeURIComponent(value.replace(/^ /, ""));
 
 		if(history && history.replaceState && history.pushState &&
-				location.search.indexOf(query) == -1)
+				location.search.indexOf(query) === -1)
 		{
-			if(location.search == "" || forceReplace)
+			if(location.search === "" || forceReplace)
 			{
 				history.replaceState(null, document.title, "?" + query);
 			}

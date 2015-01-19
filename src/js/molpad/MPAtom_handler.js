@@ -20,7 +20,7 @@ MPAtom.prototype.getHandler = function()
 {
 	//TODO: calculateNewBondAngle use lone-pairs and valence
 
-	if(this.mp.tool.type == "atom")
+	if(this.mp.tool.type === "atom")
 	{
 		return {
 			scope: this,
@@ -42,7 +42,7 @@ MPAtom.prototype.getHandler = function()
 				if(!p.inCircle(this.scope.center, mp.s.atom.minAddRotateLength))
 				{
 					//create target atom if no target atom has been created yet
-					if(this.data.atom == -1)
+					if(this.data.atom === -1)
 					{
 						this.scope.setElement(this.data.oldElement);
 						this.data.startAngle = this.scope.calculateNewBondAngle();
@@ -64,14 +64,14 @@ MPAtom.prototype.getHandler = function()
 			},
 			onPointerUp: function(e, mp)
 			{
-				if(this.data.atom != -1)
+				if(this.data.atom !== -1)
 				{
 					mp.mol.collapseAtoms([this.data.atom], true);
 				}
 			}
 		};
 	}
-	else if(this.mp.tool.type == "bond")
+	else if(this.mp.tool.type === "bond")
 	{
 		return {
 			scope: this,
@@ -96,13 +96,13 @@ MPAtom.prototype.getHandler = function()
 				for(var i = 0; i < mp.mol.atoms.length; i++)
 				{
 					//this atom and the new atom do not participate
-					if(i == this.scope.index || i == this.data.atom) continue;
+					if(i === this.scope.index || i === this.data.atom) continue;
 
 					//check for hover using active as event type
 					if(mp.mol.atoms[i].handle(p, "active"))
 					{
 						//skip if the hovered atom is already the target atom
-						if(bond.to != i)
+						if(bond.to !== i)
 						{
 							//reset old target atom to normal display
 							//(for the almost impossible case MPAtom.handle is not reached yet)
@@ -120,10 +120,10 @@ MPAtom.prototype.getHandler = function()
 
 							//check if new target atom is a neighbor of this atom
 							var n = this.scope.getNeighborBond(i);
-							if(n != -1 && n != this.data.bond)
+							if(n !== -1 && n !== this.data.bond)
 							{
 								//if so, check if we handled this neighbor before
-								if(n != this.data.neighbor)
+								if(n !== this.data.neighbor)
 								{
 									//if not, save the neighbor bond index
 									this.data.neighbor = n;
@@ -151,7 +151,7 @@ MPAtom.prototype.getHandler = function()
 				}
 
 				//no hovered secondary atom so reset bond.to to this.data.atom
-				if(bond.to != this.data.atom)
+				if(bond.to !== this.data.atom)
 				{
 					//reshow newly created atom, this wil also invalidate the new bond
 					mp.mol.atoms[this.data.atom].setDisplay("normal");
@@ -187,7 +187,7 @@ MPAtom.prototype.getHandler = function()
 				var to = mp.mol.bonds[this.data.bond].to;
 
 				//check if final target atom is the newly created one
-				if(to != this.data.atom)
+				if(to !== this.data.atom)
 				{
 					//if not, add the newly created bond to the real target atom
 					mp.mol.atoms[to].addBond(this.data.bond);
@@ -208,7 +208,7 @@ MPAtom.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.mp.tool.type == "fragment")
+	else if(this.mp.tool.type === "fragment")
 	{
 		return {
 			scope: this,
@@ -216,7 +216,7 @@ MPAtom.prototype.getHandler = function()
 			onPointerDown: function(e, mp)
 			{
 				//determine if the fragment will be connected using a bond
-				var bondConnection = this.scope.getBondCount() > 2 && this.scope.element == "C";
+				var bondConnection = this.scope.getBondCount() > 2 && this.scope.element === "C";
 
 				//clone new fragment and transform it
 				this.data = {
@@ -283,7 +283,7 @@ MPAtom.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.mp.tool.type == "charge")
+	else if(this.mp.tool.type === "charge")
 	{
 		return {
 			scope: this,
@@ -293,7 +293,7 @@ MPAtom.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.mp.tool.type == "chain")
+	else if(this.mp.tool.type === "chain")
 	{
 		return {
 			scope: this,
@@ -319,7 +319,7 @@ MPAtom.prototype.getHandler = function()
 
 				for(var i = 0; i < this.data.chain.length; i++)
 				{
-					if(i == 0) mp.ctx.moveTo(this.data.chain[i].x, this.data.chain[i].y);
+					if(i === 0) mp.ctx.moveTo(this.data.chain[i].x, this.data.chain[i].y);
 					else mp.ctx.lineTo(this.data.chain[i].x, this.data.chain[i].y);
 				}
 
@@ -353,12 +353,12 @@ MPAtom.prototype.getHandler = function()
 				this.data.startAngle = this.scope.calculateNewBondAngle();
 
 				//calculate starting deviation side
-				if(this.scope.bonds.length == 1)
+				if(this.scope.bonds.length === 1)
 				{
 					//rotate angle of bond to the opposite side
 					this.data.ra = posRad(mp.mol.bonds[this.scope.bonds[0]].getAngle(this.scope) + Math.PI);
 				}
-				else if(this.scope.bonds.length == 2)
+				else if(this.scope.bonds.length === 2)
 				{
 					//rotate new bond angle to opposite side to achieve reversed effect
 					//(the chain will stick to the new bond angle)
@@ -381,7 +381,7 @@ MPAtom.prototype.getHandler = function()
 				var size = Math.floor(this.scope.center.distanceTo(p) /
 						this.data.length);
 
-				if(a != this.data.a || size != this.data.size)
+				if(a !== this.data.a || size !== this.data.size)
 				{
 					this.data.a = a;
 					this.data.size = size;
@@ -410,7 +410,7 @@ MPAtom.prototype.getHandler = function()
 					var c = this.scope.center.clone();
 					for(var i = 0; i < this.data.size; i++)
 					{
-						if(i % 2 == 0)
+						if(i % 2 === 0)
 						{
 							this.data.chain.push(MPPFO({
 								x: c.x + bx,
@@ -468,7 +468,7 @@ MPAtom.prototype.getHandler = function()
 			}
 		};
 	}
-	else if(this.mp.tool.type == "erase")
+	else if(this.mp.tool.type === "erase")
 	{
 		return {
 			scope: this,
@@ -510,7 +510,7 @@ MPAtom.prototype.getHandler = function()
 
 					if(this.scope.isSelected())
 					{
-						if(!mp.sel.hasCenter() || mp.sel.centerAtom == this.scope.index)
+						if(!mp.sel.hasCenter() || mp.sel.centerAtom === this.scope.index)
 						{
 							mp.sel.translate(dx, dy);
 						}
@@ -556,8 +556,7 @@ MPAtom.prototype.getHandler = function()
  */
 MPAtom.prototype.handle = function(point, type)
 {
-	this.validate();
-	if(this.isHidden()) return false;//maybe this is hidden in the validation
+	if(this.line === undefined) return false;
 
 	var r = this.mp.s.atom.selectionRadiusScaled;
 

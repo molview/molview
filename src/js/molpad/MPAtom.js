@@ -100,9 +100,9 @@ MPAtom.prototype.toString = function()
  */
 MPAtom.prototype.getChargeLabel = function()
 {
-	return this.charge == 0 ? "" :
-		this.charge == -1 ? "\u2212" :
-		this.charge ==  1 ? "+" :
+	return this.charge === 0 ? "" :
+		this.charge === -1 ? "\u2212" :
+		this.charge ===  1 ? "+" :
 			(this.charge > 1 ? "+" : "-") + Math.abs(this.charge);
 }
 
@@ -116,7 +116,7 @@ MPAtom.prototype.setCenter = function(x, y)
 
 MPAtom.prototype.setElement = function(element)
 {
-	this.element = element == "D" ? "H" : element;
+	this.element = element === "D" ? "H" : element;
 	this.labelChanged();
 }
 
@@ -138,7 +138,7 @@ MPAtom.prototype.setIsotope = function(isotope)
  */
 MPAtom.prototype.setDisplay = function(type)
 {
-	if(type != this.display)
+	if(type !== this.display)
 	{
 		this.display = type;
 		this.mp.requestRedraw();
@@ -152,7 +152,7 @@ MPAtom.prototype.setDisplay = function(type)
  */
 MPAtom.prototype.equals = function(atom)
 {
-	return this.index == atom.index;
+	return this.index === atom.index;
 }
 
 /**
@@ -181,7 +181,7 @@ MPAtom.prototype.getNeighborBond = function(idx)
 {
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		if(this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index) == idx)
+		if(this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index) === idx)
 		{
 			return this.bonds[i];
 		}
@@ -220,11 +220,11 @@ MPAtom.prototype.isSelected = function()
  */
 MPAtom.prototype.isImplicit = function()
 {
-	if(this.element == "H" && this.isotope == 0 &&
-			this.charge == 0 && this.bonds.length == 1)
+	if(this.element === "H" && this.isotope === 0 &&
+			this.charge === 0 && this.bonds.length === 1)
 	{
 		var bond = this.mp.mol.bonds[this.bonds[0]];
-		if(bond.type == MP_BOND_SINGLE && bond.stereo == MP_STEREO_NONE &&
+		if(bond.type === MP_BOND_SINGLE && bond.stereo === MP_STEREO_NONE &&
 			bond.isPair("C", "H"))
 		{
 			return true;
@@ -238,7 +238,7 @@ MPAtom.prototype.isImplicit = function()
  */
 MPAtom.prototype.isHidden = function()
 {
-	return this.display == "hidden";
+	return this.display === "hidden";
 }
 
 /**
@@ -246,7 +246,7 @@ MPAtom.prototype.isHidden = function()
  */
 MPAtom.prototype.isVisible = function()
 {
-	return this.wasVisible == true;
+	return this.wasVisible === true;
 }
 
 /**
@@ -255,7 +255,7 @@ MPAtom.prototype.isVisible = function()
  */
 MPAtom.prototype.select = function(select)
 {
-	if(this.isSelected() != select)
+	if(this.isSelected() !== select)
 	{
 		this.selected = select;
 		this.mp.sel.update();
@@ -314,7 +314,7 @@ MPAtom.prototype.getBondCount = function()
  */
 MPAtom.prototype.addBond = function(bond)
 {
-	if(this.bonds.indexOf(bond) == -1)
+	if(this.bonds.indexOf(bond) === -1)
 	{
 		this.bonds.push(bond);
 		this.bondsChanged();
@@ -328,7 +328,7 @@ MPAtom.prototype.addBond = function(bond)
 MPAtom.prototype.removeBond = function(bond)
 {
 	var i = this.bonds.indexOf(bond);
-	if(i != -1)
+	if(i !== -1)
 	{
 		this.bonds.splice(i, 1);
 		this.bondsChanged();
@@ -347,7 +347,7 @@ MPAtom.prototype.mapBonds = function(map)
 	var length = this.bonds.length;
 	this.bonds = mapArray(this.bonds, map);
 
-	if(this.bonds.length != length)
+	if(this.bonds.length !== length)
 	{
 		this.bondsChanged();
 	}
@@ -366,9 +366,9 @@ MPAtom.prototype.replaceBond = function(o, n)
 	var idx = this.bonds.indexOf(o);
 	var nidx = this.bonds.indexOf(n);
 
-	if(idx != -1)
+	if(idx !== -1)
 	{
-		if(nidx != -1) this.bonds.splice(o, 1);
+		if(nidx !== -1) this.bonds.splice(o, 1);
 		else this.bonds[idx] = n;
 	}
 
@@ -418,9 +418,9 @@ MPAtom.prototype.addNewBond = function(config)
  */
 MPAtom.prototype.addImplicitHydrogen = function()
 {
-	if(this.element == "C")
+	if(this.element === "C")
 	{
-		if(this.getBondCount() == 2 && this.bonds.length == 2)
+		if(this.getBondCount() === 2 && this.bonds.length === 2)
 		{
 			var af = this.mp.mol.bonds[this.bonds[0]].getAngle(this);
 			var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
@@ -431,7 +431,7 @@ MPAtom.prototype.addImplicitHydrogen = function()
 				da > Math.PI + this.mp.s.bond.straightDev)
 			{
 				var a = this.calculateNewBondAngle(2);
-				if(a == 0) return;
+				if(a === 0) return;
 
 				this.addNewBond({
 					a: a[0],
@@ -450,6 +450,7 @@ MPAtom.prototype.addImplicitHydrogen = function()
 
 		while(this.getBondCount() < 4)
 		{
+			this.cmap = this.calculateConnectionMap();
 			var a = this.calculateNewBondAngle();
 			this.addNewBond({
 				a: a,
@@ -470,14 +471,6 @@ MPAtom.prototype.invalidate = function()
 }
 
 /**
- * Invalidate refinement of connected bonds
- */
-MPAtom.prototype.invalidateBondRefinement = function()
-{
-
-}
-
-/**
  * Invalidation helper called when MPAtom.center has changed
  */
 MPAtom.prototype.centerChanged = function()
@@ -487,8 +480,6 @@ MPAtom.prototype.centerChanged = function()
 		this.mp.mol.bonds[this.bonds[i]].invalidate();
 		this.mp.mol.atoms[this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index)].bondsChanged(true);
 	}
-
-	this.invalidateBondRefinement();
 }
 
 /**
@@ -503,8 +494,6 @@ MPAtom.prototype.labelChanged = function()
 		this.mp.mol.bonds[this.bonds[i]].invalidate();
 		this.mp.mol.atoms[this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index)].bondsChanged();
 	}
-
-	this.invalidateBondRefinement();
 }
 
 /**
@@ -512,12 +501,13 @@ MPAtom.prototype.labelChanged = function()
  */
 MPAtom.prototype.bondsChanged = function(moved)
 {
-	this.invalidateBondRefinement();
-
 	var v = this.calculateVisibility();
 	var w = this.isVisible();
-	if(v != w) this.invalidate();
-	if(moved ? (w ? !v : true) : w != v)
+
+	if(v !== w) this.invalidate();
+	else this.cmap = this.calculateConnectionMap();//at least update the cmap
+
+	if(this.mp.s.skeletalDisplay)
 	{
 		for(var i = 0; i < this.bonds.length; i++)
 		{
@@ -534,6 +524,7 @@ MPAtom.prototype.validate = function()
 	if(this.valid) return;
 	this.valid = true;
 	this.wasVisible = this.calculateVisibility();
+	this.cmap = this.calculateConnectionMap();
 	this.line = this.calculateCenterLine();
 }
 
@@ -546,11 +537,10 @@ MPAtom.prototype.validate = function()
  */
 MPAtom.prototype.drawStateColor = function()
 {
-	this.validate();
+	if(this.isHidden() || this.line === undefined) return;
 
-	if(!this.isHidden() &&
-			(this.display == "hover" || this.display == "active" ||
-			(this.display == "normal" && this.isSelected())))
+	if((this.display === "hover" || this.display === "active" ||
+	   (this.display === "normal" && this.isSelected())))
 	{
 		var d = this.isSelected() ? "selected" : this.display;
 
@@ -579,7 +569,7 @@ MPAtom.prototype.drawLabel = function()
 {
 	//TODO: add support for collapsed groups (CH2- to H2C-, OH- to HO-, etc.)
 
-	this.validate();
+	if(this.isHidden() || this.line === undefined) return;
 
 	if(this.isVisible())
 	{
@@ -609,7 +599,7 @@ MPAtom.prototype.drawLabel = function()
 			this.mp.ctx.fillText("" + this.element, x, this.center.y + this.line.text.offsetTop);
 			x += this.line.text.labelWidth;
 
-			if(this.charge != 0)
+			if(this.charge !== 0)
 			{
 				this.mp.setFont("charge");
 				this.mp.ctx.fillText(this.getChargeLabel(), x, this.center.y +

@@ -28,7 +28,7 @@ var ChemIdentifiers = {
 
 	isFormula: function(str)
 	{
-		return this.regex.formula.exec(str)[0] == str;
+		return this.regex.formula.exec(str)[0] === str;
 	}
 }
 
@@ -121,7 +121,7 @@ function getQuery()
 
 function oneOf(nail, haystack)
 {
-	return haystack.indexOf(nail) != -1;
+	return haystack.indexOf(nail) !== -1;
 }
 
 /**
@@ -170,8 +170,8 @@ function specialEncodeURIComponent(str)
 {
 	$.fn.sizeChanged = function()
 	{
-		return !(this.data("savedWidth") == this.width()
-			  && this.data("savedHeight") == this.height());
+		return !(this.data("savedWidth") === this.width()
+			  && this.data("savedHeight") === this.height());
 	}
 
 	$.fn.saveSize = function()
@@ -226,7 +226,7 @@ function openDataURI(dataURI)
 {
 	var blob = dataURItoBlob(dataURI);
 	var windowURL = window.URL || window.webkitURL || undefined;
-	if(blob != null && windowURL != undefined)
+	if(blob !== null && windowURL !== undefined)
 	{
 		window.open(windowURL.createObjectURL(blob));
 	}
@@ -251,7 +251,7 @@ function AJAX(obj)
 	{
 		obj.error = function(jqXHR, textStatus)
 		{
-			if(textStatus != "error") return;
+			if(textStatus !== "error") return;
 			obj.defaultError(jqXHR.status);
 		}
 	}

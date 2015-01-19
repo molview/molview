@@ -97,7 +97,7 @@ var JSmolPlugin = {
 
 	init: function(cb)
 	{
-		if(Jmol == undefined) return;
+		if(Jmol === undefined) return;
 		delete Jmol._tracker;
 
 		if(Detector.canvas)
@@ -171,7 +171,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 	 */
 	MinimizationCallback: function(jsmolObject, message)
 	{
-		if(message == "done")
+		if(message === "done")
 		{
 			//restore quality settings
 			Model.JSmol._setQuality(Model.JSmol.hq);
@@ -281,7 +281,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 	loadMOL: function(mol)
 	{
-		if(this.currentModel == mol) return false;
+		if(this.currentModel === mol) return false;
 
 		if(this.ready)
 		{
@@ -298,7 +298,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 	loadPDB: function(pdb)
 	{
-		if(this.currentModel == pdb) return false;
+		if(this.currentModel === pdb) return false;
 
 		if(this.ready)
 		{
@@ -318,7 +318,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 	loadCIF: function(cif, cell)
 	{
-		if(this.currentModel == cif + cell) return false;
+		if(this.currentModel === cif + cell) return false;
 
 		if(this.ready)
 		{
@@ -503,7 +503,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 	 */
 	setMeasure: function(type, noQualityRestore)
 	{
-		if(this.picking == type.toLowerCase()) return;
+		if(this.picking === type.toLowerCase()) return;
 
 		Model.JSmol.safeCallback(function()
 		{
@@ -520,12 +520,12 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 	 */
 	_setMeasure: function(type, noQualityRestore)
 	{
-		if(this.picking == type.toLowerCase()) return;
+		if(this.picking === type.toLowerCase()) return;
 
 		this.picking = type.toLowerCase();
 		$(".jmol-picking").removeClass("checked");
 
-		if(this.picking == "off")
+		if(this.picking === "off")
 		{
 			Model.JSmol.scriptWaitOutput("set picking off;");
 

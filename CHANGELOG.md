@@ -3,6 +3,8 @@
 ## 2.3.3
 
 - Revised MolPad invalidation logic
+- Migrated to strict comparison only in JS source
+- Added real skeletal bond style to MolPad
 - Added not found message to PubChem search
 - Fixed PubChem search duplicate items
 - Fixed cross-origin iframe issue

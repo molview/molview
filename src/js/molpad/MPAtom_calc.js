@@ -16,17 +16,10 @@
 * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * Calculated the angle for a new bond from this atom by calculating all
- * segments between existing bonds and dividing the largest segment by two
- *
- * @param  {Integer} n Optional number of new segments the larges segment
- *                     should be divided in
- * @return {Float} (if n === undefined) or {Array}
- */
-MPAtom.prototype.calculateNewBondAngle = function(n)
+
+MPAtom.prototype.calculateConnectionMap = function()
 {
-	if(this.bonds.length == 0) return 0;
+	if(this.bonds.length === 0) return 0;
 
 	//create bond map with bond angles
 	var bondMap = [];
@@ -48,7 +41,7 @@ MPAtom.prototype.calculateNewBondAngle = function(n)
 	var sections = [];
 	for(var i = 0; i < bondMap.length; i++)
 	{
-		var from = i == 0 ? bondMap.length - 1 : i - 1;
+		var from = i === 0 ? bondMap.length - 1 : i - 1;
 		var to = i;
 		sections.push({
 			from: from,
@@ -57,11 +50,56 @@ MPAtom.prototype.calculateNewBondAngle = function(n)
 		});
 	}
 
+	return {
+		bondMap: bondMap,
+		sections: sections
+	}
+}
+
+/**
+ * Calculates the closest upper and lower bond for the given bond index
+ * @param  {Integer} index
+ * @return {Object}
+ */
+MPAtom.prototype.calculateClosestBonds = function(index)
+{
+	for(var i = 0; i < this.cmap.bondMap.length; i++)
+	{
+		if(this.cmap.bondMap[i].i === index)
+		{
+			var upper = i + 1 < this.cmap.bondMap.length ? i + 1 : 0;
+			var lower = i - 1 >= 0 ? i - 1 : this.cmap.bondMap.length - 1;
+			return {
+				none: false,
+				upper: this.cmap.bondMap[upper].i,
+				lower: this.cmap.bondMap[lower].i,
+				upperBisectAngle: (this.cmap.bondMap[upper].a + this.cmap.bondMap[i].a) / 2,
+				lowerBisectAngle: (this.cmap.bondMap[lower].a + this.cmap.bondMap[i].a) / 2,
+				upperSectionAngle: angleBetween(this.cmap.bondMap[i].a, this.cmap.bondMap[upper].a),
+				lowerSectionAngle: angleBetween(this.cmap.bondMap[lower].a, this.cmap.bondMap[i].a)
+			};
+		}
+	}
+	return { none: true };
+}
+
+/**
+ * Calculated the angle for a new bond from this atom by calculating all
+ * segments between existing bonds and dividing the largest segment by two
+ *
+ * @param  {Integer} n Optional number of new segments the larges segment
+ *                     should be divided in
+ * @return {Float} (if n === undefined) or {Array}
+ */
+MPAtom.prototype.calculateNewBondAngle = function(n)
+{
+	if(this.bonds.length === 0 || this.cmap === undefined) return 0;
+
 	//find larges section
 	var largest = 0;//skip i = 0 since it is already used for the first comparison
-	for(var i = 1; i < sections.length; i++)
+	for(var i = 1; i < this.cmap.sections.length; i++)
 	{
-		if(sections[i].a > sections[largest].a)
+		if(this.cmap.sections[i].a > this.cmap.sections[largest].a)
 		{
 			largest = i;
 		}
@@ -70,16 +108,16 @@ MPAtom.prototype.calculateNewBondAngle = function(n)
 	//find new bond angle
 	if(n === undefined)
 	{
-		return bondMap[sections[largest].from].a + sections[largest].a / 2;
+		return this.cmap.bondMap[this.cmap.sections[largest].from].a + this.cmap.sections[largest].a / 2;
 	}
 	else
 	{
 		var p = n !== undefined ? n + 1 : 2;
-		var a = sections[largest].a / (n + 1);
+		var a = this.cmap.sections[largest].a / (n + 1);
 		var ret = [];
 		for(var i = 1; i <= n; i++)
 		{
-			ret.push(bondMap[sections[largest].from].a + i * a);
+			ret.push(this.cmap.bondMap[this.cmap.sections[largest].from].a + i * a);
 		}
 		return ret;
 	}
@@ -121,7 +159,7 @@ MPAtom.prototype.calculateCenterLine = function()
 		w += text.isotopeWidth;
 	}
 
-	if(this.charge != 0)
+	if(this.charge !== 0)
 	{
 		this.mp.setFont("charge");
 		text.chargeHeight = this.mp.s.fonts.charge.fontSize * scale;
@@ -182,10 +220,9 @@ MPAtom.prototype.calculateBondVertices = function(from, ends)
 MPAtom.prototype._calculateBondVertices = function(begin, ends)
 {
 	//TODO: implement bonding site for collapsed groups (only left or right)
-	this.validate();
 
-	if(begin.x == this.center.x
-			|| this.hidden)//provide fallback
+	if(begin.x === this.center.x
+			|| this.hidden || this.line === undefined)//provide fallback
 	{
 		var ret = [];
 		var r = this.isVisible() ? this.mp.s.atom.radius : 0;
@@ -199,7 +236,7 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 		}
 		return ret;
 	}
-	else if(begin.y == this.center.y)
+	else if(begin.y === this.center.y)
 	{
 		var ret = [];
 		var r = this.isVisible() ? this.line.area.half  || this.mp.s.atom.radius : 0;
@@ -215,9 +252,9 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 	}
 	else if(!this.isVisible())
 	{
-		if(ends.length == 1 && ends[0] == 0)
+		if(ends.length === 1 && ends[0] === 0)
 		{
-			return [{ x: this.center.x, y: this.center.y }];
+			return [MPPFO({ x: this.center.x, y: this.center.y })];
 		}
 		else
 		{
@@ -298,17 +335,17 @@ MPAtom.prototype.calculateVisibility = function()
 	}
 	else if(this.mp.s.skeletalDisplay)
 	{
-		if(this.element == "C" && this.charge == 0 && this.isotope == 0)
+		if(this.element === "C" && this.charge === 0 && this.isotope === 0)
 		{
-			if(this.bonds.length == 0)
+			if(this.bonds.length === 0)
 			{
 				return true;
 			}
 			else
 			{
-				if(this.bonds.length == 2
-				&& this.mp.mol.bonds[this.bonds[0]].type == this.mp.mol.bonds[this.bonds[1]].type
-				&& this.mp.mol.bonds[this.bonds[0]].stereo == this.mp.mol.bonds[this.bonds[1]].stereo)
+				if(this.bonds.length === 2
+				&& this.mp.mol.bonds[this.bonds[0]].type === this.mp.mol.bonds[this.bonds[1]].type
+				&& this.mp.mol.bonds[this.bonds[0]].stereo === this.mp.mol.bonds[this.bonds[1]].stereo)
 				{
 					var af = this.mp.mol.bonds[this.bonds[0]].getAngle(this);
 					var at = this.mp.mol.bonds[this.bonds[1]].getAngle(this);
@@ -328,41 +365,4 @@ MPAtom.prototype.calculateVisibility = function()
 		return true;
 	}
 	else return true;
-}
-
-/**
- * Refines bond display for a more sophisticated skeletal display
- */
-MPAtom.prototype.refineBonds = function()
-{
-	//create bond map with bond angles
-	var bondMap = [];
-	for(var i = 0; i < this.bonds.length; i++)
-	{
-		bondMap.push({
-			i: this.bonds[i],
-			a: this.mp.mol.bonds[this.bonds[i]].getAngle(this)
-		});
-	}
-
-	//convert bondMap to sections
-	var sections = [];
-	for(var i = 0; i < bondMap.length; i++)
-	{
-		var from = i == 0 ? bondMap.length - 1 : i - 1;
-		var to = i;
-		sections.push({
-			from: from,
-			to: to,
-			a: angleBetween(bondMap[from].a, bondMap[to].a)
-		});
-	}
-
-	//loop trough sections
-	for(var i = 0; i < sections.length; i++)
-	{
-		//calculate if section should be refined
-
-		//refine section
-	}
 }

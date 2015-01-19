@@ -63,31 +63,31 @@ var MolView = {
 		{
 			$.each(this.query, function(key, value)
 			{
-				if(key == "q")
+				if(key === "q")
 				{
 					$("#search-input").val(value);
 					Messages.process(Loader.CIRsearch, "search");
 				}
-				else if(key == "smiles")
+				else if(key === "smiles")
 				{
 					Messages.process(function()
 					{
 						Loader.loadSMILES(value, document.title);
 					}, "compound");
 				}
-				else if(key == "cid")
+				else if(key === "cid")
 				{
 					Loader.PubChem.loadCID(value, document.title);
 				}
-				else if(key == "pdbid")
+				else if(key === "pdbid")
 				{
 					Loader.RCSB.loadPDBID(value, value.toUpperCase());
 				}
-				else if(key == "codid")
+				else if(key === "codid")
 				{
 					Loader.COD.loadCODID(value, document.title);
 				}
-				else if(key == "bg")
+				else if(key === "bg")
 				{
 					Model.setBackground(value);
 				}

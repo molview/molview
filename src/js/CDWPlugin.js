@@ -34,7 +34,7 @@ var CDWPlugin = {
 
 	init: function(cb)
 	{
-		if(ChemDoodle == undefined) return;
+		if(ChemDoodle === undefined) return;
 
 		if(Detector.webgl)
 		{
@@ -82,15 +82,15 @@ var CDWPlugin = {
 	setRepresentation: function()
 	{
 		var m = Model.representation;
-		if(m == "balls") m = "Ball and Stick";
-		else if(m == "stick") m = "Stick";
-		else if(m == "vdw") m = "van der Waals Spheres";
-		else if(m == "wireframe") m = "Wireframe";
-		else if(m == "line") m = "Line";
+		if(m === "balls") m = "Ball and Stick";
+		else if(m === "stick") m = "Stick";
+		else if(m === "vdw") m = "van der Waals Spheres";
+		else if(m === "wireframe") m = "Wireframe";
+		else if(m === "line") m = "Line";
 
 		this.view.specs.set3DRepresentation(m);
 
-		if(m == "Ball and Stick")
+		if(m === "Ball and Stick")
 		{
 			this.view.specs.bonds_cylinderDiameter_3D = 0.2;
 		}
@@ -101,26 +101,26 @@ var CDWPlugin = {
 
 		if(Model.isPDB())
 		{
-			if(Model.chain.type != "ribbon" || Model.chain.bonds)
+			if(Model.chain.type !== "ribbon" || Model.chain.bonds)
 			{
 				Messages.alert("no_chemdoodle_chain_type");
 			}
-			if(Model.chain.color == "bfactor")
+			if(Model.chain.color === "bfactor")
 			{
 				Messages.alert("no_chemdoodle_chain_color");
 			}
 
-			this.view.specs.macro_colorByChain = Model.chain.color == "chain";
+			this.view.specs.macro_colorByChain = Model.chain.color === "chain";
 
-			if(Model.chain.color == "spectrum")
+			if(Model.chain.color === "spectrum")
 			{
 				this.view.specs.proteins_residueColor = "rainbow";
 			}
-			else if(Model.chain.color == "residue")
+			else if(Model.chain.color === "residue")
 			{
 				this.view.specs.proteins_residueColor = "amino";
 			}
-			else if(Model.chain.color == "polarity")
+			else if(Model.chain.color === "polarity")
 			{
 				this.view.specs.proteins_residueColor = "polarity";
 			}
@@ -143,7 +143,7 @@ var CDWPlugin = {
 
 	loadMOL: function(mol)
 	{
-		if(this.currentModel == mol) return;
+		if(this.currentModel === mol) return;
 
 		if(this.view)
 		{
@@ -158,7 +158,7 @@ var CDWPlugin = {
 
 	loadPDB: function(pdb)
 	{
-		if(this.currentModel == pdb) return;
+		if(this.currentModel === pdb) return;
 
 		if(this.view)
 		{
@@ -173,14 +173,14 @@ var CDWPlugin = {
 
 	loadCIF: function(cif, cell)
 	{
-		if(this.currentModel == cif + cell) return;
+		if(this.currentModel === cif + cell) return;
 
 		if(this.view)
 		{
 			this.currentModel = cif + cell;
 
 			cell = cell || [1, 1, 1];
-			this.view.specs.crystals_displayUnitCell = cell.reduce(function(a, b){ return a * b; }) == 1;
+			this.view.specs.crystals_displayUnitCell = cell.reduce(function(a, b){ return a * b; }) === 1;
 			this.view.specs.projectionPerspective_3D = false;
 			this.view.specs.compass_display = true;
 			this.molecule = ChemDoodle.readCIF(cif, cell[0], cell[1], cell[2]);

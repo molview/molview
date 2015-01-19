@@ -23,9 +23,9 @@
 function getISOLanguageCode(str)
 {
 	//cut from '-' / '_' / ';'
-	if(str.indexOf(";") != -1) str = str.substr(0, str.indexOf(";"));
-	if(str.indexOf("-") != -1) str = str.substr(0, str.indexOf("-"));
-	if(str.indexOf("_") != -1) str = str.substr(0, str.indexOf("_"));
+	if(str.indexOf(";") !== -1) str = str.substr(0, str.indexOf(";"));
+	if(str.indexOf("-") !== -1) str = str.substr(0, str.indexOf("-"));
+	if(str.indexOf("_") !== -1) str = str.substr(0, str.indexOf("_"));
 	return str;
 }
 
@@ -59,7 +59,7 @@ var Request = {
 		for(var i = 0; i < languages.length; i++)
 		{
 			var iso = languages[i].substr(0, 2);
-			if(iso != "en") Request.alternativeLanguages.push(iso);
+			if(iso !== "en") Request.alternativeLanguages.push(iso);
 		}
 	},
 
@@ -81,7 +81,7 @@ var Request = {
 				{
 					for(var i = 0; i < response.matches.length; i++)
 					{
-						if(response.matches[i].translation == text)
+						if(response.matches[i].translation === text)
 						{
 							success(text)
 							return;
@@ -236,7 +236,7 @@ var Request = {
 			}
 		}
 
-		if(cid == 0)
+		if(cid === 0)
 		{
 			Request.PubChem.smilesToCID(smiles, function(cid)
 			{
@@ -275,7 +275,7 @@ var Request = {
 				defaultError: error,
 				success: function(response)
 				{
-					if(response == "<h1>Page not found (404)</h1>\n" || response === undefined) error();
+					if(response === "<h1>Page not found (404)</h1>\n" || response === undefined) error();
 					else success(response);
 				}
 			});
@@ -312,12 +312,12 @@ var Request = {
 						var array = response.split("\n");
 						var value = array[0];
 
-						if(property == "cas")
+						if(property === "cas")
 						{
 							array.sort(function(a, b){ return a.length > b.length; });
 							value = array[0];
 						}
-						else if(property == "stdinchikey")
+						else if(property === "stdinchikey")
 						{
 							value = value.substr(9);
 						}
@@ -373,7 +373,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: query == "smiles" ?//use URL parameter for SMILES
+				url: query === "smiles" ?//use URL parameter for SMILES
 					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
 						+ type + "/" + query + "/json?" + query + "=" + encodeURIComponent(value)
 						+ "&MaxRecords=" + Request.PubChem.maxRecords
@@ -526,7 +526,7 @@ var Request = {
 				{
 					var regex = /^\d{2,7}-\d{2}-\d$/gm;
 					var array = [], match = {};
-					while((match = regex.exec(data)) != null)
+					while((match = regex.exec(data)) !== null)
 					{
 						array.push(match[0]);
 					}
@@ -676,7 +676,7 @@ var Request = {
 						//find PDBID in dataset
 						for(var j = 0; j < dataset.length; j++)
 						{
-							if(dataset[j].structureId == pdbids[i])
+							if(dataset[j].structureId === pdbids[i])
 							{
 								json.dataset.push(dataset[j]);
 								continue;
@@ -823,7 +823,7 @@ var Request = {
 					data.ir.sort(function(a, b){ return a.i > b.i; });
 					for(var i = 0; i < data.ir.length; i++)
 					{
-						if(data.ir[i].source.indexOf("NO SPECTRUM") == -1)
+						if(data.ir[i].source.indexOf("NO SPECTRUM") === -1)
 						{
 							var state = humanize(data.ir[i].state);
 							output.ir.push({ i: data.ir[i].i, state: state });
@@ -845,7 +845,7 @@ var Request = {
 			- uvvis
 			*/
 			var i = -1;
-			if(type.indexOf("ir") != -1)
+			if(type.indexOf("ir") !== -1)
 			{
 				i = parseInt(type.substr(3));
 				type = "ir";
@@ -853,7 +853,7 @@ var Request = {
 
 			AJAX({
 				dataType: "text",
-				url: "api/nist/" + type + "/" + cas + (i != -1 ? "/" + i : ""),
+				url: "api/nist/" + type + "/" + cas + (i !== -1 ? "/" + i : ""),
 				defaultError: error,
 				success: success
 			});

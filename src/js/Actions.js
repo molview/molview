@@ -102,7 +102,7 @@ var Actions = {
 		try { smiles = Sketcher.getSMILES(); }
 		catch(error) { Messages.alert("smiles_load_error_force", error); return; }
 
-		if(Spectroscopy.data["smiles"] && Spectroscopy.data["smiles"] == smiles)
+		if(Spectroscopy.data["smiles"] && Spectroscopy.data["smiles"] === smiles)
 		{
 			MolView.setLayer("spectra");
 		}
