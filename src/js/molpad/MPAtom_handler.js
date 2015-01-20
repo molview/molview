@@ -475,7 +475,15 @@ MPAtom.prototype.getHandler = function()
 			onPointerDown: function(e, mp)
 			{
 				if(this.scope.isSelected()) mp.sel.remove();
-				else mp.mol.removeAtom(this.scope.index);
+				else
+				{
+					while(this.scope.bonds.length > 0)
+					{
+						mp.mol.removeBond(this.scope.bonds[0]);
+					}
+
+					mp.mol.removeAtom(this.scope.index);
+				}
 
 				//dismiss all further calls to this handler
 				mp.pointer.handler = undefined;

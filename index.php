@@ -526,7 +526,7 @@ Query parameters:
 								<ul>
 									<li><a class="link" href="http://ggasoftware.com/opensource/ketcher" target="_blank" title="Ketcher">Ketcher</a>: Chemical 2D data reader/writer</li>
 									<li><a class="link" href="http://webglmol.sourceforge.jp/index-en.html" target="_blank" title="GLmol">GLmol v0.47</a>: primary 3D render engine</li>
-									<li><a class="link" href="http://chemapps.stolaf.edu/jmol/zip/" target="_blank" title="JSmol">JSmol v14.3.9</a>: 3D render engine</li>
+									<li><a class="link" href="http://jmol.sourceforge.net/" target="_blank" title="JSmol">JSmol</a>: 3D render engine</li>
 									<li><a class="link" href="http://web.chemdoodle.com/" target="_blank" title="ChemDoodle Web">ChemDoodle Web Components v6.0.1</a>: 3D render engine and spectrum display</li>
 								</ul>
 							</li>

@@ -70,31 +70,37 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		$json = get_curl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
 		$data = json_decode($json);
 
-		if(isset($data -> InformationList -> Information[0] -> CID))
+		if(isset($data -> InformationList -> Information))
 		{
-			if($data -> InformationList -> Information[0] -> CID > 0)
+			foreach($data -> InformationList -> Information as $record)
 			{
-				if($pubchem_query != "cid")//redirect to ?cid
+				if(!isset($_title) && isset($record -> Title))
 				{
-					$query = preg_replace("/".($pubchem_query == "name" ? "q" : $pubchem_query).
-							"=[^&]*/", "cid=".($data -> InformationList -> Information[0] -> CID),
-							$_SERVER["QUERY_STRING"]);//remove old compound query
-					header("Location: ?".$query, true, 302);
+					$_title = ucfirst(humanize($record -> Title));
 				}
-				else
+				if(!isset($_description) && isset($record -> Description))
 				{
-					$same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".
-							$data -> InformationList -> Information[0] -> CID;
+					$_description = $record -> Description;
+				}
+			}
 
-					if(isset($data -> InformationList -> Information[0] -> Title))
-					{
-						$title = ucfirst(humanize($data -> InformationList -> Information[0] -> Title));
-					}
-					if(isset($data -> InformationList -> Information[0] -> Description))
-					{
-						$description = $data -> InformationList -> Information[0] -> Description;
-					}
-				}
+			if(isset($_title)) $title = $_title;
+			if(isset($_description)) $description = $_description;
+		}
+
+		if(isset($data -> InformationList -> Information[0] -> CID) && $data -> InformationList -> Information[0] -> CID > 0)
+		{
+			if($pubchem_query != "cid")//redirect to ?cid
+			{
+				$query = preg_replace("/".($pubchem_query == "name" ? "q" : $pubchem_query).
+						"=[^&]*/", "cid=".($data -> InformationList -> Information[0] -> CID),
+						$_SERVER["QUERY_STRING"]);//remove old compound query
+				header("Location: ?".$query, true, 302);
+			}
+			else
+			{
+				$same_as = "https://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=".
+						$data -> InformationList -> Information[0] -> CID;
 			}
 		}
 	}

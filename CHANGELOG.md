@@ -4,16 +4,22 @@
 
 - Revised MolPad invalidation logic
 - Migrated to strict comparison only in JS source
-- Added real skeletal bond style to MolPad
-- Added not found message to PubChem search
-- Fixed PubChem search duplicate items
+- Migrated to SourceForge as primary Jmol build origin
+- Implemented updated PubChem description API (duplicate records)
+- Implemented updated PubChem search API (which uses Entrez sorting)
+- Added magenta coloring and large font for Jmol charge labels
+- Added saveSize to window.onresize (sizeChanged bug)
+- Added notfound message to Loader Messages
 - Fixed cross-origin iframe issue
-- Fixed MolPad drag threshold error
-- Fixed MolPad 3+ touches to 2 touches transition
-- Fixed MolPad mouseDragHandler for each single touch onPointerUp
-- Fixed MolPad multiTouchHandler focus loss without onPointerUp
-- Fixed main layer sizeChanged error by adding saveSize to window.onresize
-- Removed PubChem search results reversing (PubChem search API sorting update)
+
+## MolPad
+
+- Added real skeletal bond style
+- Added incorrect state for atoms
+- Fixed drag threshold error
+- Fixed 3+ touches to 2 touches transition
+- Fixed mouseDragHandler for each single touch onPointerUp
+- Fixed multiTouchHandler focus loss without onPointerUp
 
 ## 2.3.2 (2015-1-5)
 

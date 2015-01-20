@@ -73,6 +73,9 @@ function MolPad(container, devicePixelRatio, buttons)
 			active: {
 				color: "#8f8"
 			},
+			incorrect: {
+				color: "#f66"
+			},
 			selected: {
 				color: "#8f8"
 			},

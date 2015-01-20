@@ -448,7 +448,7 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 		{
 			Model.JSmol._setMeasure("OFF");
 			Model.JSmol.calculatePartialCharge();
-			Model.JSmol.script("label %-8.4[partialcharge]; hover off;");
+			Model.JSmol.script("font label 18; color label magenta; label %-8.4[partialcharge]; hover off;");
 		}, "jmol_calculation");
 	},
 

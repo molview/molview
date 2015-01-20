@@ -52,6 +52,7 @@ Datasets
 
 Misc
 ----
+- Move changelot to GitHub release notes
 - MolView blog based on Jekyll
 - MolView home website (pages: features, about, manual, changelog, license, feedback)
 - MolView manual as single wikitext collection

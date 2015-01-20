@@ -181,13 +181,19 @@ var InfoCard = {
 			{
 				Request.PubChem.description(cid, function(data)
 				{
-					data = data.InformationList.Information[0];
-					data.Title = ucfirst(humanize(data.Title));
+					var title, desc;
+					for(var i = 0; i < data.InformationList.Information.length; i++)
+					{
+						if(title === undefined && data.InformationList.Information[i].Title !== undefined)
+							title = ucfirst(humanize(data.InformationList.Information[i].Title));
+						if(desc === undefined && data.InformationList.Information[i].Description !== undefined)
+							desc = data.InformationList.Information[i].Description;
+					}
 
-					document.title = data.Title;
+					document.title = title;
 					$("#molecule-info").show();
-					$("#molecule-title").text(ucfirst(data.Title));
-					$("#molecule-description").text(data.Description);
+					$("#molecule-title").text(title);
+					$("#molecule-description").text(desc);
 				});
 			}
 		});

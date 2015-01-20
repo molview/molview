@@ -5,19 +5,35 @@
 if [[ $1 == "fetch" ]]
 	then
 
-	# Download and unzip JSmol
-	wget http://chemapps.stolaf.edu/jmol/zip/Jmol.zip
-	unzip Jmol.zip jsmol.zip jsmol.zip
-	unzip jsmol.zip
-	mv jsmol/JSmol.min.js src/js/lib/JSmol.min.js
-	rm -r jmol
-	mkdir jmol
-	mv jsmol/j2s jmol/j2s
-	rm -r jsmol
-	rm -r jsmol.zip
-	rm Jmol.zip
+	if [[ $2 == "jmol" ]]
+		then
 
-	# Download some third party code
+		# Download and unzip JSmol
+		if [[ $3 == "nightly" ]]
+			then
+
+			wget -O Jmol.zip http://chemapps.stolaf.edu/jmol/zip/Jmol.zip
+			unzip Jmol.zip jsmol.zip
+
+		else # stable
+
+			wget -O Jmol.zip http://sourceforge.net/projects/jmol/files/latest/download?source=files
+			unzip -j Jmol.zip */jsmol.zip
+
+		fi
+
+		unzip jsmol.zip
+		mv jsmol/JSmol.min.js src/js/lib/JSmol.min.js
+		rm -r jmol
+		mkdir jmol
+		mv jsmol/j2s jmol/j2s
+		rm -r jsmol
+		rm jsmol.zip
+		rm Jmol.zip
+
+	fi
+
+	# Download third party PHP
 	wget https://raw.githubusercontent.com/erusev/parsedown/master/Parsedown.php
 	mv Parsedown.php php/Parsedown.php
 

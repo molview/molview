@@ -539,10 +539,12 @@ MPAtom.prototype.drawStateColor = function()
 {
 	if(this.isHidden() || this.line === undefined) return;
 
-	if((this.display === "hover" || this.display === "active" ||
-	   (this.display === "normal" && this.isSelected())))
+	var incorrect = this.element == "C" && this.getBondCount() > 4;
+
+	if(this.display === "hover" || this.display === "active" ||
+			(this.display === "normal" && this.isSelected()) || incorrect)
 	{
-		var d = this.isSelected() ? "selected" : this.display;
+		var d = incorrect ? "incorrect" : (this.isSelected() ? "selected" : this.display);
 
 		this.mp.ctx.beginPath();
 		if(this.line.area.point)
