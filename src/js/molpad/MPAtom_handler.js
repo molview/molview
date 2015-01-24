@@ -59,7 +59,7 @@ MPAtom.prototype.getHandler = function()
 							this.scope.center, p, [this.data.atom],
 							this.data.currentAngle,
 							this.data.startAngle,
-							mp.s.bond.rotateSteps);
+							mp.s.rotateSteps);
 				}
 			},
 			onPointerUp: function(e, mp)
@@ -178,7 +178,7 @@ MPAtom.prototype.getHandler = function()
 							this.scope.center, p, [this.data.atom],
 							this.data.currentAngle,
 							this.data.startAngle,
-							mp.s.bond.rotateSteps);
+							mp.s.rotateSteps);
 				}
 			},
 			onPointerUp: function(e, mp)
@@ -255,10 +255,10 @@ MPAtom.prototype.getHandler = function()
 						selected: true
 					});
 
-					this.scope.select(true);
-					this.scope.addBond(connection.index);
-					mp.mol.atoms[connection.to].addBond(connection.index);
 					mp.mol.bonds.push(connection);
+					mp.mol.atoms[connection.to].addBond(connection.index);
+					this.scope.addBond(connection.index);
+					this.scope.select(true);
 				}
 				else
 				{
@@ -475,15 +475,7 @@ MPAtom.prototype.getHandler = function()
 			onPointerDown: function(e, mp)
 			{
 				if(this.scope.isSelected()) mp.sel.remove();
-				else
-				{
-					while(this.scope.bonds.length > 0)
-					{
-						mp.mol.removeBond(this.scope.bonds[0]);
-					}
-
-					mp.mol.removeAtom(this.scope.index);
-				}
+				else mp.mol.removeAtom(this.scope.index, true);
 
 				//dismiss all further calls to this handler
 				mp.pointer.handler = undefined;

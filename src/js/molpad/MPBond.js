@@ -99,7 +99,7 @@ MPBond.prototype.getLine = function()
 
 /**
  * Returns the from.angleTo(to)
- * @param  {Integer} from From atom index
+ * @param  {Integer} from From atom
  * @return {Float}
  */
 MPBond.prototype.getAngle = function(from)

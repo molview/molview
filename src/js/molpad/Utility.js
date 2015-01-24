@@ -19,6 +19,18 @@
 var PI2 = 2 * Math.PI;
 
 /**
+ * Calculate if value is inside deviation relative to a number
+ * @param  {Float} val Input value
+ * @param  {Float} num Deviation base
+ * @param  {Float} dev Deviation value
+ * @return {Boolean}
+ */
+function indev(val, num, dev)
+{
+    return val > num - dev && val < num + dev;
+}
+
+/**
  * Calculate on which side b is relative to a in counter clockwise direction
  * @param {Float} a
  * @param {Float} b

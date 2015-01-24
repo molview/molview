@@ -10,10 +10,13 @@
 - Added magenta coloring and large font for Jmol charge labels
 - Added saveSize to window.onresize (sizeChanged bug)
 - Added notfound message to Loader Messages
+- Added Autocomplete selectAll onfocus
 - Fixed cross-origin iframe issue
 
 ## MolPad
 
+- Added smart skeletal bond line side detection
+- Added lonely neighbors to atom deletion
 - Added real skeletal bond style
 - Added incorrect state for atoms
 - Fixed drag threshold error

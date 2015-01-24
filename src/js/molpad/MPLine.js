@@ -63,3 +63,8 @@ MPLine.prototype.intersection = function(line)
         onL2: b > 0 && b < 1
     };
 }
+
+MPLine.prototype.length = function()
+{
+    return this.from.distanceTo(this.to);
+}

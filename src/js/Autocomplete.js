@@ -110,7 +110,11 @@ var Autocomplete = {
 			Autocomplete.submit();
 		});
 
-		$("#search-input").on("focus", Autocomplete.focus.bind(Autocomplete));
+		$("#search-input").on("focus", function()
+		{
+			this.select();
+			Autocomplete.focus();
+		});
 
 		//hide autocomplete when clicked outside input and autocomplete
 		$(window).on(MolView.trigger, function(e)

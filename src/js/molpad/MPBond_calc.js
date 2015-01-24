@@ -75,7 +75,7 @@ MPBond.prototype.validate = function()
 			if(this.stereo === MP_STEREO_CIS_TRANS && this.type === MP_BOND_DOUBLE)
 			{
 				var ends = transformArrayMult(this.mp.s.bond.delta[MP_BOND_CIS],
-						this.mp.s.bond.deltaScale);
+						-this.mp.s.bond.deltaScale);//flip ends because of flipped y-axis
 				this.cache.ctd = {
 					from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
 					to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, ends)
@@ -87,7 +87,7 @@ MPBond.prototype.validate = function()
 					far: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]),
 					near: this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
 							transformArrayMult(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
-								this.mp.s.bond.deltaScale))
+								-this.mp.s.bond.deltaScale))//flip ends because of flipped y-axis
 				};
 
 				if(!this.mp.mol.atoms[this.to].isVisible())
@@ -96,9 +96,9 @@ MPBond.prototype.validate = function()
 
 					if(!bonds.none)
 					{
-						if(this.mp.mol.bonds[bonds.upper].type == MP_BOND_SINGLE)
+						if(this.mp.mol.bonds[bonds.lower].type == MP_BOND_SINGLE)
 						{
-							var i1 = this.mp.mol.bonds[bonds.upper].getLine().intersection(
+							var i1 = this.mp.mol.bonds[bonds.lower].getLine().intersection(
 								new MPLine({
 									from: this.cache.wedge.far[0],
 									to: this.cache.wedge.near[0]
@@ -108,9 +108,9 @@ MPBond.prototype.validate = function()
 								this.cache.wedge.near[0] = i1.p || this.cache.wedge.near[0];
 							}
 						}
-						if(this.mp.mol.bonds[bonds.lower].type == MP_BOND_SINGLE)
+						if(this.mp.mol.bonds[bonds.upper].type == MP_BOND_SINGLE)
 						{
-							var i2 = this.mp.mol.bonds[bonds.lower].getLine().intersection(
+							var i2 = this.mp.mol.bonds[bonds.upper].getLine().intersection(
 								new MPLine({
 									from: this.cache.wedge.far[0],
 									to: this.cache.wedge.near[1]
@@ -128,7 +128,7 @@ MPBond.prototype.validate = function()
 				var far = this.mp.mol.atoms[this.from].calculateBondVertices(this.to, [0]);
 				var near = this.mp.mol.atoms[this.to].calculateBondVertices(this.from,
 						transformArrayMult(this.mp.s.bond.delta[MP_BOND_WEDGEHASH],
-							this.mp.s.bond.deltaScale));
+							-this.mp.s.bond.deltaScale));//flip ends because of flipped y-axis
 
 				var dx1 = near[0].x - far[0].x;
 				var dy1 = near[0].y - far[0].y;
@@ -156,6 +156,11 @@ MPBond.prototype.validate = function()
 			{
 				var ends = [];
 				var doubleSide = 1;
+				var fromBonds = this.mp.mol.atoms[this.from].calculateClosestBonds(this.index);
+				var toBonds = this.mp.mol.atoms[this.to].calculateClosestBonds(this.index);
+				var refineUpperSkeletal = false, refineLowerSkeletal = false;
+
+
 				//check if this bond will be displayed using all skeletal display rules
 				var skeletal = (this.mp.s.skeletalDisplay &&//skeleton display is enabled
 						(!this.mp.mol.atoms[this.from].isVisible() || !this.mp.mol.atoms[this.to].isVisible()) &&//and at least one atom is visible
@@ -169,44 +174,111 @@ MPBond.prototype.validate = function()
 							this.mp.mol.atoms[this.from].bonds.length > 2) ||//to any atom that is connected to 2+ other atoms
 							this.mp.mol.atoms[this.from].bonds.length === 1)));
 
+				if(skeletal)
+				{
+					/*
+					Calculate best doubleSide
+					=========================
+					1. The sum of the deviation of the bisect angle relative to
+					the bestBisect angle of the upper and the lower side are
+					calculated. The side with the least bestBisect deviation
+					is used for the double bond
+					2. The approximated double bond length is calcualted
+					using a horizontal bond with length this.line distance
+					and bond delta = 8. Using this length, the bond refinement
+					is skipped or the bond is force flipped to a different side
+					*/
+					var length = this.line.from.distanceTo(this.line.to);
+					var upperLength = length, upperBisectSum = 0;
+
+					if(!this.mp.mol.atoms[this.from].isVisible() && fromBonds.upperSectionAngle < Math.PI)
+					{
+						upperLength -= 8 / Math.tan(fromBonds.upperSectionAngle / 2);
+						upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - fromBonds.upperSectionAngle / 2);
+					}
+					else upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+
+					if(!this.mp.mol.atoms[this.to].isVisible() && toBonds.lowerSectionAngle < Math.PI)
+					{
+						upperLength -= 8 / Math.tan(toBonds.lowerSectionAngle / 2);
+						upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - toBonds.lowerSectionAngle / 2);
+					}
+					else upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+
+					var lowerLength = length, lowerBisectSum = 0;
+					if(!this.mp.mol.atoms[this.from].isVisible() && fromBonds.lowerSectionAngle < Math.PI)
+					{
+						lowerLength -= 8 / Math.tan(fromBonds.lowerSectionAngle / 2);
+						lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - fromBonds.lowerSectionAngle / 2);
+					}
+					else lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+
+					if(!this.mp.mol.atoms[this.to].isVisible() && toBonds.upperSectionAngle < Math.PI)
+					{
+						lowerLength -= 8 / Math.tan(toBonds.upperSectionAngle / 2);
+						lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - toBonds.upperSectionAngle / 2);
+					}
+					else lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+
+					//check if the opposite sections are almost the same (like in a chain)
+					//if so, a fallback rule is applied (in order to prevent from
+					//inconsistent double bond sides in carbon chains)
+					if(Math.abs(fromBonds.upperSectionAngle - toBonds.upperSectionAngle) +
+					   Math.abs(fromBonds.lowerSectionAngle - toBonds.lowerSectionAngle) < this.mp.s.bond.angleDev)
+					{
+						//fallback rule: double bond to the visual upper side
+						var a = this.mp.mol.atoms[this.from].center.angleTo(this.mp.mol.atoms[this.to].center);
+						doubleSide = a > -Math.PI / 2 + this.mp.s.bond.angleDev
+								&& a <= Math.PI / 2 + this.mp.s.bond.angleDev ? 1 : -1;
+					}
+					else if(lowerBisectSum < upperBisectSum ||//the lower side has a smaller bestBisect deviation
+						//or the lower side can apply bond refinement while the upper side cannot
+						(upperLength < this.mp.s.atom.radius && lowerLength > this.mp.s.atom.radius))
+					{
+						doubleSide = -1;
+					}
+
+					refineUpperSkeletal = (this.type === MP_BOND_TRIPLE || doubleSide === 1)
+							&& upperLength > this.mp.s.atom.radius;
+					refineLowerSkeletal = (this.type === MP_BOND_TRIPLE || doubleSide === -1)
+							&& lowerLength > this.mp.s.atom.radius;
+				}
+
 				if(this.type === MP_BOND_DOUBLE)
 				{
-					var array = this.mp.s.bond.delta[MP_BOND_DOUBLE];
-					if(skeletal) array = transformArrayAdd(array, -doubleSide * array[0]);
-					ends = transformArrayMult(array, this.mp.s.bond.deltaScale);
+					ends = this.mp.s.bond.delta[MP_BOND_DOUBLE];
+					if(skeletal) ends = transformArrayAdd(ends, -doubleSide * ends[0]);
 				}
 				else if(this.type === MP_BOND_TRIPLE)
 				{
-					ends = transformArrayMult(this.mp.s.bond.delta[MP_BOND_TRIPLE],
-							this.mp.s.bond.deltaScale);
+					ends = this.mp.s.bond.delta[MP_BOND_TRIPLE];
 				}
 
-				var flippedEnds = transformArrayMult(ends, -1);
+				ends = transformArrayMult(ends, -this.mp.s.bond.deltaScale);//flip ends because of flipped y-axis
+				var toEnds = transformArrayMult(ends, -1);//reversed upper/lower side relate to from
 				this.cache.bond = {
 					from: this.mp.mol.atoms[this.from].calculateBondVertices(this.to, ends),
-					to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, flippedEnds)
+					to: this.mp.mol.atoms[this.to].calculateBondVertices(this.from, toEnds)
 				};
 
 				if(!this.mp.mol.atoms[this.from].isVisible())
 				{
-					var fromBonds = this.mp.mol.atoms[this.from].calculateClosestBonds(this.index);
-
 					if(!fromBonds.none)
 					{
-						if((doubleSide === 1 || !skeletal || this.type === MP_BOND_TRIPLE)
+						if((!skeletal || refineLowerSkeletal)
 						&& fromBonds.lowerSectionAngle < Math.PI)
 						{
-							this.cache.bond.from[1] = this.refineBondVetex(
+							this.cache.bond.from[0] = this.refineBondVetex(
 									skeletal, fromBonds.lowerBisectAngle,
-									this.line.from, this.cache.bond.from[1], this.cache.bond.to[1],
+									this.line.from, this.cache.bond.from[0], this.cache.bond.to[0],
 									this.mp.mol.bonds[fromBonds.lower].getLine());
 						}
-						if((doubleSide === -1 || !skeletal || this.type === MP_BOND_TRIPLE)
+						if((!skeletal || refineUpperSkeletal)
 						&& fromBonds.upperSectionAngle < Math.PI)
 						{
-							this.cache.bond.from[0] = this.refineBondVetex(
+							this.cache.bond.from[1] = this.refineBondVetex(
 									skeletal, fromBonds.upperBisectAngle,
-									this.line.from, this.cache.bond.from[0], this.cache.bond.to[0],
+									this.line.from, this.cache.bond.from[1], this.cache.bond.to[1],
 									this.mp.mol.bonds[fromBonds.upper].getLine());
 						}
 					}
@@ -214,22 +286,20 @@ MPBond.prototype.validate = function()
 
 				if(!this.mp.mol.atoms[this.to].isVisible())
 				{
-					var toBonds = this.mp.mol.atoms[this.to].calculateClosestBonds(this.index);
-
 					if(!toBonds.none)
 					{
-						if((doubleSide === 1 || !skeletal || this.type === MP_BOND_TRIPLE)
+						if((!skeletal || refineLowerSkeletal)
 						&& toBonds.upperSectionAngle < Math.PI)
 						{
-							this.cache.bond.to[1] = this.refineBondVetex(skeletal, toBonds.upperBisectAngle,
-									this.line.to, this.cache.bond.from[1], this.cache.bond.to[1],
+							this.cache.bond.to[0] = this.refineBondVetex(skeletal, toBonds.upperBisectAngle,
+									this.line.to, this.cache.bond.to[0], this.cache.bond.from[0],
 									this.mp.mol.bonds[toBonds.upper].getLine());
 						}
-						if((doubleSide === -1 || !skeletal || this.type === MP_BOND_TRIPLE)
+						if((!skeletal || refineUpperSkeletal)
 						&& toBonds.lowerSectionAngle < Math.PI)
 						{
-							this.cache.bond.to[0] = this.refineBondVetex(skeletal, toBonds.lowerBisectAngle,
-									this.line.to, this.cache.bond.from[0], this.cache.bond.to[0],
+							this.cache.bond.to[1] = this.refineBondVetex(skeletal, toBonds.lowerBisectAngle,
+									this.line.to, this.cache.bond.to[1], this.cache.bond.from[1],
 									this.mp.mol.bonds[toBonds.lower].getLine());
 						}
 					}
@@ -264,8 +334,12 @@ MPBond.prototype.refineBondVetex = function(skeletal, bisectAngle, lineFrom, bon
 				from: bondFrom,
 				to: bondTo
 		}));
+		if(!intersection.onL1 || lineFrom.distanceTo(intersection.p) >
+				closestBondLine.length() / 2)
+		{
+			intersection.p = undefined;
+		}
 	}
 
-	return intersection.p !== undefined && lineFrom.distanceTo(intersection.p) <
-			this.mp.s.bond.multiBondFitMaxD ? intersection.p : bondFrom;
+	return intersection.p !== undefined ? intersection.p : bondFrom;
 }

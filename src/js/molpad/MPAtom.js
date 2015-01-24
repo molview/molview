@@ -427,8 +427,7 @@ MPAtom.prototype.addImplicitHydrogen = function()
 			var da = Math.max(af, at) - Math.min(af, at);
 
 			//do only display 2 Hydrogens on one side if the bonds are not straight
-			if(da < Math.PI - this.mp.s.bond.straightDev ||
-				da > Math.PI + this.mp.s.bond.straightDev)
+			if(indev(da, Math.PI, this.mp.s.bond.angleDev))
 			{
 				var a = this.calculateNewBondAngle(2);
 				if(a === 0) return;
@@ -475,11 +474,13 @@ MPAtom.prototype.invalidate = function()
  */
 MPAtom.prototype.centerChanged = function()
 {
+	this.invalidate();
 	for(var i = 0; i < this.bonds.length; i++)
 	{
 		this.mp.mol.bonds[this.bonds[i]].invalidate();
 		this.mp.mol.atoms[this.mp.mol.bonds[this.bonds[i]].getOppositeAtom(this.index)].bondsChanged(true);
 	}
+	this.cmap = this.calculateConnectionMap();
 }
 
 /**
@@ -488,7 +489,7 @@ MPAtom.prototype.centerChanged = function()
 MPAtom.prototype.labelChanged = function()
 {
 	this.invalidate();
-
+	this.line = undefined;
 	for(var i = 0; i < this.bonds.length; i++)
 	{
 		this.mp.mol.bonds[this.bonds[i]].invalidate();
@@ -501,12 +502,7 @@ MPAtom.prototype.labelChanged = function()
  */
 MPAtom.prototype.bondsChanged = function(moved)
 {
-	var v = this.calculateVisibility();
-	var w = this.isVisible();
-
-	if(v !== w) this.invalidate();
-	else this.cmap = this.calculateConnectionMap();//at least update the cmap
-
+	this.invalidate();
 	if(this.mp.s.skeletalDisplay)
 	{
 		for(var i = 0; i < this.bonds.length; i++)
@@ -525,7 +521,7 @@ MPAtom.prototype.validate = function()
 	this.valid = true;
 	this.wasVisible = this.calculateVisibility();
 	this.cmap = this.calculateConnectionMap();
-	this.line = this.calculateCenterLine();
+	if(this.line === undefined) this.line = this.calculateCenterLine();
 }
 
 /**
@@ -539,7 +535,10 @@ MPAtom.prototype.drawStateColor = function()
 {
 	if(this.isHidden() || this.line === undefined) return;
 
-	var incorrect = this.element == "C" && this.getBondCount() > 4;
+	var incorrect = false;//this.element == "C" && this.getBondCount() > 4;
+	/* incorrect is currently not really working since the red is sometimes
+	draw between other green selection areas and because the invalidation is not
+	working correctly when adding fragments which are not yet collapsed */
 
 	if(this.display === "hover" || this.display === "active" ||
 			(this.display === "normal" && this.isSelected()) || incorrect)

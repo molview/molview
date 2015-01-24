@@ -147,7 +147,7 @@ MPAtom.prototype.calculateCenterLine = function()
 	var text = {};
 
 	this.mp.setFont("element");
-	text.labelWidth = this.isVisible() ? this.mp.ctx.measureText("" + this.element).width : 0;
+	text.labelWidth = this.mp.ctx.measureText("" + this.element).width;
 	var w = text.labelWidth;
 
 	if(this.isotope > 0)
@@ -212,6 +212,9 @@ MPAtom.prototype.calculateBondVertices = function(from, ends)
 
 /**
  * Calculate bond attach vertices for a bond from $begin to $this.center
+ * Note that positive ends will end up at the lower side because of the
+ * HTML5 canvas coordinate system
+ *
  * @param  {MPPoint} begin Origin point
  * @param  {Array}   ends  Requested end vertices perpendicular to the end of line $begin$this.center
  *                         (values are in counter clockwise direction)
@@ -352,8 +355,7 @@ MPAtom.prototype.calculateVisibility = function()
 					var da = Math.max(af, at) - Math.min(af, at);
 
 					//display atom anyway if the bonds are straight
-					if(da > Math.PI - this.mp.s.bond.straightDev &&
-						da < Math.PI + this.mp.s.bond.straightDev)
+					if(indev(da, Math.PI, this.mp.s.bond.angleDev))
 					{
 						return true;
 					}

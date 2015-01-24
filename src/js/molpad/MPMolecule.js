@@ -454,11 +454,27 @@ MPMolecule.prototype.countCollapses = function(atoms)
 /**
  * Remove an atom with the given index from the current molecule
  * @param  {Integer} index Atom index
+ * @param  {Boolean} rln   Remove lonely neighbors
  * @return {Object}        New indices maps
  */
-MPMolecule.prototype.removeAtom = function(index)
+MPMolecule.prototype.removeAtom = function(index, rln)
 {
-	this.atoms.splice(index, 1);
+	var splice = [];
+	if(rln)
+	{
+		for(var i = 0; i < this.atoms[index].bonds.length; i++)
+		{
+			var ai = this.bonds[this.atoms[index].bonds[i]].getOppositeAtom(index);
+			if(this.atoms[ai].bonds.length == 1) splice.push(ai);
+		}
+	}
+	splice.push(index);
+	splice.sort(function(a, b){ return a - b; }).reverse();
+	for(var i = 0; i < splice.length; i++)
+	{
+		this.atoms.splice(splice[i], 1);
+	}
+
 	return this.updateIndices();
 }
 
@@ -483,7 +499,7 @@ MPMolecule.prototype.removeBond = function(index)
 	}
 
 	this.bonds.splice(index, 1);
-	this.updateIndices();
+	return this.updateIndices();
 }
 
 /**

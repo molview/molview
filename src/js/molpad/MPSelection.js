@@ -77,7 +77,7 @@ MPSelection.prototype.rotate = function(pointer)
 	this.currentAngle = this.mp.mol.rotateAtoms(
 			this.center, pointer, this.cache.atoms,
 			this.currentAngle, this.startAngle,
-			this.mp.s.bond.rotateSteps);
+			this.mp.s.rotateSteps);
 }
 
 /**
