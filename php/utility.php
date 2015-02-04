@@ -35,11 +35,11 @@ function humanize($str)
 
 function is_available($url)
 {
-    $handle = curl_init($url);
-    curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
-    $response = curl_exec($handle);
-    $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-    curl_close($handle);
+    $ch = curl_init($url);
+    curl_setopt($ch,  CURLOPT_RETURNTRANSFER, TRUE);
+    $out = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
     //if the document has loaded successfully without any redirection or error
     if($http_code >= 200 && $http_code < 300) return true;
@@ -49,12 +49,13 @@ function is_available($url)
 function get_curl($url)
 {
 	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($ch, CURLOPT_BINARYTRANSFER, TRUE);
 	$out = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
-	return $out;
+	if($http_code >= 200 && $http_code < 300) return $out;
+	else return false;
 }
 
 function echo_curl($url)

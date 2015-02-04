@@ -239,7 +239,14 @@ MolPad.prototype.onPointerDown = function(e)
 		//undo single pointer changes
 		if(this.mol.isChanged())
 		{
-			this.undo(true);
+			//reload the copy: the molecule has been changed but it's copy has
+			//not yet been updated (reset event display is not necessary since
+			//a clean new molecule is loaded)
+			this.mol.loadPlainData(this.mol.copy);
+		}
+		else
+		{
+			this.resetEventDisplay();
 		}
 		//update multitouch event data
 		this.pointer.old.c.fromMultiTouchCenter(e);
@@ -271,7 +278,8 @@ MolPad.prototype.onPointerDown = function(e)
 
 MolPad.prototype.onMouseMoveInContainer = function(e)
 {
-	if(this.pointer.touchGrab)//dimiss mouse events if touch is active
+	//dimiss mouse events if touch is active
+	if(this.pointer.touchGrab)
 	{
 		return;
 	}
@@ -292,9 +300,10 @@ MolPad.prototype.onMouseOut = function(e)
 
 MolPad.prototype.onPointerMove = function(e)
 {
-	if(e.type === "mousemove" && this.pointer.touchGrab)//dimiss mouse events if touch is active
+	//dimiss mouse events if touch is active
+	if(e.type === "mousemove" && this.pointer.touchGrab)
 	{
-		return;//dimiss mouse events if touch is active
+		return;
 	}
 	else if(this.pointer.handler && this.pointer.handler.onPointerMove)
 	{
@@ -305,9 +314,10 @@ MolPad.prototype.onPointerMove = function(e)
 
 MolPad.prototype.onPointerUp = function(e)
 {
+	//dimiss mouse events if touch is active
 	if(e.type === "mouseup" && this.pointer.touchGrab)
 	{
-		return;//dimiss mouse events if touch is active
+		return;
 	}
 
 	var oe = e.originalEvent;

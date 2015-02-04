@@ -507,7 +507,6 @@ set MinimizationCallback "Model.JSmol.MinimizationCallback";',
 
 		Model.JSmol.safeCallback(function()
 		{
-			Model.setRepresentation("balls");
 			Model.JSmol._setMeasure(type, noQualityRestore)
 		});
 	},

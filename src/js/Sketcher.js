@@ -64,7 +64,15 @@ var Sketcher = {
 			this.molpad.onChange(function()
 			{
 				Sketcher.metadata = {};
-				Sketcher.markOutdated();
+
+				if(Sketcher.molpad.mol.copy.fingerprint === Sketcher.fingerprint)
+				{
+					Sketcher.markUpdated();
+				}
+				else
+				{
+					Sketcher.markOutdated();
+				}
 			});
 		}
 		else
@@ -276,6 +284,7 @@ var Sketcher = {
 
 	markUpdated: function()
 	{
+		this.fingerprint = this.molpad.mol.copy.fingerprint;
 		$("#action-resolve").removeClass("resolve-outdated");
 	},
 

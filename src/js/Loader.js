@@ -606,71 +606,64 @@ var Loader = {
 				//load CIF
 				Request.COD.CIF(codid, function(cif)
 				{
-					if(cif.length > 1)
+				Model.loadCIF(cif, [1, 1, 1], function()
 					{
-						Model.loadCIF(cif, [1, 1, 1], function()
+						Progress.increment();
+
+						/*
+						load structural formule
+
+						if PubChem_name is defined
+						  - check if PubChem_name is CID primary name
+						  - convert name to PubChem CID
+						  - CID to 2D sdf
+						else
+						  - convert CODID to name
+						  - convert name to PubChem CID
+						  - CID to 2D sdf
+						fallback
+						  - CODID to smiles
+						  - Resolve smiles using CIR
+						*/
+
+						if(PubChem_name !== undefined)
 						{
-							Progress.increment();
-
-							/*
-							load structural formule
-
-							if PubChem_name is defined
-							  - check if PubChem_name is CID primary name
-							  - convert name to PubChem CID
-							  - CID to 2D sdf
-							else
-							  - convert CODID to name
-							  - convert name to PubChem CID
-							  - CID to 2D sdf
-							fallback
-							  - CODID to smiles
-							  - Resolve smiles using CIR
-							*/
-
-							if(PubChem_name !== undefined)
+							//check if PubChem_name is CID primary name
+							Request.PubChem.primaryName(PubChem_name, function(name)
 							{
-								//check if PubChem_name is CID primary name
-								Request.PubChem.primaryName(PubChem_name, function(name)
+								Progress.increment();
+
+								if(name.toLowerCase() === PubChem_name.toLowerCase())
+								{
+									//convert name to PubChem CID
+									nameToCID(name);
+								}
+								else fallback();
+							}, fallback);
+						}
+						else
+						{
+							if(name === undefined || name === "MolView")
+							{
+								//convert CODID to name
+								Request.COD.name(codid, function(data)
 								{
 									Progress.increment();
 
-									if(name.toLowerCase() === PubChem_name.toLowerCase())
+									if(data.records[0].name !== "")
 									{
 										//convert name to PubChem CID
-										nameToCID(name);
+										nameToCID(data.records[0].name);
 									}
 									else fallback();
 								}, fallback);
 							}
 							else
 							{
-								if(name === undefined || name === "MolView")
-								{
-									//convert CODID to name
-									Request.COD.name(codid, function(data)
-									{
-										Progress.increment();
-
-										if(data.records[0].name !== "")
-										{
-											//convert name to PubChem CID
-											nameToCID(data.records[0].name);
-										}
-										else fallback();
-									}, fallback);
-								}
-								else
-								{
-									nameToCID(name);
-								}
+								nameToCID(name);
 							}
-						});
-					}
-					else
-					{
-						Messages.alert("load_fail");
-					}
+						}
+					});
 				},
 				function()
 				{
@@ -701,8 +694,6 @@ var Loader = {
 		Request.resolve(smiles, 0, true, function(mol, cid)
 		{
 			Sketcher.loadMOL(mol);
-			Sketcher.markUpdated();
-
 			Progress.complete();
 			Messages.clear();
 		},

@@ -1,28 +1,34 @@
 # Changelog
 
-## 2.3.3
+## 2.3.3 (2015-2-3)
 
 - Revised MolPad invalidation logic
-- Migrated to strict comparison only in JS source
+= Redesigned HTML input and welcome dialog
+- Migrated to strict comparisons only in JS source
 - Migrated to SourceForge as primary Jmol build origin
+= Implemented Sketcher update style based on MolPad fingerprints
 - Implemented updated PubChem description API (duplicate records)
 - Implemented updated PubChem search API (which uses Entrez sorting)
+= Added coordinates flag check to COD CIF mirror
+= Added JSmol HQ disabling for touch-only devices
 - Added magenta coloring and large font for Jmol charge labels
 - Added saveSize to window.onresize (sizeChanged bug)
 - Added notfound message to Loader Messages
 - Added Autocomplete selectAll onfocus
 - Fixed cross-origin iframe issue
 
-## MolPad
+### MolPad
 
 - Added smart skeletal bond line side detection
 - Added lonely neighbors to atom deletion
 - Added real skeletal bond style
 - Added incorrect state for atoms
-- Fixed drag threshold error
+= Fixed persistent active state after multi-touch start
+- Fixed drag delta calculation error
 - Fixed 3+ touches to 2 touches transition
-- Fixed mouseDragHandler for each single touch onPointerUp
-- Fixed multiTouchHandler focus loss without onPointerUp
+- Fixed onPoinerUp canvas dragging fallback for single touches with a defined handler
+- Fixed multiTouchHandler errors when onPointerUp is not called after a focus loss
+  (might be caused by stopImmediatePropagation in GLmol)
 
 ## 2.3.2 (2015-1-5)
 
@@ -86,7 +92,7 @@
 - Restyled all dialog headings (removed .dialog-close-btn)
 - Restyled messages (removed border-radius)
 
-## 2.3.x
+## 2.3.x (2014-11-12)
 
 - Replaced MolEdit with MolPad
 - Added skeletal display to MolPad

@@ -57,9 +57,9 @@ INFRINGEMENT AS A RESULT OF ITS USE.
 ## 5. Privacy Policy
 This site does not store any personal information on it's own server.
 
-This sites uses Google Analytics in order to analyze user interaction.
-This service is subject to the Google Analytics Terms which can be found at:
-https://www.google.com/analytics/terms/us.html
+This sites uses Google Analytics in order to collect usage data.
+This service is subject to the Google Analytics Terms of Service
+which can be found at: https://www.google.com/analytics/terms/us.html
 
 This site uses a client-side local storage technology (WebStorage)
 in order to save user preferences. You can find the full specification of this

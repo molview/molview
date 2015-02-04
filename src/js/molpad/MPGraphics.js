@@ -95,6 +95,10 @@ MolPad.prototype.update = function()
 	if(this.s.atom.scale !== oldAtomScale)
 	{
 		this.mol.invalidateAll();
+		this.mol.exec(function(atom)
+		{
+			atom.line = undefined;
+		}, true, false);
 	}
 }
 

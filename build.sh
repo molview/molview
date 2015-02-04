@@ -51,8 +51,9 @@ if [[ $1 != "render" ]]
 fi
 
 # Render SVG logos as PNG images
-inkscape src/svg/icon/48.svg --export-png=img/logo.png -w80 -h80
-inkscape src/svg/icon/48.svg --export-png=img/image.png --export-background=#ffffff  -w256 -h256
+inkscape src/svg/icon/mark.svg --export-png=img/mark.png -w1050 -h256
+inkscape src/svg/icon/48.svg --export-png=img/logo.png -w256 -h256
+inkscape src/svg/icon/48.svg --export-png=img/image.png --export-background=#ffffff -w256 -h256
 
 inkscape src/svg/icon/square-precomposed.svg --export-png=homescreen-192x192.png -w192 -h192
 inkscape src/svg/icon/square-precomposed.svg --export-png=homescreen-128x128.png -w128 -h128

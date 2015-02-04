@@ -20,9 +20,9 @@
 /*
 PHP script for processing and retrieving data from the Crystallography Open Database
 
-Parameters:
-- action = search (using text) || smiles (using codids) || name (using codids)
-- q = {query} || {CODID,CODID,CODID}
+@param action COD query action: search (using text), smiles (using codids), name (using codids)
+@param q      Query input
+@return       JSON data
 */
 
 include_once("utility.php");

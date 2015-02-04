@@ -12,6 +12,8 @@ Main interface
 
 Sketcher
 --------
+- Class implementation
+- Ring detection
 - Soft hydrogens
 - Functional groups
 - Lewis dot structures display
@@ -22,8 +24,9 @@ Sketcher
 
 Model
 -----
-- Top toolbar
-- Auto-rotate mode
+- Class implementation
+- Auto-rotate function
+- Toolbar with contextual tools
 - EDTSurf (protein surfaces) implementation in GLmol
 - THREE.js upgrade for GLmol
 - THREE.CanvasRenderer for GLmol
@@ -33,7 +36,7 @@ Model
 - Protein solvents display
 - Dotted H-bonds and SS-bonds for proteins
 - Switch for multiple protein assemblies
-- Electron density maps for macromolecules
+- Electron density maps (MO) for macromolecules and small molecules
 - Interactive macromolecule exploration mode
 
 Datasets
@@ -45,15 +48,15 @@ Datasets
 - PDBe binding in order to replace RCSB
 - ChemSpider PHP binding
 - OpenData spectra from ChemSpider
-- New SpectrumView to display more spectra types
-- IR spectrum analysis and search database
+- New SpectrumView class with support for more spectra and spectral analysis
 - COD image API
 - COD mirror
 
 Misc
 ----
-- Move changelot to GitHub release notes
-- MolView blog based on Jekyll
+- Create MolView blog based on Jekyll
+- Move changelog to GitHub release notes
+- Use GitHub issue tracker for all revisions and bugs
 - MolView home website (pages: features, about, manual, changelog, license, feedback)
 - MolView manual as single wikitext collection
 - Images and animations for MolView web manual
@@ -61,5 +64,6 @@ Misc
 - Client-side structural formula depiction using JavaScript
 - Server-side structural formula rendering using NodeJS
 - Server-side protein thumbnail rendering using NodeJS and PV (http://github.com/biasmv/pv)
-- Plugin framework and developer SDK
+- Developer framework: layer extensions and search extensions
+- Create extensions from already existing features to remove them from the core program
 - Android app based on CrossWalk

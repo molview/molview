@@ -30,10 +30,10 @@ Notes:
 - Index = 0 - 2 for IR spectrum
 - Index = 0 for UV-Visible spectrum
 
-Parameters:
-- type = lookup || mass || ir || uvvis
-- cas = CAS Registry Number
-- i = ir index
+@param  type Query type: lookup, mass, ir, uvvis
+@param  cas  CAS Registry Number
+@param  i    IR spectrum index
+@return      JSON data
 */
 
 include_once("utility.php");

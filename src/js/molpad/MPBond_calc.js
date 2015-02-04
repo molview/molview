@@ -189,36 +189,40 @@ MPBond.prototype.validate = function()
 					is skipped or the bond is force flipped to a different side
 					*/
 					var length = this.line.from.distanceTo(this.line.to);
-					var upperLength = length, upperBisectSum = 0;
+					var upperLength = length, upperBisectD = 0;
 
-					if(!this.mp.mol.atoms[this.from].isVisible() && fromBonds.upperSectionAngle < Math.PI)
+					if(fromBonds.upperSectionAngle < Math.PI)
 					{
-						upperLength -= 8 / Math.tan(fromBonds.upperSectionAngle / 2);
-						upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - fromBonds.upperSectionAngle / 2);
+						if(!this.mp.mol.atoms[this.from].isVisible())
+							upperLength -= 8 / Math.tan(fromBonds.upperSectionAngle / 2);
+						upperBisectD += Math.abs(this.mp.s.bond.bestBisect - fromBonds.upperSectionAngle / 2);
 					}
-					else upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+					else upperBisectD += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
 
-					if(!this.mp.mol.atoms[this.to].isVisible() && toBonds.lowerSectionAngle < Math.PI)
+					if(toBonds.lowerSectionAngle < Math.PI)
 					{
-						upperLength -= 8 / Math.tan(toBonds.lowerSectionAngle / 2);
-						upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - toBonds.lowerSectionAngle / 2);
+						if(!this.mp.mol.atoms[this.to].isVisible())
+							upperLength -= 8 / Math.tan(toBonds.lowerSectionAngle / 2);
+						upperBisectD += Math.abs(this.mp.s.bond.bestBisect - toBonds.lowerSectionAngle / 2);
 					}
-					else upperBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+					else upperBisectD += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
 
-					var lowerLength = length, lowerBisectSum = 0;
-					if(!this.mp.mol.atoms[this.from].isVisible() && fromBonds.lowerSectionAngle < Math.PI)
+					var lowerLength = length, lowerBisectD = 0;
+					if(fromBonds.lowerSectionAngle < Math.PI)
 					{
-						lowerLength -= 8 / Math.tan(fromBonds.lowerSectionAngle / 2);
-						lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - fromBonds.lowerSectionAngle / 2);
+						if(!this.mp.mol.atoms[this.from].isVisible())
+							lowerLength -= 8 / Math.tan(fromBonds.lowerSectionAngle / 2);
+						lowerBisectD += Math.abs(this.mp.s.bond.bestBisect - fromBonds.lowerSectionAngle / 2);
 					}
-					else lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+					else lowerBisectD += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
 
-					if(!this.mp.mol.atoms[this.to].isVisible() && toBonds.upperSectionAngle < Math.PI)
+					if(toBonds.upperSectionAngle < Math.PI)
 					{
-						lowerLength -= 8 / Math.tan(toBonds.upperSectionAngle / 2);
-						lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - toBonds.upperSectionAngle / 2);
+						if(!this.mp.mol.atoms[this.to].isVisible())
+							lowerLength -= 8 / Math.tan(toBonds.upperSectionAngle / 2);
+						lowerBisectD += Math.abs(this.mp.s.bond.bestBisect - toBonds.upperSectionAngle / 2);
 					}
-					else lowerBisectSum += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
+					else lowerBisectD += Math.abs(this.mp.s.bond.bestBisect - Math.PI / 2);
 
 					//check if the opposite sections are almost the same (like in a chain)
 					//if so, a fallback rule is applied (in order to prevent from
@@ -231,7 +235,7 @@ MPBond.prototype.validate = function()
 						doubleSide = a > -Math.PI / 2 + this.mp.s.bond.angleDev
 								&& a <= Math.PI / 2 + this.mp.s.bond.angleDev ? 1 : -1;
 					}
-					else if(lowerBisectSum < upperBisectSum ||//the lower side has a smaller bestBisect deviation
+					else if(lowerBisectD < upperBisectD ||//the lower side has a smaller bestBisect deviation
 						//or the lower side can apply bond refinement while the upper side cannot
 						(upperLength < this.mp.s.atom.radius && lowerLength > this.mp.s.atom.radius))
 					{

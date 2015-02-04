@@ -17,7 +17,7 @@ class Parsedown
 {
     # ~
 
-    const version = '1.5.0';
+    const version = '1.5.1';
 
     # ~
 
@@ -736,8 +736,6 @@ class Parsedown
             {
                 $Block['closed'] = true;
             }
-
-            $Block['markup'] .= $matches[1];
         }
 
         if (isset($Block['interrupted']))
@@ -1199,7 +1197,7 @@ class Parsedown
             return;
         }
 
-        if (preg_match('/^[(]((?:[^ (]|[(][^ )]+[)])+)(?:[ ]+("[^"]+"|\'[^\']+\'))?[)]/', $remainder, $matches))
+        if (preg_match('/^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]+"|\'[^\']+\'))?[)]/', $remainder, $matches))
         {
             $Element['attributes']['href'] = $matches[1];
 
@@ -1360,11 +1358,6 @@ class Parsedown
         }
     }
 
-    #
-    # ~
-
-    protected $unmarkedInlineTypes = array("\n" => 'Break', '://' => 'Url');
-
     # ~
 
     protected function unmarkedText($text)
@@ -1409,7 +1402,7 @@ class Parsedown
 
             if (isset($Element['handler']))
             {
-                $markup .= $this->$Element['handler']($Element['text']);
+                $markup .= $this->{$Element['handler']}($Element['text']);
             }
             else
             {

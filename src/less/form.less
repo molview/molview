@@ -89,15 +89,12 @@
 {
 	display: block;
 	position: absolute;
-	top: 30px;
+	top: 35px;
 	right: 5px;
 	left: 5px;
-	height: 5px;
+	height: 1px;
 
-	background: transparent;
-	border-style: solid;
-	border-color: @contrast;
-	border-width: 0 0 1px 0;
+	background: @contrast;
 }
 
 input[type="text"]
@@ -119,13 +116,13 @@ input:focus
 
 input[type="text"]:focus + .input-focus
 {
-	border-color: @highlight !important;
-	border-width: 0 1px 1px 1px;
+	background: @highlight !important;
+	height: 2px;
 }
 
 input[type="text"].alert + .input-focus
 {
-	border-color: @error !important;
+	background: @error !important;
 }
 
 .input
@@ -141,6 +138,10 @@ input[type="text"].alert + .input-focus
 .input:focus
 {
 	border-bottom: 2px solid @highlight !important;
+
+	//border compensation trick
+	height: 31px;
+	margin-bottom: -1px;
 }
 
 /* select */

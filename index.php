@@ -132,6 +132,7 @@ Query parameters:
 
 		<!-- PHP data injection -->
 		<script type="text/javascript">
+			Model.JSmol.hq = <?php echo ($touch) ? "false" : "true"; ?>;
 			MolView.touch = <?php echo ($touch) ? "true" : "false"; ?>;
 			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
 			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
@@ -275,7 +276,7 @@ Query parameters:
 					<li id="jmol-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
-							<li class="menu-item"><a id="action-jmol-hq" class="check checked">High Quality</a></li>
+							<li class="menu-item"><a id="action-jmol-hq" class="check">High Quality</a></li>
 							<li class="menu-item"><a id="action-jmol-clean" class="jmol-script">Clean</a></li>
 							<li class="menu-header jmol-script jmol-calc">Calculations</li>
 							<li class="menu-item"><a id="action-jmol-mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
@@ -487,40 +488,34 @@ Query parameters:
 			<div id="dialog-click-area">
 				<div id="dialog-wrapper">
 					<div class="dialog" id="start-dialog">
-						<h1>Welcome to MolView <a id="agpl-logo-wrapper" target="_blank" href="http://github.com/molview"><img id="agpl-logo" src="img/agpl.svg" alt="AGPL" /></a></h1>
-						<p>MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome!</p>
-						<p id="allow-tracking-wrapper">
-							<input id="allow-tracking" type="checkbox" />
-							<script type="text/javascript">
-								$("#allow-tracking").prop("checked", Preferences.get("molview", "allow_tracking", true))
-							</script>
-							<label for="allow-tracking">Allow MolView to track interaction in order to improve the MolView experience (<a class="gray" href="tracking">read more</a>)</label>
-						</p>
-						<a class="gray" href="legal" target="_blank">Terms of Use</a>
+						<img id="welcome-logo" src="img/logo.svg" alt="" />
+						<img id="welcome-mark" src="img/mark.svg" alt="MolView" />
+						<a id="agpl-logo-wrapper" target="_blank" href="http://github.com/molview">
+							<img id="agpl-logo" src="img/agpl.svg" alt="AGPL">
+						</a>
 						<div id="welcome-loading-msg">LOADING&hellip;</div>
 						<div id="welcome-button-bar" class="btn-group" style="display: none;">
 							<button id="action-start-help" class="btn btn-large">Get started</button>
 							<button class="btn close btn-large btn-primary">Continue</button>
 						</div>
-						<p>MolView is also on YouTube, Twitter, Facebook and Google Plus to keep you updated about the latest stuff!</p>
 						<div class="btn-group">
 							<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
 							<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 						</div>
-						<p id="donate-msg">We believe MolView should be accessible for free to everyone. Since MolView is non-profit and there is no budget behind its development and maintenance, we need your support to keep it fast and free! This way we can also continue to add more awesome features, which require more resources, to MolView.</p>
-						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-							<input type="hidden" name="cmd" value="_s-xclick" />
-							<input type="hidden" name="hosted_button_id" value="88QDZTWLV9GXG" />
-							<input id="donate-btn" type="submit" value="Donate" name="submit" title="PayPal - The safer, easier way to pay online!" />
-							<img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1" />
-						</form>
+						<p id="allow-tracking-wrapper">
+							<input id="allow-tracking" type="checkbox" />
+							<script type="text/javascript">
+								$("#allow-tracking").prop("checked", Preferences.get("molview", "allow_tracking", true))
+							</script>
+							<label for="allow-tracking">Allow MolView to collect interaction data (<a class="gray" href="tracking">read more</a>)</label>
+						</p>
+						<a class="gray" href="legal" target="_blank">Terms of Use</a>
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>
-						<p>MolView is a web application for drawing, searching and viewing chemical structures.<br>
-						This web application is built on top of the JavaScript libraries and online services listed below. I drew some inspiration from the <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a>, a similar web application.</p>
+						<p>MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome! MolView is mainly intended as web-based data visualization platform. You can use MolView to search through different scientific databases including compound databases, protein databases and spectral databases, and view records from these databases as interactive visualizations using WebGL and HTML5 technologies. This web application is built on top of the JavaScript libraries and online services listed below. The <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a> has been a source of inspiration for the birth of this project.</p>
 						<ul>
 							<li>JavaScript libraries
 								<ul>

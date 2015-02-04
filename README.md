@@ -1,10 +1,13 @@
 MolView
 =======
-MolView is a web application for drawing, searching and viewing chemical
-structures. This web application is built on top of the JavaScript libraries
-and online services listed below. I drew some inspiration from the
-[Virtual Model Kit](http://chemagic.com/JSmolVMK2.htm),
-a similar web application.
+MolView is an intuitive, Open-Source web-application to make chemistry and biology
+more awesome! MolView is mainly intended as web-based data visualization platform.
+You can use MolView to search through different scientific databases including
+compound databases, protein databases and spectral databases, and view records
+from these databases as interactive visualizations using WebGL and HTML5 technologies.
+This web application is built on top of the JavaScript libraries and online services listed below.
+The [Virtual Model Kit](http://chemagic.com/JSmolVMK2.htm) has been a source of
+inspiration for the birth of this project.
 
 **JavaScript libraries**
 
@@ -49,7 +52,7 @@ Build
 -----
 Instructions:
 
-1. Copy all files to a server with PHP + php5-curl + .htaccess + mod_rewrite support
+1. Copy all files to a server with support for: PHP5, php5-curl, .htaccess and mod_rewrite
 2. Configure $directory in `php/utility.php` to point to the MolView root directory
 3. Configure ErrorDocument in `.htaccess` to point to `page.php`
 4. Make sure the Inkscape and the ImageMagick CLI are installed

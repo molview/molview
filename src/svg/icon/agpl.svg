@@ -10,8 +10,8 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="150"
-   height="60"
+   width="126"
+   height="52"
    id="svg3287"
    inkscape:version="0.48.5 r10040"
    sodipodi:docname="agpl.svg">
@@ -28,13 +28,13 @@
      inkscape:window-height="1025"
      id="namedview3197"
      showgrid="false"
-     inkscape:zoom="5.0533333"
-     inkscape:cx="114.14044"
-     inkscape:cy="75.738572"
+     inkscape:zoom="2.5266667"
+     inkscape:cx="85.67425"
+     inkscape:cy="-11.477818"
      inkscape:window-x="-2"
      inkscape:window-y="32"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg3287" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs3289" />
   <metadata
@@ -50,10 +50,10 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="matrix(0.49074814,0,0,0.49074814,-0.28720721,-449.64833)"
+     transform="matrix(0.49074814,0,0,0.49074814,-0.28720721,-457.64833)"
      id="layer1">
     <g
-       transform="matrix(0.7699756,0,0,0.7699756,-3.2502187,402.00745)"
+       transform="matrix(0.7699756,0,0,0.7699756,-25.664975,410.15828)"
        id="g2875">
       <path
          d="m 225.50908,761.79412 c 0,0 -0.007,0 -0.007,0 -0.61733,0 -1.1624,0.20365 -1.67471,0.61745 -0.38093,0.30204 -0.6437,0.70934 -0.85386,1.16252 0,0 0.0263,0 0.0263,0 0.21015,-0.45318 0.47293,-0.86048 0.84723,-1.16252 0.51231,-0.4138 1.05738,-0.61082 1.6617,-0.61745 z"

@@ -21,7 +21,7 @@
 #start-dialog
 {
     padding: 20px 10px;
-    max-width: 1000px;
+    max-width: 800px;
     text-align: center;
     background: @light2;
 }
@@ -42,19 +42,33 @@
     color: @highlight;
 }
 
-#agpl-logo-wrapper
+#welcome-logo, #welcome-mark, #agpl-logo-wrapper
 {
+    display: inline-block;
     vertical-align: middle;
+    margin: 10px 0;
+}
+
+#welcome-logo
+{
+    width: 120px;
+    margin-right: 10px;
+}
+
+#welcome-mark
+{
+    width: 300px;
 }
 
 #agpl-logo
 {
-    display: inline-block;
+    display: block;
     height: auto;
 }
 
 #allow-tracking-wrapper
 {
+    margin: 30px;
     color: @foreground-lighter;
     line-height: 30px;
 }
@@ -70,25 +84,4 @@
     font-weight: lighter;
     font-size: 20pt;
     color: #333;
-}
-
-#donate-msg
-{
-    margin: 10px auto;
-    max-width: 600px;
-    color: @foreground-less;
-    font-style: italic;
-}
-
-#donate-btn
-{
-    padding: 7px 20px;
-    font-size: 12pt;
-    font-weight: bold;
-    font-style: italic;
-    line-height: 1;
-    color: @foreground-less;
-    background: @highlight-light;
-    border: 1px solid @highlight;
-    border-radius: 20px;
 }

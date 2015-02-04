@@ -28,7 +28,6 @@ $map = array(
 	"changelog" => "CHANGELOG.md",
 	"license" => "LICENSE.md",
 	"legal" => "LEGAL.md",
-	"thankyou" => "pages/thankyou.md",
 	"iesupport" => "pages/iesupport.md",
 	"htmlcanvas" => "pages/htmlcanvas.md",
 	"tracking" => "pages/tracking.md",
@@ -44,7 +43,6 @@ $titleMap = array(
 	"changelog" => "Changelog",
 	"license" => "License",
 	"legal" => "Legal",
-	"thankyou" => "Thank you!",
 	"iesupport" => "No support",
 	"htmlcanvas" => "No support",
 	"tracking" => "Event tracking",
@@ -60,7 +58,6 @@ $copyrightMap = array(
 	"changelog" => false,
 	"license" => true,
 	"legal" => true,
-	"thankyou" => false,
 	"iesupport" => false,
 	"htmlcanvas" => false,
 	"tracking" => false,
@@ -92,9 +89,9 @@ $renderer = new Parsedown();
 	</head>
 	<body>
 		<div id="header">
-		<img id="brand" <?php echo 'src="'.$root.'img/logo.png"' ?> />
+		<img id="logo" <?php echo 'src="'.$root.'img/logo.png"' ?> />
 		<a id="return-to-molview" <?php echo 'href="'.$root.'"' ?>>
-			<span id="brand-label">MolView</span>
+			<img id="mark" <?php echo 'src="'.$root.'img/mark.png"' ?> />
 		</a>
 		</div>
 		<div id="content">

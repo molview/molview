@@ -80,15 +80,15 @@ MPAtom.prototype.getConfig = function()
  */
 MPAtom.prototype.toString = function()
 {
-	var str = this.center.x.toString()
-		+ this.center.y.toString()
-		+ this.element.toString()
-		+ this.charge.toString()
+	var str = this.center.x.toString() + ","
+		+ this.center.y.toString() + ","
+		+ this.element.toString() + ","
+		+ this.charge.toString() + ","
 		+ this.isotope.toString();
 
 	for(var i = 0; i < this.bonds.length; i++)
 	{
-		str += this.mp.mol.bonds[this.bonds[i]].toString();
+		str += "," + this.mp.mol.bonds[this.bonds[i]].toString();
 	}
 
 	return str;
@@ -521,6 +521,11 @@ MPAtom.prototype.validate = function()
 	this.valid = true;
 	this.wasVisible = this.calculateVisibility();
 	this.cmap = this.calculateConnectionMap();
+
+	/* IMPORTANT NOTE: you have to invalidate the MPAtom AND make its
+	line object undefined in order to recalculate it. This is a trick
+	to increase efficiency as the atom label line does not have to be
+	recalculated after each invalidation */
 	if(this.line === undefined) this.line = this.calculateCenterLine();
 }
 

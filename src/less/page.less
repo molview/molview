@@ -66,6 +66,7 @@ a:active
 
 #return-to-molview
 {
+	display: inline-block;
 	color: @foreground;
 	text-decoration: none;
 }
@@ -74,32 +75,33 @@ a:active
 {
 	padding-bottom: 10px;
 	border-bottom: 1px solid @light2;
+	font-size: 0;//remove inline-block spacing
 }
 
-#brand
+#logo
 {
 	height: 40px;
 }
 
-#brand-label
+#mark
 {
+	height: 40px;
+	display: block;
 	margin-left: 5px;
 	vertical-align: top;
-	font-size: 24pt;
-	font-weight: lighter;
 }
 
 @media all and (min-width: 700px)
 {
-	#brand
+	#logo
 	{
 		height: 60px;
 	}
 
-	#brand-label
+	#mark
 	{
+		height: 60px;
 		margin-left: 10px;
-		font-size: 36pt;
 	}
 }
 

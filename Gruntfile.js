@@ -71,7 +71,7 @@ var JSUnits = {
 			'src/js/molpad/MPBond.js',
 			'src/js/molpad/MPBond_calc.js',
 			'src/js/molpad/MPBond_handler.js',
-			'src/js/molpad/MolPad_settings.js',
+			'src/js/molpad/MPSettings.js',
 			'src/js/molpad/MolPad.js',
 			'src/js/molpad/MPMolecule.js',
 			'src/js/molpad/MPSelection.js',
@@ -313,6 +313,8 @@ module.exports = function(grunt)
 			options:
 			{
 				plugins: [
+					{ removeViewBox: false },
+					{ removeUselessStrokeAndFill: false }
 				]
 			},
 			dist:
@@ -324,7 +326,11 @@ module.exports = function(grunt)
 						src: ['action/*', 'bond/*', 'frag/*', 'layout/*', 'misc/*'],
 						dest: 'img/',
 						ext: '.svg'
-					}]
+					},
+					{ src: 'src/svg/icon/48.svg', dest: 'img/logo.svg' },
+					{ src: 'src/svg/icon/mark.svg', dest: 'img/mark.svg' },
+					{ src: 'src/svg/icon/brand.svg', dest: 'img/brand.svg' }
+				]
 			}
 		},
 		copy:
@@ -333,11 +339,6 @@ module.exports = function(grunt)
 			{
 				files: [
 					{ expand: true, flatten: true, src: 'docs/img/*', dest: 'img/help/', filter: 'isFile' },
-					{ expand: true, flatten: true, src: 'src/png/*', dest: 'img/', filter: 'isFile' },
-					{ expand: true, flatten: true, src: 'src/png/icon/*', dest: 'img/icon/', filter: 'isFile' },
-					{ src: 'src/png/image.png', dest: 'img/image.png' },
-					{ src: 'src/svg/icon/48.svg', dest: 'img/logo.svg' },
-					{ src: 'src/svg/icon/brand.svg', dest: 'img/brand.svg' },
 					{ src: 'src/svg/icon/agpl.svg', dest: 'img/agpl.svg' }
 				]
 			}

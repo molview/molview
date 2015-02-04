@@ -289,19 +289,19 @@ var Actions = {
 
 	jmol_measure_distance: function()
 	{
-		Model.JSmol.setMeasure($("#action-measure-distance").hasClass("checked")
+		Model.JSmol.setMeasure($("#action-jmol-measure-distance").hasClass("checked")
 			? "OFF" : "DISTANCE");
 	},
 
 	jmol_measure_angle: function()
 	{
-		Model.JSmol.setMeasure($("#action-measure-angle").hasClass("checked")
+		Model.JSmol.setMeasure($("#action-jmol-measure-angle").hasClass("checked")
 			? "OFF" : "ANGLE");
 	},
 
 	jmol_measure_torsion: function()
 	{
-		Model.JSmol.setMeasure($("#action-measure-torsion").hasClass("checked")
+		Model.JSmol.setMeasure($("#action-jmol-measure-torsion").hasClass("checked")
 			? "OFF" : "TORSION");
 	},
 

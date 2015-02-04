@@ -20,9 +20,8 @@
 /*
 PHP script for mirroring metadata images
 
-Parameters:
-- id = cid || pdb
-- i = db index for the given id
+@param dbid Database ID
+@param i    Database index
 */
 
 include_once("utility.php");

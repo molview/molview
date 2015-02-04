@@ -74,6 +74,7 @@ Query parameters:
 
 		<!-- PHP data injection -->
 		<script type="text/javascript">
+			Model.JSmol.hq = <?php echo ($touch) ? "false" : "true"; ?>;
 			MolView.touch = <?php echo ($touch) ? "true" : "false"; ?>;
 			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
 			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;

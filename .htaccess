@@ -27,7 +27,7 @@ RewriteRule ^api\/nist\/ir\/([^/]*)\/(.*) php/nist.php?type=ir&cas=$1&i=$2 [L]
 RewriteRule ^api\/nist\/mass\/(.*) php/nist.php?type=mass&cas=$1 [L]
 RewriteRule ^api\/nist\/uvvis\/(.*) php/nist.php?type=uvvis&cas=$1 [L]
 
-RewriteRule ^api\/image\/([a-z]*)\/([^.]*) php/image.php?id=$1&i=$2 [L]
+RewriteRule ^api\/image\/([a-z]*)\/([^.]*) php/image.php?dbid=$1&i=$2 [L]
 
 RewriteRule ^api\/gplus$ php/gplus.php$1 [L]
 
@@ -36,7 +36,6 @@ RewriteRule ^readme$ page.php?id=readme [L]
 RewriteRule ^changelog$ page.php?id=changelog [L]
 RewriteRule ^license$ page.php?id=license [L]
 RewriteRule ^legal$ page.php?id=legal [L]
-RewriteRule ^thankyou$ page.php?id=thankyou [L]
 RewriteRule ^internetExplorer$ page.php?id=iesupport [L]
 RewriteRule ^htmlCanvas$ page.php?id=htmlcanvas [L]
 RewriteRule ^tracking$ page.php?id=tracking [L]
