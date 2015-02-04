@@ -139,7 +139,7 @@ MPAtom.prototype.calculateCenterLine = function()
 	{
 		return {
 			text: { offsetLeft: 0, offsetTop: 0 },
-			area: { point: this.center }
+			area: { point: true }
 		};
 	}
 
@@ -184,8 +184,8 @@ MPAtom.prototype.calculateCenterLine = function()
 			text: text,
 			area: {
 				half: halfw + pad,
-				left: { x: this.center.x - halfw + pad, y: this.center.y },
-				right: { x: this.center.x + halfw - pad, y: this.center.y }
+				left: -halfw + pad,
+				right: halfw - pad
 			}
 		};
 	}
@@ -193,7 +193,7 @@ MPAtom.prototype.calculateCenterLine = function()
 	{
 		return {
 			text: text,
-			area: { point: this.center }
+			area: { point: true }
 		};
 	}
 }
@@ -294,11 +294,11 @@ MPAtom.prototype._calculateBondVertices = function(begin, ends)
 
 		if(this.line.area.left && begin.x < this.center.x)
 		{
-			ac = this.line.area.left;
+			ac = new MPPoint(this.center.x + this.line.area.left, this.center.y);
 		}
 		else if(this.line.area.right && begin.x > this.center.x)
 		{
-			ac = this.line.area.right;
+			ac = new MPPoint(this.center.x + this.line.area.right, this.center.y);
 			tdir = -1;
 		}
 

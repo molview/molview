@@ -553,15 +553,15 @@ MPAtom.prototype.drawStateColor = function()
 		this.mp.ctx.beginPath();
 		if(this.line.area.point)
 		{
-			this.mp.ctx.arc(this.line.area.point.x, this.line.area.point.y,
+			this.mp.ctx.arc(this.center.x, this.center.y,
 					this.mp.s.atom.selectionRadiusScaled, 0, PI2);
 			this.mp.ctx.fillStyle = this.mp.s.atom[d].color;
 			this.mp.ctx.fill();
 		}
 		else
 		{
-			this.mp.ctx.moveTo(this.line.area.left.x, this.line.area.left.y);
-			this.mp.ctx.lineTo(this.line.area.right.x, this.line.area.right.y);
+			this.mp.ctx.moveTo(this.center.x + this.line.area.left, this.center.y);
+			this.mp.ctx.lineTo(this.center.x + this.line.area.right, this.center.y);
 			this.mp.ctx.strokeStyle = this.mp.s.atom[d].color;
 			this.mp.ctx.stroke();
 		}

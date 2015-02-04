@@ -568,9 +568,9 @@ MPMolecule.prototype.getBBox = function()
 	{
 		//calculate center line since molecule might not be updated yet
 		var l = this.atoms[i].calculateCenterLine();
-		var px1 = l.area.left !== undefined ? l.area.left.x : l.area.point.x;
-		var px2 = l.area.right !== undefined ? l.area.right.x : l.area.point.x;
-		var py = l.area.left !== undefined ? l.area.left.y : l.area.point.y;
+		var px1 = this.atoms[i].center.x + (l.area.point ? 0 : l.area.left);
+		var px2 = this.atoms[i].center.x + (l.area.point ? 0 : l.area.right);
+		var py = this.atoms[i].center.y;
 
 		if(bottomLeft === undefined)
 		{

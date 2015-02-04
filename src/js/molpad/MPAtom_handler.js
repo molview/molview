@@ -562,9 +562,9 @@ MPAtom.prototype.handle = function(point, type)
 
 	if(this.line.area.point)
 	{
-		if(point.inCircleBox(this.line.area.point, r))
+		if(point.inCircleBox(this.center, r))
 		{
-			if(point.inCircle(this.line.area.point, r))
+			if(point.inCircle(this.center, r))
 			{
 				this.setDisplay(type);
 				return true;
@@ -573,9 +573,11 @@ MPAtom.prototype.handle = function(point, type)
 	}
 	else
 	{
-		if(point.inLineBox(this.line.area.left, this.line.area.right, r))
+		var lp = new MPPoint(this.center.x + this.line.area.left, this.center.y);
+		var rp = new MPPoint(this.center.x + this.line.area.right, this.center.y);
+		if(point.inLineBox(lp, rp, r))
 		{
-			if(point.lineDistance(this.line.area.left, this.line.area.right) <= r)
+			if(point.lineDistance(lp, rp) <= r)
 			{
 				this.setDisplay(type);
 				return true;

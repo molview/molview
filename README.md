@@ -57,7 +57,7 @@ Instructions:
 3. Configure ErrorDocument in `.htaccess` to point to `page.php`
 4. Make sure the Inkscape and the ImageMagick CLI are installed
 5. Install npm and install local npm modules
-6. Run `./build.sh fetch JmolNightly`
+6. Run `./build.sh fetch jmol`
 
 Committing
 ---------

@@ -1,16 +1,16 @@
 # Changelog
 
-## 2.3.3 (2015-2-3)
+## 2.3.3 (2015-2-4)
 
 - Revised MolPad invalidation logic
-= Redesigned HTML input and welcome dialog
+- Redesigned HTML input and welcome dialog
 - Migrated to strict comparisons only in JS source
 - Migrated to SourceForge as primary Jmol build origin
-= Implemented Sketcher update style based on MolPad fingerprints
+- Implemented Sketcher updated state based on MolPad fingerprints
 - Implemented updated PubChem description API (duplicate records)
 - Implemented updated PubChem search API (which uses Entrez sorting)
-= Added coordinates flag check to COD CIF mirror
-= Added JSmol HQ disabling for touch-only devices
+- Added coordinates flag check to COD CIF mirror
+- Added JSmol HQ disabling for touch-only devices
 - Added magenta coloring and large font for Jmol charge labels
 - Added saveSize to window.onresize (sizeChanged bug)
 - Added notfound message to Loader Messages
@@ -23,7 +23,7 @@
 - Added lonely neighbors to atom deletion
 - Added real skeletal bond style
 - Added incorrect state for atoms
-= Fixed persistent active state after multi-touch start
+- Fixed persistent active state after multi-touch start
 - Fixed drag delta calculation error
 - Fixed 3+ touches to 2 touches transition
 - Fixed onPoinerUp canvas dragging fallback for single touches with a defined handler
