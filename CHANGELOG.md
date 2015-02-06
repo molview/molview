@@ -92,7 +92,7 @@
 - Restyled all dialog headings (removed .dialog-close-btn)
 - Restyled messages (removed border-radius)
 
-## 2.3.x (2014-11-12)
+## 2.3.0 (2014-11-12)
 
 - Replaced MolEdit with MolPad
 - Added skeletal display to MolPad
@@ -103,7 +103,7 @@
 - Integrated bower
 - Slight redesign
 
-## 2.2.x (2014-11-3)
+## 2.2.0 (2014-11-3)
 
 ### Bugfixes
 
@@ -243,7 +243,7 @@
 
 - Revised ChemicalData image loading appearance
 
-## 2.1.x (2014-07-04)
+## 2.1.0 (2014-07-04)
 
 ### Bugfixes
 - No auto hsplit when loaded as `?layout=model`
@@ -269,7 +269,7 @@
 - PubChem CID search by entering integer
 - Improved properties dialog layout on tablets
 
-## 2.0.x (2014-07-01)
+## 2.0.0 (2014-07-01)
 
 ### Features
 - MolEdit integration
