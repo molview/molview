@@ -29,13 +29,13 @@ include_once("utility.php");
 error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
 
-if($id == "cid")
+if($dbid == "cid")
 {
 	header("Content-Type: image/png");
 	echo_curl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/".$i."/png?record_type=2d");
 	exit;
 }
-else if($id == "pdb")
+else if($dbid == "pdb")
 {
 	header("Content-Type: image/jpeg");
 	echo_curl("http://www.rcsb.org/pdb/images/".strtoupper($i)."_bio_r_500.jpg");
