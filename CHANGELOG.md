@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.4 (2015-3-23)
+- Fix image mirror
+- Fix PubChem image non-integer dimensions
+- Fix issue [#4](https://github.com/molview/molview/issues/4)
+
 ## 2.3.3 (2015-2-4)
 
 - Revised MolPad invalidation logic

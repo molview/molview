@@ -56,13 +56,13 @@ MPBond.prototype.validate = function()
 			}
 			else if(f.element === t.element)
 			{
-				this.cache.bondColor = JmolAtomColorsHashHex[f.element];
+				this.cache.bondColor = JmolAtomColorsHashHex[f.element] || JmolAtomColorsHashHex["C"];
 			}
 			else
 			{
 				this.cache.bondColor = this.mp.ctx.createLinearGradient(f.getX(), f.getY(), t.getX(), t.getY());
-				this.cache.bondColor.addColorStop(this.mp.s.bond.gradient.from, JmolAtomColorsHashHex[f.element]);
-				this.cache.bondColor.addColorStop(this.mp.s.bond.gradient.to, JmolAtomColorsHashHex[t.element]);
+				this.cache.bondColor.addColorStop(this.mp.s.bond.gradient.from, JmolAtomColorsHashHex[f.element] || JmolAtomColorsHashHex["C"]);
+				this.cache.bondColor.addColorStop(this.mp.s.bond.gradient.to, JmolAtomColorsHashHex[t.element] || JmolAtomColorsHashHex["C"]);
 			}
 		}
 		else//fallback, this color is actually not used

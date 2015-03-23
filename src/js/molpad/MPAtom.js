@@ -581,7 +581,7 @@ MPAtom.prototype.drawLabel = function()
 	{
 		if(this.mp.s.atom.colored)
 		{
-			this.mp.ctx.fillStyle = JmolAtomColorsHashHex[this.element];
+			this.mp.ctx.fillStyle = JmolAtomColorsHashHex[this.element] || JmolAtomColorsHashHex["C"];
 		}
 
 		if(this.mp.s.atom.miniLabel)

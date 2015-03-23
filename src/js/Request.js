@@ -546,9 +546,10 @@ var Request = {
 
 		image: function(cid, width)
 		{
+			//round width to prevent very small decimals
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid
-					+ "/png?record_type=2d&image_size=" + ((width || 300) * MolView.devicePixelRatio)
-					+ "x" + ((width || 300) * MolView.devicePixelRatio);
+					+ "/png?record_type=2d&image_size=" + ((Math.round(width) || 300) * MolView.devicePixelRatio)
+					+ "x" + ((Math.round(width) || 300) * MolView.devicePixelRatio);
 		},
 
 		smilesToImage: function(smiles)
