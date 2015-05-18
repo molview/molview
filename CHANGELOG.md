@@ -1,5 +1,8 @@
 # Changelog
 
+This changelog is no longer maintained.
+All future changes should be linked to a GitHub issue.
+
 ## 2.3.4 (2015-3-23)
 - Fix image mirror
 - Fix PubChem image non-integer dimensions
