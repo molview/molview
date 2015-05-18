@@ -454,18 +454,19 @@ MPMolecule.prototype.countCollapses = function(atoms)
 /**
  * Remove an atom with the given index from the current molecule
  * @param  {Integer} index Atom index
- * @param  {Boolean} rln   Remove lonely neighbors
+ * @param  {Boolean} rdh   Remove disconnected hydrogens
  * @return {Object}        New indices maps
  */
-MPMolecule.prototype.removeAtom = function(index, rln)
+MPMolecule.prototype.removeAtom = function(index, rdh)
 {
 	var splice = [];
-	if(rln)
+	if(rdh)
 	{
 		for(var i = 0; i < this.atoms[index].bonds.length; i++)
 		{
 			var ai = this.bonds[this.atoms[index].bonds[i]].getOppositeAtom(index);
-			if(this.atoms[ai].bonds.length == 1) splice.push(ai);
+			if(this.atoms[ai].element == "H" && this.atoms[ai].bonds.length == 1)
+				splice.push(ai);
 		}
 	}
 	splice.push(index);
