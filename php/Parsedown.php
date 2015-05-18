@@ -17,7 +17,7 @@ class Parsedown
 {
     # ~
 
-    const version = '1.5.1';
+    const version = '1.5.3';
 
     # ~
 
@@ -1197,7 +1197,7 @@ class Parsedown
             return;
         }
 
-        if (preg_match('/^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]+"|\'[^\']+\'))?[)]/', $remainder, $matches))
+        if (preg_match('/^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|\'[^\']*\'))?[)]/', $remainder, $matches))
         {
             $Element['attributes']['href'] = $matches[1];
 
@@ -1212,7 +1212,7 @@ class Parsedown
         {
             if (preg_match('/^\s*\[(.*?)\]/', $remainder, $matches))
             {
-                $definition = $matches[1] ? $matches[1] : $Element['text'];
+                $definition = strlen($matches[1]) ? $matches[1] : $Element['text'];
                 $definition = strtolower($definition);
 
                 $extent += strlen($matches[0]);
