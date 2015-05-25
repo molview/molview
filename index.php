@@ -503,6 +503,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
+							<a class="btn" target="_blank" title="MolView Blog" href="http://blog.molview.org">Blog</a>
 						</div>
 						<p id="allow-tracking-wrapper">
 							<input id="allow-tracking" type="checkbox" />
@@ -515,7 +516,7 @@ Query parameters:
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>
-						<p>MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome! MolView is mainly intended as web-based data visualization platform. You can use MolView to search through different scientific databases including compound databases, protein databases and spectral databases, and view records from these databases as interactive visualizations using WebGL and HTML5 technologies. This web application is built on top of the JavaScript libraries and online services listed below. The <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a> has been a source of inspiration for the birth of this project.</p>
+						<p>MolView is an intuitive, Open-Source web-application to make science and education more awesome! MolView is mainly intended as web-based data visualization platform. You can use MolView to search through different scientific databases including compound databases, protein databases and spectral databases, and view records from these databases as interactive visualizations using WebGL and HTML5 technologies. This web application is built on top of the JavaScript libraries and online services listed below. The <a class="link" href="http://chemagic.com/JSmolVMK2.htm" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a> has been a source of inspiration for the birth of this project.</p>
 						<ul>
 							<li>JavaScript libraries
 								<ul>
@@ -538,7 +539,7 @@ Query parameters:
 							</li>
 						</ul>
 						<p id="about-links">
-							MolView v2.3.4
+							MolView v2.4
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
 							<br/>
@@ -575,7 +576,6 @@ Query parameters:
 							}
 						?>
 						<p>Download PDF: <a class="link" href="docs/manual.pdf" target="_blank">docs/manual.pdf</a></p>
-						<p>Download eBook: <a class="link" href="docs/manual.epub" target="_blank">docs/manual.epub</a></p>
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 						<h3>Subjects</h3>
 						<div class="expandable">
@@ -795,6 +795,9 @@ Query parameters:
 						<h2>Embed</h2>
 						<div class="alert-box">
 							<span id="embed-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
+						</div>
+						<div class="danger-box">
+							<span class="alert-bar">This embedding URL depreciated and will be removed in MolView 3. Be sure to follow the MolView Blog at <a class="link" href="http://blog.molview.org">http://blog.molview.org</a> to stay updated about changes to the embedding method.</span>
 						</div>
 						<h4>Width</h3>
 						<input id="embed-width" class="input" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>

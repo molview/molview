@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Build entire MolView project
+# Build script for the MolView source code
 
 if [[ $1 == "fetch" ]]
 	then
