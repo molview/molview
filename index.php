@@ -554,8 +554,6 @@ Query parameters:
 							<br/>
 							Copyright &copy; 2014, 2015 <a class="link" target="_blank" rel="author" title="Personal website" href="https://hermanbergwerf.com">Herman Bergwerf</a>
 							&nbsp;+&nbsp;
-							<a class="link" href="changelog" target="_blank">Changelog</a>
-							&nbsp;+&nbsp;
 							<a class="link" href="license" target="_blank">License</a>
 							&nbsp;+&nbsp;
 							<a class="link" href="https://github.com/molview" target="_blank">GitHub</a>
@@ -569,6 +567,8 @@ Query parameters:
 							<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization" rel="publisher">Google+</a>
+							&nbsp;+&nbsp;
+							<a class="link" target="_blank" title="+MolView" href="http://blog.molview.org">Blog</a>
 							&nbsp;+&nbsp;
 							<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
 						</p>
