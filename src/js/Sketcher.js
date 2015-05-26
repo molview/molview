@@ -272,11 +272,6 @@ var Sketcher = {
 		Messages.process(Loader.clean, "clean");
 	},
 
-	removeImplicitHydrogen: function()
-	{
-		if(this.molpad) this.molpad.removeImplicitHydrogen();
-	},
-
 	markOutdated: function()
 	{
 		$("#action-resolve").addClass("resolve-outdated");
