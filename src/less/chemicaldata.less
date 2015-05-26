@@ -30,7 +30,6 @@
 {
 	padding-bottom: 100px;
 	text-align: center;
-	background: @pubchem-pngbg;
 }
 
 #properties-wrapper
@@ -111,6 +110,12 @@
 #molecule-image
 {
 	margin: 0 auto;
+
+	-webkit-filter: url('#pubchemImageFilter');
+	   -moz-filter: url('#pubchemImageFilter');
+	    -ms-filter: url('#pubchemImageFilter');
+	     -o-filter: url('#pubchemImageFilter');
+	        filter: url('#pubchemImageFilter');
 }
 
 #molecule-info
