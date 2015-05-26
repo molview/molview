@@ -327,9 +327,7 @@ module.exports = function(grunt)
 						dest: 'img/',
 						ext: '.svg'
 					},
-					{ src: 'src/svg/icon/48.svg', dest: 'img/logo.svg' },
-					{ src: 'src/svg/icon/mark.svg', dest: 'img/mark.svg' },
-					{ src: 'src/svg/icon/brand.svg', dest: 'img/brand.svg' }
+					{ src: 'src/svg/icon/mark.svg', dest: 'img/mark.svg' }
 				]
 			}
 		},
@@ -339,7 +337,9 @@ module.exports = function(grunt)
 			{
 				files: [
 					{ expand: true, flatten: true, src: 'docs/img/*', dest: 'img/help/', filter: 'isFile' },
-					{ src: 'src/svg/icon/agpl.svg', dest: 'img/agpl.svg' }
+					{ src: 'src/svg/icon/agpl.svg', dest: 'img/agpl.svg' },
+					{ src: 'src/svg/icon/48.svg', dest: 'img/logo.svg' },
+					{ src: 'src/svg/icon/brand.svg', dest: 'img/brand.svg' }
 				]
 			}
 		},
