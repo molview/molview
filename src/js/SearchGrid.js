@@ -115,10 +115,14 @@ var SearchGrid = {
                 title.textfill({ maxFontPoints: 26 });
             }
 
+            var wrap = $('<div class="search-result-img-wrap"></div>');
+            var img = new Image();
+            img.onload = function(){ wrap.css("background-image", "none") }
+            img.src = Request.PubChem.image(data.CID, result.width());
 			$("<div class='search-result-img'></div>").css("background-image",
-				"url(" + Request.PubChem.image(data.CID, result.width()) + ")")
+				"url(" + img.src + ")")
                 .height(result.width())
-				.appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
+				.appendTo(wrap.appendTo(result));
 
 			result.data("cid", data.CID);
 			result.data("title", ucfirst(humanize(data.Title)));
@@ -154,11 +158,15 @@ var SearchGrid = {
             title.textfill({ maxFontPoints: 26 });
 
 			var w = 500 / MolView.devicePixelRatio;
+            var wrap = $('<div class="search-result-img-wrap"></div>');
+            var img = new Image();
+            img.onload = function(){ wrap.css("background-image", "none") }
+            img.src = Request.RCSB.image(data.structureId);
             $('<div class="search-result-img"></div>').css("background-image",
-				"url(" + Request.RCSB.image(data.structureId) + ")")
+				"url(" + img.src + ")")
                 .css("background-size", w > 250 ? 250 : w)
                 .height(result.width())
-                .appendTo($('<div class="search-result-img-wrap"></div>').appendTo(result));
+                .appendTo(wrap.appendTo(result));
 
 			var desc = $('<div class="search-result-description">' + ucfirst(humanize(data.structureTitle)) + "</div>");
 			result.append(desc);

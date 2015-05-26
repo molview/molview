@@ -117,7 +117,17 @@ help
 /*
 search
 */
-.search-result-title:hover, .search-result-pubchem:hover > .search-result-title, .load-more:hover
+.search-result-title:hover, .search-result-pubchem:hover > .search-result-title
+{
+	color: @linkcolor;
+}
+
+.search-result-title:hover > span, .search-result-pubchem:hover > .search-result-title > span
+{
+	border-bottom: 2px solid;
+}
+
+.load-more:hover
 {
 	background: @light;
 }

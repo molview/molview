@@ -78,21 +78,22 @@ Search output:
 	text-decoration: none;
 	color: @foreground;
 	background: @light;
-	border-top: 1px solid @contrast;
-	border-bottom: 1px solid @contrast;
+
+	border-radius: 5px;
+	overflow: hidden;
+	box-shadow: 0 3px 7px rgba(0, 0, 0, 0.4);
 }
 
 .search-result-pubchem
 {
 	cursor: pointer;
-	background: @pubchem-pngbg;
 }
 
 .search-result-codid
 {
 	line-height: 20px;
 	color: @foreground-light;
-	background: @light3;
+	margin-bottom: 5px;
 }
 
 .search-result-title
@@ -108,8 +109,6 @@ Search output:
 	text-overflow: ellipsis;
 
 	color: @foreground;
-	background: @light2;
-	border-bottom: 1px solid @contrast;
 	overflow: hidden;
 }
 
@@ -117,18 +116,15 @@ Search output:
 {
 	white-space: nowrap;
 	text-decoration: none;
-	border-bottom: 2px solid #111;
 }
 
 .search-result-description
 {
-	padding: 10px;
+	padding: 20px;
 	font-size: 11pt;
 
 	word-wrap: break-word;
 	text-align: left;
-	background: @light2;
-	border-top: 1px solid @contrast;
 
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -141,8 +137,7 @@ Search output:
 
 .search-result-description > .expandable > .expandable-title
 {
-	border: 0;
-	border-bottom: 1px solid @contrast !important;
+	border-width: 1px 0 1px 0;
 }
 
 .search-result-description > p
@@ -171,7 +166,7 @@ Search output:
 	width: 300px;
 	height: 300px;
 	max-width: 100%;
-	
+
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -190,6 +185,14 @@ Search output:
 		display: inline-block;
 		margin: 10px;
 		width: 300px;
-		border: 1px solid @contrast;
 	}
+}
+
+.search-result-pubchem > .search-result-img-wrap > .search-result-img
+{
+	-webkit-filter: url('#pubchemImageFilter');
+	   -moz-filter: url('#pubchemImageFilter');
+	    -ms-filter: url('#pubchemImageFilter');
+	     -o-filter: url('#pubchemImageFilter');
+	        filter: url('#pubchemImageFilter');
 }

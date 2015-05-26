@@ -166,6 +166,15 @@ Query parameters:
 		</script>
 	</head>
 	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
+		<svg width="0" height="0" style="display: none;">
+			<filter id="pubchemImageFilter" height="1" width="1" y="0" x="0" color-interpolation-filters="sRGB">
+				<feColorMatrix result="pubchemImageFilterMatrix" type="luminanceToAlpha" in="SourceGraphic" values="0"></feColorMatrix>
+				<feComposite in="SourceGraphic" in2="pubchemImageFilterMatrix" result="blendSourceGraphic1" operator="out"></feComposite>
+				<feBlend mode="multiply" in2="blendSourceGraphic1" result="blendSourceGraphic2"></feBlend>
+				<feBlend mode="multiply" in2="blendSourceGraphic2" result="blendSourceGraphic3"></feBlend>
+				<feBlend mode="normal" in2="blendSourceGraphic3"></feBlend>
+			</filter>
+		</svg>
 		<div id="progress">
 			<canvas id="progress-canvas"></canvas>
 		</div>
