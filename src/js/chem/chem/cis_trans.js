@@ -198,8 +198,8 @@ chem.CisTrans.prototype.build = function (exclude_bonds)
 		if(!this.isGeomStereoBond(bid, ct.substituents))
 			return;
 
-		if(!this._sortSubstituents(ct.substituents))
-			return;
+		/* if(!this._sortSubstituents(ct.substituents))
+			return; */
 
 		var sign = this._sameside(bond.begin, bond.end, ct.substituents[0], ct.substituents[2]);
 
