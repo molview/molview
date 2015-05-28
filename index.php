@@ -806,7 +806,7 @@ Query parameters:
 							<span id="embed-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
 						</div>
 						<div class="danger-box">
-							<span class="alert-bar">This embedding URL depreciated and will be removed in MolView 3. Be sure to follow the MolView Blog at <a class="link" href="http://blog.molview.org">http://blog.molview.org</a> to stay updated about changes to the embedding method.</span>
+							<span class="alert-bar">This embedding API is depreciated and will be removed in MolView 3. Be sure to follow the MolView Blog at <a class="link" href="http://blog.molview.org">http://blog.molview.org</a> to stay updated about changes to the embedding API.</span>
 						</div>
 						<h4>Width</h3>
 						<input id="embed-width" class="input" type="text" value="500px" autocomplete="off" spellcheck="false" /><br/>
