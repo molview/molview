@@ -29,6 +29,7 @@
 #search-layer > .container
 {
 	font-size: 0;
+	padding: 0 20px;
 }
 
 .load-more
@@ -69,8 +70,9 @@ Search output:
 .search-result
 {
 	position: relative;
-	display: block;
-	margin-bottom: 10px;
+	display: inline-block;
+	margin: 20px 0;
+	width: 100%;
 	vertical-align: top;
 
 	font-size: medium;
@@ -173,7 +175,7 @@ Search output:
 
 }
 
-@media all and (min-width: 362px)
+@media all and (min-width: 420px)
 {
 	#search-layer
 	{
@@ -182,9 +184,8 @@ Search output:
 
 	.search-result
 	{
-		display: inline-block;
-		margin: 10px;
 		width: 300px;
+		margin: 20px;
 	}
 }
 
