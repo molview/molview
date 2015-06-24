@@ -63,12 +63,7 @@ var MolView = {
 		{
 			$.each(this.query, function(key, value)
 			{
-				if(key === "q")
-				{
-					$("#search-input").val(value);
-					Messages.process(Loader.CIRsearch, "search");
-				}
-				else if(key === "smiles")
+				if(key === "smiles")
 				{
 					Messages.process(function()
 					{
@@ -92,6 +87,11 @@ var MolView = {
 					Model.setBackground(value);
 				}
 			});
+
+			if(!(this.query.smiles || this.query.cid || this.query.pdbid || this.query.codid))
+			{
+				Progress.complete();
+			}
 		}).bind(this), Detector.webgl ? "GLmol" : (((this.query.pdbid && !MolView.mobile) || this.query.codid) ? "JSmol" : "GLmol"));
 	},
 

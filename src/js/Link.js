@@ -53,7 +53,7 @@ var Link = {
 
 		var url = window.location.origin + window.location.pathname + "embed?mode=" + Model.representation;
 
-		if(Loader.lastQuery.type !== "")
+		if(oneOf(Loader.lastQuery.type, ["smiles", "cid", "pdbid", "codid"]))
 		{
 			url += "&" + Loader.lastQuery.type + "=" + specialEncodeURIComponent(Loader.lastQuery.content.replace(/^ /, ""));
 		}

@@ -15,9 +15,6 @@ ErrorDocument 500 /repos/molview-old/page.php?id=500
 RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
 RewriteRule ^(.*)$ http://molview.org/$1 [L,R=301]
 
-# Embed page
-RewriteRule ^embed$ embed.php [L]
-
 # PHP APIs
 RewriteRule ^api\/cod\/cif\/([^.]*) php/cif.php?codid=$1 [L]
 RewriteRule ^api\/cod\/([a-z]*)\/(.*) php/cod.php?action=$1&q=$2 [L]

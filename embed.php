@@ -7,19 +7,12 @@ error_reporting(0);
 $detect = new Mobile_Detect;
 $touch = $detect -> isMobile() || $detect -> isTablet();
 
-if(is_below_IE10())
-{
-	header('Location: internetExplorer');
-	exit;
-}
-
-
 //preserve + sign by encoding it to %2B before parsing it
 parse_str(str_replace("+", "%2B", $_SERVER["QUERY_STRING"]));
 ?>
 
 <!DOCTYPE html>
-<html itemscope itemtype="http://schema.org/Thing">
+<html>
 
 <!--
 This file is part of MolView (http://molview.org)
@@ -40,14 +33,22 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <!--
+This embedding page requires the following files:
+- php/utility.ph
+- php/Mobile_Detect.php
+- build/molview-embed.min.css
+- build/molview-base.min.js
+- build/molview-core.min.js
+- build/molview-embed.min.js
+- jmol/**
+
 Query parameters:
-- q = search query
 - smiles = resolve SMILES string
 - cid = load CID
 - pdbid = load PDBID
 - codid = load CIF from COD
 - mode = balls || stick || vdw || wireframe || line
-- chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
+- chainType = ribbon || cylinders || btube || ctrace || bonds (alias of chainBonds=true)
 - chainBonds = true || false
 - chainColor = ss || spectrum || chain || residue || polarity || bfactor
 - bg = black || gray || white
@@ -57,11 +58,7 @@ Query parameters:
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
-
-		<link rel="shortcut icon" href="favicon-32x32.png" />
 		<title>MolView</title>
-		<meta name="author" content="Herman Bergwerf" />
-		<meta name="keywords" content="molview,free,chemistry,app,molecules,proteins,crystals,spectroscopy" />
 
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
@@ -90,21 +87,6 @@ Query parameters:
 			else echo $_SERVER["REMOTE_ADDR"];
 			echo '"';
 			?>;
-
-			if(!Detector.canvas)
-			{
-				window.location = window.location.origin + window.location.pathname + "htmlCanvas";
-			}
-		</script>
-
-		<!-- Google Analytics -->
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			ga('create', 'UA-49088779-3', 'molview.org');
-			ga('send', 'pageview');
 		</script>
 	</head>
 	<body id="model" <?php
@@ -114,15 +96,6 @@ Query parameters:
 				"#000000" : "#cccccc" : "#ffffff").'"';
 		}
 	?>>
-		<!-- Get preferred model background color from localStorage -->
-		<script type="text/javascript">
-			if(localStorage && localStorage["model.background"])
-			{
-				var c = localStorage["model.background"];
-				$("#model").css("background", c == "gray" ? "#ccc" : c);
-			}
-		</script>
-		<input id="search-input" style="display: none" />
 		<div id="chemdoodle" class="render-engine full-cover" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 		<div id="glmol" class="render-engine full-cover" style="display: none;"></div>

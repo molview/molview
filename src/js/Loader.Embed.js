@@ -21,33 +21,6 @@
  * @type {Object}
  */
 var Loader = {
-	CIRsearch: function()
-	{
-		if(!Request.CIR.available)
-		{
-			Messages.alert("cir_down");
-			return;
-		}
-
-		Progress.reset(3);
-
-		var name = $("#search-input").val();
-
-		Request.CIRsearch3D(name, function(mol3d, text)
-		{
-			Model.loadMOL(mol3d);
-
-			text = text.charAt(0).toUpperCase() + text.slice(1);
-			document.title = text;
-
-			Progress.complete();
-			Messages.clear();
-		}, function()
-		{
-			Messages.alert("load_fail");
-		});
-	},
-
 	PubChem:
 	{
 		loadCID: function(cid, name)
