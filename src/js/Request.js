@@ -43,6 +43,12 @@ var Request = {
 	HTTP_ACCEPT_LANGUAGE: "",
 
 	/**
+	 * API root URL, inject a different value when the API is not accessible
+	 * under the HTML index directory.
+	 */
+	API_ROOT: "",
+
+	/**
 	 * Alternative languages specified by the clients browser and retrieved
 	 * using PHP (see index.php)
 	 * This array is used to translate search queries using myMemory
@@ -729,7 +735,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: "api/cod/search/" + encodeURIComponent(text),
+				url: Request.API_ROOT + "api/cod/search/" + encodeURIComponent(text),
 				defaultError: error,
 				success: function(data)
 				{
@@ -753,7 +759,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: "api/cod/smiles/" + codids,
+				url: Request.API_ROOT + "api/cod/smiles/" + codids,
 				defaultError: error,
 				success: success
 			});
@@ -764,7 +770,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: "api/cod/name/" + codids,
+				url: Request.API_ROOT + "api/cod/name/" + codids,
 				defaultError: error,
 				success: success
 			});
@@ -775,7 +781,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: "api/cod/cif/" + codid + ".cif",
+				url: Request.API_ROOT + "api/cod/cif/" + codid + ".cif",
 				defaultError: error,
 				success: success
 			});
@@ -809,7 +815,7 @@ var Request = {
 		{
 			AJAX({
 				dataType: "json",
-				url: "api/nist/lookup/" + cas,
+				url: Request.API_ROOT + "api/nist/lookup/" + cas,
 				defaultError: error,
 				success: function(data)
 				{
@@ -854,7 +860,7 @@ var Request = {
 
 			AJAX({
 				dataType: "text",
-				url: "api/nist/" + type + "/" + cas + (i !== -1 ? "/" + i : ""),
+				url: Request.API_ROOT + "api/nist/" + type + "/" + cas + (i !== -1 ? "/" + i : ""),
 				defaultError: error,
 				success: success
 			});

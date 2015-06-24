@@ -87,6 +87,7 @@ Query parameters:
 			else echo $_SERVER["REMOTE_ADDR"];
 			echo '"';
 			?>;
+			Request.API_ROOT = "http://molview.org/";
 		</script>
 	</head>
 	<body id="model" <?php
