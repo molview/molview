@@ -147,12 +147,12 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	}
 
 	return array(
-		"title" => $title,
-		"description" => $description,
-		"keywords" => $keywords,
-		"same_as" => $same_as,
-		"image_url" => $image_url,
-		"pubchem_query" => $pubchem_query,
-		"pubchem_value" => $pubchem_value
+		"title" =>         htmlspecialchars($title),
+		"description" =>   htmlspecialchars($description),
+		"keywords" =>      htmlspecialchars($keywords),
+		"same_as" =>       htmlspecialchars($same_as),
+		"image_url" =>     htmlspecialchars($image_url),
+		"pubchem_query" => htmlspecialchars($pubchem_query),
+		"pubchem_value" => htmlspecialchars($pubchem_value)
 	);
 }
