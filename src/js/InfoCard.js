@@ -96,6 +96,7 @@ var InfoCard = {
 		if(this.data["smiles"] !== smiles && smiles !== "")
 		{
 			$(".chemprop").html("").val("").addClass("chemprop-loading");
+			$("#molecule-image").css("filter", "url('#pubchemImageFilter'");
 			$("#molecule-image").attr("src", emptyImage);
 			$("#molecule-image-wrapper").show();
 			$("#molecule-info").hide();

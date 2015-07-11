@@ -119,8 +119,13 @@ var SearchGrid = {
 			var img = new Image();
 			img.onload = function(){ wrap.css("background-image", "none") }
 			img.src = Request.PubChem.image(data.CID, result.width());
-			$("<div class='search-result-img'></div>").css("background-image",
-				"url(" + img.src + ")")
+			$("<div class='search-result-img'></div>")
+				.css("background-image", "url(" + img.src + ")")
+				.css("-webkit-filter", "url('#pubchemImageFilter')")
+				.css("-moz-filter", "url('#pubchemImageFilter')")
+				.css("-ms-filter", "url('#pubchemImageFilter')")
+				.css("-o-filter", "url('#pubchemImageFilter')")
+				.css("filter", "url('#pubchemImageFilter')")
 				.height(result.width())
 				.appendTo(wrap.appendTo(result));
 
@@ -162,8 +167,8 @@ var SearchGrid = {
 			var img = new Image();
 			img.onload = function(){ wrap.css("background-image", "none") }
 			img.src = Request.RCSB.image(data.structureId);
-			$('<div class="search-result-img"></div>').css("background-image",
-				"url(" + img.src + ")")
+			$('<div class="search-result-img"></div>')
+				.css("background-image", "url(" + img.src + ")")
 				.css("background-size", w > 250 ? 250 : w)
 				.height(result.width())
 				.appendTo(wrap.appendTo(result));

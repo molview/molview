@@ -166,13 +166,15 @@ Query parameters:
 		</script>
 	</head>
 	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
-		<svg width="0" height="0" style="display: none;">
+		<svg width="0" height="0">
 			<filter id="pubchemImageFilter" height="1" width="1" y="0" x="0" color-interpolation-filters="sRGB">
-				<feColorMatrix result="pubchemImageFilterMatrix" type="luminanceToAlpha" in="SourceGraphic" values="0"></feColorMatrix>
-				<feComposite in="SourceGraphic" in2="pubchemImageFilterMatrix" result="blendSourceGraphic1" operator="out"></feComposite>
-				<feBlend mode="multiply" in2="blendSourceGraphic1" result="blendSourceGraphic2"></feBlend>
-				<feBlend mode="multiply" in2="blendSourceGraphic2" result="blendSourceGraphic3"></feBlend>
-				<feBlend mode="normal" in2="blendSourceGraphic3"></feBlend>
+				<feColorMatrix
+					in="SourceGraphic"
+					type="matrix"
+					values="1.05 0    0    0 0
+					        0    1.05 0    0 0
+					        0    0    1.05 0 0
+					        0    0    0    1 0"></feColorMatrix>
 			</filter>
 		</svg>
 		<div id="progress">
@@ -421,7 +423,12 @@ Query parameters:
 				<div id="properties-wrapper">
 					<div id="general-properties">
 						<div id="molecule-image-wrapper" class="properties-block">
-							<img id="molecule-image" alt=""/>
+							<img id="molecule-image" alt=""
+								style="-webkit-filter: url('#pubchemImageFilter');
+										   moz-filter: url('#pubchemImageFilter');
+										   -ms-filter: url('#pubchemImageFilter');
+										    -o-filter: url('#pubchemImageFilter');
+										       filter: url('#pubchemImageFilter');*"/>
 						</div>
 						<div class="properties-block">
 							<div id="molecule-info">
