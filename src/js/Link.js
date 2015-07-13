@@ -51,7 +51,7 @@ var Link = {
 		if($("#action-resolve").hasClass("resolve-outdated") && MolView.layout !== "model") $("#embed-2d-not-3d").show();
 		else $("#embed-2d-not-3d").hide();
 
-		var url = window.location.origin + window.location.pathname + "embed?mode=" + Model.representation;
+		var url = "http://embed.molview.org/v1/?mode=" + Model.representation;
 
 		if(oneOf(Loader.lastQuery.type, ["smiles", "cid", "pdbid", "codid"]))
 		{
