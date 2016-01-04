@@ -1,9 +1,7 @@
-MolView 2.x
-===========
-MolView is an intuitive, Open-Source web-application to make science and
-education more awesome! This repository contains the code of MolView 2.x which
-is now depreciated. Read more about MolView 2.x at https://github.com/molview/molview-old/wiki.
-MolView development continues at https://github.com/molview/molview.
+MolView first generation
+========================
+This repository holds the code of the old, first generation, MolView.
+You can still run it on your own server.
 
 License
 ---
