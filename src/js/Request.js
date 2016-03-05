@@ -277,7 +277,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: "http://cactus.nci.nih.gov/chemical/structure/" + text + "/file?format=sdf&get3d=" + (flat ? "False" : "True"),
+				url: "https://cactus.nci.nih.gov/chemical/structure/" + text + "/file?format=sdf&get3d=" + (flat ? "False" : "True"),
 				defaultError: error,
 				success: function(response)
 				{
@@ -305,7 +305,7 @@ var Request = {
 			smiles = smiles.replace(/#/g, "%23").replace(/\\/g, "%5C");
 			AJAX({
 				dataType: "text",
-				url: "http://cactus.nci.nih.gov/chemical/structure/" + smiles + "/" + property,
+				url: "https://cactus.nci.nih.gov/chemical/structure/" + smiles + "/" + property,
 				defaultError: error,
 				success: function(response)
 				{
