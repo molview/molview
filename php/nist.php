@@ -82,7 +82,8 @@ if($type == "lookup")
 	echo ',"ir":[';
 
 	//if there is only one records (Index=0) the result is directly embeded into the webpage (see caffeine)
-	preg_match_all('/<th align="left" valign="top">State<\/th><td align="left" valign="top">([^<]*)<\/td>/', $nist_page, $records);
+	// <tr><th style="text-align: left; vertical-align: top;">State<\/th><td style="text-align: left; vertical-align: top;">([^<]*)<\/td><\/tr>
+	preg_match_all('/<tr><th style="text-align: left; vertical-align: top;">State<\/th><td style="text-align: left; vertical-align: top;">([^<]*)<\/td><\/tr>/', $nist_page, $records);
 
 	if(count($records[0]) > 0)
 	{
@@ -96,7 +97,7 @@ if($type == "lookup")
 		$listnr = 0;
 		$length = 0;
 
-		$key = array_search('<h2><a id="IR-Spec" name="IR-Spec">IR Spectrum</a></h2>', $nist_page);
+		$key = array_search('<h2><a id="IR-Spec">IR Spectrum</a></h2>', $nist_page);
 		if($key !== false)
 		{
 			$idx = $key + 1;//skip "Go to ..." line
