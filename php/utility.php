@@ -46,16 +46,9 @@ function is_available($url)
 	else return false;
 }
 
-function get_curl($url)
+function http_get($url)
 {
-	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	curl_setopt($ch, CURLOPT_BINARYTRANSFER, TRUE);
-	$out = curl_exec($ch);
-	$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	curl_close($ch);
-	if($http_code >= 200 && $http_code < 300) return $out;
-	else return false;
+	return file_get_contents($url);
 }
 
 function echo_curl($url)

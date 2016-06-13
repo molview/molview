@@ -26,7 +26,7 @@ header('content-type: application/json');
 
 libxml_use_internal_errors(true);
 
-$html =  get_curl("https://plusone.google.com/_/+1/fastbutton?url=".urlencode($url));
+$html =  http_get("https://plusone.google.com/_/+1/fastbutton?url=".urlencode($url));
 $doc = new DOMDocument();
 $doc -> loadHTML($html);
 $counter = $doc -> getElementById('aggregateCount');

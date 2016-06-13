@@ -67,7 +67,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 
 	if(isset($pubchem_query))//data via PubChem
 	{
-		$json = get_curl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
+		$json = http_get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/".$pubchem_query."/description/json?".$pubchem_query.'='.urlencode($pubchem_value));
 		$data = json_decode($json);
 
 		if(isset($data -> InformationList -> Information))
@@ -106,7 +106,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	}
 	else if(isset($pdbid))//data via RCSB
 	{
-		$xml = get_curl("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
+		$xml = http_get("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
 		$data = new SimpleXMLElement($xml);
 
 		if(isset($data -> {"record"} -> {"dimStructure.structureId"}))

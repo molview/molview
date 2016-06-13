@@ -53,7 +53,7 @@ if($row = $cod -> query($query) -> fetch_row())
 	if(strpos($row[0], "has coordinates") !== false)
 	{
 		//get cif
-		$cif = get_curl("http://www.crystallography.net/".$codid.".cif");
+		$cif = http_get("http://www.crystallography.net/".$codid.".cif");
 		if($cif === false)
 		{
 			http_response_code(404);

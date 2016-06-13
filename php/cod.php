@@ -189,7 +189,7 @@ else if($action == "smiles" && isset($q))
 			if(isset($smiles[$codid])) echo json_encode(utf8_encode($smiles[$codid]));
 			else
 			{
-				$smi = get_curl("http://www.crystallography.net/cod/chemistry/stoichiometric/".$codid.".smi");
+				$smi = http_get("http://www.crystallography.net/cod/chemistry/stoichiometric/".$codid.".smi");
 				if(strlen($smi) > 9) echo json_encode(substr($smi, 0, strlen($smi) - 9));
 				else echo '""';
 			}

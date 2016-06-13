@@ -73,7 +73,7 @@ if($type == "lookup")
 	}
 	*/
 
-	$nist_page = get_curl("http://webbook.nist.gov/cgi/cbook.cgi?Mask=80&ID=".$cas);
+	$nist_page = http_get("http://webbook.nist.gov/cgi/cbook.cgi?Mask=80&ID=".$cas);
 
 	echo "{";
 	echo '"url":'.json_encode(utf8_encode("http://webbook.nist.gov/cgi/cbook.cgi?ID=".$cas));
