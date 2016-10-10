@@ -278,9 +278,6 @@ class Parsedown
         return $markup;
     }
 
-    #
-    # Allow for plugin extensibility
-    #
     protected function isBlockContinuable($Type)
     {
         return method_exists($this, 'block'.$Type.'Continue');
@@ -517,6 +514,16 @@ class Parsedown
                     'handler' => 'elements',
                 ),
             );
+
+            if($name === 'ol') 
+            {
+                $listStart = stristr($matches[0], '.', true);
+                
+                if($listStart !== '1')
+                {
+                    $Block['element']['attributes'] = array('start' => $listStart);
+                }
+            }
 
             $Block['li'] = array(
                 'name' => 'li',

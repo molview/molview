@@ -25,6 +25,7 @@ var Messages = {
 	cir_down: "The Chemical Identifier Resolver is offline, some functions might be unavailable.",
 	cir_func_down: "This function is unavailable because the Chemical Identifier Resolver is offline.",
 	crystal_2d_unreliable: "The structural formula might not fully represent the crystal structure",
+	resolved_3d_unreliable: "The resolved 3D structure might be inaccurate",
 
 	//progress
 	switch_engine: "Loading engine&hellip;",
@@ -61,7 +62,8 @@ var Messages = {
 	no_protein: "The current 3D model is not a protein",
 
 	permDismiss: [
-		"crystal_2d_unreliable"
+		"crystal_2d_unreliable",
+		"resolved_3d_unreliable"
 	],
 
 	/**
@@ -70,7 +72,7 @@ var Messages = {
 	 */
 	dontShowAgain: function(id)
 	{
-		Preferences.set("messages", "crystal_2d_unreliable", true);
+		Preferences.set("messages", id, true);
 	},
 
 	/**
@@ -136,6 +138,8 @@ var Messages = {
 		Valid strings for {cause}
 		- cir_down
 		- cir_func_down
+		- crystal_2d_unreliable
+		- resolved_3d_unreliable
 
 		- no_canvas_support
 		- no_webgl_support

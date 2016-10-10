@@ -723,6 +723,7 @@ var Loader = {
 
 		Request.resolve(smiles, 0, false, function(mol, cid)
 		{
+			Messages.alert("resolved_3d_unreliable");
 			Model.loadMOL(mol);
 			Sketcher.markUpdated();
 
