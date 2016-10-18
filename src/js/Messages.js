@@ -25,7 +25,7 @@ var Messages = {
 	cir_down: "The Chemical Identifier Resolver is offline, some functions might be unavailable.",
 	cir_func_down: "This function is unavailable because the Chemical Identifier Resolver is offline.",
 	crystal_2d_unreliable: "The structural formula might not fully represent the crystal structure",
-	resolved_3d_unreliable: "The resolved 3D structure might be inaccurate",
+	resolved_3d_unreliable: 'The resolved 3D structure might be inaccurate <a href="http://blog.molview.org/2016/10/10/issues-in-3d-resolving/" target="_blank">Read more</a>',
 
 	//progress
 	switch_engine: "Loading engine&hellip;",
