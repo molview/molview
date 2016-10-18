@@ -81,8 +81,8 @@ var Spectroscopy = {
 				function noSpectra()
 				{
 						$("#spectrum-select").empty();
-						$("#spectrum-select").append('<option value="default" disabled selected style="display:none;">Choose a spectrum</option>');
-						$("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
+						$("#spectrum-select").append('<option value="default" disabled selected style="display:none;">There are no spectra available</option>');
+						//$("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>');
 						$("#spectrum").removeClass("loading");
 				}
 
@@ -106,7 +106,7 @@ var Spectroscopy = {
 										}
 								}
 
-								$("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>').val("default");
+								//$("#spectrum-select").append('<option value="nmrdb">H1-NMR prediction</option>').val("default");
 
 								if(data.mass || (data.ir !== undefined && data.ir.length > 0))
 								{
