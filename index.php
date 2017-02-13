@@ -438,8 +438,8 @@ Query parameters:
 							<table id="common-chem-props">
 								<tr id="prop-formula-wrapper"><td>Formula</td><td id="prop-formula" class="chemprop"></td></tr>
 								<tr id="prop-mw-wrapper"><td>Molecular weight</td><td id="prop-mw" class="chemprop"></td></tr>
-								<tr id="prop-donors-wrapper"><td>Proton donors</td><td id="prop-donors" class="chemprop"></td></tr>
-								<tr id="prop-acceptors-wrapper"><td>Proton acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
+								<tr id="prop-donors-wrapper"><td>Hydrogen bond donors</td><td id="prop-donors" class="chemprop"></td></tr>
+								<tr id="prop-acceptors-wrapper"><td>Hydrogen bond acceptors</td><td id="prop-acceptors" class="chemprop"></td></tr>
 							</table>
 							<h3 id="percent-composition-title">Percent composition</h3>
 							<table id="percent-composition-table"></table>
