@@ -81,7 +81,7 @@ var Request = {
 		{
 			AJAX({
 				dataType: "json",
-				url: "http://mymemory.translated.net/api/get?q=" + encodeURI(text)
+				url: "https://mymemory.translated.net/api/get?q=" + encodeURI(text)
 				+ "&langpair=" + Request.alternativeLanguages[0] + "|en&de=hermanbergwerf@gmail.com&ip=" + Request.HTTP_CLIENT_IP,
 				success: function(response)
 				{
@@ -706,7 +706,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: "http://www.rcsb.org/pdb/files/" + pdbid + ".pdb",
+				url: "https://files.rcsb.org/view/" + pdbid + ".pdb",
 				defaultError: error,
 				success: success
 			});
