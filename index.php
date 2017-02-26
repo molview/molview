@@ -511,8 +511,8 @@ Query parameters:
 						</a>
 						<div id="welcome-loading-msg">LOADING&hellip;</div>
 						<div id="welcome-button-bar" class="btn-group" style="display: none;">
-							<button id="action-start-help" class="btn btn-large">Get started</button>
-							<button class="btn close btn-large btn-primary">Continue</button>
+							<!-- <button id="action-start-help" class="btn btn-large">Get started</button> -->
+							<button class="btn close btn-large btn-primary">Close</button>
 						</div>
 						<div class="btn-group">
 							<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
