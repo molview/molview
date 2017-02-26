@@ -30,10 +30,11 @@ error_reporting(0);
 parse_str($_SERVER["QUERY_STRING"]);
 header("Content-Type: text");
 
-//allow embed.molview.org
-if($_SERVER["HTTP_ORIGIN"] == "http://embed.molview.org")
+//allow embed.molview.org and molview.org
+$origin = $_SERVER["HTTP_ORIGIN"];
+if($origin == 'http://molview.org' || $origin == 'https://embed.molview.org')
 {
-	header("Access-Control-Allow-Origin: ".$_SERVER["HTTP_ORIGIN"]);
+	header("Access-Control-Allow-Origin: ".$origin);
 }
 
 //connect to cod

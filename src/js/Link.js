@@ -89,5 +89,6 @@ var Link = {
 
 		Link.embedHTML = '<iframe style="width: ' + $("#embed-width").val() + '; height: ' + $("#embed-height").val() + ';" frameborder="0" src="' + url + '"></iframe>';
 		$("#embed-code").val(Link.embedHTML);
+		$("#embed-url").val(url);
 	}
 };

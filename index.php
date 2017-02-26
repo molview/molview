@@ -824,6 +824,8 @@ Query parameters:
 							You can use the HTML code below to embed the current 3D model in your website.
 						</p>
 						<input id="embed-code" class="input" type="text" autocomplete="off" spellcheck="false" />
+						<h4>Embed URL</h4>
+						<input id="embed-url" class="input" type="text" autocomplete="off" spellcheck="false" />
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
 						</div>

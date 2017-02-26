@@ -781,7 +781,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: Request.API_ROOT + "api/cod/cif/" + codid + ".cif",
+				url: "https://molview.org/api/cod/cif/" + codid + ".cif",
 				defaultError: error,
 				success: success
 			});
