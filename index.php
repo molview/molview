@@ -458,11 +458,11 @@ Query parameters:
 						<input type="text" id="prop-isomericsmiles" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-inchikey-wrapper" class="chem-identifier">
-						<label for="prop-inchikey">InChiKey</label>
+						<label for="prop-inchikey">InChIKey</label>
 						<input type="text" id="prop-inchikey" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-inchi-wrapper" class="chem-identifier">
-						<label for="prop-inchi">InChi</label>
+						<label for="prop-inchi">InChI</label>
 						<input type="text" id="prop-inchi" class="input chemprop" autocomplete="off" spellcheck="false" />
 					</div>
 					<div id="prop-cas-wrapper" class="chem-identifier">
