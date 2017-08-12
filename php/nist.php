@@ -97,7 +97,7 @@ if($type == "lookup")
 		$listnr = 0;
 		$length = 0;
 
-		$key = array_search('<h2><a id="IR-Spec">IR Spectrum</a></h2>', $nist_page);
+		$key = array_search('<h2 id="IR-Spec">IR Spectrum</h2>', $nist_page);
 		if($key !== false)
 		{
 			$idx = $key + 1;//skip "Go to ..." line
