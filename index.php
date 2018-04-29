@@ -521,7 +521,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 							<a class="btn" target="_blank" title="MolView Blog" href="http://blog.molview.org">Blog</a>
 						</div>
-						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.bountysource.com/teams/molview">Donate</a></p>
+						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.patreon.com/molview">Donate</a></p>
 						<p id="allow-tracking-wrapper">
 							<input id="allow-tracking" type="checkbox" />
 							<script type="text/javascript">
