@@ -510,10 +510,21 @@ Query parameters:
 							<img id="agpl-logo" src="img/agpl.svg" alt="AGPL">
 						</a>
 						<div id="welcome-loading-msg">LOADING&hellip;</div>
+						<p>By closing this banner and using MolView, you agree with the Terms of Use!</p>
+                        <a class="gray" href="legal" target="_blank">read the Terms of Use</a>
 						<div id="welcome-button-bar" class="btn-group" style="display: none;">
 							<!-- <button id="action-start-help" class="btn btn-large">Get started</button> -->
 							<button class="btn close btn-large btn-primary">Close</button>
 						</div>
+						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.patreon.com/molview">Donate</a></p>
+						<p id="allow-tracking-wrapper">
+							<input id="allow-tracking" type="checkbox" />
+							<script type="text/javascript">
+								// Disable by default (GDPR)
+								$("#allow-tracking").prop("checked", Preferences.get("molview", "allow_tracking", false))
+							</script>
+							<label for="allow-tracking">Allow MolView to collect annonymous usage data (<a class="gray" href="tracking">details</a>)</label>
+						</p>
 						<div class="btn-group">
 							<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
 							<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
@@ -521,15 +532,6 @@ Query parameters:
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 							<a class="btn" target="_blank" title="MolView Blog" href="http://blog.molview.org">Blog</a>
 						</div>
-						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.patreon.com/molview">Donate</a></p>
-						<p id="allow-tracking-wrapper">
-							<input id="allow-tracking" type="checkbox" />
-							<script type="text/javascript">
-								$("#allow-tracking").prop("checked", Preferences.get("molview", "allow_tracking", true))
-							</script>
-							<label for="allow-tracking">Allow MolView to collect interaction data (<a class="gray" href="tracking">read more</a>)</label>
-						</p>
-						<a class="gray" href="legal" target="_blank">Terms of Use</a>
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>
