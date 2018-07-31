@@ -1,7 +1,7 @@
-MolView first generation
-========================
-This repository holds the code of the old, first generation, MolView.
-You can still run it on your own server.
+MolView
+=======
+This repository holds the code of MolView.org.
+It is not actively maintained due to lacking financial support.
 
 License
 ---
