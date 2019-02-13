@@ -193,8 +193,8 @@ var InfoCard = {
 
 					document.title = title;
 					$("#molecule-info").show();
-					$("#molecule-title").text(title);
-					$("#molecule-description").text(desc);
+					$("#molecule-title").html(title);
+					$("#molecule-description").html(desc);
 				});
 			}
 		});
