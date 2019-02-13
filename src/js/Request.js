@@ -17,31 +17,10 @@
  */
 
 /**
- * Extract simple ISO language code from string
- * @param {String} str Input string
- */
-function getISOLanguageCode(str)
-{
-	//cut from '-' / '_' / ';'
-	if(str.indexOf(";") !== -1) str = str.substr(0, str.indexOf(";"));
-	if(str.indexOf("-") !== -1) str = str.substr(0, str.indexOf("-"));
-	if(str.indexOf("_") !== -1) str = str.substr(0, str.indexOf("_"));
-	return str;
-}
-
-/**
  * Wrapper handling all AJAX calls for loading remote data
  * @type {Object}
  */
 var Request = {
-	/**
-	 * Server Environment variables passed to JavaScript using PHP
-	 * (see index.php)
-	 * Used for translation usign myMemory
-	 */
-	HTTP_CLIENT_IP: "",
-	HTTP_ACCEPT_LANGUAGE: "",
-
 	/**
 	 * API root URL, inject a different value when the API is not accessible
 	 * under the HTML index directory.
@@ -49,60 +28,9 @@ var Request = {
 	API_ROOT: "",
 
 	/**
-	 * Alternative languages specified by the clients browser and retrieved
-	 * using PHP (see index.php)
-	 * This array is used to translate search queries using myMemory
-	 */
-	alternativeLanguages: [],
-
-	/**
 	 * Initializes Request object
-	 * Generates alternativeLanguages from HTTP_ACCEPT_LANGUAGE
 	 */
-	init: function()
-	{
-		var languages = this.HTTP_ACCEPT_LANGUAGE.split(",");
-		for(var i = 0; i < languages.length; i++)
-		{
-			var iso = languages[i].substr(0, 2);
-			if(iso !== "en") Request.alternativeLanguages.push(iso);
-		}
-	},
-
-	/**
-	 * Retrieves translation of input text using the first language in
-	 * alternativeLanguages. Returns translation or same text when request fails
-	 * @param  {String}   text    Input text string
-	 * @param  {Function} success Called when AJAX is finished
-	 */
-	translation: function(text, success)
-	{
-		if(Request.alternativeLanguages.length > 0 && text.length > 0)
-		{
-			AJAX({
-				dataType: "json",
-				url: "https://mymemory.translated.net/api/get?q=" + encodeURI(text)
-				+ "&langpair=" + Request.alternativeLanguages[0] + "|en&de=hermanbergwerf@gmail.com&ip=" + Request.HTTP_CLIENT_IP,
-				success: function(response)
-				{
-					for(var i = 0; i < response.matches.length; i++)
-					{
-						if(response.matches[i].translation === text)
-						{
-							success(text)
-							return;
-						}
-					}
-					success(response.responseData.translatedText);
-				},
-				error: function()
-				{
-					success(text);
-				}
-			});
-		}
-		else success(text);
-	},
+	init: function() {},
 
 	/**
 	 * Retrieve 2D and 3D molfile using a text string (CIR identifier)
@@ -128,30 +56,6 @@ var Request = {
 			{
 				success(mol2d, mol3d, text);
 			}, error);
-
-		},
-		function()
-		{
-			Progress.increment();
-
-			//translate
-			Request.translation(text, function(translated)
-			{
-				Progress.increment();
-
-				text = translated;
-
-				//try CIR with translated input
-				Request.CIR.resolve(text, false, function(mol3d)
-				{
-					Progress.increment();
-
-					Request.CIR.resolve(text, true, function(mol2d)
-					{
-						success(mol2d, mol3d, text);
-					}, error);
-				}, error);
-			});
 
 		}, error);
 	},
