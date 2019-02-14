@@ -224,7 +224,7 @@ var Request = {
 
 						if(property === "cas")
 						{
-							array.sort(function(a, b){ return a.length > b.length; });
+							array.sort(function(a, b){ return a.length - b.length; });
 							value = array[0];
 						}
 						else if(property === "stdinchikey")
@@ -443,7 +443,7 @@ var Request = {
 
 					if(array.length > 0)
 					{
-						array.sort(function(a, b){ return a.length > b.length; });
+						array.sort(function(a, b){ return a.length - b.length; });
 						success(array[0]);
 					}
 					else
@@ -731,7 +731,7 @@ var Request = {
 					output.ir = new Array();
 
 					//ir records postprocessing
-					data.ir.sort(function(a, b){ return a.i > b.i; });
+					data.ir.sort(function(a, b){ return a.i - b.i; });
 					for(var i = 0; i < data.ir.length; i++)
 					{
 						if(data.ir[i].source.indexOf("NO SPECTRUM") === -1)
