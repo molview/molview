@@ -16,7 +16,7 @@ var JSUnits = {
 		src: [
 			'bower_components/jquery.hotkeys/jquery.hotkeys.js',
 			'bower_components/blob/Blob.js',
-			'bower_components/file-saver/FileSaver.min.js',
+			'bower_components/file-saver/dist/FileSaver.min.js',
 			'src/js/chem/prototype.js',
 			'src/js/chem/util/common.js',
 			'src/js/chem/util/vec2.js',
