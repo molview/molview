@@ -278,29 +278,54 @@ var Actions = {
 	/*
 	Jmol menu
 	*/
-	jmol_clean:    function() { Model.JSmol.clean(); },
-	jmol_hq:       function() { Model.JSmol.setQuality(!$("#action-jmol-hq").hasClass("checked")); },
-	jmol_mep_lucent:    function() { Model.JSmol.loadMEPSurface(true); },
-	jmol_mep_opaque:    function() { Model.JSmol.loadMEPSurface(false); },
-	jmol_charge:   function() { Model.JSmol.displayCharge(); },
-	jmol_bond_dipoles:  function() { Model.JSmol.displayDipoles(); },
-	jmol_net_dipole:    function() { Model.JSmol.displayNetDipole(); },
-	jmol_minimize: function() { Model.JSmol.calculateEnergyMinimization(); },
+	jmol_clean: function() {
+		Model.JSmol.clean();
+	},
+	jmol_hq: function() {
+		Model.JSmol.setQuality(!$("#action-jmol-hq").hasClass("checked"));
+	},
+	jmol_mep_lucent: function() {
+		Model.JSmol.loadMEPSurface(true);
+		Messages.alert("calculation_unreliable");
+	},
+	jmol_mep_opaque: function() {
+		Model.JSmol.loadMEPSurface(false);
+		Messages.alert("calculation_unreliable");
+	},
+	jmol_charge: function() {
+		Model.JSmol.displayCharge();
+		Messages.alert("calculation_unreliable");
+	},
+	jmol_bond_dipoles: function() {
+		Model.JSmol.displayDipoles();
+		Messages.alert("calculation_unreliable");
+	},
+	jmol_net_dipole: function() {
+		Model.JSmol.displayNetDipole();
+		Messages.alert("calculation_unreliable");
+	},
+	jmol_minimize: function() {
+		Model.JSmol.calculateEnergyMinimization();
+		Messages.alert("calculation_unreliable");
+	},
 
 	jmol_measure_distance: function()
 	{
+		Messages.alert("measurements_unreliable");
 		Model.JSmol.setMeasure($("#action-jmol-measure-distance").hasClass("checked")
 			? "OFF" : "DISTANCE");
 	},
 
 	jmol_measure_angle: function()
 	{
+		Messages.alert("measurements_unreliable");
 		Model.JSmol.setMeasure($("#action-jmol-measure-angle").hasClass("checked")
 			? "OFF" : "ANGLE");
 	},
 
 	jmol_measure_torsion: function()
 	{
+		Messages.alert("measurements_unreliable");
 		Model.JSmol.setMeasure($("#action-jmol-measure-torsion").hasClass("checked")
 			? "OFF" : "TORSION");
 	},
