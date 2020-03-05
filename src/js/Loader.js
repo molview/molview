@@ -108,30 +108,38 @@ var Loader = {
 		{
 			if(cids.length === 0) return;
 
-			Request.PubChem.description(cids, function(data)
-			{
-				/**
-				 * In some cases PubChem will return two objects with the same CID
-				 * containing different metadata. For now, we will only use the first
-				 * object in the array and skip the others.
-				 */
-				var used = [];
-				for(var i = 0; i < data.InformationList.Information.length; i++)
-				{
-					var cid = data.InformationList.Information[i].CID;
-					if(used.indexOf(cid) !== -1) continue;
-					used.push(cid);
-					SearchGrid.addEntry(data.InformationList.Information[i]);
-				}
+			// Request.PubChem.description(cids, function(data)
+			// {
+			// 	/**
+			// 	 * In some cases PubChem will return two objects with the same CID
+			// 	 * containing different metadata. For now, we will only use the first
+			// 	 * object in the array and skip the others.
+			// 	 */
+			// 	var used = [];
+			// 	for(var i = 0; i < data.InformationList.Information.length; i++)
+			// 	{
+			// 		var cid = data.InformationList.Information[i].CID;
+			// 		if(used.indexOf(cid) !== -1) continue;
+			// 		used.push(cid);
+			// 		SearchGrid.addEntry(data.InformationList.Information[i]);
+			// 	}
 
-				SearchGrid.endLoading(Loader.PubChem.i >= Request.PubChem.data.length);
-				Loader.PubChem.loading = false;
-				Progress.complete();
-			},
-			function()
+			// 	SearchGrid.endLoading(Loader.PubChem.i >= Request.PubChem.data.length);
+			// 	Loader.PubChem.loading = false;
+			// 	Progress.complete();
+			// },
+			// function()
+			// {
+			// 	Messages.alert("remote_noreach");
+			// });
+			for(var i = 0; i < cids.length; i++)
 			{
-				Messages.alert("remote_noreach");
-			});
+				SearchGrid.addEntry(cids[i]);
+			}
+
+			SearchGrid.endLoading(Loader.PubChem.i >= Request.PubChem.data.length);
+			Loader.PubChem.loading = false;
+			Progress.complete();
 		},
 
 		loadNextSet: function()
@@ -177,39 +185,53 @@ var Loader = {
 		structureSearch: function(query, value, type)
 		{
 			Progress.reset(3);
-
-			Request.PubChem.structureSearch(query, value, type, function(listkey)
+			Request.PubChem.structureSearch(query, value, type, function()
 			{
 				Progress.increment();
+				Messages.clear();
+				Actions.show_search_layer();
 
-				function lookup()
-				{
-					Request.PubChem.list(listkey,
-					function()//success
-					{
-						Progress.increment();
-						Messages.clear();
-						Actions.show_search_layer();
+				SearchGrid.setDatabase("pubchem");
+				SearchGrid.clear();
 
-						SearchGrid.setDatabase("pubchem");
-						SearchGrid.clear();
+				Loader.PubChem.i = 0;
+				Loader.PubChem.loadNextSet();
 
-						Loader.PubChem.i = 0;
-						Loader.PubChem.loadNextSet();
-					},
-					function(newlistkey)//wait
-					{
-						listkey = newlistkey;
-						window.setTimeout(lookup, Loader.PubChem.ssli);
-					},
-					function(statusCode)//error
-					{
-						Messages.alert("search_fail");
-					});
-				}
-
-				lookup();
 			},
+
+			// Request.PubChem.structureSearch(query, value, type, function(listkey)
+			// {
+			// 	Progress.increment();
+
+			// 	function lookup()
+			// 	{
+			// 		Request.PubChem.list(listkey,
+			// 		function()//success
+			// 		{
+			// 			Progress.increment();
+			// 			Messages.clear();
+			// 			Actions.show_search_layer();
+
+			// 			SearchGrid.setDatabase("pubchem");
+			// 			SearchGrid.clear();
+
+			// 			Loader.PubChem.i = 0;
+			// 			Loader.PubChem.loadNextSet();
+			// 		},
+			// 		function(newlistkey)//wait
+			// 		{
+			// 			listkey = newlistkey;
+			// 			window.setTimeout(lookup, Loader.PubChem.ssli);
+			// 		},
+			// 		function(statusCode)//error
+			// 		{
+			// 			Messages.alert("search_fail");
+			// 		});
+			// 	}
+
+			// 	lookup();
+			// },
+
 			function(statusCode)
 			{
 				Messages.alert(statusCode === 404 ? "search_notfound" : "search_fail");

@@ -102,15 +102,15 @@ var SearchGrid = {
 			</div>
 			*/
 
-			if(!data.CID) return;
+			if(!data) return;
 
 			var result = $('<a class="search-result search-result-pubchem"></a>')
-					.attr("href", "?cid=" + data.CID)
+					.attr("href", "?q=" + data)
 					.appendTo("#search-layer .container");
 
-			if(data.Title)
+			if(data)
 			{
-				var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data.Title)) + "</span></div>");
+				var title = $('<div class="search-result-title"><span>' + ucfirst(humanize(data)) + "</span></div>");
 				result.append(title);
 				title.textfill({ maxFontPoints: 26 });
 			}
@@ -118,9 +118,10 @@ var SearchGrid = {
 			var wrap = $('<div class="search-result-img-wrap"></div>');
 			var img = new Image();
 			img.onload = function(){ wrap.css("background-image", "none") }
-			img.src = Request.PubChem.image(data.CID, result.width());
+			// img.src = Request.PubChem.image(data.CID, result.width());
+			img.src = Request.PubChem.smilesToImage(data);
 			$("<div class='search-result-img'></div>")
-				.css("background-image", "url(" + img.src + ")")
+				.css("background-image", "url('" + img.src + "')")
 				.css("-webkit-filter", "url('#pubchemImageFilter')")
 				.css("-moz-filter", "url('#pubchemImageFilter')")
 				.css("-ms-filter", "url('#pubchemImageFilter')")
@@ -129,18 +130,18 @@ var SearchGrid = {
 				.height(result.width())
 				.appendTo(wrap.appendTo(result));
 
-			result.data("cid", data.CID);
-			result.data("title", ucfirst(humanize(data.Title)));
-			result.on("click", function(e)
-			{
-				if(e.which !== 2)
-				{
-					MolView.pushEvent("button", "click", "pubchem search", 0);
-					MolView.setLayer("main");
-					Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
-					return false;
-				}
-			});
+			result.data("cid", data);
+			result.data("title", data);
+			// result.on("click", function(e)
+			// {
+			// 	if(e.which !== 2)
+			// 	{
+			// 		MolView.pushEvent("button", "click", "pubchem search", 0);
+			// 		MolView.setLayer("main");
+			// 		Loader.PubChem.loadCID($(this).data("cid"), $(this).data("title"));
+			// 		return false;
+			// 	}
+			// });
 		}
 		else if(this.db === "rcsb")
 		{
