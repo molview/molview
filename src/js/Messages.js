@@ -74,8 +74,7 @@ var Messages = {
 	 * Sets message with $id to be not shown again
 	 * @param {String} id
 	 */
-	dontShowAgain: function(id)
-	{
+	dontShowAgain: function (id) {
 		Preferences.set("messages", id, true);
 	},
 
@@ -86,8 +85,7 @@ var Messages = {
 	 * @param  {String}   what
 	 * @return {Boolean}  Indicates if process message is shown
 	 */
-	process: function(cb, what)
-	{
+	process: function (cb, what) {
 		/*
 		Valid strings for {what}
 		- switch_engine
@@ -106,23 +104,18 @@ var Messages = {
 		var ret = true;
 
 		//Do not replace the current message (if present) with model_update
-		if(!(what === "model_update" && !Messages.isEmpty()))
-		{
+		if (!(what === "model_update" && !Messages.isEmpty())) {
 			Messages.clear();
 
-			if(what && what !== "" && Messages[what] && Messages[what] !== "")
-			{
+			if (what && what !== "" && Messages[what] && Messages[what] !== "") {
 				$("body").addClass("progress-cursor");
 
-				var msg =  $("<div/>").addClass("message");
-				$("<div/>").addClass("message-text")
+				$("<span/>")
 					.html(Messages[what])
-					.appendTo(msg);
-				msg.appendTo($("#messages"));
+					.appendTo($("#messages"));
 			}
 		}
-		else
-		{
+		else {
 			ret = false;
 		}
 
@@ -136,8 +129,7 @@ var Messages = {
 	 * @param {String} cause
 	 * @param {String} error
 	 */
-	alert: function(cause, error)
-	{
+	alert: function (cause, error) {
 		/*
 		Valid strings for {cause}
 		- cir_down
@@ -164,37 +156,38 @@ var Messages = {
 		- no_protein
 		*/
 
-		if(cause === "no_canvas_support")
-		{
+		if (cause === "no_canvas_support") {
 			window.location = window.location.origin + window.location.pathname + "htmlCanvas";
 			return;
 		}
 
 		$("body").removeClass("progress-cursor");
 
-		if(!Preferences.get("messages", cause, false))
-		{
-			var msg =  $("<div/>").addClass("message alert-message");
+		if (!Preferences.get("messages", cause, false)) {
+			var msg = $("<div/>").addClass("message alert-message");
 			var text = $("<div/>").addClass("message-text").html(Messages[cause] || cause);
 
-			if(error)
-			{
+			if (error) {
 				text.append('<span class="error-message">' +
-						(error.message || error.detailMessage || error) + "</span>");
+					(error.message || error.detailMessage || error) + "</span>");
 			}
 
 			text.appendTo(msg);
 
-			$('<button class="message-close-btn">OK</button>').on(MolView.trigger,
-					function(){ $(this).parent().remove(); }).appendTo(msg);
+			// $('<button class="message-close-btn">OK</button>').on(MolView.trigger,
+			// 	function () { $(this).parent().remove(); }).appendTo(msg);
 
-			if(Messages.permDismiss.indexOf(cause) !== -1)
-			{
-				$('<button class="message-close-btn">Don\'t show again</button>').on(MolView.trigger,
-						function(){ $(this).parent().remove(); Messages.dontShowAgain(cause); }).appendTo(msg);
-			}
-
+			// if (Messages.permDismiss.indexOf(cause) !== -1) {
+			// 	$('<button class="message-close-btn">Don\'t show again</button>').on(MolView.trigger,
+			// 		function () { $(this).parent().remove(); Messages.dontShowAgain(cause); }).appendTo(msg);
+			// }
+			setTimeout(function () {
+				$("#messages").children().each(function () {
+					$(this).remove();
+				});
+			}, 2000)
 			msg.appendTo($("#messages"));
+
 		}
 
 		this.clear();
@@ -205,26 +198,21 @@ var Messages = {
 	 * Clears all messages which are no longer necessary
 	 * @param {Boolean} byUser Indicates if the clear method is triggered by the user
 	 */
-	clear: function(byUser)
-	{
+	clear: function (byUser) {
 		$("body").removeClass("progress-cursor");
 
-		$("#messages").children().each(function()
-		{
-			if(!$(this).hasClass("alert-message"))
-			{
+		$("#messages").children().each(function () {
+			if (!$(this).hasClass("alert-message")) {
 				$(this).remove();
 			}
 		});
 	},
 
-	isEmpty: function()
-	{
+	isEmpty: function () {
 		return $("#messages").is(':empty');
 	},
 
-	size: function()
-	{
+	size: function () {
 		return $("#messages .message").length;
 	}
 };

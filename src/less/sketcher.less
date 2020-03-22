@@ -19,195 +19,245 @@
 @import (reference) "vars";
 @import (reference) "global";
 
-.sketcher
-{
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: #fff;
+.sketcher {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
 }
 
-.toolbar
-{
-	position: absolute;
-	background: @light;
-	overflow: auto;
+.toolbar {
+  position: absolute;
+  background: @light;
+  overflow: auto;
 
-    .no-select;
+  .no-select;
 }
 
-.tool-button
-{
-	cursor: pointer;
-	width: @toolbar-size;
-	height: @toolbar-size;
-	margin: 0;
-	padding: 0;
+.tool-button {
+  cursor: pointer;
+  min-width: @toolbar-size;
+  margin: 0 6px;
+  height: 30px;
+  line-height: 30px;
 
-	color: #000;
-	line-height: @toolbar-size;
-	text-align: center;
-	font-size: @toolbar-fontsize;
+  padding: 0 4px;
 
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: @toolbar-iconsize;
-	border: 0;
+  color: #000;
+  text-align: center;
+  font-size: @toolbar-fontsize;
 
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-         -o-user-select: none;
-            user-select: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: @toolbar-iconsize;
+  border: 0;
+
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
-.tool-button > sup
-{
-	font-size: .83em;
-	vertical-align: super;
-	line-height: 0;
+.tool-button>sup {
+  font-size: .83em;
+  vertical-align: super;
+  line-height: 0;
 }
 
-.tool-button-selected
-{
-	background-color: @highlight-light !important;
+.tool-button-selected {
+  background-color: @highlight-light  !important;
 }
 
-#chem-tools > .toolbar-inner > .tool-button-selected
-{
-	border-right: 3px solid @highlight !important;
-	width: 37px;
+#chem-tools>.toolbar-inner>.tool-button-selected {
+  border-right: 3px solid @highlight  !important;
+  width: 37px;
 }
 
-#elem-tools > .toolbar-inner > .tool-button-selected
-{
-	border-left: 3px solid @highlight !important;
-	width: 37px;
+#elem-tools>.toolbar-inner>.tool-button-selected {
+  border-left: 3px solid @highlight  !important;
+  width: 37px;
 }
 
-#edit-tools > .toolbar-inner > .tool-button-selected
-{
-	border-bottom: 3px solid @highlight !important;
-	height: 37px;
+// #edit-tools>.toolbar-inner>.tool-button-selected {
+//   // border-bottom: 3px solid @highlight !important;
+//   // height: 37px;
+// }
+
+.tool-button-disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 
-.tool-button-disabled
-{
-	opacity: 0.3;
-	cursor: default;
+.horizontal-separator {
+  margin: 5px;
+  width: 0;
+  height: @toolbar-size - 10px;
+  border-right: 1px solid @contrast;
 }
 
-.horizontal-separator
-{
-	margin: 5px;
-	width: 0;
-	height: @toolbar-size - 10px;
-	border-right: 1px solid @contrast;
+.vertical-separator {
+  margin: 5px;
+  width: @toolbar-size - 10px;
+  height: 0;
+  border-bottom: 1px solid @contrast;
 }
 
-.vertical-separator
-{
-	margin: 5px;
-	width: @toolbar-size - 10px;
-	height: 0;
-	border-bottom: 1px solid @contrast;
+#chem-tools {
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  width: @toolbar-size;
 }
 
-#chem-tools
-{
-	top: 0;
-	left: 0;
-	bottom: 0;
-	width: @toolbar-size;
+#edit-tools {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: @toolbar-size;
 }
 
-#edit-tools
-{
-	top: 0;
-	left: @toolbar-size;
-	right: 0;
-	height: @toolbar-size;
+#elem-tools {
+  top: @toolbar-size;
+  right: 0;
+  bottom: 0;
+  width: @toolbar-size;
 }
 
-#elem-tools
-{
-	top: @toolbar-size;
-	right: 0;
-	bottom: 0;
-	width: @toolbar-size;
-}
+#molpad-canvas-wrapper {
+  position: absolute;
+  top: @toolbar-size;
+  left: @toolbar-size;
+  right: @toolbar-size;
+  bottom: 0;
+  min-width: 1px;
+  min-height: 1px;
 
-#molpad-canvas-wrapper
-{
-	position: absolute;
-	top: @toolbar-size;
-	left: @toolbar-size;
-	right: @toolbar-size;
-	bottom: 0;
-	min-width: 1px;
-	min-height: 1px;
-
-	overflow: hidden;
-	background: #fff;
+  overflow: hidden;
+  background: #fff;
 }
 
 /* MolPad buttons */
-#action-mp-bond-single { background-image: url(../img/bond/single.svg); }
-#action-mp-bond-double { background-image: url(../img/bond/double.svg); }
-#action-mp-bond-triple { background-image: url(../img/bond/triple.svg); }
-#action-mp-bond-wedge { background-image: url(../img/bond/wedge.svg); }
-#action-mp-bond-hash { background-image: url(../img/bond/hash.svg); }
-#action-mp-frag-benzene { background-image: url(../img/frag/benzene.svg); }
-#action-mp-frag-cyclopropane { background-image: url(../img/frag/cyclopropane.svg); }
-#action-mp-frag-cyclobutane { background-image: url(../img/frag/cyclobutane.svg); }
-#action-mp-frag-cyclopentane { background-image: url(../img/frag/cyclopentane.svg); }
-#action-mp-frag-cyclohexane { background-image: url(../img/frag/cyclohexane.svg); }
-#action-mp-frag-cycloheptane { background-image: url(../img/frag/cycloheptane.svg); }
-#action-mp-chain { background-image: url(../img/action/chain.svg); }
+#action-mp-bond-single {
+  background-image: url(../img/bond/single.svg);
+}
 
-#action-mp-clear { background-image: url(../img/action/clear.svg); }
-#action-mp-eraser { background-image: url(../img/action/erase.svg); }
-#action-mp-drag { background-image: url(../img/action/move.svg); }
-#action-mp-undo { background-image: url(../img/action/undo.svg); }
-#action-mp-redo { background-image: url(../img/action/redo.svg); }
-#action-mp-rect { background-image: url(../img/action/rect.svg); }
-#action-mp-lasso { background-image: url(../img/action/lasso.svg); }
-#action-mp-color-mode { background-image: url(../img/action/color.svg); }
-#action-mp-skeletal-formula { background-image: url(../img/action/skeletal-off.svg); }
-#action-mp-center { background-image: url(../img/action/center.svg); }
-#action-mp-clean { background-image: url(../img/action/clean.svg); }
+#action-mp-bond-double {
+  background-image: url(../img/bond/double.svg);
+}
+
+#action-mp-bond-triple {
+  background-image: url(../img/bond/triple.svg);
+}
+
+#action-mp-bond-wedge {
+  background-image: url(../img/bond/wedge.svg);
+}
+
+#action-mp-bond-hash {
+  background-image: url(../img/bond/hash.svg);
+}
+
+#action-mp-frag-benzene {
+  background-image: url(../img/frag/benzene.svg);
+}
+
+#action-mp-frag-cyclopropane {
+  background-image: url(../img/frag/cyclopropane.svg);
+}
+
+#action-mp-frag-cyclobutane {
+  background-image: url(../img/frag/cyclobutane.svg);
+}
+
+#action-mp-frag-cyclopentane {
+  background-image: url(../img/frag/cyclopentane.svg);
+}
+
+#action-mp-frag-cyclohexane {
+  background-image: url(../img/frag/cyclohexane.svg);
+}
+
+#action-mp-frag-cycloheptane {
+  background-image: url(../img/frag/cycloheptane.svg);
+}
+
+#action-mp-chain {
+  background-image: url(../img/action/chain.svg);
+}
+
+#action-mp-clear {
+  background-image: url(../img/action/clear.svg);
+}
+
+#action-mp-eraser {
+  background-image: url(../img/action/erase.svg);
+}
+
+#action-mp-drag {
+  background-image: url(../img/action/move.svg);
+}
+
+#action-mp-undo {
+  background-image: url(../img/action/undo.svg);
+}
+
+#action-mp-redo {
+  background-image: url(../img/action/redo.svg);
+}
+
+#action-mp-rect {
+  background-image: url(../img/action/rect.svg);
+}
+
+#action-mp-lasso {
+  background-image: url(../img/action/lasso.svg);
+}
+
+// #action-mp-color-mode {
+//   background-image: url(../img/action/color.svg);
+// }
+
+// #action-mp-skeletal-formula {
+//   background-image: url(../img/action/skeletal-off.svg);
+// }
+
+// #action-mp-center {
+//   background-image: url(../img/action/center.svg);
+// }
+
+// #action-mp-clean {
+//   background-image: url(../img/action/clean.svg);
+// }
 
 /* Element coloring */
 /* #action-mp-atom-h.element-colored { color: #888888; }
-#action-mp-atom-c.element-colored { color: #000000; }
-#action-mp-atom-n.element-colored { color: #304ff7; }
-#action-mp-atom-o.element-colored { color: #ff0d0d; }
-#action-mp-atom-s.element-colored { color: #c39517; }
-#action-mp-atom-p.element-colored { color: #ff8000; }
-#action-mp-atom-f.element-colored { color: #6dab3c; }
-#action-mp-atom-i.element-colored { color: #940094; }
-#action-mp-atom-cl.element-colored { color: #1dc51d; }
-#action-mp-atom-br.element-colored { color: #a62929; } */
+ #action-mp-atom-c.element-colored { color: #000000; }
+ #action-mp-atom-n.element-colored { color: #304ff7; }
+ #action-mp-atom-o.element-colored { color: #ff0d0d; }
+ #action-mp-atom-s.element-colored { color: #c39517; }
+ #action-mp-atom-p.element-colored { color: #ff8000; }
+ #action-mp-atom-f.element-colored { color: #6dab3c; }
+ #action-mp-atom-i.element-colored { color: #940094; }
+ #action-mp-atom-cl.element-colored { color: #1dc51d; }
+ #action-mp-atom-br.element-colored { color: #a62929; } */
 
-#action-resolve
-{
-	padding: 0 10px;
-	width: auto;
+#action-resolve {
+  padding: 0 10px;
+  width: auto;
 
-	font-size: @toolbar-fontsize - 4pt;
-	font-weight: bold;
+  font-size: @toolbar-fontsize - 4pt;
+  font-weight: bold;
 }
 
-#action-resolve:hover, #resolve:active
-{
-	color: #000;
+#action-resolve:hover,
+#resolve:active {
+  color: #000;
 }
 
-.resolve-outdated
-{
-	height: 37px;
-	color: #f50;
-	border-bottom: 3px solid #f50;
+.resolve-outdated {
+  height: 30px;
+  color: #f50;
 }

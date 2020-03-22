@@ -18,121 +18,164 @@
 
 @import (reference) "vars";
 
-#brand
-{
-	width: 50px;
-	height: 40px;
-	background-image: url(../img/brand.svg);
-	background-repeat: no-repeat;
-	background-position: center;
+#brand {
+  flex: 0 0 100px;
+  // height: 40px;
+  background-image: url(../img/logo.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0 10px;
 }
 
-.dropdown-toggle
-{
-	border-left: 1px solid @menu-bar-bg;
-	border-right: 1px solid @menu-bar-bg;
+.dropdown-toggle {
+  border-left: 1px solid @menu-bar-bg;
+  border-right: 1px solid @menu-bar-bg;
 }
 
-.dropdown-toggle:after
-{
-	margin-left: 8px;
-	color: @foreground;
-	font-family: FontAwesome;
-	content: '\f107';
+.dropdown-toggle:after {
+  margin-left: 8px;
+  color: @foreground;
+  font-family: FontAwesome;
+  content: '\f107';
 }
 
-.dropdown.open > .dropdown-toggle
-{
-	background-color: @light !important;
-	border-color: @contrast !important;
+.dropdown.open>.dropdown-toggle {
+  background-color: @light  !important;
+  border-color: @contrast  !important;
 }
 
-.caret
-{
-	border-top-color: @foreground;
+.caret {
+  border-top-color: @foreground;
 }
 
-.dropdown-menu
-{
-	background: @light;
-	border: 1px solid @contrast;
+.dropdown-menu {
+  background: @light;
+  border: 1px solid @contrast;
 }
 
-.menu-header
-{
-	font-weight: bold;
-	text-transform: uppercase;
-	border-bottom: 1px solid @contrast;
+.menu-header {
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 1px solid @contrast;
 }
 
-.menu-divider
-{
-	margin: 5px !important;
-	border-bottom: 1px dashed @contrast;
+.menu-divider {
+  margin: 5px !important;
+  border-bottom: 1px dashed @contrast;
 }
 
-.disabled
-{
-	color: @foreground-disabled !important;
-	cursor: default;
-	border-color: @light2;
+.disabled {
+  color: @foreground-disabled  !important;
+  cursor: default;
+  border-color: @light2;
 }
 
 /*
-Menu-item icons
-*/
+ Menu-item icons
+ */
 
-.menu-item > a
-{
-	color: @foreground;
+.menu-item>a {
+  color: @foreground;
 }
 
-.menu-item > a:before
-{
-	display: inline-block;
-	width: 30px;
-	color: @foreground-less;
-	text-align: center;
-	font-family: FontAwesome;
-	font-size: 10pt;
-	content: ' ';
+.menu-item>a:before {
+  display: inline-block;
+  width: 30px;
+  color: @foreground-less;
+  text-align: center;
+  font-family: FontAwesome;
+  font-size: 10pt;
+  content: ' ';
 }
 
-.menu-item > a.radio:before, .menu-item > a.check:before
-{
-	color: transparent;
-	content: '\f00c';
+.menu-item>a.radio:before,
+.menu-item>a.check:before {
+  color: transparent;
+  content: '\f00c';
 }
 
-.menu-item > a.checked:before
-{
-	color: #000;
+.menu-item>a.checked:before {
+  color: #000;
 }
 
-.menu-item > a.disabled:before
-{
-	color: @light !important;
+.menu-item>a.disabled:before {
+  color: @light  !important;
 }
 
-#action-search-pubchem:before { content: '\f1c0'; }
-#action-search-rcsb:before { content: '\f1c0'; }
-#action-search-cod:before { content: '\f1c0'; }
+#action-search-pubchem:before {
+  content: '\f1c0';
+}
 
-#action-help:before { content: '\f1cd'; }
-#action-about:before { content: '\f05a'; }
+#action-search-rcsb:before {
+  content: '\f1c0';
+}
 
-#action-share:before { content: '\f064'; }
-#action-embed:before { content: '\f121'; font-weight: bold; }
-#action-export-sketcher-png:before, #action-export-model-png:before,
-#action-export-model:before { content: '\f019'; }
-#action-data-infocard:before { content: '\f1ec'; }
-#action-data-spectra:before { content: '\f1fe'; }
-#model-source:before { content: '\f08e'; }
-#action-search-similarity:before { content: '\2248'; font-weight: bold; }
-#action-search-substructure:before { content: '\2282'; font-weight: bold; }
-#action-search-superstructure:before { content: '\2283'; font-weight: bold; }
+#action-search-cod:before {
+  content: '\f1c0';
+}
 
-#action-model-reset:before { content: '\f021'; }
-#action-cif-unit-cell:before { content: '\f1b2'; }
-#action-cif-cubic-supercell:before { content: '\f1b3'; }
-#action-cif-flat-supercell:before { content: '\f1b3'; }
+#action-help:before {
+  content: '\f1cd';
+}
+
+#action-about:before {
+  content: '\f05a';
+}
+
+#action-share:before {
+  content: '\f064';
+}
+
+#action-embed:before {
+  content: '\f121';
+  font-weight: bold;
+}
+
+#action-export-sketcher-png:before,
+#action-export-model-png:before,
+#action-export-model:before {
+  content: '\f019';
+}
+
+#action-data-infocard:before {
+  content: '\f1ec';
+}
+
+#action-data-spectra:before {
+  content: '\f1fe';
+}
+
+#model-source:before {
+  content: '\f08e';
+}
+
+#action-search-similarity:before {
+  content: '\2248';
+  font-weight: bold;
+}
+
+#action-search-substructure:before {
+  content: '\2282';
+  font-weight: bold;
+}
+
+#action-search-superstructure:before {
+  content: '\2283';
+  font-weight: bold;
+}
+
+#action-model-reset:before {
+  content: '\f021';
+}
+
+#action-cif-unit-cell:before {
+  content: '\f1b2';
+}
+
+#action-cif-cubic-supercell:before {
+  content: '\f1b3';
+}
+
+#action-cif-flat-supercell:before {
+  content: '\f1b3';
+}

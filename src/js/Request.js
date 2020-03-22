@@ -284,12 +284,6 @@ var Request = {
 				primary: true,
 				dataType: "json",
 				url: query === "smiles" ?//use URL parameter for SMILES
-					"http://42.159.224.224:5000/api/v1/search?Molecular="
-						+ value +"&Type=" + type:
-					"http://42.159.224.224:5000/api/v1/search?Cid="
-						+ value +"&Type=" + type,
-				/*
-				url: query === "smiles" ?//use URL parameter for SMILES
 					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
 						+ type + "/" + query + "/json?" + query + "=" + encodeURIComponent(value)
 						+ "&MaxRecords=" + Request.PubChem.maxRecords
@@ -298,25 +292,11 @@ var Request = {
 						+ type + "/" + query + "/" + value
 						+ "/json?MaxRecords=" + Request.PubChem.maxRecords
 						+ "&MaxSeconds=" + Request.PubChem.MaxSeconds,
-				*/
 				defaultError: error,
 				success: function(data)
 				{
-
-					if(data.Smiles)
-					{
-						Request.PubChem.data = data.Smiles;
-						success();
-					}
-					else if(data.Fault)
-					{
-						if(error) error();
-					}
+					success(data.Waiting.ListKey);
 				}
-				// success: function(data)
-				// {
-				// 	success(data.Waiting.ListKey);
-				// }
 			});
 		},
 
@@ -485,8 +465,8 @@ var Request = {
 		smilesToImage: function(smiles)
 		{
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles="
-					+ encodeURIComponent(smiles) + "&image_size=" + Math.round(300 * MolView.devicePixelRatio)
-					+ "x" + Math.round(300 * MolView.devicePixelRatio);
+					+ encodeURIComponent(smiles) + "&image_size=" + (300 * MolView.devicePixelRatio)
+					+ "x" + (300 * MolView.devicePixelRatio);
 		},
 
 		/**

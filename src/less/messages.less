@@ -18,67 +18,61 @@
 
 @import (reference) "vars";
 
-#messages
-{
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	padding: 10px;
+#messages {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 50%;
+  padding: 3px 6px;
+  background: #eee;
+  font-size: 12px;
 }
 
-.message
-{
-	margin-top: 10px;
-	min-height: @message-bar-height;
-	float: left;
-	clear: both;
+// .message {
+// margin-top: 10px;
+// min-height: @message-bar-height;
+// float: left;
+// clear: both;
 
-	color: @light;
-	background: @foreground-less;
-	overflow: hidden;
+// color: @light;
+// background: @foreground-less;
+// overflow: hidden;
+// }
+
+// .alert-message {
+// background: @error;
+// }
+
+.message-text {
+  display: inline-block;
+  padding: 10px @message-bar-vpad;
+  line-height: @message-bar-height - 20px;
 }
 
-.alert-message
-{
-	background: @error;
+.error-message {
+  padding-left: 5px;
+  font-style: italic;
+  font-weight: bold;
 }
 
-.message-text
-{
-	display: inline-block;
-	padding: 10px @message-bar-vpad;
-	line-height: @message-bar-height - 20px;
+.alert-message>.message-text>a {
+  font-weight: bold;
 }
 
-.error-message
-{
-	padding-left: 5px;
-	font-style: italic;
-	font-weight: bold;
+.message-close-btn {
+  cursor: pointer;
+  margin: 0;
+  padding: 0 @message-bar-vpad;
+  height: @message-bar-height;
+  float: right;
+
+  color: @light;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12pt;
+  background: rgba(0, 0, 0, 0.3);
+  border: 0;
 }
 
-.alert-message > .message-text > a
-{
-	font-weight: bold;
-	color: @light;
-}
-
-.message-close-btn
-{
-	cursor: pointer;
-	margin: 0;
-	padding: 0 @message-bar-vpad;
-	height: @message-bar-height;
-	float: right;
-
-	color: @light;
-	font-family: 'Open Sans', sans-serif;
-	font-size: 12pt;
-	background: rgba(0, 0, 0, 0.3);
-	border: 0;
-}
-
-.message-close-btn:focus
-{
-	outline: none;
+.message-close-btn:focus {
+  outline: none;
 }

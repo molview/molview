@@ -175,13 +175,13 @@ Query parameters:
 				<div id="brand"></div>
 				<form id="search" class="hstack" action="index.php">
 					<div class="input-wrapper">
-						<button><i class="fa fa-search"></i></button>
+						<button><i class="fa fa-search" style="color:#B0B0B9"></i></button>
 						<input id="search-input" name="q" type="text" autocomplete="off" spellcheck="false" />
-						<div class="input-focus"></div>
+						<!-- <div class="input-focus"></div> -->
 						<div id="search-dropdown" class="dropdown">
 							<a class="dropdown-toggle"></a>
 							<ul class="dropdown-menu dropdown-left">
-								<li class="menu-item"><a id="action-show-search-layer">Show last search results</a></li>
+								<li class="menu-item"><a id="action-show-search-layer">Show 2last search results</a></li>
 								<li class="menu-header">Advanced search</li>
 								<li class="menu-item"><a id="action-search-pubchem">PubChem Compounds</a></li>
 								<li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li>
@@ -192,22 +192,29 @@ Query parameters:
 				</form>
 				<ul id="main-menu" class="hstack">
 					<li id="molview-dropdown" class="dropdown">
-						<a class="dropdown-toggle">MolView</a>
+						<a class="dropdown-toggle">Layout</a>
 						<ul class="dropdown-menu">
-							<li class="menu-header">Layout</li>
+							<li class="menu-header">Viewport</li>
 							<li id="layout-menu">
-								<a id="action-layout-model" <?php if($contentClass == "model") echo 'class="selected"' ?>></a>
-								<a id="action-layout-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>></a>
+								<a id="action-layout-model" <?php if($contentClass == "model") echo 'class="selected"' ?>>3D</a>
+								<a id="action-layout-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>>2D</a>
+
+								<a id="action-layout-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>>
+									<span>2D</span>	
+									<span>3D</span>
+								</a>
 								<br/>
-								<a id="action-layout-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
-								<a id="action-layout-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
+								<a id="action-layout-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>>
+									<span>2D</span>	
+									<span>3D</span>
+								</a>
 							</li>
 							<li class="menu-header">Theme</li>
 							<li class="menu-item"><a id="action-theme-desktop" <?php echo !$touch ? 'class="radio checked"' : 'class="radio"'; ?>>Desktop</a></li>
 							<li class="menu-item"><a id="action-theme-touch" <?php echo $touch ? 'class="radio checked"' : 'class="radio"'; ?>>Touch</a></li>
-							<li class="menu-header">Information</li>
+							<!-- <li class="menu-header">Information</li>
 							<li class="menu-item"><a id="action-help">Help</a></li>
-							<li class="menu-item"><a id="action-about">About</a></li>
+							<li class="menu-item"><a id="action-about">About</a></li> -->
 						</ul>
 					</li>
 					<li id="tools-dropdown" class="dropdown">
@@ -254,7 +261,7 @@ Query parameters:
 							<li class="menu-item"><a id="action-cif-flat-supercell">Load 1&times;3&times;3 supercell</a></li>
 						</ul>
 					</li>
-					<li id="protein-dropdown" class="dropdown">
+					<!-- <li id="protein-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Protein</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="action-bio-assembly" class="check">Show bio assembly</a></li>
@@ -273,7 +280,7 @@ Query parameters:
 							<li class="menu-item"><a id="action-chain-color-polarity" class="chain-color radio">Polarity</a></li>
 							<li class="menu-item"><a id="action-chain-color-bfactor" class="chain-color radio">B-factor</a></li>
 						</ul>
-					</li>
+					</li> -->
 					<li id="jmol-dropdown" class="dropdown">
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
@@ -319,26 +326,35 @@ Query parameters:
 					<div id="molpad" class="sketcher">
 						<div id="chem-tools" class="toolbar">
 							<div class="toolbar-inner">
-								<div id="action-mp-bond-single" class="tool-button primary-tool" title="Single bond"></div>
-								<div id="action-mp-bond-double" class="tool-button primary-tool" title="Double bond"></div>
-								<div id="action-mp-bond-triple" class="tool-button primary-tool" title="Triple bond"></div>
-								<div id="action-mp-bond-wedge" class="tool-button primary-tool" title="Wedge bond"></div>
-								<div id="action-mp-bond-hash" class="tool-button primary-tool" title="Hash bond"></div>
-								<div class="vertical-separator"></div>
-								<div id="action-mp-frag-benzene" class="tool-button primary-tool" title="Benzene"></div>
-								<div id="action-mp-frag-cyclopropane" class="tool-button primary-tool" title="Cyclopropane"></div>
-								<div id="action-mp-frag-cyclobutane" class="tool-button primary-tool" title="Cyclobutane"></div>
-								<div id="action-mp-frag-cyclopentane" class="tool-button primary-tool" title="Cyclopentane"></div>
-								<div id="action-mp-frag-cyclohexane" class="tool-button primary-tool" title="Cyclohexane"></div>
-								<div id="action-mp-frag-cycloheptane" class="tool-button primary-tool" title="Cycloheptane"></div>
-								<div class="vertical-separator"></div>
-								<div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div>
-								<div id="action-mp-charge-add" class="tool-button primary-tool" title="Charge +">e<sup>+</sup></div>
-								<div id="action-mp-charge-sub" class="tool-button primary-tool" title="Charge -">e<sup>&minus;</sup></div>
+								<div style="background:#F5F5F5; margin-bottom: 10px">
+									<div id="action-mp-bond-single" class="tool-button primary-tool" title="Single bond"></div>
+									<div id="action-mp-bond-double" class="tool-button primary-tool" title="Double bond"></div>
+									<div id="action-mp-bond-triple" class="tool-button primary-tool" title="Triple bond"></div>
+									<div id="action-mp-bond-wedge" class="tool-button primary-tool" title="Wedge bond"></div>
+									<div id="action-mp-bond-hash" class="tool-button primary-tool" title="Hash bond"></div>
+								</div>
+							
+								<!-- <div class="vertical-separator"></div> -->
+								<div style="background:#F5F5F5; margin-bottom: 10px">
+									<div id="action-mp-frag-benzene" class="tool-button primary-tool" title="Benzene"></div>
+									<div id="action-mp-frag-cyclopropane" class="tool-button primary-tool" title="Cyclopropane"></div>
+									<div id="action-mp-frag-cyclobutane" class="tool-button primary-tool" title="Cyclobutane"></div>
+									<div id="action-mp-frag-cyclopentane" class="tool-button primary-tool" title="Cyclopentane"></div>
+									<div id="action-mp-frag-cyclohexane" class="tool-button primary-tool" title="Cyclohexane"></div>
+									<div id="action-mp-frag-cycloheptane" class="tool-button primary-tool" title="Cycloheptane"></div>
+								</div>
+							
+								<!-- <div class="vertical-separator"></div> -->
+								<div  style="background:#F5F5F5; margin-bottom: 10px">
+									<div id="action-mp-chain" class="tool-button primary-tool" title="Carbon chain"></div>
+									<div id="action-mp-charge-add" class="tool-button primary-tool" title="Charge +">e<sup>+</sup></div>
+									<div id="action-mp-charge-sub" class="tool-button primary-tool" title="Charge -">e<sup>&minus;</sup></div>
+								</div>
+								
 							</div>
 						</div>
 						<div id="edit-tools" class="toolbar">
-							<div class="toolbar-inner hstack">
+							<div class="toolbar-inner hstack" style="display:flex; align-items: center">
 								<div id="action-mp-clear" class="tool-button tool-button-horizontal" title="Clear all"></div>
 								<div id="action-mp-eraser" class="tool-button tool-button-horizontal primary-tool" title="Erase"></div>
 								<div class="horizontal-separator"></div>
@@ -349,12 +365,12 @@ Query parameters:
 								<div id="action-mp-rect" class="tool-button tool-button-horizontal primary-tool" title="Rectangle selection"></div>
 								<div id="action-mp-lasso" class="tool-button tool-button-horizontal primary-tool" title="Lasso selection"></div>
 								<div class="horizontal-separator"></div>
-								<div id="action-mp-color-mode" class="tool-button tool-button-horizontal enabled" title="Toggle color mode"></div>
-								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula"></div>
-								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure"></div>
+								<div id="action-mp-color-mode" class="tool-button tool-button-horizontal enabled" title="Toggle color mode">Color</div>
+								<div id="action-mp-skeletal-formula" class="tool-button tool-button-horizontal enabled" title="Toggle skeletal formula">skeleton</div>
+								<div id="action-mp-center" class="tool-button tool-button-horizontal" title="Center structure">Center</div>
 								<div class="horizontal-separator"></div>
-								<div id="action-mp-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
-								<div id="action-resolve" class="tool-button tool-button-horizontal" title="Update 3D view">2D to 3D</div>
+								<div id="action-mp-clean" class="tool-button tool-button-horizontal" title="Clean structure">Clean structure</div>
+								<div id="action-resolve" class="tool-button tool-button-horizontal" title="Update 3D view">to 3D</div>
 							</div>
 						</div>
 						<div id="elem-tools" class="toolbar">
@@ -494,8 +510,13 @@ Query parameters:
 			<div id="dialog-click-area">
 				<div id="dialog-wrapper">
 					<div class="dialog" id="start-dialog">
-						<img id="welcome-logo" src="img/logo.svg" alt="" />
-						<img id="welcome-mark" src="img/mark.svg" alt="MolView" />
+						<img id="welcome-logo" src="img/logo.svg" style="width: 244px" alt="" />
+						<h2 style="font-size: 40px;color:#000">Project Name</h2>
+						<div id="welcome-loading-msg" style="font-size:20px">LOADING&hellip;</div>
+						<div id="welcome-button-bar" class="btn-group" style="display: none;">
+							<button class="btn close btn-large btn-primary" >Close</button>
+						</div>
+						<!-- <img id="welcome-mark" src="img/mark.svg" alt="MolView" />
 						<a id="agpl-logo-wrapper" target="_blank" href="http://github.com/molview">
 							<img id="agpl-logo" src="img/agpl.svg" alt="AGPL">
 						</a>
@@ -503,7 +524,6 @@ Query parameters:
 						<p>By closing this banner and using MolView, you agree with the Terms of Use!</p>
                         <a class="gray" href="legal" target="_blank">read the Terms of Use</a>
 						<div id="welcome-button-bar" class="btn-group" style="display: none;">
-							<!-- <button id="action-start-help" class="btn btn-large">Get started</button> -->
 							<button class="btn close btn-large btn-primary">Close</button>
 						</div>
 						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.patreon.com/molview">Donate</a></p>
@@ -521,7 +541,7 @@ Query parameters:
 							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
 							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
 							<a class="btn" target="_blank" title="MolView Blog" href="http://blog.molview.org">Blog</a>
-						</div>
+						</div> -->
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>

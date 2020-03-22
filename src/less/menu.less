@@ -19,197 +19,217 @@
 @import (reference) "vars";
 @import (reference) "global";
 
-#menu
-{
-	display: block;
-	position: absolute;
-	margin: 0;
-	padding: 0;
-	height: @menubar-height + 1;
+#menu {
+  display: block;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  height: @menubar-height + 1;
 
-	overflow: hidden;
-	overflow-x: auto;
+  overflow: hidden;
+  overflow-x: auto;
 
-	.no-select;
+  .no-select;
 }
 
-#menu-bar
-{
-	position: absolute;
-	top: 0;
-	min-width: 100%;
-	background: @menu-bar-bg;
-	border-bottom: 1px solid @contrast;
-	overflow: hidden;
+#menu-bar {
+  display: flex;
+  position: absolute;
+  top: 0;
+  min-width: 100%;
+  background: @menu-bar-bg;
+  border-bottom: 1px solid @contrast;
+  overflow: hidden;
 }
 
-.menu-open
-{
-	height: 100% !important;
+.menu-open {
+  height: 100% !important;
 }
 
-.menu-open > #menu-bar
-{
-	overflow: visible;
+.menu-open>#menu-bar {
+  overflow: visible;
 }
 
-#main-menu, #layout-menu, .dropdown, .menu-item, .menu-header, .menu-divider
-{
-	margin: 0;
-	padding: 0;
-	list-style: none;
+#main-menu,
+#layout-menu,
+.dropdown,
+.menu-item,
+.menu-header,
+.menu-divider {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.dropdown
-{
-	position: relative;
-	margin: 0;
-	padding: 0;
+.dropdown {
+  position: relative;
+  margin: 0;
+  padding: 0;
 }
 
-.dropdown-toggle
-{
-	z-index: 1;
-	position: relative;
-	display: block;
-	margin: 0;
-	padding: 10px 15px;
-	height: 20px;
-	line-height: 20px;
+.dropdown-toggle {
+  z-index: 1;
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 10px 15px;
+  height: 20px;
+  line-height: 20px;
 }
 
-.dropdown-menu
-{
-	visibility: hidden;
-	position: absolute;
-	margin: -1px 0 0 0;
-	padding: 5px 0;
-	min-width: 200px;
+.dropdown-menu {
+  visibility: hidden;
+  position: absolute;
+  margin: -1px 0 0 0;
+  padding: 5px 0;
+  min-width: 200px;
 
-	overflow-x: hidden;
-	overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.dropdown-left
-{
-	right: 0;
+.dropdown-left {
+  right: 0;
 }
 
-.dropdown-compact > .menu-item > a
-{
-	padding: 5px 15px;
+.dropdown-compact>.menu-item>a {
+  padding: 5px 15px;
 }
 
-.dropdown-compact > .menu-item > a:before
-{
-	display: none;
+.dropdown-compact>.menu-item>a:before {
+  display: none;
 }
 
-.menu-header
-{
-	display: block;
-	cursor: default;
-	margin-top: 10px;
-	margin-bottom: 5px;
-	padding: 3px 10px;
-	line-height: 15px;
-	white-space: nowrap;
+.menu-header {
+  display: block;
+  cursor: default;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  padding: 3px 10px;
+  line-height: 15px;
+  white-space: nowrap;
 }
 
-.menu-item > a
-{
-	display: block;
-	line-height: 20px;
-	white-space: nowrap;
+.menu-item>a {
+  display: block;
+  line-height: 20px;
+  white-space: nowrap;
 }
 
-.dropdown.open
-{
-	z-index: 2;
+.dropdown.open {
+  z-index: 2;
 }
 
 /*
-Only hide other dropdowns while displaying
-at least one other dropdown in order to:
-- prevent persistent hover style after all dropdowns are dismissed
-- hide scrollbar for hidden dropdown-menus
-*/
-.menu.open .dropdown:not(.open) > .dropdown-menu
-{
-	display: none;
+ Only hide other dropdowns while displaying
+ at least one other dropdown in order to:
+ - prevent persistent hover style after all dropdowns are dismissed
+ - hide scrollbar for hidden dropdown-menus
+ */
+.menu.open .dropdown:not(.open)>.dropdown-menu {
+  display: none;
 }
 
-.dropdown.open > .dropdown-menu
-{
-	visibility: visible;
+.dropdown.open>.dropdown-menu {
+  visibility: visible;
 }
 
 /* search form */
-#search
-{
-	margin: 0 5px;
-	background: @search-bar-bg;
+#search {
+  margin: 0 5px;
+  background: @search-bar-bg;
 }
 
 
-#search > .input-wrapper > input, #search > .input-wrapper > button
-{
-	background: @search-bar-bg;
+#search>.input-wrapper>input,
+#search>.input-wrapper>button {
+  background: @search-bar-bg;
 }
 
-#search-input
-{
-	width: 300px;
-	font-family: 'Open Sans', sans-serif;
+#search-input {
+  width: 220px;
+  font-family: 'Open Sans', sans-serif;
 }
 
-#search-dropdown
-{
-	display: inline-block;
+#search-dropdown {
+  display: inline-block;
+  background-color: rgba(176, 176, 185, 0.2);
+  height: 40px;
 }
 
-#search-dropdown > .dropdown-toggle
-{
-	border-color: transparent;
+#search-dropdown>.dropdown-toggle {
+  border-color: transparent;
 }
 
-#search-dropdown > .dropdown-toggle:after
-{
-	margin: 0;
-	color: @foreground;
-	content: '\f0d7';
+#search-dropdown>.dropdown-toggle:after {
+  margin: 0;
+  color: @foreground;
+  content: '\f0d7';
 }
 
 /* layout menu */
-#layout-menu
-{
-	font-size: 0;
+#layout-menu {
+  font-size: 0;
+  display: flex;
+  width: 184px;
+  flex-wrap: wrap;
+  margin-left: 8px;
 }
 
-#layout-menu > a
-{
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	width: 112px;
-	height: 63px;
-
-	opacity: 0.7;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+#layout-menu>a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  margin: 0;
+  padding: 0;
+  width: 80px;
+  height: 80px;
+  background: rgba(245, 245, 245, 1);
+  font-size: 24px;
+  color: #28292E;
+  margin: 6px;
 }
 
-@media all and (min-width: 720px)
-{
-	#layout-menu > a
-	{
-		width: 160px;
-		height: 90px;
-	}
+// @media all and (min-width: 720px) {
+//   #layout-menu>a {
+//     width: 160px;
+//     height: 90px;
+//   }
+// }
+
+// #action-layout-model {
+
+
+// }
+
+// #action-layout-sketcher {
+//   background-image: url(../img/layout/sketcher.svg);
+// }
+
+#action-layout-vsplit {
+  background: none !important;
+  justify-content: space-between !important;
+
+  span {
+    height: 100%;
+    line-height: 80px;
+    flex: 0 0 44%;
+    background: #eee;
+    text-align: center;
+  }
 }
 
-#action-layout-model { background-image: url(../img/layout/model.svg); }
-#action-layout-sketcher { background-image: url(../img/layout/sketcher.svg); }
-#action-layout-vsplit { background-image: url(../img/layout/vsplit.svg); }
-#action-layout-hsplit { background-image: url(../img/layout/hsplit.svg); }
+#action-layout-hsplit {
+  flex-direction: column;
+  background: none !important;
+  justify-content: space-between !important;
+
+  span {
+    width: 100%;
+    flex: 0 0 44%;
+    background: #eee;
+    align-items: center;
+    text-align: center;
+  }
+}

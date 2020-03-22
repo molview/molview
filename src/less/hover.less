@@ -20,135 +20,97 @@
 @import (reference) "autocomplete";
 
 /*
-form
-*/
-.input-wrapper > button:hover
-{
-	color: @highlight;
+ form
+ */
+.input-wrapper>button:active {
+  color: @active;
 }
 
-/* input:not([disabled])[type="text"]:hover + .input-focus
-{
-	background: @foreground-less;
+.btn:active {
+  .form-box-active;
 }
 
-.input:hover
-{
-	border-color: @foreground;
-} */
-
-.btn:hover
-{
-	.form-box-hover;
-}
-
-.close-btn:hover, .dialog-close-btn:hover
-{
-	color: #f50;
+.close-btn:active,
+.dialog-close-btn:active {
+  color: #f00;
 }
 
 /*
-menu
-*/
-.dropdown-toggle:hover
-{
-	background-color: @light2 !important;
-	border-color: @contrast !important;
+ menu
+ */
+.dropdown-toggle:not(.tool-button-disabled):active {
+  background-color: @light  !important;
+  border-color: @contrast  !important;
 }
 
-.menu-item > a:not(.disabled):hover
-{
-	background-color: @light2;
+.menu-item>a:not(.disabled):active {
+  background-color: @light3;
 }
 
-#layout-menu > a:hover
-{
-	opacity: 0.9;
-	background-color: @light2;
-}
-
-.menu-item > a.radio:hover:before, .menu-item > a.check:hover:before
-{
-	color: @foreground-light;
+#layout-menu>a:active {
+  opacity: 1.0;
+  background-color: @light3;
 }
 
 /*
-sketcher
-*/
-.tool-button:not(.tool-button-disabled):hover
-{
-	background-color: @light3;
+ sketcher
+ */
+.tool-button:not(.tool-button-disabled):active {
+  background-color: @highlight-light;
 }
 
-#chem-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):hover
-{
-	border-right: 3px solid @foreground-less;
-	width: 37px;
+#chem-tools>.toolbar-inner>.tool-button:not(.tool-button-disabled):active {
+  border-right: 3px solid @highlight;
+  width: 37px;
 }
 
-#elem-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):hover
-{
-	border-left: 3px solid @foreground-less;
-	width: 37px;
+#elem-tools>.toolbar-inner>.tool-button:not(.tool-button-disabled):active {
+  border-left: 3px solid @highlight;
+  width: 37px;
 }
 
-#edit-tools > .toolbar-inner > .tool-button:not(.tool-button-disabled):hover
-{
-	border-bottom: 3px solid @foreground-less;
-	height: 37px;
+#edit-tools>.toolbar-inner>.tool-button:not(.tool-button-disabled):active {
+  border-bottom: 3px solid @highlight;
+  height: 37px;
 }
 
-/*
-periodictable
-*/
-.pt-element:hover
-{
-	background: @light2;
+/* periodictable */
+.pt-element:active {
+  background-color: @highlight-light;
+  border-color: @highlight;
 }
 
 /*
-help
-*/
-.expandable-title:hover
-{
-	background: @light2;
+ help
+ */
+.expandable-title:active {
+  background: @contrast;
 }
 
 /*
-search
-*/
-.search-result-title:hover, .search-result-pubchem:hover > .search-result-title
-{
-	color: @linkcolor;
+ search
+ */
+.search-result-title:active,
+.search-result-pubchem:active>.search-result-title,
+.load-more:active {
+  background: @light2;
 }
 
-.search-result-title:hover > span, .search-result-pubchem:hover > .search-result-title > span
-{
-	border-bottom: 2px solid;
+.load-more:active {
+  border-color: @contrast;
 }
 
-.load-more:hover
-{
-	background: @light;
-}
 
-.load-more:hover
-{
-	border-color: @contrast;
+/*
+ autocomplete
+ */
+.autocomplete-item:active {
+  .autocomplete-item-active;
 }
 
 /*
-autocomplete
-*/
-.autocomplete-item:hover
-{
-	.autocomplete-item-hover;
-}
-
-/*
-messages
-*/
-.message-close-btn:hover
-{
-	background: rgba(0, 0, 0, 0.4);
+ messages
+ */
+.message-close-btn:active {
+  background: rgba(0, 0, 0, 0.5);
 }

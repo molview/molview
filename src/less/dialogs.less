@@ -18,81 +18,73 @@
 
 @import (reference) "vars";
 
-.dialog-overlay
-{
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+.dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-	background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 
-	overflow: auto;
+  overflow: auto;
 }
 
-#dialog-click-area
-{
-	min-width: 100%;
-	min-height: 100%;
+#dialog-click-area {
+  min-width: 100%;
+  min-height: 100%;
 }
 
-#dialog-wrapper
-{
-	padding: @menubar-height + 1 10px;
+#dialog-wrapper {
+  padding: @menubar-height + 1 10px;
 }
 
-.dialog
-{
-	position: relative;
-	margin: 0 auto;
-	padding: 20px;
-	left: 0px;
-	right: 0px;
+.dialog {
+  position: relative;
+  margin: 0 auto;
+  padding: 20px;
+  left: 0px;
+  right: 0px;
 
-	background: @light;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-	overflow: hidden;
-	border-radius: 8px;
+  background: @light;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
-.dialog h2
-{
-	margin: 0;
-	margin-bottom: 20px;
+.dialog h2 {
+  margin: 0;
+  margin-bottom: 20px;
 
-	text-align: center;
-	font-weight: normal;
-	color: @foreground-less;
+  text-align: center;
+  font-weight: normal;
+  color: @foreground-less;
 }
 
-.dialog > .footer
-{
-	margin-top: 10px;
-	text-align: right;
+.dialog>.footer {
+  margin-top: 10px;
+  text-align: right;
 }
 
-@media all and (min-width: 1060px)
-{
-	#help-dialog, #about-dialog, #share-dialog, #embed-dialog
-	{
-		max-width: 960px;
-	}
+@media all and (min-width: 1060px) {
+
+  #help-dialog,
+  #about-dialog,
+  #share-dialog,
+  #embed-dialog {
+    max-width: 960px;
+  }
 }
 
 /*
 Elements dialog
 */
 
-#periodictable-dialog
-{
-	width: 540px;
+#periodictable-dialog {
+  width: 540px;
 }
 
-@media all and (min-width: 1000px)
-{
-	#periodictable-dialog
-	{
-		width: 900px;
-	}
+@media all and (min-width: 1000px) {
+  #periodictable-dialog {
+    width: 900px;
+  }
 }

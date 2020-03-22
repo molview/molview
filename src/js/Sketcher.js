@@ -33,50 +33,43 @@ var Sketcher = {
 	/**
 	 * Init sketcher
 	 */
-	init: function()
-	{
+	init: function () {
 		MPFragments.init();
 
 		this.initPeriodicTable();
 		this.resizeToolbars();
 
 		$("#action-mp-color-mode").toggleClass("tool-button-selected",
-				Preferences.get("sketcher", "colored", true));
+			Preferences.get("sketcher", "colored", true));
 		$("#action-mp-skeletal-formula").toggleClass("tool-button-selected",
-				!Preferences.get("sketcher", "skeletal_formula", true));
+			!Preferences.get("sketcher", "skeletal_formula", true));
 
-		if(Detector.canvas)
-		{
+		if (Detector.canvas) {
 			this.molpad = new MolPad(document.getElementById("molpad-canvas-wrapper"),
 				MolView.devicePixelRatio, {
-					undo: "#action-mp-undo",
-					redo: "#action-mp-redo"
-				});
+				undo: "#action-mp-undo",
+				redo: "#action-mp-redo"
+			});
 			this.molpad.setSkeletalDisplay(Preferences.get("sketcher", "skeletal_formula", true));
 			this.setColored(Preferences.get("sketcher", "colored", true));
 			this.setTool($("#action-mp-lasso"), "select", { type: "lasso" });
 
-			if(MolView.loadDefault)
-			{
+			if (MolView.loadDefault) {
 				this.loadMOL(defaultMol2D);
 			}
 
-			this.molpad.onChange(function()
-			{
+			this.molpad.onChange(function () {
 				Sketcher.metadata = {};
 
-				if(Sketcher.molpad.mol.copy.fingerprint === Sketcher.fingerprint)
-				{
+				if (Sketcher.molpad.mol.copy.fingerprint === Sketcher.fingerprint) {
 					Sketcher.markUpdated();
 				}
-				else
-				{
+				else {
 					Sketcher.markOutdated();
 				}
 			});
 		}
-		else
-		{
+		else {
 			Messages.alert("no_canvas_support");
 		}
 	},
@@ -84,10 +77,8 @@ var Sketcher = {
 	/**
 	 * Auto resize sketcher
 	 */
-	resize: function()
-	{
-		if(this.molpad)
-		{
+	resize: function () {
+		if (this.molpad) {
 			this.resizeToolbars();
 			this.molpad.resize();
 		}
@@ -96,14 +87,13 @@ var Sketcher = {
 	/**
 	 * Auto resize sketcher toolbars to fit scrollbar
 	 */
-	resizeToolbars: function()
-	{
-		var top   = 40 + $("#edit-tools").css("height", 40).scrollTop(40).scrollTop();
-		var left  = 40 + $("#chem-tools").css("width", 40).scrollLeft(40).scrollLeft();
+	resizeToolbars: function () {
+		var top = 40 + $("#edit-tools").css("height", 40).scrollTop(40).scrollTop();
+		var left = 40 + $("#chem-tools").css("width", 40).scrollLeft(40).scrollLeft();
 		var right = 40 + $("#elem-tools").css("width", 40).scrollLeft(40).scrollLeft();
 
 		$("#edit-tools").css({
-			left: left,
+			// left: left,
 			height: top
 		});
 		$("#chem-tools").css({
@@ -123,22 +113,19 @@ var Sketcher = {
 	/**
 	 * Build periodic table in periodictable dialog
 	 */
-	initPeriodicTable: function()
-	{
+	initPeriodicTable: function () {
 		var table = PeriodicTable.table;
 		table.push({ "elements": PeriodicTable.lanthanoids })
 		table.push({ "elements": PeriodicTable.actinoids });
 
-		for(var group = 0; group < table.length; group++)
-		{
+		for (var group = 0; group < table.length; group++) {
 			var position = -1;
-			for(var i = 0; i < table[group].elements.length; i++)
-			{
+			for (var i = 0; i < table[group].elements.length; i++) {
 				var element = table[group].elements[i];
 
-				if(element.name === "") continue;
+				if (element.name === "") continue;
 
-				for(var f = position; f < element.position - 1; f++)//fill remaining space
+				for (var f = position; f < element.position - 1; f++)//fill remaining space
 					$('<div class="pt-space"></div>').appendTo("#periodictable");
 
 				$('<div class="pt-element"></div>')
@@ -147,8 +134,7 @@ var Sketcher = {
 					.append($("<h4></h4>").html(element.small)
 						.css("color", JmolAtomColorsHashHex[element.small]))
 					.data("element", element.small)
-					.on(MolView.trigger, function()
-					{
+					.on(MolView.trigger, function () {
 						$("#molpad .primary-tool").removeClass("tool-button-selected");
 						$("#action-mp-periodictable").addClass("tool-button-selected");
 
@@ -167,10 +153,8 @@ var Sketcher = {
 	 * Load molfile into sketcher
 	 * @param {String} mol Molfile
 	 */
-	loadMOL: function(mol)
-	{
-		if(this.molpad)
-		{
+	loadMOL: function (mol) {
+		if (this.molpad) {
 			this.molpad.loadMOL(mol);
 		}
 	},
@@ -179,10 +163,8 @@ var Sketcher = {
 	 * Get molfile from sketcher
 	 * @return {String} molfile
 	 */
-	getMOL: function()
-	{
-		if(this.molpad)
-		{
+	getMOL: function () {
+		if (this.molpad) {
 			return this.molpad.getMOL();
 		}
 		else return "";
@@ -193,100 +175,81 @@ var Sketcher = {
 	 * Uses M2S from Ketcher
 	 * @return {String} SMILES
 	 */
-	getSMILES: function()
-	{
-		if(this.metadata.smiles)
-		{
+	getSMILES: function () {
+		if (this.metadata.smiles) {
 			return this.metadata.smiles;
 		}
-		else if(this.molpad)
-		{
+		else if (this.molpad) {
 			this.metadata.smiles = this.molpad.getSMILES();
 			return this.metadata.smiles;
 		}
 		else return "";
 	},
 
-	setTool: function(button, type, data)
-	{
-		if(this.molpad) this.molpad.setTool(type, data);
+	setTool: function (button, type, data) {
+		if (this.molpad) this.molpad.setTool(type, data);
 
 		$(".primary-tool").removeClass("tool-button-selected");
 		$(button).addClass("tool-button-selected");
 	},
 
-	clear: function()
-	{
-		if(this.molpad) this.molpad.clear();
+	clear: function () {
+		if (this.molpad) this.molpad.clear();
 	},
 
-	undo: function()
-	{
-		if(this.molpad) this.molpad.undo();
+	undo: function () {
+		if (this.molpad) this.molpad.undo();
 	},
 
-	redo: function()
-	{
-		if(this.molpad) this.molpad.redo();
+	redo: function () {
+		if (this.molpad) this.molpad.redo();
 	},
 
-	setColored: function(colored)
-	{
-		if(this.molpad)
-		{
+	setColored: function (colored) {
+		if (this.molpad) {
 			$(".tool-element").toggleClass("element-colored", colored);
 			Preferences.set("sketcher", "colored", colored);
 			this.molpad.setColored(colored);
 		}
 	},
 
-	toggleColorMode: function()
-	{
-		if(this.molpad)
-		{
+	toggleColorMode: function () {
+		if (this.molpad) {
 			this.setColored($("#action-mp-color-mode")
-					.toggleClass("tool-button-selected")
-					.hasClass("tool-button-selected"));
+				.toggleClass("tool-button-selected")
+				.hasClass("tool-button-selected"));
 		}
 	},
 
-	toggleSkeletalFormula: function()
-	{
-		if(this.molpad)
-		{
+	toggleSkeletalFormula: function () {
+		if (this.molpad) {
 			var skeletal = !$("#action-mp-skeletal-formula")
-					.toggleClass("tool-button-selected")
-					.hasClass("tool-button-selected");
+				.toggleClass("tool-button-selected")
+				.hasClass("tool-button-selected");
 			Preferences.set("sketcher", "skeletal_formula", skeletal);
 			this.molpad.setSkeletalDisplay(skeletal);
 		}
 	},
 
-	center: function()
-	{
-		if(this.molpad) this.molpad.center();
+	center: function () {
+		if (this.molpad) this.molpad.center();
 	},
 
-	clean: function()
-	{
+	clean: function () {
 		Messages.process(Loader.clean, "clean");
 	},
 
-	markOutdated: function()
-	{
+	markOutdated: function () {
 		$("#action-resolve").addClass("resolve-outdated");
 	},
 
-	markUpdated: function()
-	{
+	markUpdated: function () {
 		this.fingerprint = this.molpad.mol.copy.fingerprint;
 		$("#action-resolve").removeClass("resolve-outdated");
 	},
 
-	toDataURL: function()
-	{
-		if(this.molpad)
-		{
+	toDataURL: function () {
+		if (this.molpad) {
 			return this.molpad.toDataURL();
 		}
 		else return "";

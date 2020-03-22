@@ -18,146 +18,122 @@
 
 @import (reference) "vars";
 
-h3
-{
-	margin: 25px 0 5px 0;
+h3 {
+  margin: 25px 0 5px 0;
 }
 
-h4
-{
-	margin: 20px 0 0 0;
+h4 {
+  margin: 20px 0 0 0;
 }
 
-p
-{
-	margin: 5px 0;
+p {
+  margin: 5px 0;
 }
 
-h4 + p
-{
-	margin: 0 0 5px 0;
+h4+p {
+  margin: 0 0 5px 0;
 }
 
-li
-{
-	margin: 10px 0;
+li {
+  margin: 10px 0;
 }
 
-img
-{
-	display: block;
-	max-width: 100%;
+img {
+  display: block;
+  max-width: 100%;
 }
 
-table
-{
-	border-spacing: 0;
+table {
+  border-spacing: 0;
 }
 
-a
-{
-	cursor: pointer;
-	text-decoration: none;
+a {
+  cursor: pointer;
+  text-decoration: none;
 }
 
-a.link
-{
-	cursor: pointer;
-	color: @linkcolor;
-	border-bottom: 0px solid @highlight;
-	transition: border .1s linear;
+a.link {
+  cursor: pointer;
+  color: @linkcolor;
+  border-bottom: 0px solid @highlight;
+  transition: border .1s linear;
 }
 
-a.link:hover
-{
-	color: @highlight;
-	text-decoration: underline;
+a.link:hover {
+  color: @highlight;
+  text-decoration: underline;
 }
 
-a.link:active
-{
-	color: @active;
+a.link:active {
+  color: @active;
 }
 
-a.a
-{
-	color: inherit;
-	cursor: pointer;
-	text-decoration: none;
+a.a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
 }
 
-a.a:visited
-{
-	color: @foreground-disabled;
+a.a:visited {
+  color: @foreground-disabled;
 }
 
-a.a:hover
-{
-	color: @highlight;
-	text-decoration: underline;
+a.a:hover {
+  color: @highlight;
+  text-decoration: underline;
 }
 
-a.a:active
-{
-	color: @active;
+a.a:active {
+  color: @active;
 }
 
-a.gray
-{
-	color: @foreground-lighter;
-	cursor: pointer;
+a.gray {
+  color: @foreground-lighter;
+  cursor: pointer;
 }
 
-a.gray:visited
-{
-	color: @foreground-lighter;
+a.gray:visited {
+  color: @foreground-lighter;
 }
 
-a.gray:hover
-{
-	color: @foreground-aside;
-	text-decoration: underline;
+a.gray:hover {
+  color: @foreground-aside;
+  text-decoration: underline;
 }
 
-a.gray:active
-{
-	color: @foreground-less;
+a.gray:active {
+  color: @foreground-less;
 }
 
-.no-select
-{
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-         -o-user-select: none;
-            user-select: none;
+.no-select {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
-.progress-cursor
-{
-	cursor: progress;
+.progress-cursor {
+  cursor: progress;
 }
 
-.alert-bar
-{
-	display: block;
-	margin: 5px 5px 10px 5px;
-	padding: 10px;
+.alert-bar {
+  display: block;
+  margin: 5px 5px 10px 5px;
+  padding: 10px;
 
-	background: @error-light;
-	border-left: 4px solid @error;
+  background: @error-light;
+  border-left: 4px solid @error;
 }
 
-.hstack
-{
-	font-size: 0 !important;
-	white-space: nowrap;
+.hstack {
+  font-size: 0 !important;
+  white-space: nowrap;
 }
 
-.hstack > *
-{
-	display: inline-block;
-	vertical-align: top;
-	font-size: normal;
-	font-size: initial;
+.hstack>* {
+  display: inline-block;
+  vertical-align: top;
+  font-size: normal;
+  font-size: initial;
 }
