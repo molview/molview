@@ -1,7 +1,9 @@
 MolView
 =======
-This repository holds the code of MolView.org.
-It is not actively maintained due to lacking financial support.
+This repository holds the code of MolView.org. There is some work on a new 
+version of this site that will fix some of the issues with this version.
+If you want to support this development, consider donating on
+https://www.patreon.com/molview.
 
 License
 ---
