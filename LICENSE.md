@@ -61,13 +61,12 @@ See: http://web.chemdoodle.com/
 
 ---
 
-## FileSaver.js and Blob.js
+## FileSaver.js
 ```
 Copyright (c) 2014 [Eli Grey](http://eligrey.com)
 MIT License
 ```
 See: https://github.com/eligrey/FileSaver.js
-and https://github.com/eligrey/Blob.js
 
 ---
 
@@ -78,18 +77,6 @@ GLmol - Molecular Viewer on WebGL/Javascript (0.47)
 License: dual license of MIT or LGPL3
 ```
 See: https://github.com/biochem-fan/GLmol
-
----
-
-## iView
-```
-Copyright (c) 2012-2014 Chinese University of Hong Kong
-License: Apache License 2.0
-Hongjian Li, Kwong-Sak Leung, Takanori Nakane and Man-Hon Wong.
-iview: an interactive WebGL visualizer for protein-ligand complex.
-BMC Bioinformatics, 15(1):56, 2014.
-```
-See: https://github.com/HongjianLi/istar/tree/master/public/iview
 
 ---
 

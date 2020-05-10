@@ -15,7 +15,6 @@ var JSUnits = {
 	{
 		src: [
 			'bower_components/jquery.hotkeys/jquery.hotkeys.js',
-			'bower_components/blob/Blob.js',
 			'bower_components/file-saver/dist/FileSaver.min.js',
 			'src/js/chem/prototype.js',
 			'src/js/chem/util/common.js',
@@ -104,8 +103,7 @@ var JSUnits = {
 	}
 }
 
-module.exports = function(grunt)
-{
+module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		clean: ['build', 'img'],
@@ -184,7 +182,7 @@ module.exports = function(grunt)
 				src: 'build/*.min.js',
 				dest: 'build/',
 				replacements: [{ from: '"use strict";', to: '' }]
-    		}
+			}
 		},
 		less:
 		{
