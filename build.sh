@@ -51,20 +51,10 @@ if [[ $1 != "render" ]]
 fi
 
 # Render SVG logos as PNG images
+mkdir -p img
 inkscape src/svg/icon/mark.svg --export-png=img/mark.png -w1050 -h256
 inkscape src/svg/icon/48.svg --export-png=img/logo.png -w256 -h256
 inkscape src/svg/icon/48.svg --export-png=img/image.png --export-background=#ffffff -w256 -h256
-
-inkscape src/svg/icon/square-precomposed.svg --export-png=homescreen-192x192.png -w192 -h192
-inkscape src/svg/icon/square-precomposed.svg --export-png=homescreen-128x128.png -w128 -h128
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon.png -w57 -h57
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-60x60.png -w60 -h60
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-72x72.png -w72 -h72
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-76x76.png -w76 -h76
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-114x114.png -w114 -h114
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-120x120.png -w120 -h120
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-144x144.png -w144 -h144
-inkscape src/svg/icon/square.svg --export-png=apple-touch-icon-152x152.png -w152 -h152
 
 inkscape src/svg/icon/16.svg --export-png=favicon-16x16.png -w16 -h16
 inkscape src/svg/icon/16.svg --export-png=favicon-24x24.png -w24 -h24
