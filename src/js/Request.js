@@ -30,7 +30,7 @@ var Request = {
 	/**
 	 * Initializes Request object
 	 */
-	init: function() {},
+	init: function () { },
 
 	/**
 	 * Retrieve 2D and 3D molfile using a text string (CIR identifier)
@@ -40,20 +40,16 @@ var Request = {
 	 * @param {Function} success Called as (2D, 3D, tranlated_text) when AJAX is finished
 	 * @param {Function} error   Called when request has failed
 	 */
-	CIRsearch: function(text, success, error)
-	{
-		if(text === "")
-		{
+	CIRsearch: function (text, success, error) {
+		if (text === "") {
 			error();
 			return;
 		}
 
 		//try CIR
-		Request.CIR.resolve(text, false, function(mol3d)
-		{
+		Request.CIR.resolve(text, false, function (mol3d) {
 			Progress.increment();
-			Request.CIR.resolve(text, true, function(mol2d)
-			{
+			Request.CIR.resolve(text, true, function (mol2d) {
 				success(mol2d, mol3d, text);
 			}, error);
 
@@ -68,40 +64,34 @@ var Request = {
 	 * @param {Function} success Called as (3D, tranlated_text) when AJAX is finished
 	 * @param {Function} error   Called when request has failed
 	 */
-	CIRsearch3D: function(text, success, error)
-	{
-		if(text === "")
-		{
+	CIRsearch3D: function (text, success, error) {
+		if (text === "") {
 			error();
 			return;
 		}
 
 		//try CIR
-		Request.CIR.resolve(text, false, function(mol3d)
-		{
+		Request.CIR.resolve(text, false, function (mol3d) {
 			Progress.increment();
 			success(mol3d, text);
 
 		},
-		function()
-		{
-			Progress.increment();
-
-			//translate
-			Request.translation(text, function(translated)
-			{
+			function () {
 				Progress.increment();
 
-				text = translated;
+				//translate
+				Request.translation(text, function (translated) {
+					Progress.increment();
 
-				//try CIR with translated input
-				Request.CIR.resolve(text, false, function(mol3d)
-				{
-					success(mol3d, text);
-				}, error);
-			});
+					text = translated;
 
-		}, error);
+					//try CIR with translated input
+					Request.CIR.resolve(text, false, function (mol3d) {
+						success(mol3d, text);
+					}, error);
+				});
+
+			}, error);
 	},
 
 	/**
@@ -117,50 +107,40 @@ var Request = {
 	 * @param  {[type]} success Called as (molfile, cid || -1) on success
 	 * @param  {[type]} error   Called when request has failed
 	 */
-	resolve: function(smiles, cid, flat, success, error)
-	{
-		function _resolve(cid)
-		{
-			if(cid > 0)
-			{
-				Request.PubChem.sdf(cid, flat, function(mol)
-				{
+	resolve: function (smiles, cid, flat, success, error) {
+		function _resolve(cid) {
+			if (cid > 0) {
+				Request.PubChem.sdf(cid, flat, function (mol) {
 					success(mol, cid);
 				},
-				function()//no coordinates for given CID
-				{
-					Progress.increment();
-					Request.CIR.resolve(smiles, flat, function(mol)
+					function ()//no coordinates for given CID
 					{
-						//do not pass CID if no 2D coords for this CID
-						success(mol, flat ? -1 : cid);
-					}, error);
-				});
+						Progress.increment();
+						Request.CIR.resolve(smiles, flat, function (mol) {
+							//do not pass CID if no 2D coords for this CID
+							success(mol, flat ? -1 : cid);
+						}, error);
+					});
 			}
-			else
-			{
-				Request.CIR.resolve(smiles, flat, function(mol)
-				{
+			else {
+				Request.CIR.resolve(smiles, flat, function (mol) {
 					success(mol, -1);
 				}, error);
 			}
 		}
 
-		if(cid === 0)
-		{
-			Request.PubChem.smilesToCID(smiles, function(cid)
-			{
+		if (cid === 0) {
+			Request.PubChem.smilesToCID(smiles, function (cid) {
 				Progress.increment();
 				_resolve(cid);
 			},
-			function()//no CID for the given SMILES
-			{
-				Progress.increment();
-				_resolve(-1);
-			});
+				function ()//no CID for the given SMILES
+				{
+					Progress.increment();
+					_resolve(-1);
+				});
 		}
-		else
-		{
+		else {
 			_resolve(cid);
 		}
 	},
@@ -169,10 +149,8 @@ var Request = {
 	{
 		available: false,
 
-		resolve: function(text, flat, success, error)
-		{
-			if(!Request.CIR.available)
-			{
+		resolve: function (text, flat, success, error) {
+			if (!Request.CIR.available) {
 				error();
 				return;
 			}
@@ -183,9 +161,8 @@ var Request = {
 				dataType: "text",
 				url: "https://cactus.nci.nih.gov/chemical/structure/" + text + "/file?format=sdf&get3d=" + (flat ? "False" : "True"),
 				defaultError: error,
-				success: function(response)
-				{
-					if(response === "<h1>Page not found (404)</h1>\n" || response === undefined) error();
+				success: function (response) {
+					if (response === "<h1>Page not found (404)</h1>\n" || response === undefined) error();
 					else success(response);
 				}
 			});
@@ -198,10 +175,8 @@ var Request = {
 		 * @param {Function} success
 		 * @param {Function} error
 		 */
-		property: function(smiles, property, success, error)
-		{
-			if(!Request.CIR.available)
-			{
+		property: function (smiles, property, success, error) {
+			if (!Request.CIR.available) {
 				error();
 				return;
 			}
@@ -211,24 +186,19 @@ var Request = {
 				dataType: "text",
 				url: "https://cactus.nci.nih.gov/chemical/structure/" + smiles + "/" + property,
 				defaultError: error,
-				success: function(response)
-				{
-					if(response === "<h1>Page not found (404)</h1>\n" || response === undefined)
-					{
-						if(error) error();
+				success: function (response) {
+					if (response === "<h1>Page not found (404)</h1>\n" || response === undefined) {
+						if (error) error();
 					}
-					else
-					{
+					else {
 						var array = response.split("\n");
 						var value = array[0];
 
-						if(property === "cas")
-						{
-							array.sort(function(a, b){ return a.length - b.length; });
+						if (property === "cas") {
+							array.sort(function (a, b) { return a.length - b.length; });
 							value = array[0];
 						}
-						else if(property === "stdinchikey")
-						{
+						else if (property === "stdinchikey") {
 							value = value.substr(9);
 						}
 
@@ -245,11 +215,9 @@ var Request = {
 		maxRecords: 50,
 		MaxSeconds: 10,
 
-		search: function(text, success, error)
-		{
-			if(text === "")
-			{
-				if(error) error();
+		search: function (text, success, error) {
+			if (text === "") {
+				if (error) error();
 				return;
 			}
 
@@ -260,8 +228,7 @@ var Request = {
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + encodeURIComponent(text) + "/cids/json?name_type=word",
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					Progress.increment();
 					Request.PubChem.data = data.IdentifierList.CID;
 					success();
@@ -278,23 +245,21 @@ var Request = {
 		 *                          with current listkey as first argument
 		 * @param  {String} error   Called when search query has failed
 		 */
-		structureSearch: function(query, value, type, success, error)
-		{
+		structureSearch: function (query, value, type, success, error) {
 			AJAX({
 				primary: true,
 				dataType: "json",
 				url: query === "smiles" ?//use URL parameter for SMILES
 					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
-						+ type + "/" + query + "/json?" + query + "=" + encodeURIComponent(value)
-						+ "&MaxRecords=" + Request.PubChem.maxRecords
-						+ "&MaxSeconds=" + Request.PubChem.MaxSeconds :
+					+ type + "/" + query + "/json?" + query + "=" + encodeURIComponent(value)
+					+ "&MaxRecords=" + Request.PubChem.maxRecords
+					+ "&MaxSeconds=" + Request.PubChem.MaxSeconds :
 					"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
-						+ type + "/" + query + "/" + value
-						+ "/json?MaxRecords=" + Request.PubChem.maxRecords
-						+ "&MaxSeconds=" + Request.PubChem.MaxSeconds,
+					+ type + "/" + query + "/" + value
+					+ "/json?MaxRecords=" + Request.PubChem.maxRecords
+					+ "&MaxSeconds=" + Request.PubChem.MaxSeconds,
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					success(data.Waiting.ListKey);
 				}
 			});
@@ -308,27 +273,22 @@ var Request = {
 		 *                          with current listkey as first argument
 		 * @param  {[type]} error   Called when request has failed
 		 */
-		list: function(listkey, success, wait, error)
-		{
+		list: function (listkey, success, wait, error) {
 			AJAX({
 				primary: true,
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/listkey/" + listkey + "/cids/json",
 				defaultError: error,
-				success: function(data)
-				{
-					if(data.IdentifierList)
-					{
+				success: function (data) {
+					if (data.IdentifierList) {
 						Request.PubChem.data = data.IdentifierList.CID;
 						success();
 					}
-					else if(data.Waiting)
-					{
+					else if (data.Waiting) {
 						wait(data.Waiting.ListKey);
 					}
-					else if(data.Fault)
-					{
-						if(error) error();
+					else if (data.Fault) {
+						if (error) error();
 					}
 				}
 			});
@@ -340,20 +300,16 @@ var Request = {
 		 * @param {Function} success
 		 * @param {Function} error
 		 */
-		smilesToCID: function(smiles, success, error)
-		{
+		smilesToCID: function (smiles, success, error) {
 			AJAX({
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/cids/json?smiles=" + encodeURIComponent(smiles),
 				defaultError: error,
-				success: function(data)
-				{
-					if(data.IdentifierList && data.IdentifierList.CID[0] > 0)
-					{
+				success: function (data) {
+					if (data.IdentifierList && data.IdentifierList.CID[0] > 0) {
 						success(data.IdentifierList.CID[0]);
 					}
-					else
-					{
+					else {
 						error();
 					}
 				}
@@ -366,48 +322,39 @@ var Request = {
 		* @param {Function} success
 		* @param {Function} error
 		*/
-		nameToCID: function(name, success, error)
-		{
+		nameToCID: function (name, success, error) {
 			AJAX({
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + name + "/cids/json",
 				defaultError: error,
-				success: function(data)
-				{
-					if(data.IdentifierList)
-					{
+				success: function (data) {
+					if (data.IdentifierList) {
 						success(data.IdentifierList.CID[0]);
 					}
-					else
-					{
+					else {
 						error();
 					}
 				}
 			});
 		},
 
-		primaryName: function(name, success, error)
-		{
+		primaryName: function (name, success, error) {
 			AJAX({
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + name + "/description/json",
 				defaultError: error,
-				success: function(data)
-				{
-					if(data.InformationList)
-					{
+				success: function (data) {
+					if (data.InformationList) {
 						success(data.InformationList.Information[0].Title);
 					}
-					else if(error)
-					{
+					else if (error) {
 						error();
 					}
 				}
 			});
 		},
 
-		description: function(cids, success, error)
-		{
+		description: function (cids, success, error) {
 			AJAX({
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cids + "/description/json",
@@ -416,8 +363,7 @@ var Request = {
 			});
 		},
 
-		properties: function(cids, properties, success, error)
-		{
+		properties: function (cids, properties, success, error) {
 			AJAX({
 				dataType: "json",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cids + "/property/" + properties + "/json",
@@ -426,47 +372,40 @@ var Request = {
 			});
 		},
 
-		casNumber: function(cid, success, error)
-		{
+		casNumber: function (cid, success, error) {
 			AJAX({
 				dataType: "text",
 				url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid + "/synonyms/txt",
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					var regex = /^\d{2,7}-\d{2}-\d$/gm;
 					var array = [], match = {};
-					while((match = regex.exec(data)) !== null)
-					{
+					while ((match = regex.exec(data)) !== null) {
 						array.push(match[0]);
 					}
 
-					if(array.length > 0)
-					{
-						array.sort(function(a, b){ return a.length - b.length; });
+					if (array.length > 0) {
+						array.sort(function (a, b) { return a.length - b.length; });
 						success(array[0]);
 					}
-					else
-					{
+					else {
 						error();
 					}
 				}
 			});
 		},
 
-		image: function(cid, width)
-		{
+		image: function (cid, width) {
 			//round width to prevent very small decimals
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid
-					+ "/png?record_type=2d&image_size=" + ((Math.round(width) || 300) * MolView.devicePixelRatio)
-					+ "x" + ((Math.round(width) || 300) * MolView.devicePixelRatio);
+				+ "/png?record_type=2d&image_size=" + ((Math.round(width) || 300) * MolView.devicePixelRatio)
+				+ "x" + ((Math.round(width) || 300) * MolView.devicePixelRatio);
 		},
 
-		smilesToImage: function(smiles)
-		{
+		smilesToImage: function (smiles) {
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles="
-					+ encodeURIComponent(smiles) + "&image_size=" + (300 * MolView.devicePixelRatio)
-					+ "x" + (300 * MolView.devicePixelRatio);
+				+ encodeURIComponent(smiles) + "&image_size=" + (300 * MolView.devicePixelRatio)
+				+ "x" + (300 * MolView.devicePixelRatio);
 		},
 
 		/**
@@ -476,8 +415,7 @@ var Request = {
 		 * @param  {Function} success Called when SDF is loaded
 		 * @param  {Function} error   Called when SDF request has failed
 		 */
-		sdf: function(cid, flat, success, error)
-		{
+		sdf: function (cid, flat, success, error) {
 			AJAX({
 				primary: true,
 				dataType: "text",
@@ -487,8 +425,7 @@ var Request = {
 			});
 		},
 
-		staticURL: function(cid)
-		{
+		staticURL: function (cid) {
 			return "https://pubchem.ncbi.nlm.nih.gov/compound/" + cid;
 		}
 	},
@@ -497,11 +434,9 @@ var Request = {
 	{
 		data: [],
 
-		search: function(text, success, error)
-		{
-			if(text === "")
-			{
-				if(error) error();
+		search: function (text, success, error) {
+			if (text === "") {
+				if (error) error();
 				return;
 			}
 
@@ -519,31 +454,29 @@ var Request = {
 </orgPdbQuery>",
 				contentType: "application/x-www-form-urlencoded",
 				dataType: "text",
-				url: "http://www.rcsb.org/pdb/rest/search?sortfield=rank",
+				url: "https://www.rcsb.org/pdb/rest/search?sortfield=rank",
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					Progress.increment();
 
 					Request.RCSB.data = data.split(/\n/);
-					Request.RCSB.data = Request.RCSB.data.filter(function(a){ return a !== ""; });
+					Request.RCSB.data = Request.RCSB.data.filter(function (a) { return a !== ""; });
 					Request.RCSB.data.reverse();
 
-					if(Request.RCSB.data.length > 0) success();
-					else if(error) error();
+					if (Request.RCSB.data.length > 0) success();
+					else if (error) error();
 				}
 			});
 		},
 
-		information: function(pdbids, success, error)//pdbids separated by ","
+		information: function (pdbids, success, error)//pdbids separated by ","
 		{
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: "http://www.rcsb.org/pdb/rest/customReport?pdbids=" + pdbids.join() + "&customReportColumns=structureId,structureTitle",
+				url: "https://www.rcsb.org/pdb/rest/customReport?pdbids=" + pdbids.join() + "&customReportColumns=structureId,structureTitle",
 				defaultError: error,
-				success: function(xml)
-				{
+				success: function (xml) {
 					/* convert XML to JSON:
 					<dataset>
 						<record>
@@ -573,8 +506,7 @@ var Request = {
 					var i;//loop index
 
 					var records = $(xml).find("record");
-					for(i = 0; i < records.length; i++)
-					{
+					for (i = 0; i < records.length; i++) {
 						dataset.push({
 							"structureId": $(records[i]).find("dimStructure\\.structureId").text(),
 							"structureTitle": $(records[i]).find("dimStructure\\.structureTitle").text()
@@ -582,13 +514,10 @@ var Request = {
 					}
 
 					//resort JSON dataset to pdbids order
-					for(i = 0; i < pdbids.length; i++)
-					{
+					for (i = 0; i < pdbids.length; i++) {
 						//find PDBID in dataset
-						for(var j = 0; j < dataset.length; j++)
-						{
-							if(dataset[j].structureId === pdbids[i])
-							{
+						for (var j = 0; j < dataset.length; j++) {
+							if (dataset[j].structureId === pdbids[i]) {
 								json.dataset.push(dataset[j]);
 								continue;
 							}
@@ -600,13 +529,11 @@ var Request = {
 			});
 		},
 
-		image: function(pdbid)
-		{
-			return "http://www.rcsb.org/pdb/images/" + pdbid + "_bio_r_500.jpg";
+		image: function (pdbid) {
+			return "https://www.rcsb.org/pdb/images/" + pdbid + "_bio_r_500.jpg";
 		},
 
-		PDB: function(pdbid, success, error)
-		{
+		PDB: function (pdbid, success, error) {
 			AJAX({
 				primary: true,
 				dataType: "text",
@@ -616,21 +543,18 @@ var Request = {
 			});
 		},
 
-		staticURL: function(pdbid)
-		{
+		staticURL: function (pdbid) {
 			return "http://www.rcsb.org/pdb/explore/explore.do?structureId=" + pdbid;
 		}
 	},
 
 	COD:
 	{
-		data: {records:[]},
+		data: { records: [] },
 
-		search: function(text, success, error)
-		{
-			if(text === "")
-			{
-				if(error) error();
+		search: function (text, success, error) {
+			if (text === "") {
+				if (error) error();
 				return;
 			}
 
@@ -641,25 +565,21 @@ var Request = {
 				dataType: "json",
 				url: Request.API_ROOT + "api/cod/search/" + encodeURIComponent(text),
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					Progress.increment();
-					if(data.error)
-					{
-						if(error) error(true);
+					if (data.error) {
+						if (error) error(true);
 					}
-					else if(data.records && data.records.length > 0)
-					{
+					else if (data.records && data.records.length > 0) {
 						Request.COD.data = data.records;
 						success();
 					}
-					else if(error) error(false);
+					else if (error) error(false);
 				}
 			});
 		},
 
-		smiles: function(codids, success, error)
-		{
+		smiles: function (codids, success, error) {
 			AJAX({
 				primary: true,
 				dataType: "json",
@@ -669,8 +589,7 @@ var Request = {
 			});
 		},
 
-		name: function(codids, success, error)
-		{
+		name: function (codids, success, error) {
 			AJAX({
 				primary: true,
 				dataType: "json",
@@ -680,8 +599,7 @@ var Request = {
 			});
 		},
 
-		CIF: function(codid, success, error)
-		{
+		CIF: function (codid, success, error) {
 			AJAX({
 				primary: true,
 				dataType: "text",
@@ -691,22 +609,19 @@ var Request = {
 			});
 		},
 
-		staticURL: function(codid)
-		{
+		staticURL: function (codid) {
 			return "http://www.crystallography.net/" + codid + ".html";
 		}
 	},
 
 	NMRdb:
 	{
-		prediction: function(smiles, success, error)
-		{
+		prediction: function (smiles, success, error) {
 			AJAX({
 				dataType: "json",
 				url: "http://www.nmrdb.org/service/prediction?smiles=" + encodeURIComponent(smiles),
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					success(data.jcamp.value);
 				}
 			});
@@ -715,14 +630,12 @@ var Request = {
 
 	NIST:
 	{
-		lookup: function(cas, success, error)
-		{
+		lookup: function (cas, success, error) {
 			AJAX({
 				dataType: "json",
 				url: Request.API_ROOT + "api/nist/lookup/" + cas,
 				defaultError: error,
-				success: function(data)
-				{
+				success: function (data) {
 					//data postprocessing
 					var output = [];
 					output.url = data.url;
@@ -731,11 +644,9 @@ var Request = {
 					output.ir = new Array();
 
 					//ir records postprocessing
-					data.ir.sort(function(a, b){ return a.i - b.i; });
-					for(var i = 0; i < data.ir.length; i++)
-					{
-						if(data.ir[i].source.indexOf("NO SPECTRUM") === -1)
-						{
+					data.ir.sort(function (a, b) { return a.i - b.i; });
+					for (var i = 0; i < data.ir.length; i++) {
+						if (data.ir[i].source.indexOf("NO SPECTRUM") === -1) {
 							var state = humanize(data.ir[i].state);
 							output.ir.push({ i: data.ir[i].i, state: state });
 						}
@@ -747,8 +658,7 @@ var Request = {
 			});
 		},
 
-		spectrum: function(cas, type, success, error)
-		{
+		spectrum: function (cas, type, success, error) {
 			/*
 			Accepted type values:
 			- mass
@@ -756,8 +666,7 @@ var Request = {
 			- uvvis
 			*/
 			var i = -1;
-			if(type.indexOf("ir") !== -1)
-			{
+			if (type.indexOf("ir") !== -1) {
 				i = parseInt(type.substr(3));
 				type = "ir";
 			}
