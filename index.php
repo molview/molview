@@ -68,6 +68,10 @@ Query parameters:
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="white"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="/img/logo.png">
+    <link rel="manifest" href="/manifest.json">
 
 		<link rel="shortcut icon" href="favicon-32x32.png" />
 		<?php echo "<title>".$metadata["title"]."</title>"; ?>
