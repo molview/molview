@@ -70,7 +70,7 @@ Query parameters:
 		<meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="white"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="/img/logo.png">
+    <link rel="apple-touch-icon" href="/img/maskable-192x192.png">
     <link rel="manifest" href="/manifest.json">
 
 		<link rel="shortcut icon" href="favicon-32x32.png" />
