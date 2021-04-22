@@ -106,7 +106,10 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 	}
 	else if(isset($pdbid))//data via RCSB
 	{
-		$xml = http_get("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
+		// At the end of 2020 RCSB shut down its legacy API.
+		// See: http://www.rcsb.org/news?year=2020&article=5fc9176809ae2a096d081e28.
+
+		/*$xml = http_get("http://www.rcsb.org/pdb/rest/customReport?pdbids=".$pdbid."&customReportColumns=structureId,structureTitle");
 		$data = new SimpleXMLElement($xml);
 
 		if(isset($data -> {"record"} -> {"dimStructure.structureId"}))
@@ -116,7 +119,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		if(isset($data -> {"record"} -> {"dimStructure.structureTitle"}))
 		{
 			$description = $data -> {"record"} -> {"dimStructure.structureTitle"};
-		}
+		}*/
 	}
 	else if(isset($codid))//data via COD
 	{
