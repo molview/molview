@@ -244,7 +244,6 @@ var MolView = {
 		this.addAction("help", "menu", true);
 		this.addAction("about", "menu", true);
 
-		this.addAction("share", "menu", true);
 		this.addAction("embed", "menu", true);
 		this.addAction("export_sketcher_png", "menu", true);
 		this.addAction("export_model_png", "menu", true);

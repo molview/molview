@@ -53,12 +53,6 @@ var Actions = {
 	/*
 	Tools menu
 	*/
-	share: function()
-	{
-		Link.updateShareDialog();
-		MolView.showDialog("share");
-	},
-
 	embed: function()
 	{
 		Link.updateEmbedDialog();

@@ -58,7 +58,7 @@ Query parameters:
 - chainColor = ss || spectrum || chain || residue || polarity || bfactor
 - layout = model || sketcher || hsplit || vsplit
 - menu = on || off
-- dialog = about || help || share || embed
+- dialog = about || help || embed
 - bg = black || gray || white
 -->
 
@@ -214,7 +214,6 @@ Query parameters:
 						<a class="dropdown-toggle">Tools</a>
 						<ul class="dropdown-menu">
 							<li class="menu-header">Link</li>
-							<!-- <li class="menu-item"><a id="action-share">Share</a></li> -->
 							<li class="menu-item"><a id="action-embed">Embed</a></li>
 							<li class="menu-header">Export</li>
 							<li class="menu-item"><a id="action-export-sketcher-png">Structural formula image</a></li>
@@ -642,7 +641,7 @@ Query parameters:
 							<div class="expandable-content">
 								<p>The <b>Tools</b> menu contains several utility functions which are listed below.</p>
 								<h4>Link</h4>
-								<p>You can embed or share a specific compound, macromolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the address bar in order to link to the current structure.</p>
+								<p>You can embed a specific compound, macromolecule or crystal using the provided URL or HTML code. Note that the linked structure is the one which is currently displayed in the model window. You can also copy the URL from the address bar in order to link to the current structure.</p>
 								<h4>Export</h4>
 								<p>Export options:</p>
 								<ul>
@@ -778,24 +777,6 @@ Query parameters:
 								<li>Mail: <a class="link" target="_blank" title="Mail adress" href="mailto:support@molview.org">support@molview.org</a></li>
 							</ul>
 						</p>
-						<div class="footer">
-							<button class="btn close btn-primary">Close</button>
-						</div>
-					</div>
-					<div class="dialog" id="share-dialog" style="display: none;">
-						<h2>Share</h2>
-						<div class="alert-box">
-							<span id="share-2d-not-3d" class="alert-bar">Note: the strutural formula is not the same structure as the 3D model</span>
-						</div>
-						<div id="share-dialog-social" class="social">
-							<div class="share share-facebook"></div>
-							<div class="share share-twitter"></div>
-							<div class="share share-googleplus"></div>
-						</div>
-						<p style="margin: 10px;">
-							You can use the URL or below to link to the current 3D model.
-						</p>
-						<input id="share-link" class="input" type="text" autocomplete="off" spellcheck="false" />
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
 						</div>

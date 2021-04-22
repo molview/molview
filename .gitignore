@@ -8,3 +8,4 @@ api
 /*.png
 favicon.ico
 .directory
+.php_cs.cache

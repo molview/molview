@@ -17,7 +17,7 @@
  */
 
 /**
- * Share/embed dialog wrapper
+ * Embed dialog wrapper
  * @type {Object}
  */
 var Link = {
@@ -26,24 +26,6 @@ var Link = {
 	init: function()
 	{
 		$("#embed-width, #embed-height").on("keyup", this.updateEmbedDialog);
-	},
-
-	updateShareDialog: function()
-	{
-		if($("#action-resolve").hasClass("resolve-outdated") && MolView.layout !== "model") $("#share-2d-not-3d").show();
-		else $("#share-2d-not-3d").hide();
-
-		var url = window.location.origin + window.location.pathname;
-		var msg = "";
-
-		if(Loader.lastQuery.type !== "")
-		{
-			msg = "Cool structure on MolView!";
-			url += "?" + Loader.lastQuery.type + "=" + specialEncodeURIComponent(Loader.lastQuery.content.replace(/^ /, ""));
-		}
-
-		$("#share-link").val(url);
-		$("#share-dialog .social").share({ all: url }, false, msg);
 	},
 
 	updateEmbedDialog: function()
