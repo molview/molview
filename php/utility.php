@@ -18,7 +18,7 @@
  */
 
 $directory = "/";
-$root = "http://".$_SERVER["HTTP_HOST"].$directory;
+$root = "https://".$_SERVER["HTTP_HOST"].$directory;
 
 function is_below_IE10()
 {
