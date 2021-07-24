@@ -515,11 +515,8 @@ Query parameters:
 							<label for="allow-tracking">Allow MolView to collect annonymous usage data (<a class="gray" href="tracking">details</a>)</label>
 						</p>
 						<div class="btn-group">
-							<a class="btn" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
-							<a class="btn" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
-							<a class="btn" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
-							<a class="btn" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization/about" rel="publisher">Google+</a>
-							<a class="btn" target="_blank" title="MolView Blog" href="http://blog.molview.org">Blog</a>
+							<a class="btn" target="_blank" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube channel</a>
+							<a class="btn" target="_blank" href="http://blog.molview.org">MolView blog</a>
 						</div>
 					</div>
 					<div class="dialog" id="about-dialog" style="display: none;">
@@ -550,26 +547,16 @@ Query parameters:
 							MolView v2.4
 							&nbsp;+&nbsp;
 							<a class="link" href="legal" target="_blank">Terms of Use</a>
+							&nbsp;+&nbsp;
+							Copyright &copy; 2014, 2015 <a class="link" target="_blank" rel="author" href="https://hbergwerf.nl">Herman Bergwerf</a>
 							<br/>
-							Copyright &copy; 2014, 2015 <a class="link" target="_blank" rel="author" title="Personal website" href="https://hermanbergwerf.com">Herman Bergwerf</a>
+							<a class="link" target="_blank" href="license" target="_blank">License</a>
 							&nbsp;+&nbsp;
-							<a class="link" href="license" target="_blank">License</a>
+							<a class="link" target="_blank" href="https://github.com/molview" target="_blank">Source code</a>
 							&nbsp;+&nbsp;
-							<a class="link" href="https://github.com/molview" target="_blank">GitHub</a>
-							<br/>
-							<a class="link" target="_blank" title="Chrome App" href="https://chrome.google.com/webstore/detail/molview/nogcacamdkipgkfpfiakaoamdnihinnm">Chrome Web Store</a>
+							<a class="link" target="_blank" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube channel</a>
 							&nbsp;+&nbsp;
-							<a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a>
-							&nbsp;+&nbsp;
-							<a class="link" target="_blank" title="@molview" href="https://twitter.com/molview">Twitter</a>
-							&nbsp;+&nbsp;
-							<a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">Facebook</a>
-							&nbsp;+&nbsp;
-							<a class="link" target="_blank" title="+MolView" href="https://google.com/+MolViewOrganization" rel="publisher">Google+</a>
-							&nbsp;+&nbsp;
-							<a class="link" target="_blank" title="+MolView" href="http://blog.molview.org">Blog</a>
-							&nbsp;+&nbsp;
-							<a class="link" target="_blank" title="Mail" href="mailto:info@molview.org">info@molview.org</a>
+							<a class="link" target="_blank" href="http://blog.molview.org">MolView blog</a>
 						</p>
 						<div class="footer">
 							<button class="btn close btn-primary">Continue</button>
@@ -768,15 +755,6 @@ Query parameters:
 								<p>Note that in some cases, the resolved 3D model is only an approach of the real molecule, this means you have to execute an <b>Energy minimization</b> in order to do reliable measurements.</p>
 							</div>
 						</div>
-						<p>
-							If you still have questions, found bugs or want to request new features. You can discuss them with me via social media or send me an email.
-							<ul>
-								<li>Twitter: <a class="link" target="_blank" title="Twitter page" href="https://twitter.com/molview">@molview</a></li>
-								<li>Facebook: <a class="link" target="_blank" title="Facebook page" href="https://www.facebook.com/molview">MolView</a></li>
-								<li>Google Plus: <a class="link" target="_blank" title="Google+ page" href="https://google.com/+MolViewOrganization" rel="publisher">+MolView</a></li>
-								<li>Mail: <a class="link" target="_blank" title="Mail adress" href="mailto:support@molview.org">support@molview.org</a></li>
-							</ul>
-						</p>
 						<div class="footer">
 							<button class="btn close btn-primary">Close</button>
 						</div>
