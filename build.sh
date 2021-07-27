@@ -60,4 +60,6 @@ inkscape src/svg/icon/16.svg --export-png=favicon-16x16.png -w16 -h16
 inkscape src/svg/icon/16.svg --export-png=favicon-24x24.png -w24 -h24
 inkscape src/svg/icon/16.svg --export-png=favicon-32x32.png -w32 -h32
 inkscape src/svg/icon/16.svg --export-png=favicon-64x64.png -w64 -h64
+inkscape src/svg/icon/48.svg --export-png=img/logo-512x512.png -w512 -h512
+inkscape src/svg/icon/square.svg --export-png=img/maskable-192x192.png -w192 -h192
 convert favicon-16x16.png favicon-24x24.png favicon-32x32.png favicon-64x64.png favicon.ico
