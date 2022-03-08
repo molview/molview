@@ -8,12 +8,12 @@ ErrorDocument 404 /page.php?id=404
 ErrorDocument 500 /page.php?id=500
 
 # HTTPS redirection
-# RewriteCond %{HTTP:CF-Visitor} '"scheme":"http"'
-# RewriteRule ^(.*)$ http://molview.org/$1 [R,L]
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ http://molview.org/$1 [L,R=302]
 
 # WWW redirection
 RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
-RewriteRule ^(.*)$ http://molview.org/$1 [L,R=301]
+RewriteRule ^(.*)$ http://molview.org/$1 [L,R=302]
 
 # PHP APIs
 RewriteRule ^api\/cod\/cif\/([^.]*) php/cif.php?codid=$1 [L]
