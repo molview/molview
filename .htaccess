@@ -9,7 +9,7 @@ ErrorDocument 500 /page.php?id=500
 
 # HTTPS redirection
 RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ http://molview.org/$1 [L,R=302]
+RewriteRule ^(.*)$ https://molview.org/$1 [L,R=302]
 
 # WWW redirection
 RewriteCond %{HTTP_HOST} ^www.molview.org$ [NC]
@@ -18,15 +18,11 @@ RewriteRule ^(.*)$ http://molview.org/$1 [L,R=302]
 # PHP APIs
 RewriteRule ^api\/cod\/cif\/([^.]*) php/cif.php?codid=$1 [L]
 RewriteRule ^api\/cod\/([a-z]*)\/(.*) php/cod.php?action=$1&q=$2 [L]
-
 RewriteRule ^api\/nist\/lookup\/(.*) php/nist.php?type=lookup&cas=$1 [L]
 RewriteRule ^api\/nist\/ir\/([^/]*)\/(.*) php/nist.php?type=ir&cas=$1&i=$2 [L]
 RewriteRule ^api\/nist\/mass\/(.*) php/nist.php?type=mass&cas=$1 [L]
 RewriteRule ^api\/nist\/uvvis\/(.*) php/nist.php?type=uvvis&cas=$1 [L]
-
 RewriteRule ^api\/image\/([a-z]*)\/([^.]*) php/image.php?dbid=$1&i=$2 [L]
-
-RewriteRule ^api\/gplus$ php/gplus.php$1 [L]
 
 # Markdown pages
 RewriteRule ^readme$ page.php?id=readme [L]
