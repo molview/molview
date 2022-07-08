@@ -77,14 +77,6 @@ var MolView = {
 	 */
 	init: function()
 	{
-		$(document).ajaxError(function(e, request, settings)
-		{
-			ga("send", "exception", {
-				"exDescription": "AJAX error: " + settings.type + " " + settings.url + ": " + request.statusText,
-				"exFatal": false
-			});
-		});
-
 		//setup
 		MolView.devicePixelRatio = window.devicePixelRatio || (MolView.mobile ? 1.5 : 1.0);
 
