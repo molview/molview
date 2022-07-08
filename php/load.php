@@ -53,7 +53,7 @@ function load_metadata($q, $smiles, $cid, $pdbid, $codid)
 		$same_as = "//www.rcsb.org/pdb/explore/explore.do?structureId=".$pdbid;
 
 	//image
-	$image_url = $root."img/image.png";
+	$image_url = $root."img/maskable-192x192.png";
 	$pubchem_query = null;
 	$pubchem_value = null;
 	if(isset($cid))

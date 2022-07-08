@@ -77,15 +77,6 @@ var MolView = {
 	 */
 	init: function()
 	{
-		//exeption tracking
-		window.onerror = function(message, url, row, column)
-		{
-			ga("send", "exception", {
-				"exDescription": url + " " + row + "," + column + ": " + message,
-				"exFatal": false,
-			});
-		};
-
 		$(document).ajaxError(function(e, request, settings)
 		{
 			ga("send", "exception", {
@@ -226,12 +217,6 @@ var MolView = {
 		$(".expandable-title").on(this.trigger, function(e)
 		{
 			$(this).parent().toggleClass("open");
-		});
-
-		//do not track checkbox
-		$("#allow-tracking").on("change", function()
-		{
-			Preferences.set("molview", "allow_tracking", this.checked);
 		});
 
 		//actions
@@ -398,11 +383,11 @@ var MolView = {
 	},
 
 	/**
-	 * Wrapper for analytics.js
+	 * Track certain events (no longer used).
 	 */
 	pushEvent: function(category, action, label, number)
 	{
-		ga("send", "event", category, action, label, number);
+		console.log(category, action, label, number);
 	},
 
 	/**

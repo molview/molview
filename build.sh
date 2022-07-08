@@ -52,14 +52,13 @@ fi
 
 # Render SVG logos as PNG images
 mkdir -p img
-inkscape src/svg/icon/mark.svg --export-png=img/mark.png -w1050 -h256
-inkscape src/svg/icon/48.svg --export-png=img/logo.png -w256 -h256
-inkscape src/svg/icon/48.svg --export-png=img/image.png --export-background=#ffffff -w256 -h256
+inkscape src/svg/icon/mark.svg --export-filename=img/mark.png -w 1050 -h 256
+inkscape src/svg/icon/48.svg --export-filename=img/logo.png -w 256 -h 256
+inkscape src/svg/icon/square.svg --export-filename=img/maskable-192x192.png -w 192 -h 192
 
-inkscape src/svg/icon/16.svg --export-png=favicon-16x16.png -w16 -h16
-inkscape src/svg/icon/16.svg --export-png=favicon-24x24.png -w24 -h24
-inkscape src/svg/icon/16.svg --export-png=favicon-32x32.png -w32 -h32
-inkscape src/svg/icon/16.svg --export-png=favicon-64x64.png -w64 -h64
-inkscape src/svg/icon/48.svg --export-png=img/logo-512x512.png -w512 -h512
-inkscape src/svg/icon/square.svg --export-png=img/maskable-192x192.png -w192 -h192
+inkscape src/svg/icon/16.svg --export-filename=favicon-16x16.png -w 16 -h 16
+inkscape src/svg/icon/16.svg --export-filename=favicon-24x24.png -w 24 -h 24
+inkscape src/svg/icon/16.svg --export-filename=favicon-32x32.png -w 32 -h 32
+inkscape src/svg/icon/16.svg --export-filename=favicon-64x64.png -w 64 -h 64
+inkscape src/svg/icon/48.svg --export-filename=img/logo-512x512.png -w 512 -h 512
 convert favicon-16x16.png favicon-24x24.png favicon-32x32.png favicon-64x64.png favicon.ico

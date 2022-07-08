@@ -20,12 +20,11 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 
 Third-party licenses
 ====================
-Below is a list of all third-party libraries used in MolView.
-If you believe your code is used in MolView and should be contained in this list,
-please contact me via <support@molview.org>
-Included third-party code is **not** subject to the MolView license (AGPL)
-All modifications to third-party code are subject to its respective
-license or agreement.
+Below is a list of all third-party libraries used in MolView. If you believe
+your code is used in MolView and should be contained in this list, please
+contact me via <info@molview.org> Included third-party code is **not** subject
+to the MolView license (AGPL) All modifications to third-party code are subject
+to its respective license or agreement.
 
 ---
 

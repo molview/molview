@@ -149,14 +149,19 @@ Query parameters:
 			}
 		</script>
 
-		<!-- Google Analytics -->
+		<!-- Matomo Analytics -->
 		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			ga('create', 'UA-49088779-3', 'molview.org');
-			ga('send', 'pageview');
+			var _paq = window._paq = window._paq || [];
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			_paq.push(['enableJSErrorTracking']);
+			(function() {
+				var u="//analytics.molview.org/";
+				_paq.push(['setTrackerUrl', u+'matomo.php']);
+				_paq.push(['setSiteId', '1']);
+				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+				g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+			})();
 		</script>
 	</head>
 	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
@@ -281,7 +286,7 @@ Query parameters:
 						<a class="dropdown-toggle">Jmol</a>
 						<ul class="dropdown-menu">
 							<li class="menu-item"><a id="action-jmol-hq" class="check">High Quality</a></li>
-							<li class="menu-item"><a id="action-jmol-clean" class="jmol-script">Clean</a></li>
+							<li class="menu-item"><a id="action-jmol-clean" class="jmol-script">Clear</a></li>
 							<li class="menu-header jmol-script jmol-calc">Calculations</li>
 							<li class="menu-item"><a id="action-jmol-mep-lucent" class="jmol-script jmol-calc">MEP surface lucent</a></li>
 							<li class="menu-item"><a id="action-jmol-mep-opaque" class="jmol-script jmol-calc">MEP surface opaque</a></li>
@@ -510,14 +515,6 @@ Query parameters:
 							<button class="btn close btn-large btn-primary">Close</button>
 						</div>
 						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.patreon.com/molview">Donate</a></p>
-						<p id="allow-tracking-wrapper">
-							<input id="allow-tracking" type="checkbox" />
-							<script type="text/javascript">
-								// Disable by default (GDPR)
-								$("#allow-tracking").prop("checked", Preferences.get("molview", "allow_tracking", false))
-							</script>
-							<label for="allow-tracking">Allow MolView to collect annonymous usage data (<a class="gray" href="tracking">details</a>)</label>
-						</p>
 						<div class="btn-group">
 							<a class="btn" target="_blank" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube channel</a>
 							<a class="btn" target="_blank" href="http://blog.molview.org">MolView blog</a>

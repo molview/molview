@@ -1,9 +1,6 @@
 {
 	"name": "molview",
 	"version": "2.4.6",
-	"authors": [
-		"Herman Bergwerf <hermanbergwerf@gmail.com>"
-	],
 	"description": "MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome!",
 	"license": "AGPL",
 	"homepage": "http://molview.org",
