@@ -508,8 +508,8 @@ Query parameters:
 							<img id="agpl-logo" src="img/agpl.svg" alt="AGPL">
 						</a>
 						<div id="welcome-loading-msg">LOADING&hellip;</div>
-						<p>By closing this banner and using MolView, you agree with the Terms of Use!</p>
-                        <a class="gray" href="legal" target="_blank">read the Terms of Use</a>
+						<p>By closing this banner and using MolView, you agree to the Terms of Use!</p>
+						<a class="gray" href="legal" target="_blank">read the Terms of Use</a>
 						<div id="welcome-button-bar" class="btn-group" style="display: none;">
 							<!-- <button id="action-start-help" class="btn btn-large">Get started</button> -->
 							<button class="btn close btn-large btn-primary">Close</button>
@@ -539,8 +539,7 @@ Query parameters:
 									<li><a class="link" href="https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html" target="_blank" title="The PubChem Project API">The PubChem Project</a> (~51 million compounds)</li>
 									<li><a class="link" href="http://www.crystallography.net/" target="_blank" title="COD">Crystallography Open Database</a> (~300.000 crystals)</li>
 									<li><a class="link" href="http://webbook.nist.gov/chemistry" target="_blank" title="NIST Chemistry WebBook Reference">NIST Chemistry WebBook</a> (~30.000 spectra)</li>
-									<li><a class="link" href="http://www.nmrdb.org/" target="_blank" title="NMRdb.org">NMR Database</a></li>
-									<li><a class="link" href="http://mymemory.translated.net/doc/spec.php" target="_blank" title="MyMemory API">MyMemory translation API</a></li>
+									<!-- <li><a class="link" href="http://www.nmrdb.org/" target="_blank" title="NMRdb.org">NMR Database</a></li> -->
 								</ul>
 							</li>
 						</ul>

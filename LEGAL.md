@@ -1,39 +1,52 @@
 Terms of Use
 ============
-Welcome to MolView! These are the Terms of Use of molview.org ("This site"). By
-accessing and using this site you accept and agree to be bound by the terms of
-this agreement.
+Welcome! These are the Terms of Use of molview.org, referred to as "MolView". By
+accessing and using MolView you accept these terms. MolView is a non-profit
+project, and these terms serve mostly as a disclaimer. MolView reserves the
+right to update or amend these terms at any time, without notice to you. Such
+opdated or amended terms shall be effective upon publishing.
 
-This site reserves the right to update or amend the Terms of Use at any time,
-without notice to you. Such opdated or amended terms shall be effective upon
-publishing on this site.
+## 1. Open Source
 
-## 1. License
+The source code of MolView is released under the GNU AGPL license on
+[GitHub](https://github.com/molview/molview). You are free to make changes to a
+copy of the source code, but you are required by the AGPL license to publish
+these changes. For more details about the license visit
+[molview.org/license](https://molview.org/license).
 
-The source code of molview.org is released under the GNU AGPL license at
-https://github.com/molview/molview. For more information about the license visit
-https://github.com/molview/molview/blob/master/LICENSE.md.
+## 2. No Availability Guarantee
 
-## 2. Availability
-This site reserves the right to change or update its site content for any reason
-at any time without notice to you. This site reserves the right to restrict
-access or use of this site for any reason at any time without notice to you.
+MolView does not guarantee to be online or usable. MolView reserves the right to
+change or update its website for any reason at any time without notice. MolView
+reserves the right to restrict access or use for any reason at any time without
+notice.
 
-## 3. Accuracy of Information
+## 3. No Accuracy Guarantee
 
-Much of the data displayed on this site is, directly or indirectly, retrieved
-from remote third-party data sources. This site does not warrant that the data
-which is displayed on its site is accurate or fit for any particular purpose.
-For more information see the source code.
+All the data that is displayed on MolView is retrieved from third-party sources.
+MolView does not warrant that this is accurate or fit for any particular
+purpose. The third-party sources that are used are:
 
-## 4. Intellectual Property Rights
+- [PubChem](https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html)
+- [RCSB Protein Data Bank](http://www.rcsb.org/pdb/software/rest.do)
+- [NIST Chemistry WebBook](http://webbook.nist.gov/chemistry)
+- [Crystallography Open Database](http://www.crystallography.net/)
+- [NCI/CADD Chemical Identifier Resolver](http://cactus.nci.nih.gov/chemical/structure)
 
-All data transmitted or made available on this site is believed to be free of
-infringement, please contact <info@molview.org> if you can prove otherwise.
+## 4. Freedom of Usage
+
+You are free to use and share images and other content generated in MolView for
+any purpose, including for commercial purposes. This also includes screen
+recordings of MolView.
 
 ## 5. Privacy Policy
 
-This site uses a client-side local storage technology (WebStorage) in order to
+MolView uses a client-side local storage technology (WebStorage) in order to
 save user preferences. This data is never shared with our server. This site uses
-its own Matomo Analytics instance to collect data. You may opt-out from tracking
-[here](https://analytics.molview.org/index.php?module=CoreAdminHome&action=optOut&language=en).
+its own Matomo Analytics instance to collect usage data. You may opt-out from
+tracking [here](https://analytics.molview.org/index.php?module=CoreAdminHome&action=optOut&language=en).
+
+## 6. Infringement Disclaimer
+
+All data transmitted or made available on MolView is believed to be free of
+infringement. Please contact <info@molview.org> if you can prove otherwise.
