@@ -1,9 +1,7 @@
 #!/bin/bash
 
-cp -r build embed/build
 cp -r pages embed/pages
 cp -r php embed/php
-cp -r img embed/img
 
 cp page.php embed/page.php
 cp favicon.ico embed/favicon.ico
