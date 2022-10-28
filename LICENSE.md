@@ -133,15 +133,6 @@ See: https://github.com/ggasoftware/ketcher
 
 ---
 
-## MobileDetect
-```
-Code and contributions have 'MIT License'
-More details: https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
-```
-See: https://github.com/serbanghita/Mobile-Detect/
-
----
-
 ## Parsedown
 ```
 The MIT License (MIT)
