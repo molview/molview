@@ -1,16 +1,3 @@
-<?php
-include_once("php/utility.php");
-include_once("php/Mobile_Detect.php");
-
-error_reporting(0);
-
-$detect = new Mobile_Detect;
-$touch = $detect -> isMobile() || $detect -> isTablet();
-
-//preserve + sign by encoding it to %2B before parsing it
-parse_str(str_replace("+", "%2B", $_SERVER["QUERY_STRING"]));
-?>
-
 <!DOCTYPE html>
 <html>
 
@@ -34,8 +21,6 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 
 <!--
 This embedding page requires the following files:
-- php/utility.ph
-- php/Mobile_Detect.php
 - build/molview-embed.min.css
 - build/molview-base.min.js
 - build/molview-core.min.js
@@ -71,22 +56,15 @@ Query parameters:
 
 		<!-- PHP data injection -->
 		<script type="text/javascript">
-			Model.JSmol.hq = <?php echo ($touch) ? "false" : "true"; ?>;
-			MolView.touch = <?php echo ($touch) ? "true" : "false"; ?>;
-			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
-			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
-
+			Model.JSmol.hq = true;
+			MolView.touch = false;
+			MolView.mobile = false;
+			MolView.layout = 'layout-vsplit';
 			Request.CIR.available = true;
 			Request.API_ROOT = "http://molview.org/";
 		</script>
 	</head>
-	<body id="model" <?php
-		if(isset($bg))
-		{
-			echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
-				"#000000" : "#cccccc" : "#ffffff").'"';
-		}
-	?>>
+	<body id="model">
 		<div id="chemdoodle" class="render-engine full-cover" style="display: none;"><canvas id="chemdoodle-canvas"></canvas></div>
 		<div id="jsmol" class="render-engine full-cover" style="display: none;"></div>
 		<div id="glmol" class="render-engine full-cover" style="display: none;"></div>

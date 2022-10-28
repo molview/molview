@@ -37,9 +37,6 @@ if [[ $1 == "fetch" ]]
 	wget https://raw.githubusercontent.com/erusev/parsedown/master/Parsedown.php
 	mv Parsedown.php php/Parsedown.php
 
-	wget https://raw.githubusercontent.com/serbanghita/Mobile-Detect/master/Mobile_Detect.php
-	mv Mobile_Detect.php php/Mobile_Detect.php
-
 fi
 
 if [[ $1 != "render" ]]

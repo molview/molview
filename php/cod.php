@@ -27,14 +27,15 @@ PHP script for processing and retrieving data from the Crystallography Open Data
 
 include_once("utility.php");
 
-error_reporting(0);
-parse_str($_SERVER["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"], $params);
+$action = $params["action"] ?? "search";
+$q = $params["q"] ?? "";
 
 //connect to COD MySQL
 $cod = new mysqli("www.crystallography.net", "cod_reader", "", "cod");
 if($cod -> connect_errno > 0) die('{"error":"Unable to connect to COD ['.$cod -> connect_error.']"}');
 
-if($action == "search" && isset($q))
+if($action == "search")
 {
 	/*
 	Returns:
@@ -150,7 +151,7 @@ WHERE (mineral LIKE "%'.addslashes($q).'%" OR commonname LIKE "%'.addslashes($q)
 		echo "]}";
 	}
 }
-else if($action == "smiles" && isset($q))
+else if($action == "smiles")
 {
 	/*
 	Returns:
@@ -198,7 +199,7 @@ else if($action == "smiles" && isset($q))
 		echo "]}";
 	}
 }
-else if($action == "name" && isset($q))
+else if($action == "name")
 {
 	/*
 	Returns:

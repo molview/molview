@@ -1,29 +1,3 @@
-<?php
-include_once("php/utility.php");
-include_once("php/load.php");
-include_once("php/Mobile_Detect.php");
-
-error_reporting(0);
-
-$detect = new Mobile_Detect;
-$touch = $detect -> isMobile() || $detect -> isTablet();
-
-if(is_below_IE10())
-{
-	header('Location: internetExplorer');
-	exit;
-}
-
-//preserve + sign by encoding it to %2B before parsing it
-parse_str(str_replace("+", "%2B", $_SERVER["QUERY_STRING"]));
-$metadata = load_metadata($q, $smiles, $cid, $pdbid, $codid);
-
-//layout
-$contentClass = "layout-vsplit";
-if(isset($layout)) $contentClass = "layout-".$layout;
-else if(isset($pdbid)) $contentClass = "layout-model";
-?>
-
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/Thing">
 
@@ -56,9 +30,6 @@ Query parameters:
 - chainType = ribbon || cylinders || btube || ctrace || bonds (alias for chainBonds=bonds)
 - chainBonds = true || false
 - chainColor = ss || spectrum || chain || residue || polarity || bfactor
-- layout = model || sketcher || hsplit || vsplit
-- menu = on || off
-- dialog = about || help || embed
 - bg = black || gray || white
 -->
 
@@ -67,64 +38,22 @@ Query parameters:
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, user-scalable=no" />
 		<meta name="author" content="Herman Bergwerf" />
-		<meta name="keywords" <?php echo 'content="'.$metadata["keywords"].'"' ?> />
-		<?php echo "<title>".$metadata["title"]."</title>"; ?>
-
-		<meta name="theme-color" content="white"/>
+		<meta name="theme-color" content="white" />
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="default">
-		<link rel="apple-touch-icon" href="/img/maskable-192x192.png">
-		<link rel="shortcut icon" href="favicon-32x32.png" />
-		<link rel="manifest" href="/manifest.json">
-
-		<!-- Open Graph + Schema.org + Twitter Card -->
-		<meta name="twitter:card" content="summary">
-		<meta name="twitter:site" content="@molview">
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="MolView" />
-		<?php
-			//url
-			echo '<meta property="og:url" content="http://'.$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"].'" />';
 
-			//title
-			echo '<meta name="twitter:title" property="og:title" content="'.$metadata["title"].'" />';
-			echo '<meta itemprop="name" content="'.$metadata["title"].'" />';
-
-			//description
-			echo '<meta name="description" content="'.
-			$metadata["description"].'" />';
-			echo '<meta name="twitter:description" property="og:description" content="'.
-			$metadata["description"].'" />';
-			echo '<meta itemprop="description" content="'.
-			$metadata["description"].'" />';
-
-			//image
-			if($metadata["image_url"] != "")
-			{
-				echo '<meta property="og:image" content="'.$metadata["image_url"].'" />';
-				echo '<meta itemprop="image" content="'.$metadata["image_url"].'" />';
-				echo '<meta name="twitter:image" content="'.$metadata["image_url"].'" />';
-			}
-
-			//special metadata
-			echo '<meta itemprop="sameAs" content="'.$metadata["same_as"].'" />';
-		?>
+		<link rel="apple-touch-icon" href="img/maskable-192x192.png">
+		<link rel="shortcut icon" href="favicon-32x32.png" />
+		<link rel="manifest" href="manifest.json">
 
 		<!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
 		<link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview-app.min.css" />
-		<?php
-			if($touch)
-			{
-				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview-touch.min.css" media="screen" />';
-			}
-			else
-			{
-				echo '<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview-desktop.min.css" media="screen" />';
-			}
-		?>
+		<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview-desktop.min.css" media="screen" />
 
 		<!-- JS -->
 		<script type="text/javascript" src="build/molview-base.min.js"></script>
@@ -136,15 +65,12 @@ Query parameters:
 
 		<!-- PHP data injection -->
 		<script type="text/javascript">
-			Model.JSmol.hq = <?php echo ($touch) ? "false" : "true"; ?>;
-			MolView.touch = <?php echo ($touch) ? "true" : "false"; ?>;
-			MolView.mobile = <?php echo $detect -> isMobile() ? "true" : "false"; ?>;
-			MolView.layout = <?php echo '"'.$contentClass.'"'; ?>;
-
+			Model.JSmol.hq = true;
+			MolView.touch = false;
+			MolView.mobile = false;
+			MolView.layout = 'layout-vsplit';
 			Request.CIR.available = true;
-
-			if(!Detector.canvas)
-			{
+			if(!Detector.canvas) {
 				window.location = window.location.origin + window.location.pathname + "htmlCanvas";
 			}
 		</script>
@@ -164,7 +90,7 @@ Query parameters:
 			})();
 		</script>
 	</head>
-	<body <?php if(isset($menu)) if($menu == "off") echo 'class="no-menu"'; ?>>
+	<body>
 		<svg width="0" height="0">
 			<filter id="pubchemImageFilter" height="1" width="1" y="0" x="0" color-interpolation-filters="sRGB">
 				<feColorMatrix
@@ -194,7 +120,7 @@ Query parameters:
 								<li class="menu-header">Advanced search</li>
 								<li class="menu-item"><a id="action-search-pubchem">PubChem Compounds</a></li>
 								<li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li>
-								<li class="menu-item"><a id="action-search-cod">Crystallography Open Database</a></li>
+								<!-- <li class="menu-item"><a id="action-search-cod">Crystallography Open Database</a></li> -->
 							</ul>
 						</div>
 					</div>
@@ -205,15 +131,15 @@ Query parameters:
 						<ul class="dropdown-menu">
 							<li class="menu-header">Layout</li>
 							<li id="layout-menu">
-								<a id="action-layout-model" <?php if($contentClass == "model") echo 'class="selected"' ?>></a>
-								<a id="action-layout-hsplit" <?php if($contentClass == "hsplit") echo 'class="selected"' ?>></a>
+								<a id="action-layout-model"></a>
+								<a id="action-layout-hsplit"></a>
 								<br/>
-								<a id="action-layout-vsplit" <?php if($contentClass == "vsplit") echo 'class="selected"' ?>></a>
-								<a id="action-layout-sketcher" <?php if($contentClass == "sketcher") echo 'class="selected"' ?>></a>
+								<a id="action-layout-vsplit" class="selected"></a>
+								<a id="action-layout-sketcher"></a>
 							</li>
 							<li class="menu-header">Theme</li>
-							<li class="menu-item"><a id="action-theme-desktop" <?php echo !$touch ? 'class="radio checked"' : 'class="radio"'; ?>>Desktop</a></li>
-							<li class="menu-item"><a id="action-theme-touch" <?php echo $touch ? 'class="radio checked"' : 'class="radio"'; ?>>Touch</a></li>
+							<li class="menu-item"><a id="action-theme-desktop" class="radio checked">Desktop</a></li>
+							<li class="menu-item"><a id="action-theme-touch" class="radio">Touch</a></li>
 							<li class="menu-header">Information</li>
 							<li class="menu-item"><a id="action-help">Help</a></li>
 							<li class="menu-item"><a id="action-about">About</a></li>
@@ -249,9 +175,9 @@ Query parameters:
 							<li class="menu-item"><a id="action-model-wireframe" class="r-mode radio">Wireframe</a></li>
 							<li class="menu-item"><a id="action-model-line" class="r-mode radio">Line</a></li>
 							<li class="menu-header">Background</li>
-							<li class="menu-item"><a id="action-model-bg-black" <?php echo 'class="model-bg radio'.(isset($bg) ? $bg == "black" ? ' checked"' : '"' : ' checked"'); ?> >Black</a></li>
-							<li class="menu-item"><a id="action-model-bg-gray" <?php echo 'class="model-bg radio'.(isset($bg) ? $bg == "gray" ? ' checked"' : '"' : '"'); ?> >Gray</a></li>
-							<li class="menu-item"><a id="action-model-bg-white" <?php echo 'class="model-bg radio'.(isset($bg) ? $bg == "white" ? ' checked"' : '"' : '"'); ?> >White</a></li>
+							<li class="menu-item"><a id="action-model-bg-black" class="model-bg radio checked">Black</a></li>
+							<li class="menu-item"><a id="action-model-bg-gray" class="model-bg radio">Gray</a></li>
+							<li class="menu-item"><a id="action-model-bg-white" class="model-bg radio">White</a></li>
 							<li class="menu-header">Engine</li>
 							<li class="menu-item"><a id="action-engine-glmol" class="radio checked">GLmol</a></li>
 							<li class="menu-item"><a id="action-engine-jmol" class="radio">Jmol</a></li>
@@ -304,7 +230,7 @@ Query parameters:
 			</div>
 		</div>
 		<div id="content">
-			<div id="main-layer" <?php echo 'class="layer '.$contentClass.'"' ?>>
+			<div id="main-layer" class="layer layout-vsplit">
 				<!-- Dynamic onload layout -->
 				<script type="text/javascript">
 					MolView.query = getQuery();
@@ -383,13 +309,7 @@ Query parameters:
 						<div id="molpad-canvas-wrapper"></div>
 					</div>
 				</div>
-				<div id="model" <?php
-					if(isset($bg))
-					{
-						echo 'style="background:'.($bg != "white" ? $bg != "gray" ?
-							"#000000" : "#cccccc" : "#ffffff").'"';
-					}
-				?>>
+				<div id="model">
 					<!-- Get preferred model background color from localStorage -->
 					<script type="text/javascript">
 						if(localStorage && localStorage["model.background"])
@@ -421,12 +341,7 @@ Query parameters:
 				<div id="properties-wrapper">
 					<div id="general-properties">
 						<div id="molecule-image-wrapper" class="properties-block">
-							<img id="molecule-image" alt=""
-								style="-webkit-filter: url('#pubchemImageFilter');
-										   moz-filter: url('#pubchemImageFilter');
-										   -ms-filter: url('#pubchemImageFilter');
-										    -o-filter: url('#pubchemImageFilter');
-										       filter: url('#pubchemImageFilter');*"/>
+							<img id="molecule-image" style="filter: url('#pubchemImageFilter');" />
 						</div>
 						<div class="properties-block">
 							<div id="molecule-info">
@@ -564,13 +479,7 @@ Query parameters:
 					</div>
 					<div class="dialog" id="help-dialog" style="display: none;">
 						<h2>Help</h2>
-						<?php
-							if($touch)
-							{
-								echo '<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don\'t fit in your screen.</div>';
-							}
-						?>
-						<p>Download PDF: <a class="link" href="docs/manual.pdf" target="_blank">docs/manual.pdf</a></p>
+						<div class="alert-bar alert-danger" style="margin-bottom: 20px;"><b>Important!</b> you can slide toolbars which don't fit in your screen.</div>
 						<p>Click one of the subjects below to learn more. You can also watch some videos on <a class="link" target="_blank" title="YouTube Channel" href="https://www.youtube.com/channel/UCRP9nXCC59TMlqc-bk1mi3A">YouTube</a> to get started.</p>
 						<h3>Subjects</h3>
 						<div class="expandable">
@@ -615,12 +524,7 @@ Query parameters:
 							<div class="expandable-content">
 								<p><img style="max-height: 40px; display: inline-block;" src="img/help/SearchBar.jpg" alt="Search bar" /></p>
 								<p>You can load molecules from large databases like PubChem and RCSB using the search form located on the left side of the menu-bar. Just type what you are looking for and a list of available molecules will appear.</p>
-								<p>You can also click on the dropdown button next to the search field to select a specific database. This will perform a more extensive search on the selected database. Currently, three big databases are supported:</p>
-								<ol>
-									<li><b>PubChem</b></li>
-									<li><b>The RCSB Protein Data Bank</b></li>
-									<li><b>The Crystallography Open Database</b></li>
-								</ol>
+								<p>You can also click on the dropdown button next to the search field to select a specific database. This will perform a more extensive search on the selected database.</p>
 							</div>
 						</div>
 						<div class="expandable">

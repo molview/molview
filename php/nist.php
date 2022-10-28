@@ -38,14 +38,10 @@ Notes:
 
 include_once("utility.php");
 
-error_reporting(0);
-parse_str($_SERVER["QUERY_STRING"]);
-
-if(!isset($type) || !isset($cas))
-{
-	http_response_code(400);
-	exit("Bad request");
-}
+parse_str($_SERVER["QUERY_STRING"], $params);
+$type = $params["type"] ?? "lookup";
+$cas = $params["cas"] ?? "";
+$i = $params["i"] ?? 0;
 
 if($type == "lookup")
 {
@@ -159,17 +155,16 @@ if($type == "lookup")
 }
 else if($type == "mass")
 {
-	header("Content-Type: text");
+	header("Content-Type: chemical/x-jcamp-dx");
 	echo_curl("https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=Mass&Index=0");
 }
 else if($type == "ir")
 {
-	header("Content-Type: text");
-	if(!isset($i)) $i = 0;
+	header("Content-Type: chemical/x-jcamp-dx");
 	echo_curl("https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=IR&Index=".$i);
 }
 else if($type == "uvvis")
 {
-	header("Content-Type: text");
+	header("Content-Type: chemical/x-jcamp-dx");
 	echo_curl("https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=".$cas."&Type=UVVis&Index=0");
 }

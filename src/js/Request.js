@@ -396,16 +396,15 @@ var Request = {
 		},
 
 		image: function (cid, width) {
-			//round width to prevent very small decimals
+			var w = Math.round((width || 300) * MolView.devicePixelRatio);
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid
-				+ "/png?record_type=2d&image_size=" + ((Math.round(width) || 300) * MolView.devicePixelRatio)
-				+ "x" + ((Math.round(width) || 300) * MolView.devicePixelRatio);
+				+ "/png?record_type=2d&image_size=" + w	+ "x" + w;
 		},
 
 		smilesToImage: function (smiles) {
+			var w = Math.round(300 * MolView.devicePixelRatio);
 			return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/png?record_type=2d&smiles="
-				+ encodeURIComponent(smiles) + "&image_size=" + (300 * MolView.devicePixelRatio)
-				+ "x" + (300 * MolView.devicePixelRatio);
+				+ encodeURIComponent(smiles) + "&image_size=" + w	+ "x" + w;
 		},
 
 		/**
@@ -563,7 +562,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: Request.API_ROOT + "api/cod/search/" + encodeURIComponent(text),
+				url: Request.API_ROOT + "php/cod.php?action=search&q=" + encodeURIComponent(text),
 				defaultError: error,
 				success: function (data) {
 					Progress.increment();
@@ -583,7 +582,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: Request.API_ROOT + "api/cod/smiles/" + codids,
+				url: Request.API_ROOT + "php/cod.php?action=smiles&q=" + codids,
 				defaultError: error,
 				success: success
 			});
@@ -593,7 +592,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "json",
-				url: Request.API_ROOT + "api/cod/name/" + codids,
+				url: Request.API_ROOT + "php/cod.php?action=name&q=" + codids,
 				defaultError: error,
 				success: success
 			});
@@ -603,7 +602,7 @@ var Request = {
 			AJAX({
 				primary: true,
 				dataType: "text",
-				url: "https://molview.org/api/cod/cif/" + codid + ".cif",
+				url: "https://molview.org/php/cif.php?codid=" + codid,
 				defaultError: error,
 				success: success
 			});
@@ -633,7 +632,7 @@ var Request = {
 		lookup: function (cas, success, error) {
 			AJAX({
 				dataType: "json",
-				url: Request.API_ROOT + "api/nist/lookup/" + cas,
+				url: Request.API_ROOT + "php/nist.php?type=lookup&cas=" + cas,
 				defaultError: error,
 				success: function (data) {
 					//data postprocessing
@@ -673,7 +672,7 @@ var Request = {
 
 			AJAX({
 				dataType: "text",
-				url: Request.API_ROOT + "api/nist/" + type + "/" + cas + (i !== -1 ? "/" + i : ""),
+				url: Request.API_ROOT + "php/nist.php?type=" + type + "&cas=" + cas + (i != -1 ? "&i=" + i : ""),
 				defaultError: error,
 				success: success
 			});

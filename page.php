@@ -20,8 +20,8 @@
 include_once("php/Parsedown.php");
 include_once("php/utility.php");
 
-error_reporting(0);
-parse_str($_SERVER["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"], $params);
+$id = $params["id"];
 
 $map = array(
 	"readme" => "README.md",
@@ -78,17 +78,17 @@ $renderer = new Parsedown();
 
 		<?php echo "<title>".$titleMap[$id]."</title>"; ?>
 
-		<link rel="shortcut icon" <?php echo 'href="'.$root.'favicon-32x32.png"' ?> />
+		<link rel="shortcut icon" href="favicon-32x32.png" />
 		<meta name="author" content="Herman Bergwerf" />
 
 		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
-		<link type="text/css" rel="stylesheet" <?php echo 'href="'.$root.'build/molview-page.min.css"' ?> />
+		<link type="text/css" rel="stylesheet" href="build/molview-page.min.css" />
 	</head>
 	<body>
 		<div id="header">
-		<img id="logo" <?php echo 'src="'.$root.'img/logo.png"' ?> />
-		<a id="return-to-molview" <?php echo 'href="'.$root.'"' ?>>
-			<img id="mark" <?php echo 'src="'.$root.'img/mark.png"' ?> />
+		<img id="logo" src="img/logo.png" />
+		<a id="return-to-molview" href="./">
+			<img id="mark" src="img/mark.png" />
 		</a>
 		</div>
 		<div id="content">

@@ -26,8 +26,9 @@ PHP script for mirroring CIF files form the Crystallography Open Database
 
 include_once("utility.php");
 
-error_reporting(0);
-parse_str($_SERVER["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"], $params);
+$codid = $params["codid"] ?? "";
+
 header("Content-Type: text");
 
 //allow embed.molview.org and molview.org

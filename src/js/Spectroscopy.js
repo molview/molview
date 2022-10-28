@@ -53,7 +53,7 @@ var Spectroscopy = {
 			this.spectrum = new ChemDoodle.ObserverCanvas("spectrum-canvas", 100, 100);
 		} else {
 			this.spectrum = new ChemDoodle.SeekerCanvas("spectrum-canvas", 100, 100,
-													ChemDoodle.SeekerCanvas.SEEK_PLOT);
+				ChemDoodle.SeekerCanvas.SEEK_PLOT);
 		}
 
 		this.spectrum.specs.plots_showYAxis = true;
@@ -209,10 +209,6 @@ var Spectroscopy = {
 	{
 		var w = $("#spectrum-wrapper").width();
 		var h = Math.round(w / Spectroscopy.spectrumRatio);
-		Spectroscopy.spectrum.resize(w * MolView.devicePixelRatio, h * MolView.devicePixelRatio);
-		$("#spectrum-canvas").css({
-			"width": w * MolView.devicePixelRatio,
-			"height": h * MolView.devicePixelRatio
-		});
+		Spectroscopy.spectrum.resize(w, h);
 	},
 };
