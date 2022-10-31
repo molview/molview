@@ -10,3 +10,8 @@ ErrorDocument 500 /page.php?id=500
 # HTTPS redirection
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://embed.molview.org/$1 [L,R=302]
+
+# Allow iframe embedding.
+# The X-Frame-Options ALLOW-FROM directive is obsolete.
+# Header set X-Frame-Options "ALLOW-FROM=*"
+Header always unset X-Frame-Options
