@@ -21,14 +21,6 @@ error_reporting(0);
 //error_reporting(E_ALL);
 //ini_set('display_errors', '1');
 
-$directory = "/";
-$root = "https://".$_SERVER["HTTP_HOST"].$directory;
-
-function is_below_IE10()
-{
-	return preg_match('/(?i)msie [0-9]/', $_SERVER['HTTP_USER_AGENT']);
-}
-
 function humanize($str)
 {
 	return preg_replace_callback('/(\b[A-Z]+\b)/', function($words)

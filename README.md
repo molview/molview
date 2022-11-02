@@ -1,12 +1,10 @@
 MolView
 =======
-This repository holds the code of MolView.org. There is some work on a new 
+This repository holds the code of MolView.org. There is some work on a new
 version of this site that will fix some of the issues with this version.
-If you want to support this development, consider donating on
-https://www.patreon.com/molview.
 
 License
----
+-------
 ```
 MolView (http://molview.org)
 Copyright (c) 2014, 2015 Herman Bergwerf
@@ -27,17 +25,14 @@ along with MolView.  If not, see <http://www.gnu.org/licenses/>.
 See LICENSE.md for more details about third party code.
 
 Build
----
-Instructions:
+-----
 
 1. Copy all files to a server with support for: PHP, PHP cURL, mod_rewrite.
-2. Configure $directory in `php/utility.php` to point to the MolView root directory
-3. Configure ErrorDocument in `.htaccess` to point to `page.php`
-4. Make sure the Inkscape and the ImageMagick CLI are installed
-5. Install npm and install local npm modules
-6. Run the build script (use `./build.sh fetch jmol` for a clean build)
-   - **Only run bower and grunt, and render images:** `./build.sh`
-   - **Also fetch external PHP sources:** `./build.sh fetch`
-   - **Also fetch Jmol from sourceforge:** `./build.sh fetch jmol`
-   - **Also fetch Jmol from stolaf.edu:** `./build.sh fetch jmol nightly`
-   - **Only render images:** `./build.sh render`
+2. Make sure the Inkscape and the ImageMagick CLI are installed.
+3. Install npm and install local npm modules.
+4. Run the build script: `./build.sh fetch jmol`
+   - Only render images: `./build.sh render`
+   - Also run bower and grunt: `./build.sh`
+   - Also download Parsedown (PHP) library: `./build.sh fetch`
+   - Also download Jmol from sourceforge: `./build.sh fetch jmol`
+   - Also download Jmol from stolaf.edu: `./build.sh fetch jmol nightly`
