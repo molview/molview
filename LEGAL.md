@@ -49,4 +49,4 @@ tracking [here](https://analytics.molview.org/index.php?module=CoreAdminHome&act
 ## 6. Infringement Disclaimer
 
 All data transmitted or made available on MolView is believed to be free of
-infringement. Please contact <info@molview.org> if you can prove otherwise.
+infringement. Please contact `info@molview.org` if you can prove otherwise.
