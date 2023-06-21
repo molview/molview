@@ -1,18 +1,14 @@
 Terms of Use
 ============
 Welcome! These are the Terms of Use of molview.org, referred to as "MolView". By
-accessing and using MolView you accept these terms. MolView is a non-profit
-project, and these terms serve mostly as a disclaimer. MolView reserves the
-right to update or amend these terms at any time, without notice to you. Such
-opdated or amended terms shall be effective upon publishing.
+accessing and using MolView you accept these terms. MolView reserves the right
+to update or amend these terms at any time, without notice to you. Such opdated
+or amended terms shall be effective upon publishing.
 
-## 1. Open Source
+## 1. Copyright
 
-The source code of MolView is released under the GNU AGPL license on
-[GitHub](https://github.com/molview/molview). You are free to make changes to a
-copy of the source code, but you are required by the AGPL license to publish
-these changes. For more details about the license visit
-[molview.org/license](https://molview.org/license).
+MolView and the source code of MolView is Copyright of Herman Bergwerf. You are
+not allowed to redistribute it without written permission.
 
 ## 2. No Availability Guarantee
 
@@ -35,8 +31,8 @@ purpose. The third-party sources that are used are:
 
 ## 4. Freedom of Usage
 
-You are free to use and share images and other content generated in MolView for
-any purpose, including for commercial purposes. This also includes screen
+You are free to use and share images and other content generated using MolView
+for any purpose, including for commercial purposes. This also includes screen
 recordings of MolView.
 
 ## 5. Privacy Policy

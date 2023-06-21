@@ -1,8 +1,7 @@
 {
 	"name": "molview",
 	"version": "2.4.6",
-	"description": "MolView is an intuitive, Open-Source web-application to make chemistry and biology more awesome!",
-	"license": "AGPL",
+	"description": "MolView is an intuitive web-application to make chemistry and biology more awesome!",
 	"homepage": "http://molview.org",
 	"private": true,
 	"devDependencies": {

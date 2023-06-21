@@ -18,6 +18,6 @@ RewriteRule ^(.*)$ http://molview.org/$1 [L,R=302]
 # Markdown pages
 RewriteRule ^readme$ page.php?id=readme [L]
 RewriteRule ^changelog$ page.php?id=changelog [L]
-RewriteRule ^license$ page.php?id=license [L]
+RewriteRule ^copyright$ page.php?id=copyright [L]
 RewriteRule ^legal$ page.php?id=legal [L]
 RewriteRule ^htmlCanvas$ page.php?id=htmlcanvas [L]

@@ -10,5 +10,5 @@ cp -r build embed/v1/build
 cp -r jmol embed/v1/jmol
 
 zip -r dist/molview.zip \
-	build img jmol licenses pages php embed \
+	build img jmol pages php embed \
 	.htaccess robots.txt index.html page.php facivon.ico *.md *.png

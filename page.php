@@ -1,20 +1,7 @@
 <?php
 /**
  * This file is part of MolView (http://molview.org)
- * Copyright (c) 2014, 2015 Herman Bergwerf
- *
- * MolView is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * MolView is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with MolView.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (c) 2014-2023 Herman Bergwerf
  */
 
 include_once("php/Parsedown.php");
@@ -26,7 +13,7 @@ $id = $params["id"];
 $map = array(
 	"readme" => "README.md",
 	"changelog" => "CHANGELOG.md",
-	"license" => "LICENSE.md",
+	"copyright" => "COPYRIGHT.md",
 	"legal" => "LEGAL.md",
 	"htmlcanvas" => "pages/htmlcanvas.md",
 	"400" => "pages/400.md",
@@ -39,7 +26,7 @@ $map = array(
 $titleMap = array(
 	"readme" => "README",
 	"changelog" => "Changelog",
-	"license" => "License",
+	"copyright" => "Copyright",
 	"legal" => "Legal",
 	"htmlcanvas" => "No support",
 	"400" => "Bad request",
@@ -52,7 +39,7 @@ $titleMap = array(
 $copyrightMap = array(
 	"readme" => false,
 	"changelog" => false,
-	"license" => true,
+	"copyright" => true,
 	"legal" => true,
 	"htmlcanvas" => false,
 	"400" => false,
@@ -92,6 +79,6 @@ $renderer = new Parsedown();
 		<div id="content">
 			<?php echo $renderer->text($md); ?>
 		</div>
-		<?php if($copyrightMap[$id]) echo '<div id="footer">Copyright &copy; 2014, 2015 Herman Bergwerf</div>'; ?>
+		<?php if($copyrightMap[$id]) echo '<div id="footer">Copyright &copy; 2014-2023 Herman Bergwerf</div>'; ?>
 	</body>
 </html>
