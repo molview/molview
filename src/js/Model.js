@@ -399,20 +399,29 @@ var Model = {
 
 	/**
 	 * Sets the 3D model background color
-	 * @param {String} color Color name
+	 * @param {String} color Color name or hex value without # character
 	 */
 	setBackground: function(color)
 	{
+		const isHex = !['black', 'gray', 'white'].includes(color) && color.match(/^([0-9a-f]{3}|[0-9a-f]{6})$/i);
+
 		Preferences.set("model", "background", color);
 
 		this.bg.colorName = color;
-		this.bg.hex = color !== "white" ? color !== "gray" ? 0x000000 : 0xcccccc : 0xffffff;
+		// if color is not a hex value, set it to black, gray or white
+		if (!isHex) {
+			this.bg.hex = color !== "white" ? color !== "gray" ? 0x000000 : 0xcccccc : 0xffffff;
+		} else {
+			// otherwise, parse the hex value
+			this.bg.hex = parseInt(color, 16);
+		}
+
 		this.bg.rgb = [this.bg.hex >> 16, this.bg.hex >> 8 & 0xFF, this.bg.hex & 0xFF];
 		this.bg.jmol = "[" + this.bg.rgb.join() + "]";
 		this.bg.html = "rgb(" + this.bg.rgb.join() + ")";
 		this.fg.html = "rgb(" + (255 - this.bg.rgb[0]) + ","
-							  + (255 - this.bg.rgb[0]) + ","
-							  + (255 - this.bg.rgb[0]) + ")";
+							+ (255 - this.bg.rgb[0]) + ","
+							+ (255 - this.bg.rgb[0]) + ")";
 
 		$(".model-bg").removeClass("checked");
 		$("#action-model-bg-" + color).addClass("checked");
