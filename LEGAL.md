@@ -39,8 +39,9 @@ recordings of MolView.
 
 MolView uses a client-side local storage technology (WebStorage) in order to
 save user preferences. This data is never shared with our server. This site uses
-its own Matomo Analytics instance to collect usage data. You may opt-out from
-tracking [here](https://analytics.molview.org/index.php?module=CoreAdminHome&action=optOut&language=en).
+its own Matomo Analytics instance and Google Analytics 4 to collect usage data.
+You may opt-out from tracking via Matomo
+[here](https://analytics.molview.org/index.php?module=CoreAdminHome&action=optOut&language=en).
 
 ## 6. Infringement Disclaimer
 
