@@ -16,6 +16,9 @@ MolView is an intuitive web application for chemistry and biology visualization.
 - ✅ Web server running on port 5000 with CORS enabled
 - ✅ Application loads and displays correctly
 - ✅ Deployment configuration set up for production
+- ✅ Removed initial progress/update popup window
+- ✅ Added Library tab with file upload functionality
+- ✅ Implemented permanent storage system for 3D structures and animations
 
 ## Architecture
 - **Source Code**: `/src/` directory containing JavaScript, LESS stylesheets, and SVG assets
@@ -34,6 +37,10 @@ MolView is an intuitive web application for chemistry and biology visualization.
 - 3D molecular visualization with multiple rendering engines (GLmol, JSmol, ChemDoodle)
 - Chemical database search and compound lookup
 - Export capabilities for images and molecular files
+- **Library System**: Upload, store, and manage 3D molecular structures (.pdb, .mol, .sdf, .xyz, .cif)
+- **Animation Library**: Upload and store molecular animation videos (.mp4, .webm, .avi, .mov)
+- **Permanent Storage**: Browser localStorage and PHP backend for persistent data storage
+- **File Management**: View, load, download, and delete saved library content
 - Responsive design for desktop and mobile devices
 
 ## Configuration
