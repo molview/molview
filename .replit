@@ -23,7 +23,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx http-server . -p 5000 -a 0.0.0.0 --cors -o"
+args = "php -S 0.0.0.0:5000"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -35,5 +35,5 @@ externalPort = 80
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["npx", "http-server", ".", "-p", "5000", "-a", "0.0.0.0", "--cors"]
+run = ["php", "-S", "0.0.0.0:5000"]
 build = ["grunt"]
