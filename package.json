@@ -13,5 +13,8 @@
 		"grunt-contrib-watch": "^1.1.0",
 		"grunt-svgmin": "^6.0.1",
 		"grunt-text-replace": "^0.4.0"
+	},
+	"dependencies": {
+		"http-server": "^14.1.1"
 	}
 }
