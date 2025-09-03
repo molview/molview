@@ -174,9 +174,9 @@ try {
 
             // Validate file type based on category
             if ($type === 'animation') {
-                $allowedExtensions = ['mp4', 'webm', 'avi', 'mov', 'gif'];
+                $allowedExtensions = ['mp4', 'webm', 'avi', 'mov', 'mkv', 'flv', 'wmv', '3gp', '3g2', 'asf', 'm4v', 'mpg', 'mpeg', 'm2v', 'm4p', 'ts', 'mts', 'm2ts', 'vob', 'ogv', 'ogg', 'rm', 'rmvb', 'divx', 'xvid', 'f4v', 'swf', 'gif', 'apng'];
             } else {
-                $allowedExtensions = ['mol', 'sdf', 'pdb', 'xyz', 'cif', 'json', 'txt', 'mol2', 'cml'];
+                $allowedExtensions = ['pdb', 'mol', 'sdf', 'xyz', 'cif', 'mol2', 'cml', 'mmcif', 'pqr', 'gro', 'xtc', 'trr', 'dcd', 'crd', 'psf', 'top', 'itp', 'mdp', 'prmtop', 'inpcrd', 'rst', 'nc', 'netcdf', 'h5', 'hdf5', 'dx', 'cube', 'wrl', 'vrml', 'obj', 'ply', 'stl', 'off', 'x3d', 'json', 'bson', 'yaml', 'xml', 'chem', 'cdx', 'cdxml', 'hin', 'mop', 'zmat', 'g03', 'g09', 'g16', 'inp', 'out', 'log', 'fch', 'chk', 'wfn', 'molden', 'adf', 'gamess', 'nwchem', 'orca', 'qchem', 'turbomole', 'vasp', 'cp2k', 'dftb', 'lammps', 'amber', 'gromacs', 'namd', 'charmm', 'openmm', 'hoomd', 'txt'];
             }
 
             if (!in_array($fileExtension, $allowedExtensions)) {
