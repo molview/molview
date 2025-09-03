@@ -121,6 +121,11 @@ Query parameters:
                                         </div>
                                 </form>
                                 <ul id="main-menu" class="hstack">
+                                        <li id="pwa-install-btn" style="display: none;">
+                                                <button id="install-pwa-button" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; margin-right: 10px; cursor: pointer; font-size: 13px;" title="Install MolView as a Progressive Web App">
+                                                        📦 Install App
+                                                </button>
+                                        </li>
                                         <li id="molview-dropdown" class="dropdown">
                                                 <a class="dropdown-toggle">MolView</a>
                                                 <ul class="dropdown-menu">
@@ -1608,18 +1613,100 @@ Query parameters:
                         }
                 };
 
-                
+                // PWA Installation functionality
+                const PWAInstaller = {
+                        deferredPrompt: null,
+                        isInstalled: false,
+                        
+                        init: function() {
+                                this.checkInstallStatus();
+                                this.setupEventListeners();
+                        },
+                        
+                        checkInstallStatus: function() {
+                                // Check if app is already installed
+                                const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+                                const isInWebAppiOS = (window.navigator.standalone === true);
+                                const isInstalled = isStandalone || isInWebAppiOS;
+                                
+                                this.isInstalled = isInstalled;
+                                
+                                if (isInstalled || !this.deferredPrompt) {
+                                        document.getElementById('pwa-install-btn').style.display = 'none';
+                                } else {
+                                        document.getElementById('pwa-install-btn').style.display = 'block';
+                                }
+                        },
+                        
+                        setupEventListeners: function() {
+                                // Listen for beforeinstallprompt event
+                                window.addEventListener('beforeinstallprompt', (e) => {
+                                        console.log('PWA install prompt available');
+                                        e.preventDefault();
+                                        this.deferredPrompt = e;
+                                        this.checkInstallStatus();
+                                });
+                                
+                                // Listen for app installation
+                                window.addEventListener('appinstalled', () => {
+                                        console.log('PWA was installed');
+                                        this.isInstalled = true;
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
+                                
+                                // Install button click handler
+                                const installBtn = document.getElementById('install-pwa-button');
+                                if (installBtn) {
+                                        installBtn.addEventListener('click', () => {
+                                                this.installApp();
+                                        });
+                                }
+                        },
+                        
+                        installApp: function() {
+                                if (!this.deferredPrompt) {
+                                        // Fallback for browsers that don't support install prompt
+                                        alert('To install MolView as an app:\n\n' +
+                                              'Chrome/Edge: Click the ⋮ menu > Install MolView\n' +
+                                              'Safari: Share button > Add to Home Screen\n' +
+                                              'Firefox: Address bar install icon');
+                                        return;
+                                }
+                                
+                                // Show the install prompt
+                                this.deferredPrompt.prompt();
+                                
+                                // Wait for the user to respond to the prompt
+                                this.deferredPrompt.userChoice.then((choiceResult) => {
+                                        console.log('PWA install choice:', choiceResult.outcome);
+                                        
+                                        if (choiceResult.outcome === 'accepted') {
+                                                console.log('User accepted the A2HS prompt');
+                                        } else {
+                                                console.log('User dismissed the A2HS prompt');
+                                        }
+                                        
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
+                        }
+                };
 
                 // Initialize Library when page loads
                 document.addEventListener('DOMContentLoaded', function() {
                         console.log('DOM loaded, initializing Library...');
                         Library.init();
+                        PWAInstaller.init();
                 });
 
                 // Also try to initialize after a short delay in case DOM events don't fire
                 setTimeout(function() {
                         if (typeof Library !== 'undefined') {
                                 Library.init();
+                        }
+                        if (typeof PWAInstaller !== 'undefined') {
+                                PWAInstaller.init();
                         }
                 }, 1000);
                 </script>
