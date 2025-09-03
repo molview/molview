@@ -801,11 +801,11 @@ Query parameters:
                         },
                         
                         loadFromServer: function() {
-                                console.log('Loading library from server...');
+                                console.log('Loading library from database...');
                                 
                                 // Use XMLHttpRequest instead of fetch to avoid conflicts
                                 const xhr = new XMLHttpRequest();
-                                xhr.open('GET', 'php/upload.php?action=list', true);
+                                xhr.open('GET', 'php/upload_db.php?action=list', true);
                                 xhr.setRequestHeader('Accept', 'application/json');
                                 
                                 xhr.onreadystatechange = () => {
@@ -1025,7 +1025,7 @@ Query parameters:
                                                 `;
                                         };
                                         
-                                        xhr.open('POST', 'php/upload.php', true);
+                                        xhr.open('POST', 'php/upload_db.php', true);
                                         xhr.send(formData);
                                 });
                         },
@@ -1054,14 +1054,18 @@ Query parameters:
                                                 const displayName = item.name || `${type.slice(0, -1)} ${index + 1}`;
                                                 const fileSize = item.size ? this.formatFileSize(item.size) : 'Unknown size';
                                                 const uploadDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Unknown date';
+                                                const fileExtension = item.extension || item.file_type || 'unknown';
                                                 
                                                 return `
                                                 <div style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 10px; background: #f9f9f9;">
-                                                        <h4 style="margin: 0 0 10px 0; color: #333;">${displayName}</h4>
+                                                        <h4 style="margin: 0 0 10px 0; color: #333;">
+                                                                📁 ${displayName}
+                                                                <span style="font-size: 12px; background: #e0e0e0; padding: 2px 6px; border-radius: 3px; margin-left: 10px;">.${fileExtension}</span>
+                                                        </h4>
                                                         <p style="margin: 5px 0; color: #666; font-size: 14px;">
-                                                                Type: ${item.type ? item.type.toUpperCase() : 'Unknown'} | 
-                                                                Size: ${fileSize} | 
-                                                                Added: ${uploadDate}
+                                                                💾 Size: ${fileSize} | 
+                                                                📅 Added: ${uploadDate} |
+                                                                🏷️ Type: ${item.type ? item.type.toUpperCase() : 'Unknown'}
                                                         </p>
                                                         <div style="margin-top: 10px;">
                                                                 ${type === 'structures' ? `<button onclick="Library.loadStructure(${index})" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Load in Viewer</button>` : ''}
@@ -1104,13 +1108,13 @@ Query parameters:
                         
                         downloadFile: function(fileId, type) {
                                 console.log('Downloading file:', fileId, type);
-                                window.open(`php/download.php?id=${fileId}&type=${type}`, '_blank');
+                                window.open(`php/download_db.php?id=${fileId}&type=${type}`, '_blank');
                         },
                         
                         deleteFile: function(fileId, type) {
                                 if (confirm('Are you sure you want to delete this file?')) {
                                         const xhr = new XMLHttpRequest();
-                                        xhr.open('DELETE', 'php/upload.php', true);
+                                        xhr.open('DELETE', 'php/upload_db.php', true);
                                         xhr.setRequestHeader('Content-Type', 'application/json');
                                         
                                         xhr.onload = () => {
@@ -1145,7 +1149,7 @@ Query parameters:
                         
                         clearAllFiles: function() {
                                 const xhr = new XMLHttpRequest();
-                                xhr.open('DELETE', 'php/upload.php', true);
+                                xhr.open('DELETE', 'php/upload_db.php', true);
                                 xhr.setRequestHeader('Content-Type', 'application/json');
                                 
                                 xhr.onload = () => {
