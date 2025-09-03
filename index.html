@@ -715,10 +715,12 @@ Query parameters:
                 <script>
                 // Library functionality
                 const Library = {
-                        structures: JSON.parse(localStorage.getItem('molview_structures') || '[]'),
-                        animations: JSON.parse(localStorage.getItem('molview_animations') || '[]'),
+                        structures: [],
+                        animations: [],
                         
                         init: function() {
+                                this.loadFromServer();
+                                
                                 // Upload 3D Structure handler
                                 document.getElementById('action-upload-3d-structure').onclick = () => {
                                         document.getElementById('upload-3d-structure').click();
@@ -737,6 +739,59 @@ Query parameters:
                                 // View saved animations
                                 document.getElementById('action-view-saved-animations').onclick = () => {
                                         this.showLibrary('animations');
+                                };
+                                
+                                // File upload event listeners
+                                document.getElementById('upload-3d-structure').onchange = (e) => {
+                                        this.handleFileUpload(e.target.files, 'structure');
+                                };
+                                
+                                document.getElementById('upload-animation').onchange = (e) => {
+                                        this.handleFileUpload(e.target.files, 'animation');
+                                };
+                        },
+                        
+                        loadFromServer: function() {
+                                fetch('php/upload.php?action=list')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                                this.structures = data.structures || [];
+                                                this.animations = data.animations || [];
+                                        })
+                                        .catch(error => {
+                                                console.error('Error loading files:', error);
+                                        });
+                        },
+                        
+                        handleFileUpload: function(files, type) {
+                                Array.from(files).forEach(file => {
+                                        const formData = new FormData();
+                                        formData.append('file', file);
+                                        formData.append('type', type);
+                                        
+                                        fetch('php/upload.php', {
+                                                method: 'POST',
+                                                body: formData
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                                if (data.success) {
+                                                        alert(data.message);
+                                                        this.loadFromServer(); // Refresh the list
+                                                } else {
+                                                        alert('Upload failed: ' + (data.error || 'Unknown error'));
+                                                }
+                                        })
+                                        .catch(error => {
+                                                console.error('Upload error:', error);
+                                                alert('Upload failed: ' + error.message);
+                                        });
+                                });
+                        },
+                        
+                        handleStructureUpload: function(files) {
+                                this.handleFileUpload(files, 'structure');
+                        },nimations');
                                 };
                                 
                                 // Clear library
@@ -785,27 +840,91 @@ Query parameters:
                         },
                         
                         handleAnimationUpload: function(files) {
-                                Array.from(files).forEach(file => {
-                                        const reader = new FileReader();
-                                        reader.onload = (e) => {
-                                                const animation = {
-                                                        name: file.name,
-                                                        type: file.name.split('.').pop().toLowerCase(),
-                                                        content: e.target.result,
-                                                        timestamp: new Date().toISOString(),
-                                                        size: file.size
-                                                };
-                                                this.animations.push(animation);
-                                                localStorage.setItem('molview_animations', JSON.stringify(this.animations));
-                                                alert(`Animation "${file.name}" saved to library!`);
-                                        };
-                                        reader.readAsDataURL(file);
-                                });
+                                this.handleFileUpload(files, 'animation');
                         },
                         
                         showLibrary: function(type) {
                                 const modal = document.getElementById('library-modal');
                                 const title = document.getElementById('library-modal-title');
+                                const content = document.getElementById('library-modal-content');
+                                
+                                title.textContent = type === 'structures' ? 'Saved Structures' : 'Saved Animations';
+                                
+                                const items = type === 'structures' ? this.structures : this.animations;
+                                
+                                let html = '<div class="library-grid">';
+                                
+                                if (items.length === 0) {
+                                        html += '<p>No saved ' + type + ' found.</p>';
+                                } else {
+                                        items.forEach((item, index) => {
+                                                const displayName = item.name || `${type.slice(0, -1)} ${index + 1}`;
+                                                const fileSize = item.size ? this.formatFileSize(item.size) : 'Unknown size';
+                                                const uploadDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Unknown date';
+                                                
+                                                html += `
+                                                <div class="library-item" style="border: 1px solid #ddd; padding: 10px; margin: 5px; border-radius: 5px;">
+                                                        <h4>${displayName}</h4>
+                                                        <p><small>Size: ${fileSize} | Uploaded: ${uploadDate}</small></p>
+                                                        <div class="library-item-actions">
+                                                                <button onclick="Library.downloadFile('${item.id}', '${type.slice(0, -1)}')" 
+                                                                        style="background: #4CAF50; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 3px; cursor: pointer;">
+                                                                        Download
+                                                                </button>
+                                                                <button onclick="Library.deleteFile('${item.id}', '${type.slice(0, -1)}')" 
+                                                                        style="background: #f44336; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 3px; cursor: pointer;">
+                                                                        Delete
+                                                                </button>
+                                                        </div>
+                                                </div>`;
+                                        });
+                                }
+                                
+                                html += '</div>';
+                                content.innerHTML = html;
+                                modal.style.display = 'block';
+                        },
+                        
+                        formatFileSize: function(bytes) {
+                                if (bytes === 0) return '0 Bytes';
+                                const k = 1024;
+                                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                        },
+                        
+                        downloadFile: function(fileId, type) {
+                                window.open(`php/download.php?id=${fileId}&type=${type}`, '_blank');
+                        },
+                        
+                        deleteFile: function(fileId, type) {
+                                if (confirm('Are you sure you want to delete this file?')) {
+                                        fetch('php/upload.php', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                        'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({
+                                                        id: fileId,
+                                                        type: type
+                                                })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                                if (data.success) {
+                                                        alert('File deleted successfully');
+                                                        this.loadFromServer();
+                                                        this.showLibrary(type + 's'); // Refresh the modal
+                                                } else {
+                                                        alert('Delete failed: ' + (data.error || 'Unknown error'));
+                                                }
+                                        })
+                                        .catch(error => {
+                                                console.error('Delete error:', error);
+                                                alert('Delete failed: ' + error.message);
+                                        });
+                                }
+                        },ary-modal-title');
                                 const content = document.getElementById('library-content');
                                 
                                 if(type === 'structures') {
@@ -902,20 +1021,8 @@ Query parameters:
                                 a.click();
                         },
                         
-                        deleteStructure: function(index) {
-                                if(confirm('Are you sure you want to delete this structure?')) {
-                                        this.structures.splice(index, 1);
-                                        localStorage.setItem('molview_structures', JSON.stringify(this.structures));
-                                        this.showLibrary('structures');
-                                }
-                        },
-                        
-                        deleteAnimation: function(index) {
-                                if(confirm('Are you sure you want to delete this animation?')) {
-                                        this.animations.splice(index, 1);
-                                        localStorage.setItem('molview_animations', JSON.stringify(this.animations));
-                                        this.showLibrary('animations');
-                                }
+                        closeLibrary: function() {
+                                document.getElementById('library-modal').style.display = 'none';
                         }
                 };
 
