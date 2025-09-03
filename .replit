@@ -6,7 +6,7 @@ expertMode = true
 channel = "stable-25_05"
 
 [workflows]
-runButton = "Project"
+runButton = "MolView Server Fixed"
 
 [[workflows.workflow]]
 name = "Project"
@@ -28,6 +28,15 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "MolView Server Fixed"
+author = 47171270
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php -S 0.0.0.0:8080"
 
 [[ports]]
 localPort = 5000

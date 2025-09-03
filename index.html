@@ -801,16 +801,115 @@ Query parameters:
                         },
                         
                         loadFromServer: function() {
-                                fetch('php/upload.php?action=list')
+                                fetch('php/upload.php?action=list', {
+                                        headers: {
+                                                'Accept': 'application/json'
+                                        }
+                                })
+                                .then(response => response.text())
+                                .then(text => {
+                                        console.log('Raw server response:', text);
+                                        try {
+                                                const data = JSON.parse(text);
+                                                console.log('Loaded from server:', data);
+                                                if (data.success && data.data) {
+                                                        this.structures = data.data.structures || [];
+                                                        this.animations = data.data.animations || [];
+                                                } else {
+                                                        this.structures = data.structures || [];
+                                                        this.animations = data.animations || [];
+                                                }
+                                                this.updateUI();
+                                        } catch (parseError) {
+                                                console.error('JSON Parse Error:', parseError);
+                                                console.error('Response text:', text);
+                                        }
+                                })
+                                .catch(error => {
+                                        console.error('Error loading files:', error);
+                                });
+                        },
+                        
+                        updateUI: function() {
+                                // Update structures list
+                                const structuresList = document.getElementById('structures-list');
+                                if (structuresList) {
+                                        structuresList.innerHTML = '';
+                                        if (this.structures.length === 0) {
+                                                structuresList.innerHTML = '<p>No saved structures found. Upload some files to get started.</p>';
+                                        } else {
+                                                this.structures.forEach(structure => {
+                                                        const item = document.createElement('div');
+                                                        item.className = 'saved-file-item';
+                                                        item.innerHTML = `
+                                                                <span>${structure.name}</span>
+                                                                <small>${structure.size} bytes - ${new Date(structure.timestamp).toLocaleDateString()}</small>
+                                                                <button onclick="libraryManager.deleteFile('${structure.id}', 'structure')">Delete</button>
+                                                                <button onclick="libraryManager.loadFile('${structure.id}', 'structure')">Load</button>
+                                                        `;
+                                                        structuresList.appendChild(item);
+                                                });
+                                        }
+                                }
+                                
+                                // Update animations list
+                                const animationsList = document.getElementById('animations-list');
+                                if (animationsList) {
+                                        animationsList.innerHTML = '';
+                                        if (this.animations.length === 0) {
+                                                animationsList.innerHTML = '<p>No saved animations found. Upload some files to get started.</p>';
+                                        } else {
+                                                this.animations.forEach(animation => {
+                                                        const item = document.createElement('div');
+                                                        item.className = 'saved-file-item';
+                                                        item.innerHTML = `
+                                                                <span>${animation.name}</span>
+                                                                <small>${animation.size} bytes - ${new Date(animation.timestamp).toLocaleDateString()}</small>
+                                                                <button onclick="libraryManager.deleteFile('${animation.id}', 'animation')">Delete</button>
+                                                                <button onclick="libraryManager.loadFile('${animation.id}', 'animation')">Load</button>
+                                                        `;
+                                                        animationsList.appendChild(item);
+                                                });
+                                        }
+                                }
+                        },
+                        
+                        deleteFile: function(id, type) {
+                                if (confirm('Are you sure you want to delete this file?')) {
+                                        fetch('php/upload.php', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                        'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({
+                                                        id: id,
+                                                        type: type
+                                                })
+                                        })
                                         .then(response => response.json())
                                         .then(data => {
-                                                console.log('Loaded from server:', data);
-                                                this.structures = data.structures || [];
-                                                this.animations = data.animations || [];
+                                                if (data.success) {
+                                                        alert('File deleted successfully');
+                                                        this.loadFromServer();
+                                                } else {
+                                                        alert('Delete failed: ' + data.error);
+                                                }
                                         })
                                         .catch(error => {
-                                                console.error('Error loading files:', error);
+                                                console.error('Delete error:', error);
+                                                alert('Delete failed: ' + error.message);
                                         });
+                                }
+                        },
+                        
+                        loadFile: function(id, type) {
+                                // Find the file in our data
+                                const files = type === 'animation' ? this.animations : this.structures;
+                                const file = files.find(f => f.id === id);
+                                if (file) {
+                                        // You can implement file loading logic here
+                                        alert('Loading file: ' + file.name + '\n(File loading functionality can be implemented based on your needs)');
+                                }
                         },
                         
                         handleFileUpload: function(files, type) {
@@ -822,16 +921,32 @@ Query parameters:
                                         
                                         fetch('php/upload.php', {
                                                 method: 'POST',
-                                                body: formData
+                                                body: formData,
+                                                headers: {
+                                                        'Accept': 'application/json'
+                                                }
                                         })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                                console.log('Upload response:', data);
-                                                if (data.success) {
-                                                        alert(data.message);
-                                                        this.loadFromServer(); // Refresh the list
-                                                } else {
-                                                        alert('Upload failed: ' + (data.error || 'Unknown error'));
+                                        .then(response => {
+                                                console.log('Response status:', response.status);
+                                                console.log('Response headers:', response.headers.get('content-type'));
+                                                return response.text(); // Get as text first to debug
+                                        })
+                                        .then(text => {
+                                                console.log('Raw response:', text);
+                                                try {
+                                                        const data = JSON.parse(text);
+                                                        console.log('Parsed response:', data);
+                                                        if (data.success) {
+                                                                alert(data.message);
+                                                                this.loadFromServer(); // Refresh the list
+                                                                this.updateUI();
+                                                        } else {
+                                                                alert('Upload failed: ' + (data.error || 'Unknown error'));
+                                                        }
+                                                } catch (parseError) {
+                                                        console.error('JSON Parse Error:', parseError);
+                                                        console.error('Response text:', text);
+                                                        alert('Upload failed: Server returned invalid response');
                                                 }
                                         })
                                         .catch(error => {
