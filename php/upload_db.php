@@ -159,8 +159,8 @@ try {
                 break;
             }
 
-            // File size validation
-            $maxSize = ($type === 'animation') ? 50 * 1024 * 1024 : 10 * 1024 * 1024; // 50MB for animations, 10MB for structures
+            // File size validation - Allow large files up to server limits
+            $maxSize = 500 * 1024 * 1024; // 500MB limit (matches php.ini)
             if ($file['size'] > $maxSize) {
                 http_response_code(400);
                 echo json_encode(['success' => false, 'error' => 'File too large (max ' . formatFileSize($maxSize) . ')']);
