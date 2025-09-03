@@ -95,9 +95,20 @@ try {
                 break;
             }
 
-            if ($file['size'] > 10 * 1024 * 1024) { // 10MB limit
+            $maxSize = ($type === 'animation') ? 50 * 1024 * 1024 : 10 * 1024 * 1024; // 50MB for animations, 10MB for structures
+            if ($file['size'] > $maxSize) {
+                $maxSizeMB = $maxSize / (1024 * 1024);
                 http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'File too large (max 10MB)']);
+                echo json_encode([
+                    'success' => false, 
+                    'error' => 'File "' . $originalName . '" is too large (' . round($file['size'] / (1024 * 1024), 2) . 'MB). Maximum size for ' . $type . ' files: ' . $maxSizeMB . 'MB'
+                ]);
+                break;
+            }
+            
+            if ($file['size'] === 0) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'File "' . $originalName . '" is empty']);
                 break;
             }
 
@@ -106,11 +117,19 @@ try {
             $sanitizedName = sanitizeFilename($originalName);
             $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
 
-            // Validate file type
-            $allowedExtensions = ['mol', 'sdf', 'pdb', 'xyz', 'cif', 'json', 'txt'];
+            // Validate file type based on upload type
+            if ($type === 'animation') {
+                $allowedExtensions = ['mp4', 'webm', 'avi', 'mov', 'gif'];
+            } else {
+                $allowedExtensions = ['mol', 'sdf', 'pdb', 'xyz', 'cif', 'json', 'txt', 'mol2', 'cml'];
+            }
+            
             if (!in_array($fileExtension, $allowedExtensions)) {
                 http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'File type not allowed']);
+                echo json_encode([
+                    'success' => false, 
+                    'error' => 'File type "' . $fileExtension . '" not allowed. Allowed types for ' . $type . ': ' . implode(', ', $allowedExtensions)
+                ]);
                 break;
             }
 

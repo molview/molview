@@ -712,11 +712,29 @@ Query parameters:
                         </div>
                 </div>
 
+                <!-- Progress Modal -->
+                <div id="upload-progress-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001;">
+                        <div style="background: white; margin: 20% auto; width: 400px; padding: 30px; border-radius: 8px; text-align: center;">
+                                <h3 id="upload-title">Uploading Files...</h3>
+                                <div style="background: #f0f0f0; border-radius: 10px; margin: 20px 0; height: 20px; overflow: hidden;">
+                                        <div id="upload-progress-bar" style="background: #4CAF50; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                                </div>
+                                <div id="upload-status">Preparing upload...</div>
+                                <div id="upload-details" style="margin-top: 15px; font-size: 14px; color: #666;"></div>
+                                <div id="upload-buttons" style="margin-top: 20px; display: none;">
+                                        <button onclick="Library.openLibrary()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; margin-right: 10px; cursor: pointer;">Open Library</button>
+                                        <button onclick="Library.closeProgressModal()" style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Close</button>
+                                </div>
+                                <div id="upload-error-log" style="margin-top: 15px; background: #f8f8f8; border: 1px solid #ddd; padding: 10px; border-radius: 4px; text-align: left; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; display: none;"></div>
+                        </div>
+                </div>
+
                 <script>
                 // Library functionality
                 const Library = {
                         structures: [],
                         animations: [],
+                        currentUpload: null,
                         
                         init: function() {
                                 console.log('Initializing Library...');
@@ -800,22 +818,87 @@ Query parameters:
                                 }
                         },
                         
+                        showProgressModal: function(title) {
+                                document.getElementById('upload-title').textContent = title || 'Processing...';
+                                document.getElementById('upload-progress-bar').style.width = '0%';
+                                document.getElementById('upload-status').textContent = 'Preparing...';
+                                document.getElementById('upload-details').textContent = '';
+                                document.getElementById('upload-buttons').style.display = 'none';
+                                document.getElementById('upload-error-log').style.display = 'none';
+                                document.getElementById('upload-progress-modal').style.display = 'block';
+                        },
+                        
+                        updateProgress: function(percent, status, details) {
+                                document.getElementById('upload-progress-bar').style.width = percent + '%';
+                                document.getElementById('upload-status').textContent = status || '';
+                                document.getElementById('upload-details').textContent = details || '';
+                        },
+                        
+                        showError: function(error, fullLog) {
+                                document.getElementById('upload-title').textContent = 'Upload Failed';
+                                document.getElementById('upload-progress-bar').style.background = '#f44336';
+                                document.getElementById('upload-status').textContent = 'Error: ' + error;
+                                document.getElementById('upload-buttons').style.display = 'block';
+                                
+                                if (fullLog) {
+                                        document.getElementById('upload-error-log').style.display = 'block';
+                                        document.getElementById('upload-error-log').textContent = fullLog;
+                                }
+                        },
+                        
+                        showSuccess: function(message) {
+                                document.getElementById('upload-title').textContent = 'Upload Complete!';
+                                document.getElementById('upload-progress-bar').style.width = '100%';
+                                document.getElementById('upload-status').textContent = message || 'Files uploaded successfully';
+                                document.getElementById('upload-buttons').style.display = 'block';
+                        },
+                        
+                        closeProgressModal: function() {
+                                document.getElementById('upload-progress-modal').style.display = 'none';
+                        },
+                        
+                        openLibrary: function() {
+                                this.closeProgressModal();
+                                this.showLibrary(this.currentUpload || 'structures');
+                        },
+                        
                         loadFromServer: function() {
                                 fetch('php/upload.php?action=list', {
+                                        method: 'GET',
                                         headers: {
-                                                'Accept': 'application/json'
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
                                         }
                                 })
-                                .then(response => response.text())
+                                .then(response => {
+                                        console.log('Response status:', response.status);
+                                        return response.text();
+                                })
                                 .then(text => {
                                         console.log('Raw server response:', text);
                                         try {
+                                                if (!text || text.trim() === '') {
+                                                        console.log('Empty response, initializing empty library');
+                                                        this.structures = [];
+                                                        this.animations = [];
+                                                        this.updateUI();
+                                                        return;
+                                                }
+                                                
                                                 const data = JSON.parse(text);
                                                 console.log('Loaded from server:', data);
-                                                if (data.success && data.data) {
-                                                        this.structures = data.data.structures || [];
-                                                        this.animations = data.data.animations || [];
+                                                
+                                                if (data.success !== undefined) {
+                                                        if (data.success && data.data) {
+                                                                this.structures = data.data.structures || [];
+                                                                this.animations = data.data.animations || [];
+                                                        } else {
+                                                                console.error('Server returned error:', data.error);
+                                                                this.structures = [];
+                                                                this.animations = [];
+                                                        }
                                                 } else {
+                                                        // Legacy format support
                                                         this.structures = data.structures || [];
                                                         this.animations = data.animations || [];
                                                 }
@@ -823,10 +906,18 @@ Query parameters:
                                         } catch (parseError) {
                                                 console.error('JSON Parse Error:', parseError);
                                                 console.error('Response text:', text);
+                                                // Initialize empty arrays on parse error
+                                                this.structures = [];
+                                                this.animations = [];
+                                                this.updateUI();
                                         }
                                 })
                                 .catch(error => {
                                         console.error('Error loading files:', error);
+                                        // Initialize empty arrays on network error
+                                        this.structures = [];
+                                        this.animations = [];
+                                        this.updateUI();
                                 });
                         },
                         
@@ -913,46 +1004,101 @@ Query parameters:
                         },
                         
                         handleFileUpload: function(files, type) {
+                                if (!files || files.length === 0) return;
+                                
                                 console.log('Uploading files:', files, 'Type:', type);
-                                Array.from(files).forEach(file => {
+                                this.currentUpload = type + 's';
+                                
+                                const fileArray = Array.from(files);
+                                const totalFiles = fileArray.length;
+                                let completedFiles = 0;
+                                let successCount = 0;
+                                let errorLogs = [];
+                                
+                                this.showProgressModal('Uploading ' + totalFiles + ' file(s)...');
+                                
+                                const uploadFile = (file, index) => {
                                         const formData = new FormData();
                                         formData.append('file', file);
                                         formData.append('type', type);
                                         
-                                        fetch('php/upload.php', {
-                                                method: 'POST',
-                                                body: formData,
-                                                headers: {
-                                                        'Accept': 'application/json'
+                                        const initialProgress = (index / totalFiles) * 100;
+                                        this.updateProgress(initialProgress, 'Uploading ' + file.name, 'File ' + (index + 1) + ' of ' + totalFiles);
+                                        
+                                        const xhr = new XMLHttpRequest();
+                                        
+                                        xhr.upload.addEventListener('progress', (e) => {
+                                                if (e.lengthComputable) {
+                                                        const fileProgress = (e.loaded / e.total) * (100 / totalFiles);
+                                                        const totalProgress = initialProgress + fileProgress;
+                                                        this.updateProgress(totalProgress, 'Uploading ' + file.name, Math.round((e.loaded / e.total) * 100) + '% complete');
                                                 }
-                                        })
-                                        .then(response => {
-                                                console.log('Response status:', response.status);
-                                                console.log('Response headers:', response.headers.get('content-type'));
-                                                return response.text(); // Get as text first to debug
-                                        })
-                                        .then(text => {
-                                                console.log('Raw response:', text);
+                                        });
+                                        
+                                        xhr.addEventListener('load', () => {
+                                                completedFiles++;
+                                                const baseProgress = (completedFiles / totalFiles) * 100;
+                                                
                                                 try {
-                                                        const data = JSON.parse(text);
-                                                        console.log('Parsed response:', data);
-                                                        if (data.success) {
-                                                                alert(data.message);
-                                                                this.loadFromServer(); // Refresh the list
-                                                                this.updateUI();
+                                                        console.log('Response status:', xhr.status);
+                                                        console.log('Response text:', xhr.responseText);
+                                                        
+                                                        if (xhr.status === 200) {
+                                                                const data = JSON.parse(xhr.responseText);
+                                                                if (data.success) {
+                                                                        successCount++;
+                                                                        console.log('File uploaded successfully:', file.name);
+                                                                } else {
+                                                                        errorLogs.push('File: ' + file.name + '\nError: ' + (data.error || 'Unknown error'));
+                                                                        console.error('Upload failed for', file.name, ':', data.error);
+                                                                }
                                                         } else {
-                                                                alert('Upload failed: ' + (data.error || 'Unknown error'));
+                                                                errorLogs.push('File: ' + file.name + '\nHTTP Error: ' + xhr.status + '\nResponse: ' + xhr.responseText);
+                                                                console.error('HTTP error for', file.name, ':', xhr.status);
                                                         }
                                                 } catch (parseError) {
-                                                        console.error('JSON Parse Error:', parseError);
-                                                        console.error('Response text:', text);
-                                                        alert('Upload failed: Server returned invalid response');
+                                                        errorLogs.push('File: ' + file.name + '\nParse Error: ' + parseError.message + '\nResponse: ' + xhr.responseText);
+                                                        console.error('Parse error for', file.name, ':', parseError);
                                                 }
-                                        })
-                                        .catch(error => {
-                                                console.error('Upload error:', error);
-                                                alert('Upload failed: ' + error.message);
+                                                
+                                                if (completedFiles === totalFiles) {
+                                                        // All files processed
+                                                        this.loadFromServer(); // Refresh the list
+                                                        
+                                                        if (successCount === totalFiles) {
+                                                                this.showSuccess(successCount + ' file(s) uploaded successfully!');
+                                                        } else if (successCount > 0) {
+                                                                this.showSuccess(successCount + ' of ' + totalFiles + ' files uploaded successfully');
+                                                                if (errorLogs.length > 0) {
+                                                                        document.getElementById('upload-error-log').style.display = 'block';
+                                                                        document.getElementById('upload-error-log').textContent = 'Errors:\n\n' + errorLogs.join('\n\n');
+                                                                }
+                                                        } else {
+                                                                this.showError('All uploads failed', 'Error Details:\n\n' + errorLogs.join('\n\n'));
+                                                        }
+                                                } else {
+                                                        this.updateProgress(baseProgress, 'Processing...', 'Completed ' + completedFiles + ' of ' + totalFiles + ' files');
+                                                }
                                         });
+                                        
+                                        xhr.addEventListener('error', () => {
+                                                completedFiles++;
+                                                errorLogs.push('File: ' + file.name + '\nNetwork Error: Failed to connect to server');
+                                                console.error('Network error for', file.name);
+                                                
+                                                if (completedFiles === totalFiles) {
+                                                        this.showError('Upload failed due to network errors', 'Error Details:\n\n' + errorLogs.join('\n\n'));
+                                                }
+                                        });
+                                        
+                                        xhr.open('POST', 'php/upload.php');
+                                        xhr.setRequestHeader('Accept', 'application/json');
+                                        xhr.send(formData);
+                                };
+                                
+                                // Upload files sequentially to avoid overwhelming the server
+                                fileArray.forEach((file, index) => {
+                                        setTimeout(() => uploadFile(file, index), index * 100);
                                 });
                         },
                         
