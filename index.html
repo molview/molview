@@ -801,33 +801,44 @@ Query parameters:
                         },
                         
                         loadFromServer: function() {
-                                fetch('php/upload.php?action=list', {
-                                        headers: {
-                                                'Accept': 'application/json'
-                                        }
-                                })
-                                .then(response => response.text())
-                                .then(text => {
-                                        console.log('Raw server response:', text);
-                                        try {
-                                                const data = JSON.parse(text);
-                                                console.log('Loaded from server:', data);
-                                                if (data.success && data.data) {
-                                                        this.structures = data.data.structures || [];
-                                                        this.animations = data.data.animations || [];
+                                console.log('Loading library from server...');
+                                
+                                // Use XMLHttpRequest instead of fetch to avoid conflicts
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('GET', 'php/upload.php?action=list', true);
+                                xhr.setRequestHeader('Accept', 'application/json');
+                                
+                                xhr.onreadystatechange = () => {
+                                        if (xhr.readyState === 4) {
+                                                if (xhr.status === 200) {
+                                                        try {
+                                                                console.log('Raw server response:', xhr.responseText);
+                                                                const data = JSON.parse(xhr.responseText);
+                                                                console.log('Loaded from server:', data);
+                                                                
+                                                                if (data.success && data.data) {
+                                                                        this.structures = data.data.structures || [];
+                                                                        this.animations = data.data.animations || [];
+                                                                } else {
+                                                                        this.structures = data.structures || [];
+                                                                        this.animations = data.animations || [];
+                                                                }
+                                                                this.updateUI();
+                                                        } catch (parseError) {
+                                                                console.error('JSON Parse Error:', parseError);
+                                                                console.error('Response text:', xhr.responseText);
+                                                        }
                                                 } else {
-                                                        this.structures = data.structures || [];
-                                                        this.animations = data.animations || [];
+                                                        console.error('Network Error:', xhr.status, xhr.statusText);
                                                 }
-                                                this.updateUI();
-                                        } catch (parseError) {
-                                                console.error('JSON Parse Error:', parseError);
-                                                console.error('Response text:', text);
                                         }
-                                })
-                                .catch(error => {
-                                        console.error('Error loading files:', error);
-                                });
+                                };
+                                
+                                xhr.onerror = (error) => {
+                                        console.error('XHR Error:', error);
+                                };
+                                
+                                xhr.send();
                         },
                         
                         updateUI: function() {
@@ -914,45 +925,108 @@ Query parameters:
                         
                         handleFileUpload: function(files, type) {
                                 console.log('Uploading files:', files, 'Type:', type);
-                                Array.from(files).forEach(file => {
+                                
+                                Array.from(files).forEach((file, index) => {
+                                        // Create progress indicator
+                                        const progressId = `upload-progress-${Date.now()}-${index}`;
+                                        const progressHtml = `
+                                                <div id="${progressId}" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 10001; min-width: 300px;">
+                                                        <h3>Uploading: ${file.name}</h3>
+                                                        <div style="background: #f0f0f0; border-radius: 4px; overflow: hidden; margin: 10px 0;">
+                                                                <div id="${progressId}-bar" style="height: 20px; background: #4CAF50; width: 0%; transition: width 0.3s;"></div>
+                                                        </div>
+                                                        <div id="${progressId}-status">Preparing upload...</div>
+                                                        <button onclick="this.parentElement.remove()" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin-top: 10px; cursor: pointer;">Cancel</button>
+                                                </div>
+                                        `;
+                                        document.body.insertAdjacentHTML('beforeend', progressHtml);
+                                        
+                                        const progressDiv = document.getElementById(progressId);
+                                        const progressBar = document.getElementById(`${progressId}-bar`);
+                                        const progressStatus = document.getElementById(`${progressId}-status`);
+                                        
                                         const formData = new FormData();
                                         formData.append('file', file);
                                         formData.append('type', type);
                                         
-                                        fetch('php/upload.php', {
-                                                method: 'POST',
-                                                body: formData,
-                                                headers: {
-                                                        'Accept': 'application/json'
+                                        // Use XMLHttpRequest for better progress tracking and compatibility
+                                        const xhr = new XMLHttpRequest();
+                                        
+                                        xhr.upload.onprogress = (e) => {
+                                                if (e.lengthComputable) {
+                                                        const percentComplete = (e.loaded / e.total) * 100;
+                                                        progressBar.style.width = percentComplete + '%';
+                                                        progressStatus.textContent = `Uploading... ${Math.round(percentComplete)}%`;
                                                 }
-                                        })
-                                        .then(response => {
-                                                console.log('Response status:', response.status);
-                                                console.log('Response headers:', response.headers.get('content-type'));
-                                                return response.text(); // Get as text first to debug
-                                        })
-                                        .then(text => {
-                                                console.log('Raw response:', text);
-                                                try {
-                                                        const data = JSON.parse(text);
-                                                        console.log('Parsed response:', data);
-                                                        if (data.success) {
-                                                                alert(data.message);
-                                                                this.loadFromServer(); // Refresh the list
-                                                                this.updateUI();
-                                                        } else {
-                                                                alert('Upload failed: ' + (data.error || 'Unknown error'));
+                                        };
+                                        
+                                        xhr.onload = () => {
+                                                progressStatus.textContent = 'Processing...';
+                                                
+                                                if (xhr.status === 200) {
+                                                        try {
+                                                                console.log('Raw response:', xhr.responseText);
+                                                                const data = JSON.parse(xhr.responseText);
+                                                                console.log('Parsed response:', data);
+                                                                
+                                                                if (data.success) {
+                                                                        progressBar.style.width = '100%';
+                                                                        progressBar.style.background = '#4CAF50';
+                                                                        progressStatus.innerHTML = `
+                                                                                <div style="color: green; font-weight: bold;">✓ Upload Complete!</div>
+                                                                                <button onclick="document.getElementById('${progressId}').remove(); Library.loadFromServer(); Library.showLibrary('${type}s');" style="background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-top: 10px; cursor: pointer;">View in Library</button>
+                                                                        `;
+                                                                        this.loadFromServer();
+                                                                } else {
+                                                                        progressBar.style.background = '#f44336';
+                                                                        progressStatus.innerHTML = `
+                                                                                <div style="color: red; font-weight: bold;">❌ Upload Failed</div>
+                                                                                <div style="margin: 10px 0; background: #ffebee; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 100px; overflow-y: auto;">
+                                                                                        Error: ${data.error || 'Unknown error'}
+                                                                                        <br><br>Full Response: ${xhr.responseText}
+                                                                                </div>
+                                                                                <button onclick="document.getElementById('${progressId}').remove();" style="background: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+                                                                        `;
+                                                                }
+                                                        } catch (parseError) {
+                                                                console.error('JSON Parse Error:', parseError);
+                                                                progressBar.style.background = '#f44336';
+                                                                progressStatus.innerHTML = `
+                                                                        <div style="color: red; font-weight: bold;">❌ Parse Error</div>
+                                                                        <div style="margin: 10px 0; background: #ffebee; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 100px; overflow-y: auto;">
+                                                                                Parse Error: ${parseError.message}
+                                                                                <br><br>Server Response: ${xhr.responseText}
+                                                                        </div>
+                                                                        <button onclick="document.getElementById('${progressId}').remove();" style="background: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+                                                                `;
                                                         }
-                                                } catch (parseError) {
-                                                        console.error('JSON Parse Error:', parseError);
-                                                        console.error('Response text:', text);
-                                                        alert('Upload failed: Server returned invalid response');
+                                                } else {
+                                                        progressBar.style.background = '#f44336';
+                                                        progressStatus.innerHTML = `
+                                                                <div style="color: red; font-weight: bold;">❌ Network Error</div>
+                                                                <div style="margin: 10px 0; background: #ffebee; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                                                                        HTTP ${xhr.status}: ${xhr.statusText}
+                                                                        <br>Response: ${xhr.responseText}
+                                                                </div>
+                                                                <button onclick="document.getElementById('${progressId}').remove();" style="background: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+                                                        `;
                                                 }
-                                        })
-                                        .catch(error => {
+                                        };
+                                        
+                                        xhr.onerror = (error) => {
                                                 console.error('Upload error:', error);
-                                                alert('Upload failed: ' + error.message);
-                                        });
+                                                progressBar.style.background = '#f44336';
+                                                progressStatus.innerHTML = `
+                                                        <div style="color: red; font-weight: bold;">❌ Upload Error</div>
+                                                        <div style="margin: 10px 0; background: #ffebee; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                                                                Network error occurred during upload
+                                                        </div>
+                                                        <button onclick="document.getElementById('${progressId}').remove();" style="background: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+                                                `;
+                                        };
+                                        
+                                        xhr.open('POST', 'php/upload.php', true);
+                                        xhr.send(formData);
                                 });
                         },
                         
@@ -1035,57 +1109,72 @@ Query parameters:
                         
                         deleteFile: function(fileId, type) {
                                 if (confirm('Are you sure you want to delete this file?')) {
-                                        fetch('php/upload.php', {
-                                                method: 'DELETE',
-                                                headers: {
-                                                        'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({
-                                                        id: fileId,
-                                                        type: type
-                                                })
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                                if (data.success) {
-                                                        alert('File deleted successfully');
-                                                        this.loadFromServer();
-                                                        this.showLibrary(type + 's'); // Refresh the modal
+                                        const xhr = new XMLHttpRequest();
+                                        xhr.open('DELETE', 'php/upload.php', true);
+                                        xhr.setRequestHeader('Content-Type', 'application/json');
+                                        
+                                        xhr.onload = () => {
+                                                if (xhr.status === 200) {
+                                                        try {
+                                                                const data = JSON.parse(xhr.responseText);
+                                                                if (data.success) {
+                                                                        alert('File deleted successfully');
+                                                                        this.loadFromServer();
+                                                                        this.showLibrary(type + 's'); // Refresh the modal
+                                                                } else {
+                                                                        alert('Delete failed: ' + (data.error || 'Unknown error'));
+                                                                }
+                                                        } catch (e) {
+                                                                alert('Delete failed: Invalid server response');
+                                                        }
                                                 } else {
-                                                        alert('Delete failed: ' + (data.error || 'Unknown error'));
+                                                        alert('Delete failed: HTTP ' + xhr.status);
                                                 }
-                                        })
-                                        .catch(error => {
-                                                console.error('Delete error:', error);
-                                                alert('Delete failed: ' + error.message);
-                                        });
+                                        };
+                                        
+                                        xhr.onerror = () => {
+                                                alert('Delete failed: Network error');
+                                        };
+                                        
+                                        xhr.send(JSON.stringify({
+                                                id: fileId,
+                                                type: type
+                                        }));
                                 }
                         },
                         
                         clearAllFiles: function() {
-                                fetch('php/upload.php', {
-                                        method: 'DELETE',
-                                        headers: {
-                                                'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                                action: 'clear_all'
-                                        })
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                        if (data.success) {
-                                                this.structures = [];
-                                                this.animations = [];
-                                                alert('Library cleared successfully!');
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('DELETE', 'php/upload.php', true);
+                                xhr.setRequestHeader('Content-Type', 'application/json');
+                                
+                                xhr.onload = () => {
+                                        if (xhr.status === 200) {
+                                                try {
+                                                        const data = JSON.parse(xhr.responseText);
+                                                        if (data.success) {
+                                                                this.structures = [];
+                                                                this.animations = [];
+                                                                alert('Library cleared successfully!');
+                                                                document.getElementById('library-modal').style.display = 'none';
+                                                        } else {
+                                                                alert('Clear failed: ' + (data.error || 'Unknown error'));
+                                                        }
+                                                } catch (e) {
+                                                        alert('Clear failed: Invalid server response');
+                                                }
                                         } else {
-                                                alert('Clear failed: ' + (data.error || 'Unknown error'));
+                                                alert('Clear failed: HTTP ' + xhr.status);
                                         }
-                                })
-                                .catch(error => {
-                                        console.error('Clear error:', error);
-                                        alert('Clear failed: ' + error.message);
-                                });
+                                };
+                                
+                                xhr.onerror = () => {
+                                        alert('Clear failed: Network error');
+                                };
+                                
+                                xhr.send(JSON.stringify({
+                                        action: 'clear_all'
+                                }));
                         }
                 };
 
