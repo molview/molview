@@ -822,6 +822,126 @@ Query parameters:
                         </div>
                 </div>
 
+                <!-- Bottom PWA Install Button -->
+                <div id="bottom-pwa-button" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
+                        <button id="bottom-install-pwa" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;" title="Install MolView as a Progressive Web App for offline access">
+                                📦 Install MolView
+                        </button>
+                </div>
+
+                <script>
+                // Bottom PWA Install Button functionality
+                const BottomPWAInstaller = {
+                        isAppInstalled: false,
+                        deferredPrompt: null,
+                        
+                        isPWAInstalled: async function() {
+                                try {
+                                        if ("getInstalledRelatedApps" in window.navigator) {
+                                                console.log("check if pwa is installed")
+                                                const relatedApps = await window.navigator.getInstalledRelatedApps();
+                                                let installed = false;
+                                                console.log({relatedApps})
+                                                relatedApps.forEach((app) => {
+                                                        console.log(app.platform, app.url);
+                                                        if (app.url === window.location.origin + "/manifest.json") {
+                                                                installed = true;
+                                                        }
+                                                });
+                                                const isAsPwa = window.matchMedia('(display-mode: standalone)').matches;
+                                                this.isAppInstalled = installed || relatedApps.length > 0 || isAsPwa || this.deferredPrompt == null;
+                                        } else {
+                                                // Fallback for embedded contexts - check if running as PWA
+                                                const isAsPwa = window.matchMedia('(display-mode: standalone)').matches;
+                                                this.isAppInstalled = isAsPwa || this.deferredPrompt == null;
+                                        }
+                                } catch (error) {
+                                        console.log("getInstalledRelatedApps not available in this context, using fallback detection");
+                                        // Fallback for embedded contexts like Replit webview
+                                        const isAsPwa = window.matchMedia('(display-mode: standalone)').matches;
+                                        this.isAppInstalled = isAsPwa || this.deferredPrompt == null;
+                                }
+                                this.updateButtonVisibility();
+                        },
+                        
+                        updateButtonVisibility: function() {
+                                const bottomButton = document.getElementById('bottom-pwa-button');
+                                if (bottomButton) {
+                                        if (this.isAppInstalled || !this.deferredPrompt) {
+                                                bottomButton.style.display = 'none';
+                                        } else {
+                                                bottomButton.style.display = 'block';
+                                        }
+                                }
+                        },
+                        
+                        handleAddToHomeScreenClick: function() {
+                                console.log("try to install pwa from bottom button", { deferredPrompt: this.deferredPrompt });
+                                
+                                if (!this.deferredPrompt) {
+                                        // Fallback for browsers that don't support install prompt
+                                        alert('To install MolView as an app:\n\n' +
+                                              'Chrome/Edge: Click the ⋮ menu > Install MolView\n' +
+                                              'Safari: Share button > Add to Home Screen\n' +
+                                              'Firefox: Address bar install icon');
+                                        return;
+                                }
+                                
+                                this.deferredPrompt.prompt();
+                                this.deferredPrompt.userChoice.then((choiceResult) => {
+                                        console.log("USER CHOICE from bottom button");
+                                        if (choiceResult.outcome === 'accepted') {
+                                                console.log('The app was added to the home screen from bottom button');
+                                        } else {
+                                                console.log('The app was not added to the home screen from bottom button');
+                                        }
+                                        this.deferredPrompt = null;
+                                        this.updateButtonVisibility();
+                                });
+                        },
+                        
+                        init: function() {
+                                const bottomInstallBtn = document.getElementById('bottom-install-pwa');
+                                if (bottomInstallBtn) {
+                                        bottomInstallBtn.addEventListener('click', () => {
+                                                this.handleAddToHomeScreenClick();
+                                        });
+                                }
+                                
+                                // Listen for beforeinstallprompt event
+                                window.addEventListener('beforeinstallprompt', (e) => {
+                                        console.log('Bottom PWA install prompt available');
+                                        e.preventDefault();
+                                        this.deferredPrompt = e;
+                                        this.isPWAInstalled();
+                                });
+                                
+                                // Listen for app installation
+                                window.addEventListener('appinstalled', () => {
+                                        console.log('PWA was installed (detected by bottom button)');
+                                        this.isAppInstalled = true;
+                                        this.deferredPrompt = null;
+                                        this.updateButtonVisibility();
+                                });
+                                
+                                // Add hover effects
+                                const button = document.getElementById('bottom-install-pwa');
+                                if (button) {
+                                        button.addEventListener('mouseenter', function() {
+                                                this.style.transform = 'translateY(-2px)';
+                                                this.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+                                        });
+                                        
+                                        button.addEventListener('mouseleave', function() {
+                                                this.style.transform = 'translateY(0)';
+                                                this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+                                        });
+                                }
+                                
+                                this.isPWAInstalled();
+                        }
+                };
+
                 <script>
                 // Library functionality
                 const Library = {
@@ -1698,6 +1818,7 @@ Query parameters:
                         console.log('DOM loaded, initializing Library...');
                         Library.init();
                         PWAInstaller.init();
+                        BottomPWAInstaller.init();
                 });
 
                 // Also try to initialize after a short delay in case DOM events don't fire
@@ -1707,6 +1828,9 @@ Query parameters:
                         }
                         if (typeof PWAInstaller !== 'undefined') {
                                 PWAInstaller.init();
+                        }
+                        if (typeof BottomPWAInstaller !== 'undefined') {
+                                BottomPWAInstaller.init();
                         }
                 }, 1000);
                 </script>
