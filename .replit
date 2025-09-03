@@ -42,6 +42,10 @@ args = "php -S 0.0.0.0:8080"
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
 [deployment]
 deploymentTarget = "autoscale"
 run = ["php", "-S", "0.0.0.0:5000"]
