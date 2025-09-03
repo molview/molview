@@ -719,42 +719,92 @@ Query parameters:
                         animations: [],
                         
                         init: function() {
+                                console.log('Initializing Library...');
                                 this.loadFromServer();
-                                
+                                this.setupEventHandlers();
+                        },
+                        
+                        setupEventHandlers: function() {
                                 // Upload 3D Structure handler
-                                document.getElementById('action-upload-3d-structure').onclick = () => {
-                                        document.getElementById('upload-3d-structure').click();
-                                };
+                                const uploadStructureBtn = document.getElementById('action-upload-3d-structure');
+                                if (uploadStructureBtn) {
+                                        uploadStructureBtn.onclick = (e) => {
+                                                e.preventDefault();
+                                                console.log('Upload 3D Structure clicked');
+                                                document.getElementById('upload-3d-structure').click();
+                                        };
+                                }
                                 
                                 // Upload Animation handler
-                                document.getElementById('action-upload-animation').onclick = () => {
-                                        document.getElementById('upload-animation').click();
-                                };
+                                const uploadAnimationBtn = document.getElementById('action-upload-animation');
+                                if (uploadAnimationBtn) {
+                                        uploadAnimationBtn.onclick = (e) => {
+                                                e.preventDefault();
+                                                console.log('Upload Animation clicked');
+                                                document.getElementById('upload-animation').click();
+                                        };
+                                }
                                 
                                 // View saved structures
-                                document.getElementById('action-view-saved-structures').onclick = () => {
-                                        this.showLibrary('structures');
-                                };
+                                const viewStructuresBtn = document.getElementById('action-view-saved-structures');
+                                if (viewStructuresBtn) {
+                                        viewStructuresBtn.onclick = (e) => {
+                                                e.preventDefault();
+                                                console.log('View Saved Structures clicked');
+                                                this.showLibrary('structures');
+                                        };
+                                }
                                 
                                 // View saved animations
-                                document.getElementById('action-view-saved-animations').onclick = () => {
-                                        this.showLibrary('animations');
-                                };
+                                const viewAnimationsBtn = document.getElementById('action-view-saved-animations');
+                                if (viewAnimationsBtn) {
+                                        viewAnimationsBtn.onclick = (e) => {
+                                                e.preventDefault();
+                                                console.log('View Saved Animations clicked');
+                                                this.showLibrary('animations');
+                                        };
+                                }
+                                
+                                // Clear library
+                                const clearLibraryBtn = document.getElementById('action-clear-library');
+                                if (clearLibraryBtn) {
+                                        clearLibraryBtn.onclick = (e) => {
+                                                e.preventDefault();
+                                                if(confirm('Are you sure you want to clear all saved content?')) {
+                                                        this.clearAllFiles();
+                                                }
+                                        };
+                                }
+                                
+                                // Close modal
+                                const closeModalBtn = document.getElementById('close-library-modal');
+                                if (closeModalBtn) {
+                                        closeModalBtn.onclick = () => {
+                                                document.getElementById('library-modal').style.display = 'none';
+                                        };
+                                }
                                 
                                 // File upload event listeners
-                                document.getElementById('upload-3d-structure').onchange = (e) => {
-                                        this.handleFileUpload(e.target.files, 'structure');
-                                };
+                                const upload3dInput = document.getElementById('upload-3d-structure');
+                                if (upload3dInput) {
+                                        upload3dInput.onchange = (e) => {
+                                                this.handleFileUpload(e.target.files, 'structure');
+                                        };
+                                }
                                 
-                                document.getElementById('upload-animation').onchange = (e) => {
-                                        this.handleFileUpload(e.target.files, 'animation');
-                                };
+                                const uploadAnimInput = document.getElementById('upload-animation');
+                                if (uploadAnimInput) {
+                                        uploadAnimInput.onchange = (e) => {
+                                                this.handleFileUpload(e.target.files, 'animation');
+                                        };
+                                }
                         },
                         
                         loadFromServer: function() {
                                 fetch('php/upload.php?action=list')
                                         .then(response => response.json())
                                         .then(data => {
+                                                console.log('Loaded from server:', data);
                                                 this.structures = data.structures || [];
                                                 this.animations = data.animations || [];
                                         })
@@ -764,6 +814,7 @@ Query parameters:
                         },
                         
                         handleFileUpload: function(files, type) {
+                                console.log('Uploading files:', files, 'Type:', type);
                                 Array.from(files).forEach(file => {
                                         const formData = new FormData();
                                         formData.append('file', file);
@@ -775,6 +826,7 @@ Query parameters:
                                         })
                                         .then(response => response.json())
                                         .then(data => {
+                                                console.log('Upload response:', data);
                                                 if (data.success) {
                                                         alert(data.message);
                                                         this.loadFromServer(); // Refresh the list
@@ -789,100 +841,68 @@ Query parameters:
                                 });
                         },
                         
-                        handleStructureUpload: function(files) {
-                                this.handleFileUpload(files, 'structure');
-                        },nimations');
-                                };
-                                
-                                // Clear library
-                                document.getElementById('action-clear-library').onclick = () => {
-                                        if(confirm('Are you sure you want to clear all saved content?')) {
-                                                localStorage.removeItem('molview_structures');
-                                                localStorage.removeItem('molview_animations');
-                                                this.structures = [];
-                                                this.animations = [];
-                                                alert('Library cleared successfully!');
-                                        }
-                                };
-                                
-                                // Close modal
-                                document.getElementById('close-library-modal').onclick = () => {
-                                        document.getElementById('library-modal').style.display = 'none';
-                                };
-                                
-                                // File upload handlers
-                                document.getElementById('upload-3d-structure').onchange = (e) => {
-                                        this.handleStructureUpload(e.target.files);
-                                };
-                                
-                                document.getElementById('upload-animation').onchange = (e) => {
-                                        this.handleAnimationUpload(e.target.files);
-                                };
-                        },
-                        
-                        handleStructureUpload: function(files) {
-                                Array.from(files).forEach(file => {
-                                        const reader = new FileReader();
-                                        reader.onload = (e) => {
-                                                const structure = {
-                                                        name: file.name,
-                                                        type: file.name.split('.').pop().toLowerCase(),
-                                                        content: e.target.result,
-                                                        timestamp: new Date().toISOString(),
-                                                        size: file.size
-                                                };
-                                                this.structures.push(structure);
-                                                localStorage.setItem('molview_structures', JSON.stringify(this.structures));
-                                                alert(`Structure "${file.name}" saved to library!`);
-                                        };
-                                        reader.readAsText(file);
-                                });
-                        },
-                        
-                        handleAnimationUpload: function(files) {
-                                this.handleFileUpload(files, 'animation');
-                        },
-                        
                         showLibrary: function(type) {
+                                console.log('Showing library:', type);
                                 const modal = document.getElementById('library-modal');
                                 const title = document.getElementById('library-modal-title');
-                                const content = document.getElementById('library-modal-content');
+                                const content = document.getElementById('library-content');
                                 
-                                title.textContent = type === 'structures' ? 'Saved Structures' : 'Saved Animations';
+                                if (!modal || !title || !content) {
+                                        console.error('Library modal elements not found');
+                                        return;
+                                }
+                                
+                                title.textContent = type === 'structures' ? 'Saved 3D Structures' : 'Saved Animations';
                                 
                                 const items = type === 'structures' ? this.structures : this.animations;
                                 
-                                let html = '<div class="library-grid">';
+                                let html = '';
                                 
                                 if (items.length === 0) {
-                                        html += '<p>No saved ' + type + ' found.</p>';
+                                        html = '<p style="text-align: center; color: #666; margin-top: 50px;">No saved ' + type + ' found. Upload some files to get started!</p>';
                                 } else {
-                                        items.forEach((item, index) => {
+                                        html = items.map((item, index) => {
                                                 const displayName = item.name || `${type.slice(0, -1)} ${index + 1}`;
                                                 const fileSize = item.size ? this.formatFileSize(item.size) : 'Unknown size';
                                                 const uploadDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Unknown date';
                                                 
-                                                html += `
-                                                <div class="library-item" style="border: 1px solid #ddd; padding: 10px; margin: 5px; border-radius: 5px;">
-                                                        <h4>${displayName}</h4>
-                                                        <p><small>Size: ${fileSize} | Uploaded: ${uploadDate}</small></p>
-                                                        <div class="library-item-actions">
-                                                                <button onclick="Library.downloadFile('${item.id}', '${type.slice(0, -1)}')" 
-                                                                        style="background: #4CAF50; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 3px; cursor: pointer;">
-                                                                        Download
-                                                                </button>
-                                                                <button onclick="Library.deleteFile('${item.id}', '${type.slice(0, -1)}')" 
-                                                                        style="background: #f44336; color: white; border: none; padding: 5px 10px; margin: 2px; border-radius: 3px; cursor: pointer;">
-                                                                        Delete
-                                                                </button>
+                                                return `
+                                                <div style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 10px; background: #f9f9f9;">
+                                                        <h4 style="margin: 0 0 10px 0; color: #333;">${displayName}</h4>
+                                                        <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                                                                Type: ${item.type ? item.type.toUpperCase() : 'Unknown'} | 
+                                                                Size: ${fileSize} | 
+                                                                Added: ${uploadDate}
+                                                        </p>
+                                                        <div style="margin-top: 10px;">
+                                                                ${type === 'structures' ? `<button onclick="Library.loadStructure(${index})" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Load in Viewer</button>` : ''}
+                                                                <button onclick="Library.downloadFile('${item.id || index}', '${type.slice(0, -1)}')" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Download</button>
+                                                                <button onclick="Library.deleteFile('${item.id || index}', '${type.slice(0, -1)}')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer;">Delete</button>
                                                         </div>
                                                 </div>`;
-                                        });
+                                        }).join('');
                                 }
                                 
-                                html += '</div>';
                                 content.innerHTML = html;
                                 modal.style.display = 'block';
+                        },
+                        
+                        loadStructure: function(index) {
+                                const structure = this.structures[index];
+                                if (!structure) {
+                                        alert('Structure not found');
+                                        return;
+                                }
+                                
+                                try {
+                                        // For now, just download the file since Model loading functions may not be available
+                                        this.downloadFile(structure.id || index, 'structure');
+                                        document.getElementById('library-modal').style.display = 'none';
+                                        alert(`Downloaded structure: ${structure.name}`);
+                                } catch(e) {
+                                        console.error('Error loading structure:', e);
+                                        alert(`Error loading structure: ${e.message}`);
+                                }
                         },
                         
                         formatFileSize: function(bytes) {
@@ -894,6 +914,7 @@ Query parameters:
                         },
                         
                         downloadFile: function(fileId, type) {
+                                console.log('Downloading file:', fileId, type);
                                 window.open(`php/download.php?id=${fileId}&type=${type}`, '_blank');
                         },
                         
@@ -924,112 +945,47 @@ Query parameters:
                                                 alert('Delete failed: ' + error.message);
                                         });
                                 }
-                        },ary-modal-title');
-                                const content = document.getElementById('library-content');
-                                
-                                if(type === 'structures') {
-                                        title.textContent = 'Saved 3D Structures';
-                                        content.innerHTML = this.renderStructures();
-                                } else {
-                                        title.textContent = 'Saved Animations';
-                                        content.innerHTML = this.renderAnimations();
-                                }
-                                
-                                modal.style.display = 'block';
                         },
                         
-                        renderStructures: function() {
-                                if(this.structures.length === 0) {
-                                        return '<p style="text-align: center; color: #666; margin-top: 50px;">No structures saved yet. Use "Upload 3D Structure" to add some!</p>';
-                                }
-                                
-                                return this.structures.map((structure, index) => `
-                                        <div style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 10px; background: #f9f9f9;">
-                                                <h4 style="margin: 0 0 10px 0; color: #333;">${structure.name}</h4>
-                                                <p style="margin: 5px 0; color: #666; font-size: 14px;">
-                                                        Type: ${structure.type.toUpperCase()} | 
-                                                        Size: ${(structure.size/1024).toFixed(1)} KB | 
-                                                        Added: ${new Date(structure.timestamp).toLocaleDateString()}
-                                                </p>
-                                                <div style="margin-top: 10px;">
-                                                        <button onclick="Library.loadStructure(${index})" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Load in Viewer</button>
-                                                        <button onclick="Library.downloadStructure(${index})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Download</button>
-                                                        <button onclick="Library.deleteStructure(${index})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer;">Delete</button>
-                                                </div>
-                                        </div>
-                                `).join('');
-                        },
-                        
-                        renderAnimations: function() {
-                                if(this.animations.length === 0) {
-                                        return '<p style="text-align: center; color: #666; margin-top: 50px;">No animations saved yet. Use "Upload Animation Video" to add some!</p>';
-                                }
-                                
-                                return this.animations.map((animation, index) => `
-                                        <div style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 10px; background: #f9f9f9;">
-                                                <h4 style="margin: 0 0 10px 0; color: #333;">${animation.name}</h4>
-                                                <p style="margin: 5px 0; color: #666; font-size: 14px;">
-                                                        Type: ${animation.type.toUpperCase()} | 
-                                                        Size: ${(animation.size/1024/1024).toFixed(1)} MB | 
-                                                        Added: ${new Date(animation.timestamp).toLocaleDateString()}
-                                                </p>
-                                                <video controls style="max-width: 100%; height: 200px; margin: 10px 0; background: #000; border-radius: 4px;">
-                                                        <source src="${animation.content}" type="video/${animation.type}">
-                                                        Your browser does not support video playback.
-                                                </video>
-                                                <div style="margin-top: 10px;">
-                                                        <button onclick="Library.downloadAnimation(${index})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Download</button>
-                                                        <button onclick="Library.deleteAnimation(${index})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer;">Delete</button>
-                                                </div>
-                                        </div>
-                                `).join('');
-                        },
-                        
-                        loadStructure: function(index) {
-                                const structure = this.structures[index];
-                                try {
-                                        if(structure.type === 'pdb') {
-                                                Model.loadPDB(structure.content);
-                                        } else if(structure.type === 'mol' || structure.type === 'sdf') {
-                                                Model.loadMOL(structure.content);
-                                        } else if(structure.type === 'cif') {
-                                                Model.loadCIF(structure.content);
+                        clearAllFiles: function() {
+                                fetch('php/upload.php', {
+                                        method: 'DELETE',
+                                        headers: {
+                                                'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                                action: 'clear_all'
+                                        })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                        if (data.success) {
+                                                this.structures = [];
+                                                this.animations = [];
+                                                alert('Library cleared successfully!');
+                                        } else {
+                                                alert('Clear failed: ' + (data.error || 'Unknown error'));
                                         }
-                                        document.getElementById('library-modal').style.display = 'none';
-                                        alert(`Loaded structure: ${structure.name}`);
-                                } catch(e) {
-                                        alert(`Error loading structure: ${e.message}`);
-                                }
-                        },
-                        
-                        downloadStructure: function(index) {
-                                const structure = this.structures[index];
-                                const blob = new Blob([structure.content], { type: 'text/plain' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = structure.name;
-                                a.click();
-                                URL.revokeObjectURL(url);
-                        },
-                        
-                        downloadAnimation: function(index) {
-                                const animation = this.animations[index];
-                                const a = document.createElement('a');
-                                a.href = animation.content;
-                                a.download = animation.name;
-                                a.click();
-                        },
-                        
-                        closeLibrary: function() {
-                                document.getElementById('library-modal').style.display = 'none';
+                                })
+                                .catch(error => {
+                                        console.error('Clear error:', error);
+                                        alert('Clear failed: ' + error.message);
+                                });
                         }
                 };
 
                 // Initialize Library when page loads
                 document.addEventListener('DOMContentLoaded', function() {
+                        console.log('DOM loaded, initializing Library...');
                         Library.init();
                 });
+
+                // Also try to initialize after a short delay in case DOM events don't fire
+                setTimeout(function() {
+                        if (typeof Library !== 'undefined') {
+                                Library.init();
+                        }
+                }, 1000);
                 </script>
         </body>
 </html>

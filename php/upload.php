@@ -1,4 +1,3 @@
-
 <?php
 /**
  * File Upload API for MolView - Handle permanent file storage
@@ -53,7 +52,7 @@ function sanitizeFilename($filename) {
 switch ($method) {
     case 'GET':
         $action = $_GET['action'] ?? '';
-        
+
         if ($action === 'list') {
             echo json_encode(loadMetadata());
         } else {
@@ -61,27 +60,27 @@ switch ($method) {
             echo json_encode(['error' => 'Invalid action']);
         }
         break;
-        
+
     case 'POST':
         if (isset($_FILES['file'])) {
             $file = $_FILES['file'];
             $type = $_POST['type'] ?? 'structure'; // 'structure' or 'animation'
-            
+
             if ($file['error'] !== UPLOAD_ERR_OK) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Upload failed']);
                 break;
             }
-            
+
             $fileId = uniqid();
             $originalName = $file['name'];
             $sanitizedName = sanitizeFilename($originalName);
             $fileExtension = pathinfo($originalName, PATHINFO_EXTENSION);
-            
+
             // Determine storage directory
             $targetDir = ($type === 'animation') ? $animationsDir : $structuresDir;
             $targetFile = $targetDir . $fileId . '_' . $sanitizedName;
-            
+
             if (move_uploaded_file($file['tmp_name'], $targetFile)) {
                 // Update metadata
                 $metadata = loadMetadata();
@@ -96,15 +95,15 @@ switch ($method) {
                     'timestamp' => date('c'),
                     'content_type' => $file['type']
                 ];
-                
+
                 if ($type === 'animation') {
                     $metadata['animations'][] = $fileInfo;
                 } else {
                     $metadata['structures'][] = $fileInfo;
                 }
-                
+
                 saveMetadata($metadata);
-                
+
                 echo json_encode([
                     'success' => true,
                     'id' => $fileId,
@@ -120,44 +119,66 @@ switch ($method) {
             echo json_encode(['error' => 'No file uploaded']);
         }
         break;
-        
+
     case 'DELETE':
         $input = json_decode(file_get_contents('php://input'), true);
-        $fileId = $input['id'] ?? '';
-        $type = $input['type'] ?? '';
-        
-        if ($fileId && $type) {
-            $metadata = loadMetadata();
-            $targetArray = ($type === 'animation') ? 'animations' : 'structures';
+
+        if (isset($input['action']) && $input['action'] === 'clear_all') {
+            // Clear all files
+            $files = glob($uploadDir . 'structures/*');
+            foreach($files as $file) {
+                if(is_file($file)) unlink($file);
+            }
+
+            $files = glob($uploadDir . 'animations/*');
+            foreach($files as $file) {
+                if(is_file($file)) unlink($file);
+            }
+
+            // Clear metadata
+            if (file_exists($metadataFile)) {
+                unlink($metadataFile);
+            }
+            // Recreate empty metadata file
+            saveMetadata(['structures' => [], 'animations' => []]);
+
+            echo json_encode(['success' => true, 'message' => 'All files cleared']);
+        } elseif (isset($input['id']) && isset($input['type'])) {
+            // Delete specific file
+            $type = $input['type'];
+            $id = $input['id'];
             
+            $metadata = loadMetadata();
+            $targetArrayKey = ($type === 'animation') ? 'animations' : 'structures';
             $fileFound = false;
-            foreach ($metadata[$targetArray] as $index => $fileInfo) {
-                if ($fileInfo['id'] === $fileId) {
+
+            foreach ($metadata[$targetArrayKey] as $index => $fileInfo) {
+                if ($fileInfo['id'] === $id) {
                     // Delete physical file
                     if (file_exists($fileInfo['file_path'])) {
                         unlink($fileInfo['file_path']);
                     }
-                    
+
                     // Remove from metadata
-                    array_splice($metadata[$targetArray], $index, 1);
+                    array_splice($metadata[$targetArrayKey], $index, 1);
                     $fileFound = true;
                     break;
                 }
             }
-            
+
             if ($fileFound) {
                 saveMetadata($metadata);
-                echo json_encode(['success' => true]);
+                echo json_encode(['success' => true, 'message' => 'File deleted']);
             } else {
                 http_response_code(404);
-                echo json_encode(['error' => 'File not found']);
+                echo json_encode(['success' => false, 'error' => 'File not found']);
             }
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid parameters']);
+            echo json_encode(['success' => false, 'error' => 'Invalid delete request']);
         }
         break;
-        
+
     default:
         http_response_code(405);
         echo json_encode(['error' => 'Method not allowed']);
