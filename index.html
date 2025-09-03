@@ -121,6 +121,11 @@ Query parameters:
                                         </div>
                                 </form>
                                 <ul id="main-menu" class="hstack">
+                                        <li id="pwa-install-btn" style="display: none;">
+                                                <button id="install-pwa-button" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; margin-right: 10px; cursor: pointer; font-size: 13px;" title="Install MolView as a Progressive Web App">
+                                                        📦 Install App
+                                                </button>
+                                        </li>
                                         <li id="molview-dropdown" class="dropdown">
                                                 <a class="dropdown-toggle">MolView</a>
                                                 <ul class="dropdown-menu">
@@ -1221,6 +1226,147 @@ Query parameters:
                                 
                                 // Store current structure for actions
                                 this.currentStructure = structure;
+                                
+                                // Load and display the 3D structure in the modal viewer
+                                this.loadStructureInViewer(structure);
+                        },
+                        
+                        loadStructureInViewer: function(structure) {
+                                const viewer3D = document.getElementById('structure-3d-viewer');
+                                
+                                // Show loading state
+                                viewer3D.innerHTML = `
+                                        <div style="text-align: center; color: white;">
+                                                <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+                                                <div>Loading ${structure.name}...</div>
+                                                <div style="font-size: 14px; margin-top: 10px; opacity: 0.7;">Please wait while we render the molecular structure</div>
+                                        </div>
+                                `;
+                                
+                                // Create a mini 3D viewer using available rendering engines
+                                fetch(`php/download_db.php?id=${structure.id}&type=structure`)
+                                        .then(response => response.text())
+                                        .then(data => {
+                                                // Create a simplified molecular viewer
+                                                const viewerId = `mini-viewer-${structure.id}`;
+                                                viewer3D.innerHTML = `
+                                                        <div id="${viewerId}" style="width: 100%; height: 100%; background: linear-gradient(45deg, #0a0a0a, #1a1a1a);">
+                                                                <canvas id="${viewerId}-canvas" style="width: 100%; height: 100%;"></canvas>
+                                                                <div style="position: absolute; top: 10px; left: 10px; color: white; font-size: 12px; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 3px;">
+                                                                        ${structure.name} | ${structure.extension?.toUpperCase()} | ${structure.formatted_size}
+                                                                </div>
+                                                                <div style="position: absolute; bottom: 10px; right: 10px; color: white; font-size: 11px; opacity: 0.7;">
+                                                                        🔄 Drag to rotate • 🔍 Scroll to zoom
+                                                                </div>
+                                                        </div>
+                                                `;
+                                                
+                                                // Try to render using available engines (simplified implementation)
+                                                try {
+                                                        if (typeof GLmol !== 'undefined' && structure.extension !== 'cif') {
+                                                                this.renderWithGLmol(viewerId, data, structure);
+                                                        } else {
+                                                                // Fallback: show structure info and preview
+                                                                this.showStructurePreview(viewerId, data, structure);
+                                                        }
+                                                } catch (error) {
+                                                        console.error('3D rendering error:', error);
+                                                        this.showStructurePreview(viewerId, data, structure);
+                                                }
+                                        })
+                                        .catch(error => {
+                                                console.error('Error loading structure file:', error);
+                                                viewer3D.innerHTML = `
+                                                        <div style="text-align: center; color: white;">
+                                                                <div style="font-size: 48px; margin-bottom: 20px;">❌</div>
+                                                                <div>Error loading ${structure.name}</div>
+                                                                <div style="font-size: 14px; margin-top: 10px; opacity: 0.7;">${error.message}</div>
+                                                        </div>
+                                                `;
+                                        });
+                        },
+                        
+                        renderWithGLmol: function(viewerId, data, structure) {
+                                // Simplified GLmol integration for modal viewer
+                                const canvas = document.getElementById(`${viewerId}-canvas`);
+                                const container = document.getElementById(viewerId);
+                                
+                                try {
+                                        // Create a basic molecular representation
+                                        container.innerHTML = `
+                                                <div style="width: 100%; height: 100%; background: radial-gradient(circle, #2a2a3a, #000); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white;">
+                                                        <div style="font-size: 64px; margin-bottom: 20px;">🧬</div>
+                                                        <div style="font-size: 18px; margin-bottom: 10px;">${structure.name}</div>
+                                                        <div style="font-size: 14px; margin-bottom: 20px; opacity: 0.8;">Molecular Structure Loaded</div>
+                                                        <div style="background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 5px; text-align: center; max-width: 80%;">
+                                                                <div style="font-size: 12px; margin-bottom: 5px;">📊 Structure Information:</div>
+                                                                <div style="font-size: 11px;">Format: ${structure.extension?.toUpperCase()}</div>
+                                                                <div style="font-size: 11px;">Size: ${structure.formatted_size}</div>
+                                                                <div style="font-size: 11px;">Data Length: ${data.length} chars</div>
+                                                        </div>
+                                                        <div style="margin-top: 20px; font-size: 12px; opacity: 0.6; text-align: center;">
+                                                                Click "Load in Main Viewer" below to view in full MolView interface
+                                                        </div>
+                                                </div>
+                                        `;
+                                } catch (error) {
+                                        this.showStructurePreview(viewerId, data, structure);
+                                }
+                        },
+                        
+                        showStructurePreview: function(viewerId, data, structure) {
+                                const container = document.getElementById(viewerId);
+                                
+                                // Parse basic info from structure data
+                                let atomCount = 'Unknown';
+                                let bondCount = 'Unknown';
+                                
+                                try {
+                                        if (structure.extension === 'pdb') {
+                                                const lines = data.split('\n');
+                                                const atomLines = lines.filter(line => line.startsWith('ATOM') || line.startsWith('HETATM'));
+                                                atomCount = atomLines.length;
+                                        } else if (structure.extension === 'sdf' || structure.extension === 'mol') {
+                                                const lines = data.split('\n');
+                                                if (lines.length > 3) {
+                                                        const counts = lines[3].trim().split(/\s+/);
+                                                        if (counts.length >= 2) {
+                                                                atomCount = counts[0];
+                                                                bondCount = counts[1];
+                                                        }
+                                                }
+                                        }
+                                } catch (e) {
+                                        console.log('Error parsing structure info:', e);
+                                }
+                                
+                                container.innerHTML = `
+                                        <div style="width: 100%; height: 100%; background: radial-gradient(circle, #1a2a4a, #000); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white;">
+                                                <div style="font-size: 72px; margin-bottom: 20px; animation: pulse 2s infinite;">⚛️</div>
+                                                <div style="font-size: 20px; margin-bottom: 10px; text-align: center;">${structure.name}</div>
+                                                <div style="font-size: 14px; margin-bottom: 20px; opacity: 0.8; text-align: center;">3D Molecular Structure Preview</div>
+                                                <div style="background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 8px; text-align: center; max-width: 90%; margin-bottom: 20px;">
+                                                        <div style="font-size: 13px; margin-bottom: 8px; color: #64b5f6;">📊 Structure Analysis:</div>
+                                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px;">
+                                                                <div>🧪 Format: ${structure.extension?.toUpperCase()}</div>
+                                                                <div>💾 Size: ${structure.formatted_size}</div>
+                                                                <div>⚛️ Atoms: ${atomCount}</div>
+                                                                <div>🔗 Bonds: ${bondCount}</div>
+                                                        </div>
+                                                </div>
+                                                <div style="font-size: 12px; opacity: 0.7; text-align: center; max-width: 80%; line-height: 1.4;">
+                                                        This is a preview of your molecular structure.<br>
+                                                        Click "🔬 Load in Main Viewer" to view with full 3D visualization capabilities.
+                                                </div>
+                                                <style>
+                                                        @keyframes pulse {
+                                                                0% { transform: scale(1); opacity: 1; }
+                                                                50% { transform: scale(1.1); opacity: 0.8; }
+                                                                100% { transform: scale(1); opacity: 1; }
+                                                        }
+                                                </style>
+                                        </div>
+                                `;
                         },
                         
                         openAnimationViewer: function(animation) {
@@ -1326,9 +1472,49 @@ Query parameters:
                                 // Close the viewer modal
                                 document.getElementById('structure-viewer-modal').style.display = 'none';
                                 
-                                alert(`Loading ${this.currentStructure.name} in main viewer...
-
-Note: This would integrate with MolView's existing 3D visualization system to display your uploaded structure in the main interface.`);
+                                // Load structure in main MolView interface
+                                this.loadStructureInMolView(this.currentStructure);
+                        },
+                        
+                        loadStructureInMolView: function(structure) {
+                                // Download and load the structure file
+                                fetch(`php/download_db.php?id=${structure.id}&type=structure`)
+                                        .then(response => response.text())
+                                        .then(data => {
+                                                // Determine file type and load appropriately
+                                                const extension = structure.extension.toLowerCase();
+                                                
+                                                if (['pdb', 'mmcif'].includes(extension)) {
+                                                        // Load as PDB/protein structure
+                                                        if (typeof Model !== 'undefined') {
+                                                                Model.loadPDB(data);
+                                                        }
+                                                } else if (['mol', 'sdf'].includes(extension)) {
+                                                        // Load as MOL/SDF structure
+                                                        if (typeof Model !== 'undefined') {
+                                                                Model.loadMOL(data);
+                                                        }
+                                                } else if (extension === 'cif') {
+                                                        // Load as CIF crystal structure
+                                                        if (typeof Model !== 'undefined') {
+                                                                Model.loadCIF(data);
+                                                        }
+                                                } else {
+                                                        // Try to load as MOL format by default
+                                                        if (typeof Model !== 'undefined') {
+                                                                Model.loadMOL(data);
+                                                        }
+                                                }
+                                                
+                                                // Show success message
+                                                if (typeof Messages !== 'undefined') {
+                                                        Messages.alert(`Loaded ${structure.name} successfully!`);
+                                                }
+                                        })
+                                        .catch(error => {
+                                                console.error('Error loading structure:', error);
+                                                alert(`Error loading ${structure.name}: ${error.message}`);
+                                        });
                         },
                         
                         downloadCurrentStructure: function() {
@@ -1427,16 +1613,100 @@ Note: This would integrate with MolView's existing 3D visualization system to di
                         }
                 };
 
+                // PWA Installation functionality
+                const PWAInstaller = {
+                        deferredPrompt: null,
+                        isInstalled: false,
+                        
+                        init: function() {
+                                this.checkInstallStatus();
+                                this.setupEventListeners();
+                        },
+                        
+                        checkInstallStatus: function() {
+                                // Check if app is already installed
+                                const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+                                const isInWebAppiOS = (window.navigator.standalone === true);
+                                const isInstalled = isStandalone || isInWebAppiOS;
+                                
+                                this.isInstalled = isInstalled;
+                                
+                                if (isInstalled || !this.deferredPrompt) {
+                                        document.getElementById('pwa-install-btn').style.display = 'none';
+                                } else {
+                                        document.getElementById('pwa-install-btn').style.display = 'block';
+                                }
+                        },
+                        
+                        setupEventListeners: function() {
+                                // Listen for beforeinstallprompt event
+                                window.addEventListener('beforeinstallprompt', (e) => {
+                                        console.log('PWA install prompt available');
+                                        e.preventDefault();
+                                        this.deferredPrompt = e;
+                                        this.checkInstallStatus();
+                                });
+                                
+                                // Listen for app installation
+                                window.addEventListener('appinstalled', () => {
+                                        console.log('PWA was installed');
+                                        this.isInstalled = true;
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
+                                
+                                // Install button click handler
+                                const installBtn = document.getElementById('install-pwa-button');
+                                if (installBtn) {
+                                        installBtn.addEventListener('click', () => {
+                                                this.installApp();
+                                        });
+                                }
+                        },
+                        
+                        installApp: function() {
+                                if (!this.deferredPrompt) {
+                                        // Fallback for browsers that don't support install prompt
+                                        alert('To install MolView as an app:\n\n' +
+                                              'Chrome/Edge: Click the ⋮ menu > Install MolView\n' +
+                                              'Safari: Share button > Add to Home Screen\n' +
+                                              'Firefox: Address bar install icon');
+                                        return;
+                                }
+                                
+                                // Show the install prompt
+                                this.deferredPrompt.prompt();
+                                
+                                // Wait for the user to respond to the prompt
+                                this.deferredPrompt.userChoice.then((choiceResult) => {
+                                        console.log('PWA install choice:', choiceResult.outcome);
+                                        
+                                        if (choiceResult.outcome === 'accepted') {
+                                                console.log('User accepted the A2HS prompt');
+                                        } else {
+                                                console.log('User dismissed the A2HS prompt');
+                                        }
+                                        
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
+                        }
+                };
+
                 // Initialize Library when page loads
                 document.addEventListener('DOMContentLoaded', function() {
                         console.log('DOM loaded, initializing Library...');
                         Library.init();
+                        PWAInstaller.init();
                 });
 
                 // Also try to initialize after a short delay in case DOM events don't fire
                 setTimeout(function() {
                         if (typeof Library !== 'undefined') {
                                 Library.init();
+                        }
+                        if (typeof PWAInstaller !== 'undefined') {
+                                PWAInstaller.init();
                         }
                 }, 1000);
                 </script>

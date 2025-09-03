@@ -1,11 +1,14 @@
 {
-  "name": "MolView",
+  "name": "MolView - Molecular Visualization Platform",
   "short_name": "MolView",
-  "theme_color": "white",
-  "background_color": "white",
+  "description": "Interactive molecular visualization with 3D structures, chemical sketching, and scientific database search",
+  "theme_color": "#2196F3",
+  "background_color": "#ffffff",
   "display": "standalone",
+  "orientation": "any",
   "scope": "/",
   "start_url": "/",
+  "categories": ["education", "science", "chemistry", "research"],
   "icons": [{
     "src": "img/logo-512x512.png",
     "sizes": "512x512",
