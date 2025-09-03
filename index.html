@@ -822,136 +822,6 @@ Query parameters:
                         </div>
                 </div>
 
-                <!-- Bottom PWA Install Button -->
-                <div id="bottom-pwa-button" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
-                        <button id="bottom-install-pwa" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;" title="Install MolView as a Progressive Web App for offline access">
-                                📦 Install MolView
-                        </button>
-                </div>
-
-                <script>
-                // A2HS Button Component - React-style implementation
-                const A2HSButton = {
-                        isAppInstalled: false,
-                        promptRef: null,
-                        
-                        isPWAInstalled: async function() {
-                                try {
-                                        if ("getInstalledRelatedApps" in window.navigator) {
-                                                console.log("check if pwa is installed")
-                                                const relatedApps = await window.navigator.getInstalledRelatedApps();
-                                                let installed = false;
-                                                console.log({relatedApps})
-                                                relatedApps.forEach((app) => {
-                                                        console.log(app.platform, app.url);
-                                                        if (app.url === window.location.origin + "/manifest.json") {
-                                                                installed = true;
-                                                        }
-                                                });
-                                                const isAsPwa = window.matchMedia('(display-mode: standalone)').matches;
-                                                this.isAppInstalled = installed || relatedApps.length > 0 || isAsPwa || this.promptRef == null;
-                                        } else {
-                                                // Fallback for embedded contexts - check if running as PWA
-                                                const isAsPwa = window.matchMedia('(display-mode: standalone)').matches;
-                                                this.isAppInstalled = isAsPwa || this.promptRef == null;
-                                        }
-                                } catch (error) {
-                                        console.log("getInstalledRelatedApps not available in this context, using fallback detection");
-                                        // Fallback for embedded contexts like Replit webview
-                                        const isAsPwa = window.matchMedia('(display-mode: standalone)').matches;
-                                        this.isAppInstalled = isAsPwa || this.promptRef == null;
-                                }
-                                this.updateButtonVisibility();
-                        },
-                        
-                        updateButtonVisibility: function() {
-                                const bottomButton = document.getElementById('bottom-pwa-button');
-                                const topButton = document.getElementById('pwa-install-btn');
-                                
-                                if (this.isAppInstalled || !this.promptRef) {
-                                        if (bottomButton) bottomButton.style.display = 'none';
-                                        if (topButton) topButton.style.display = 'none';
-                                } else {
-                                        if (bottomButton) bottomButton.style.display = 'block';
-                                        if (topButton) topButton.style.display = 'block';
-                                }
-                        },
-                        
-                        handleAddToHomeScreenClick: function() {
-                                console.log("try to install pwa", { promptRef: this.promptRef });
-                                
-                                if (!this.promptRef) {
-                                        // Fallback for browsers that don't support install prompt
-                                        alert('To install MolView as an app:\n\n' +
-                                              'Chrome/Edge: Click the ⋮ menu > Install MolView\n' +
-                                              'Safari: Share button > Add to Home Screen\n' +
-                                              'Firefox: Address bar install icon');
-                                        return;
-                                }
-                                
-                                this.promptRef.prompt();
-                                this.promptRef.userChoice.then((choiceResult) => {
-                                        console.log("USER CHOICE");
-                                        if (choiceResult.outcome === 'accepted') {
-                                                console.log('The app was added to the home screen');
-                                        } else {
-                                                console.log('The app was not added to the home screen');
-                                        }
-                                        this.promptRef = null;
-                                        this.updateButtonVisibility();
-                                });
-                        },
-                        
-                        init: function() {
-                                // Set up event handlers for both buttons
-                                const bottomInstallBtn = document.getElementById('bottom-install-pwa');
-                                const topInstallBtn = document.getElementById('install-pwa-button');
-                                
-                                if (bottomInstallBtn) {
-                                        bottomInstallBtn.addEventListener('click', () => {
-                                                this.handleAddToHomeScreenClick();
-                                        });
-                                }
-                                
-                                if (topInstallBtn) {
-                                        topInstallBtn.addEventListener('click', () => {
-                                                this.handleAddToHomeScreenClick();
-                                        });
-                                }
-                                
-                                // Listen for beforeinstallprompt event
-                                window.addEventListener('beforeinstallprompt', (event) => {
-                                        console.log('PWA install prompt available');
-                                        event.preventDefault();
-                                        this.promptRef = event;
-                                        this.isPWAInstalled();
-                                });
-                                
-                                // Listen for app installation
-                                window.addEventListener('appinstalled', () => {
-                                        console.log('PWA was installed');
-                                        this.isAppInstalled = true;
-                                        this.promptRef = null;
-                                        this.updateButtonVisibility();
-                                });
-                                
-                                // Add hover effects to bottom button
-                                if (bottomInstallBtn) {
-                                        bottomInstallBtn.addEventListener('mouseenter', function() {
-                                                this.style.transform = 'translateY(-2px)';
-                                                this.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
-                                        });
-                                        
-                                        bottomInstallBtn.addEventListener('mouseleave', function() {
-                                                this.style.transform = 'translateY(0)';
-                                                this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
-                                        });
-                                }
-                                
-                                this.isPWAInstalled();
-                        }
-                };
-
                 <script>
                 // Library functionality
                 const Library = {
@@ -1743,26 +1613,91 @@ Query parameters:
                         }
                 };
 
-                // PWA Button Visibility Check
-                document.addEventListener('DOMContentLoaded', function() {
-                        // Check if PWA install prompt is available
-                        if ('serviceWorker' in navigator) {
-                                // Show the button initially, A2HSButton will handle visibility
-                                console.log('PWA install button shown');
-                                const bottomButton = document.getElementById('bottom-pwa-button');
-                                const topButton = document.getElementById('pwa-install-btn');
+                // PWA Installation functionality
+                const PWAInstaller = {
+                        deferredPrompt: null,
+                        isInstalled: false,
+                        
+                        init: function() {
+                                this.checkInstallStatus();
+                                this.setupEventListeners();
+                        },
+                        
+                        checkInstallStatus: function() {
+                                // Check if app is already installed
+                                const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+                                const isInWebAppiOS = (window.navigator.standalone === true);
+                                const isInstalled = isStandalone || isInWebAppiOS;
                                 
-                                // Show buttons by default, A2HSButton will hide if needed
-                                if (bottomButton) bottomButton.style.display = 'block';
-                                if (topButton) topButton.style.display = 'block';
+                                this.isInstalled = isInstalled;
+                                
+                                if (isInstalled || !this.deferredPrompt) {
+                                        document.getElementById('pwa-install-btn').style.display = 'none';
+                                } else {
+                                        document.getElementById('pwa-install-btn').style.display = 'block';
+                                }
+                        },
+                        
+                        setupEventListeners: function() {
+                                // Listen for beforeinstallprompt event
+                                window.addEventListener('beforeinstallprompt', (e) => {
+                                        console.log('PWA install prompt available');
+                                        e.preventDefault();
+                                        this.deferredPrompt = e;
+                                        this.checkInstallStatus();
+                                });
+                                
+                                // Listen for app installation
+                                window.addEventListener('appinstalled', () => {
+                                        console.log('PWA was installed');
+                                        this.isInstalled = true;
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
+                                
+                                // Install button click handler
+                                const installBtn = document.getElementById('install-pwa-button');
+                                if (installBtn) {
+                                        installBtn.addEventListener('click', () => {
+                                                this.installApp();
+                                        });
+                                }
+                        },
+                        
+                        installApp: function() {
+                                if (!this.deferredPrompt) {
+                                        // Fallback for browsers that don't support install prompt
+                                        alert('To install MolView as an app:\n\n' +
+                                              'Chrome/Edge: Click the ⋮ menu > Install MolView\n' +
+                                              'Safari: Share button > Add to Home Screen\n' +
+                                              'Firefox: Address bar install icon');
+                                        return;
+                                }
+                                
+                                // Show the install prompt
+                                this.deferredPrompt.prompt();
+                                
+                                // Wait for the user to respond to the prompt
+                                this.deferredPrompt.userChoice.then((choiceResult) => {
+                                        console.log('PWA install choice:', choiceResult.outcome);
+                                        
+                                        if (choiceResult.outcome === 'accepted') {
+                                                console.log('User accepted the A2HS prompt');
+                                        } else {
+                                                console.log('User dismissed the A2HS prompt');
+                                        }
+                                        
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
                         }
-                });
+                };
 
-                // Initialize Library and A2HS when page loads
+                // Initialize Library when page loads
                 document.addEventListener('DOMContentLoaded', function() {
                         console.log('DOM loaded, initializing Library...');
                         Library.init();
-                        A2HSButton.init();
+                        PWAInstaller.init();
                 });
 
                 // Also try to initialize after a short delay in case DOM events don't fire
@@ -1770,11 +1705,10 @@ Query parameters:
                         if (typeof Library !== 'undefined') {
                                 Library.init();
                         }
-                        if (typeof A2HSButton !== 'undefined') {
-                                A2HSButton.init();
+                        if (typeof PWAInstaller !== 'undefined') {
+                                PWAInstaller.init();
                         }
                 }, 1000);
                 </script>
-        </script>
         </body>
 </html>
