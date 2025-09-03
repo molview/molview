@@ -711,6 +711,111 @@ Query parameters:
                                 </div>
                         </div>
                 </div>
+                
+                <!-- 3D Structure Viewer Modal -->
+                <div id="structure-viewer-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001;">
+                        <div style="background: white; margin: 20px auto; width: 95%; max-width: 1200px; height: 90%; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;">
+                                <!-- Header -->
+                                <div style="padding: 15px 20px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center; background: #f5f5f5;">
+                                        <h2 id="structure-viewer-title" style="margin: 0; color: #333;">🧬 3D Structure Viewer</h2>
+                                        <div style="display: flex; gap: 10px; align-items: center;">
+                                                <span id="structure-info" style="font-size: 14px; color: #666;"></span>
+                                                <button id="close-structure-viewer" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 18px;" onclick="document.getElementById('structure-viewer-modal').style.display='none'">&times;</button>
+                                        </div>
+                                </div>
+                                
+                                <!-- Main Content -->
+                                <div style="flex: 1; display: flex;">
+                                        <!-- 3D Viewer Area -->
+                                        <div style="flex: 1; background: #000; position: relative; min-height: 400px;">
+                                                <div id="structure-3d-viewer" style="width: 100%; height: 100%; background: linear-gradient(45deg, #1a1a1a, #333); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                                        <div style="text-align: center;">
+                                                                <div style="font-size: 48px; margin-bottom: 20px;">🧬</div>
+                                                                <div>3D Molecular Structure</div>
+                                                                <div style="font-size: 14px; margin-top: 10px; opacity: 0.7;">Advanced molecular visualization and analysis</div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        
+                                        <!-- Controls Panel -->
+                                        <div style="width: 300px; background: #f9f9f9; border-left: 1px solid #ddd; padding: 20px; overflow-y: auto;">
+                                                <h3 style="margin: 0 0 15px 0; color: #333;">⚙️ Viewing Options</h3>
+                                                
+                                                <!-- File Info -->
+                                                <div style="margin-bottom: 20px; padding: 10px; background: #e8f5e8; border-radius: 4px;">
+                                                        <div style="font-size: 12px; color: #666;">📊 Structure Info:</div>
+                                                        <div id="structure-details" style="font-size: 11px; margin-top: 5px;"></div>
+                                                </div>
+                                                
+                                                <!-- Actions -->
+                                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                                        <button onclick="Library.loadInMainViewer()" style="background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer;">🔬 Load in Main Viewer</button>
+                                                        <button onclick="Library.downloadCurrentStructure()" style="background: #2196F3; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer;">📥 Download File</button>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                
+                <!-- Animation Video Viewer Modal -->
+                <div id="animation-viewer-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001;">
+                        <div style="background: white; margin: 20px auto; width: 95%; max-width: 1200px; height: 90%; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;">
+                                <!-- Header -->
+                                <div style="padding: 15px 20px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center; background: #f5f5f5;">
+                                        <h2 id="animation-viewer-title" style="margin: 0; color: #333;">🎬 Animation Player</h2>
+                                        <div style="display: flex; gap: 10px; align-items: center;">
+                                                <span id="animation-info" style="font-size: 14px; color: #666;"></span>
+                                                <button id="close-animation-viewer" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 18px;" onclick="document.getElementById('animation-viewer-modal').style.display='none'">&times;</button>
+                                        </div>
+                                </div>
+                                
+                                <!-- Main Content -->
+                                <div style="flex: 1; display: flex;">
+                                        <!-- Video Player Area -->
+                                        <div style="flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center;">
+                                                <video id="animation-player" controls style="max-width: 100%; max-height: 100%; border-radius: 4px;">
+                                                        <p style="color: white;">Your browser doesn't support HTML5 video.</p>
+                                                </video>
+                                        </div>
+                                        
+                                        <!-- Video Controls Panel -->
+                                        <div style="width: 280px; background: #f9f9f9; border-left: 1px solid #ddd; padding: 20px; overflow-y: auto;">
+                                                <h3 style="margin: 0 0 15px 0; color: #333;">🎛️ Video Controls</h3>
+                                                
+                                                <!-- Playback Speed -->
+                                                <div style="margin-bottom: 15px;">
+                                                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Speed:</label>
+                                                        <select id="video-speed" onchange="Library.setSpeed(this.value)" style="width: 100%; padding: 5px;">
+                                                                <option value="0.5">0.5x</option>
+                                                                <option value="1" selected>1x</option>
+                                                                <option value="1.5">1.5x</option>
+                                                                <option value="2">2x</option>
+                                                        </select>
+                                                </div>
+                                                
+                                                <!-- Volume -->
+                                                <div style="margin-bottom: 15px;">
+                                                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Volume:</label>
+                                                        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1" onchange="Library.setVolume(this.value)" style="width: 100%;">
+                                                </div>
+                                                
+                                                <!-- Controls -->
+                                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                        <button onclick="Library.playPause()" style="background: #4CAF50; color: white; border: none; padding: 8px; border-radius: 3px; cursor: pointer;">⏯️ Play/Pause</button>
+                                                        <button onclick="Library.toggleLoop()" style="background: #2196F3; color: white; border: none; padding: 8px; border-radius: 3px; cursor: pointer;">🔄 Toggle Loop</button>
+                                                        <button onclick="Library.captureFrame()" style="background: #FF9800; color: white; border: none; padding: 8px; border-radius: 3px; cursor: pointer;">📷 Capture Frame</button>
+                                                        <button onclick="Library.downloadCurrentVideo()" style="background: #9C27B0; color: white; border: none; padding: 8px; border-radius: 3px; cursor: pointer;">⬇️ Download Video</button>
+                                                </div>
+                                                
+                                                <!-- Video Info -->
+                                                <div style="margin-top: 20px; padding: 10px; background: #e8f4f8; border-radius: 4px;">
+                                                        <div style="font-size: 12px; color: #666;">📊 Video Info:</div>
+                                                        <div id="video-details" style="font-size: 11px; margin-top: 5px;"></div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
 
                 <script>
                 // Library functionality
@@ -1068,9 +1173,9 @@ Query parameters:
                                                                 🏷️ Type: ${item.type ? item.type.toUpperCase() : 'Unknown'}
                                                         </p>
                                                         <div style="margin-top: 10px;">
-                                                                ${type === 'structures' ? `<button onclick="Library.loadStructure(${index})" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Load in Viewer</button>` : ''}
-                                                                <button onclick="Library.downloadFile('${item.id || index}', '${type.slice(0, -1)}')" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">Download</button>
-                                                                <button onclick="Library.deleteFile('${item.id || index}', '${type.slice(0, -1)}')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer;">Delete</button>
+                                                                ${type === 'structures' ? `<button onclick="Library.loadStructure(${index})" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">🔬 View 3D</button>` : `<button onclick="Library.openAnimationViewer(Library.animations[${index}])" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">🎬 Play Video</button>`}
+                                                                <button onclick="Library.downloadFile('${item.id || index}', '${type.slice(0, -1)}')" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 3px; margin-right: 5px; cursor: pointer;">📥 Download</button>
+                                                                <button onclick="Library.deleteFile('${item.id || index}', '${type.slice(0, -1)}')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer;">🗑️ Delete</button>
                                                         </div>
                                                 </div>`;
                                         }).join('');
@@ -1088,13 +1193,153 @@ Query parameters:
                                 }
                                 
                                 try {
-                                        // For now, just download the file since Model loading functions may not be available
-                                        this.downloadFile(structure.id || index, 'structure');
-                                        document.getElementById('library-modal').style.display = 'none';
-                                        alert(`Downloaded structure: ${structure.name}`);
+                                        this.openStructureViewer(structure);
                                 } catch(e) {
                                         console.error('Error loading structure:', e);
                                         alert(`Error loading structure: ${e.message}`);
+                                }
+                        },
+                        
+                        openStructureViewer: function(structure) {
+                                // Hide library modal and show structure viewer
+                                document.getElementById('library-modal').style.display = 'none';
+                                const modal = document.getElementById('structure-viewer-modal');
+                                modal.style.display = 'block';
+                                
+                                // Set title and info
+                                document.getElementById('structure-viewer-title').textContent = `🧬 ${structure.name || 'Structure'}`;
+                                document.getElementById('structure-info').textContent = `${structure.formatted_size || this.formatFileSize(structure.size)} • ${structure.extension || structure.file_type || 'Unknown'}`;
+                                
+                                // Update structure details
+                                const details = `
+                                        <strong>File:</strong> ${structure.name}<br>
+                                        <strong>Type:</strong> ${structure.extension || structure.file_type || 'Unknown'}<br>
+                                        <strong>Size:</strong> ${structure.formatted_size || this.formatFileSize(structure.size)}<br>
+                                        <strong>Uploaded:</strong> ${new Date(structure.timestamp || structure.upload_date).toLocaleDateString()}
+                                `;
+                                document.getElementById('structure-details').innerHTML = details;
+                                
+                                // Store current structure for actions
+                                this.currentStructure = structure;
+                        },
+                        
+                        openAnimationViewer: function(animation) {
+                                // Hide library modal and show animation viewer
+                                document.getElementById('library-modal').style.display = 'none';
+                                const modal = document.getElementById('animation-viewer-modal');
+                                modal.style.display = 'block';
+                                
+                                // Set title and info
+                                document.getElementById('animation-viewer-title').textContent = `🎬 ${animation.name || 'Animation'}`;
+                                document.getElementById('animation-info').textContent = `${animation.formatted_size || this.formatFileSize(animation.size)} • ${animation.extension || animation.file_type || 'Unknown'}`;
+                                
+                                // Update video details
+                                const details = `
+                                        <strong>File:</strong> ${animation.name}<br>
+                                        <strong>Type:</strong> ${animation.extension || animation.file_type || 'Unknown'}<br>
+                                        <strong>Size:</strong> ${animation.formatted_size || this.formatFileSize(animation.size)}<br>
+                                        <strong>Uploaded:</strong> ${new Date(animation.timestamp || animation.upload_date).toLocaleDateString()}
+                                `;
+                                document.getElementById('video-details').innerHTML = details;
+                                
+                                // Load video
+                                this.loadVideo(animation);
+                                
+                                // Store current animation for actions
+                                this.currentAnimation = animation;
+                        },
+                        
+                        loadVideo: function(animation) {
+                                const player = document.getElementById('animation-player');
+                                const downloadUrl = `php/download_db.php?id=${animation.id}&type=animation`;
+                                
+                                player.src = downloadUrl;
+                                player.load();
+                                
+                                // Set up video event listeners
+                                player.addEventListener('loadedmetadata', function() {
+                                        const details = document.getElementById('video-details');
+                                        details.innerHTML += `<br><strong>Duration:</strong> ${Math.round(player.duration)}s<br><strong>Dimensions:</strong> ${player.videoWidth}x${player.videoHeight}`;
+                                });
+                                
+                                player.addEventListener('error', function(e) {
+                                        console.error('Video load error:', e);
+                                        const player = document.getElementById('animation-player');
+                                        player.style.display = 'none';
+                                        player.parentNode.innerHTML = `
+                                                <div style="color: white; text-align: center; padding: 50px;">
+                                                        <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                                                        <div>Error loading video: ${animation.name}</div>
+                                                        <div style="margin-top: 20px;">
+                                                                <button onclick="Library.downloadFile('${animation.id}', 'animation')" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">📥 Download File</button>
+                                                        </div>
+                                                </div>
+                                        `;
+                                });
+                        },
+                        
+                        // Video control functions
+                        playPause: function() {
+                                const player = document.getElementById('animation-player');
+                                if (player.paused) {
+                                        player.play();
+                                } else {
+                                        player.pause();
+                                }
+                        },
+                        
+                        setSpeed: function(speed) {
+                                const player = document.getElementById('animation-player');
+                                player.playbackRate = parseFloat(speed);
+                        },
+                        
+                        setVolume: function(volume) {
+                                const player = document.getElementById('animation-player');
+                                player.volume = parseFloat(volume);
+                        },
+                        
+                        toggleLoop: function() {
+                                const player = document.getElementById('animation-player');
+                                player.loop = !player.loop;
+                                const btn = document.querySelector('button[onclick="Library.toggleLoop()"]');
+                                btn.style.background = player.loop ? '#4CAF50' : '#2196F3';
+                        },
+                        
+                        captureFrame: function() {
+                                const player = document.getElementById('animation-player');
+                                const canvas = document.createElement('canvas');
+                                canvas.width = player.videoWidth;
+                                canvas.height = player.videoHeight;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(player, 0, 0);
+                                
+                                // Download the captured frame
+                                const link = document.createElement('a');
+                                link.download = `frame_${this.currentAnimation.name}_${Date.now()}.png`;
+                                link.href = canvas.toDataURL();
+                                link.click();
+                        },
+                        
+                        loadInMainViewer: function() {
+                                if (!this.currentStructure) return;
+                                
+                                // Close the viewer modal
+                                document.getElementById('structure-viewer-modal').style.display = 'none';
+                                
+                                alert(`Loading ${this.currentStructure.name} in main viewer...
+
+Note: This would integrate with MolView's existing 3D visualization system to display your uploaded structure in the main interface.`);
+                        },
+                        
+                        downloadCurrentStructure: function() {
+                                if (this.currentStructure) {
+                                        this.downloadFile(this.currentStructure.id, 'structure');
+                                }
+                        },
+                        
+                        downloadCurrentVideo: function() {
+                                if (this.currentAnimation) {
+                                        this.downloadFile(this.currentAnimation.id, 'animation');
                                 }
                         },
                         
