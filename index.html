@@ -1621,15 +1621,6 @@ Query parameters:
                         init: function() {
                                 this.checkInstallStatus();
                                 this.setupEventListeners();
-                                
-                                // Force show the install button for testing
-                                setTimeout(() => {
-                                        const installBtn = document.getElementById('pwa-install-btn');
-                                        if (installBtn && !this.isInstalled) {
-                                                installBtn.style.display = 'block';
-                                                console.log('PWA install button shown');
-                                        }
-                                }, 1000);
                         },
                         
                         checkInstallStatus: function() {
@@ -1640,14 +1631,10 @@ Query parameters:
                                 
                                 this.isInstalled = isInstalled;
                                 
-                                const installBtn = document.getElementById('pwa-install-btn');
-                                
-                                if (isInstalled) {
-                                        // Hide if already installed
-                                        if (installBtn) installBtn.style.display = 'none';
+                                if (isInstalled || !this.deferredPrompt) {
+                                        document.getElementById('pwa-install-btn').style.display = 'none';
                                 } else {
-                                        // Show the button regardless of deferredPrompt status
-                                        if (installBtn) installBtn.style.display = 'block';
+                                        document.getElementById('pwa-install-btn').style.display = 'block';
                                 }
                         },
                         
@@ -1678,55 +1665,31 @@ Query parameters:
                         },
                         
                         installApp: function() {
-                                if (this.deferredPrompt) {
-                                        // Use the native install prompt if available
-                                        this.deferredPrompt.prompt();
-                                        
-                                        // Wait for the user to respond to the prompt
-                                        this.deferredPrompt.userChoice.then((choiceResult) => {
-                                                console.log('PWA install choice:', choiceResult.outcome);
-                                                
-                                                if (choiceResult.outcome === 'accepted') {
-                                                        console.log('User accepted the A2HS prompt');
-                                                } else {
-                                                        console.log('User dismissed the A2HS prompt');
-                                                }
-                                                
-                                                this.deferredPrompt = null;
-                                                this.checkInstallStatus();
-                                        });
-                                } else {
-                                        // Enhanced fallback with modal for better user experience
-                                        const modal = document.createElement('div');
-                                        modal.style.cssText = `
-                                                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                                                background: rgba(0,0,0,0.8); z-index: 10000; display: flex;
-                                                align-items: center; justify-content: center;
-                                        `;
-                                        
-                                        modal.innerHTML = `
-                                                <div style="background: white; padding: 30px; border-radius: 10px; max-width: 400px; text-align: center;">
-                                                        <h2 style="margin: 0 0 20px 0; color: #333;">📱 Install MolView</h2>
-                                                        <p style="margin-bottom: 20px; line-height: 1.5;">To install MolView as an app on your device:</p>
-                                                        <div style="text-align: left; margin: 20px 0;">
-                                                                <p><strong>Chrome/Edge:</strong> Click the ⋮ menu → Install MolView</p>
-                                                                <p><strong>Safari:</strong> Share button → Add to Home Screen</p>
-                                                                <p><strong>Firefox:</strong> Look for install icon in address bar</p>
-                                                                <p><strong>Mobile:</strong> Browser menu → Add to Home Screen</p>
-                                                        </div>
-                                                        <button onclick="this.parentElement.parentElement.remove()" style="background: #2196F3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Got it!</button>
-                                                </div>
-                                        `;
-                                        
-                                        document.body.appendChild(modal);
-                                        
-                                        // Remove modal when clicking outside
-                                        modal.addEventListener('click', function(e) {
-                                                if (e.target === modal) {
-                                                        modal.remove();
-                                                }
-                                        });
+                                if (!this.deferredPrompt) {
+                                        // Fallback for browsers that don't support install prompt
+                                        alert('To install MolView as an app:\n\n' +
+                                              'Chrome/Edge: Click the ⋮ menu > Install MolView\n' +
+                                              'Safari: Share button > Add to Home Screen\n' +
+                                              'Firefox: Address bar install icon');
+                                        return;
                                 }
+                                
+                                // Show the install prompt
+                                this.deferredPrompt.prompt();
+                                
+                                // Wait for the user to respond to the prompt
+                                this.deferredPrompt.userChoice.then((choiceResult) => {
+                                        console.log('PWA install choice:', choiceResult.outcome);
+                                        
+                                        if (choiceResult.outcome === 'accepted') {
+                                                console.log('User accepted the A2HS prompt');
+                                        } else {
+                                                console.log('User dismissed the A2HS prompt');
+                                        }
+                                        
+                                        this.deferredPrompt = null;
+                                        this.checkInstallStatus();
+                                });
                         }
                 };
 
