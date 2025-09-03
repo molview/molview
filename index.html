@@ -1743,7 +1743,20 @@ Query parameters:
                         }
                 };
 
-                
+                // PWA Button Visibility Check
+                document.addEventListener('DOMContentLoaded', function() {
+                        // Check if PWA install prompt is available
+                        if ('serviceWorker' in navigator) {
+                                // Show the button initially, A2HSButton will handle visibility
+                                console.log('PWA install button shown');
+                                const bottomButton = document.getElementById('bottom-pwa-button');
+                                const topButton = document.getElementById('pwa-install-btn');
+                                
+                                // Show buttons by default, A2HSButton will hide if needed
+                                if (bottomButton) bottomButton.style.display = 'block';
+                                if (topButton) topButton.style.display = 'block';
+                        }
+                });
 
                 // Initialize Library and A2HS when page loads
                 document.addEventListener('DOMContentLoaded', function() {
@@ -1762,5 +1775,6 @@ Query parameters:
                         }
                 }, 1000);
                 </script>
+        </script>
         </body>
 </html>
