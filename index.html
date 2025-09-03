@@ -863,35 +863,52 @@ Query parameters:
                         },
                         
                         loadFromServer: function() {
+                                console.log('Loading library from server...');
                                 fetch('php/upload.php?action=list', {
                                         method: 'GET',
                                         headers: {
-                                                'Accept': 'application/json',
-                                                'Content-Type': 'application/json'
+                                                'Accept': 'application/json'
                                         }
                                 })
                                 .then(response => {
                                         console.log('Response status:', response.status);
+                                        console.log('Response headers:', response.headers);
+                                        
+                                        if (!response.ok) {
+                                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                        }
+                                        
                                         return response.text();
                                 })
                                 .then(text => {
-                                        console.log('Raw server response:', text);
+                                        console.log('Raw server response length:', text.length);
+                                        console.log('Raw server response:', text.substring(0, 500)); // First 500 chars
+                                        
+                                        if (!text || text.trim() === '') {
+                                                console.log('Empty response, initializing empty library');
+                                                this.structures = [];
+                                                this.animations = [];
+                                                this.updateUI();
+                                                return;
+                                        }
+                                        
+                                        // Check if response looks like JSON
+                                        const trimmed = text.trim();
+                                        if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+                                                console.error('Response does not look like JSON:', trimmed);
+                                                throw new Error('Server returned non-JSON response: ' + trimmed.substring(0, 100));
+                                        }
+                                        
                                         try {
-                                                if (!text || text.trim() === '') {
-                                                        console.log('Empty response, initializing empty library');
-                                                        this.structures = [];
-                                                        this.animations = [];
-                                                        this.updateUI();
-                                                        return;
-                                                }
-                                                
                                                 const data = JSON.parse(text);
-                                                console.log('Loaded from server:', data);
+                                                console.log('Parsed JSON successfully:', data);
                                                 
                                                 if (data.success !== undefined) {
                                                         if (data.success && data.data) {
                                                                 this.structures = data.data.structures || [];
                                                                 this.animations = data.data.animations || [];
+                                                                console.log('Loaded structures:', this.structures.length);
+                                                                console.log('Loaded animations:', this.animations.length);
                                                         } else {
                                                                 console.error('Server returned error:', data.error);
                                                                 this.structures = [];
@@ -904,8 +921,13 @@ Query parameters:
                                                 }
                                                 this.updateUI();
                                         } catch (parseError) {
-                                                console.error('JSON Parse Error:', parseError);
-                                                console.error('Response text:', text);
+                                                console.error('JSON Parse Error:', parseError.message);
+                                                console.error('Parse error stack:', parseError.stack);
+                                                console.error('Problematic response text:', text);
+                                                
+                                                // Show user-friendly error
+                                                alert('Failed to load library: Server returned invalid data\n\nError: ' + parseError.message + '\n\nServer response: ' + text.substring(0, 200));
+                                                
                                                 // Initialize empty arrays on parse error
                                                 this.structures = [];
                                                 this.animations = [];
@@ -913,7 +935,12 @@ Query parameters:
                                         }
                                 })
                                 .catch(error => {
-                                        console.error('Error loading files:', error);
+                                        console.error('Network/Fetch Error:', error.message);
+                                        console.error('Error stack:', error.stack);
+                                        
+                                        // Show user-friendly error
+                                        alert('Failed to connect to server: ' + error.message);
+                                        
                                         // Initialize empty arrays on network error
                                         this.structures = [];
                                         this.animations = [];
@@ -1039,26 +1066,35 @@ Query parameters:
                                                 completedFiles++;
                                                 const baseProgress = (completedFiles / totalFiles) * 100;
                                                 
+                                                console.log('Upload response for', file.name);
+                                                console.log('Status:', xhr.status);
+                                                console.log('Response text (first 500 chars):', xhr.responseText.substring(0, 500));
+                                                
                                                 try {
-                                                        console.log('Response status:', xhr.status);
-                                                        console.log('Response text:', xhr.responseText);
-                                                        
                                                         if (xhr.status === 200) {
-                                                                const data = JSON.parse(xhr.responseText);
-                                                                if (data.success) {
-                                                                        successCount++;
-                                                                        console.log('File uploaded successfully:', file.name);
+                                                                // Check if response looks like JSON
+                                                                const responseText = xhr.responseText.trim();
+                                                                if (!responseText.startsWith('{') && !responseText.startsWith('[')) {
+                                                                        errorLogs.push('File: ' + file.name + '\nError: Server returned non-JSON response\nResponse: ' + responseText.substring(0, 200));
+                                                                        console.error('Non-JSON response for', file.name, ':', responseText);
                                                                 } else {
-                                                                        errorLogs.push('File: ' + file.name + '\nError: ' + (data.error || 'Unknown error'));
-                                                                        console.error('Upload failed for', file.name, ':', data.error);
+                                                                        const data = JSON.parse(responseText);
+                                                                        if (data.success) {
+                                                                                successCount++;
+                                                                                console.log('File uploaded successfully:', file.name);
+                                                                        } else {
+                                                                                errorLogs.push('File: ' + file.name + '\nServer Error: ' + (data.error || 'Unknown server error'));
+                                                                                console.error('Upload failed for', file.name, ':', data.error);
+                                                                        }
                                                                 }
                                                         } else {
-                                                                errorLogs.push('File: ' + file.name + '\nHTTP Error: ' + xhr.status + '\nResponse: ' + xhr.responseText);
-                                                                console.error('HTTP error for', file.name, ':', xhr.status);
+                                                                errorLogs.push('File: ' + file.name + '\nHTTP Error: ' + xhr.status + ' ' + xhr.statusText + '\nResponse: ' + xhr.responseText.substring(0, 200));
+                                                                console.error('HTTP error for', file.name, ':', xhr.status, xhr.statusText);
                                                         }
                                                 } catch (parseError) {
-                                                        errorLogs.push('File: ' + file.name + '\nParse Error: ' + parseError.message + '\nResponse: ' + xhr.responseText);
-                                                        console.error('Parse error for', file.name, ':', parseError);
+                                                        errorLogs.push('File: ' + file.name + '\nJSON Parse Error: ' + parseError.message + '\nResponse: ' + xhr.responseText.substring(0, 200));
+                                                        console.error('Parse error for', file.name, ':', parseError.message);
+                                                        console.error('Parse error stack:', parseError.stack);
                                                 }
                                                 
                                                 if (completedFiles === totalFiles) {
