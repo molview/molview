@@ -419,6 +419,20 @@ var Actions = {
 	mp_atom_br: function(){ Sketcher.setTool(this, "atom", { element: "Br" }); },
 	mp_atom_i: function(){ Sketcher.setTool(this, "atom", { element: "I" }); },
 
+	// Shortest Path tool
+	mp_shortest_path: function () {
+  		var mp = Sketcher.molpad;
+
+  		jQuery(".tool-button.primary-tool").removeClass("selected");
+  		jQuery("#action-mp-shortest-path").addClass("selected");
+
+  		mp.tool = { type: "shortest_path", data: {}, selection: [] };
+
+  		mp.resetEventDisplay();
+  		mp.sel.clear();
+  		mp.requestRedraw();
+	},
+
 	mp_periodictable: function()
 	{
 		MolView.showDialog("periodictable");

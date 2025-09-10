@@ -73,19 +73,22 @@ Query parameters:
 		</script>
 
 		<!-- Matomo Analytics -->
+		 <!--
 		<script>
 			var _paq = window._paq = window._paq || [];
 			_paq.push(['trackPageView']);
 			_paq.push(['enableLinkTracking']);
 			_paq.push(['enableJSErrorTracking']);
 			(function() {
-				var u="//analytics.molview.org/";
+				//var u="//analytics.molview.org/";
 				_paq.push(['setTrackerUrl', u+'matomo.php']);
 				_paq.push(['setSiteId', '1']);
 				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 				g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 			})();
 		</script>
+		-->
+
 	</head>
 	<body>
 		<svg width="0" height="0">
@@ -286,6 +289,10 @@ Query parameters:
 								<div class="horizontal-separator"></div>
 								<div id="action-mp-clean" class="tool-button tool-button-horizontal" title="Clean structure"></div>
 								<div id="action-resolve" class="tool-button tool-button-horizontal" title="Update 3D view">2D to 3D</div>
+								<!-- Shortest Path tool -->
+								<a id="action-mp-shortest-path" class="tool-button primary-tool" title="Shortest path" onclick="Actions.mp_shortest_path()">SHP</a>
+
+
 							</div>
 						</div>
 						<div id="elem-tools" class="toolbar">

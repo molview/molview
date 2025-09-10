@@ -590,6 +590,56 @@ MPMolecule.prototype.getBBox = function()
 	};
 }
 
+// Shortest Path tool
+// ES5 BFS shortest path between two atoms
+MPMolecule.prototype.computeShortestPath = function (a0, a1) {
+  if (!a0 || !a1) return { atoms: [], bonds: [] };
+  if (a0.index === a1.index) return { atoms: [a0], bonds: [] };
+
+  var visited = {};
+  var prevAtom = {};
+  var prevBond = {};
+  var q = [];
+
+  visited[a0.index] = true;
+  q.push(a0.index);
+
+  while (q.length) {
+    var ai = q.shift();
+    if (ai === a1.index) break;
+
+    var atom = this.atoms[ai];
+    for (var k = 0; k < atom.bonds.length; k++) {
+      var b = this.bonds[atom.bonds[k]];
+      var ni = (b.from === ai) ? b.to : b.from;
+      if (!visited[ni]) {
+        visited[ni] = true;
+        prevAtom[ni] = ai;
+        prevBond[ni] = b.index;
+        q.push(ni);
+      }
+    }
+  }
+
+  if (!visited[a1.index]) return { atoms: [], bonds: [] };
+
+  var pathAtoms = [];
+  var pathBonds = [];
+  var cur = a1.index;
+
+  while (cur !== a0.index) {
+    pathAtoms.push(this.atoms[cur]);
+    pathBonds.push(this.bonds[prevBond[cur]]);
+    cur = prevAtom[cur];
+  }
+  pathAtoms.push(a0);
+
+  pathAtoms.reverse();
+  pathBonds.reverse();
+  return { atoms: pathAtoms, bonds: pathBonds };
+};
+
+
 /**
  * Undo/redo
  */

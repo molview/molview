@@ -208,8 +208,9 @@ MolPad.prototype.onPointerDown = function(e)
 	this.pointer.old.r.fromRelativePointer(e, this);
 	this.pointer.handler = undefined;
 
+	// Shortest Path Tool
 	//clear selection if the current tool is not erase, select or drag
-	if(!oneOf(this.tool.type, ["erase", "select", "drag"]))
+	if(!oneOf(this.tool.type, ["erase", "select", "drag", "shortest_path"]))
 	{
 		this.sel.clear();
 	}
@@ -746,8 +747,61 @@ MolPad.prototype.getHandler = function()
 	{
 		return this.selectionToolHandler;
 	}
+
+	// Shortest Path tool
+	else if (this.tool.type === "shortest_path") {
+  		return {
+    		onPointerDown: function (e, mp) {
+      			// 1) hit-test the clicked atom in 2D
+      			var p = new MPPoint().fromRelativePointer(e, mp);  // note the semicolon here
+      			var clicked = null;
+      			for (var i = 0; i < mp.mol.atoms.length; i++) {
+        			if (mp.mol.atoms[i].handle(p, "active")) { clicked = mp.mol.atoms[i]; break; }
+      			}
+      			if (!clicked) return;
+
+      			// 2) collect the two endpoints
+      			if (!mp.tool.selection) mp.tool.selection = [];
+      			if (mp.tool.selection.length === 0) {
+        			mp.sel.clear();
+        			mp.tool.selection.push(clicked);
+        			clicked.select(true);
+        			mp.requestRedraw();
+        			return;
+      			}
+
+      			if (mp.tool.selection.length === 1) {
+        			if (mp.tool.selection[0] === clicked) return; // ignore same atom
+        				mp.tool.selection.push(clicked);
+
+        			// 3) compute and highlight the path
+        			var start = mp.tool.selection[0];
+        			var end   = mp.tool.selection[1];
+        			var path  = mp.mol.computeShortestPath(start, end);
+
+        			if (path) {
+          			for (var a = 0; a < path.atoms.length; a++)  path.atoms[a].setDisplay("selected");
+          			for (var b = 0; b < path.bonds.length; b++)  path.bonds[b].setDisplay("selected");
+
+          			// stash indices for later use (optional, but implemented)
+          			Sketcher.metadata.shortestPath2D = {
+            			atoms: path.atoms.map(function(x){ return x.index; }),
+            			bonds: path.bonds.map(function(x){ return x.index; })
+          			};
+       			}
+
+        		// reset temp selection and redraw
+        		mp.tool.selection = [];
+        		mp.sel.update();
+        		mp.requestRedraw();
+				}
+   		 	}
+  		};
+	}
+	
 	else
 	{
 		return this.mouseDragHandler;
 	}
+
 }
