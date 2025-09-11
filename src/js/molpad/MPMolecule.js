@@ -592,52 +592,46 @@ MPMolecule.prototype.getBBox = function()
 
 // Shortest Path tool
 // ES5 BFS shortest path between two atoms
-MPMolecule.prototype.computeShortestPath = function (a0, a1) {
-  if (!a0 || !a1) return { atoms: [], bonds: [] };
-  if (a0.index === a1.index) return { atoms: [a0], bonds: [] };
+MPMolecule.prototype.computeShortestPath = function(startAtom, endAtom) {
+  if (!startAtom || !endAtom || startAtom === endAtom) return null;
 
-  var visited = {};
-  var prevAtom = {};
-  var prevBond = {};
-  var q = [];
+  var queue = [ startAtom.index ];
+  var prev  = {};
+  var seen  = {};
+  seen[startAtom.index] = true;
 
-  visited[a0.index] = true;
-  q.push(a0.index);
+  while (queue.length) {
+    var ai = queue.shift();
+    if (ai === endAtom.index) break;
 
-  while (q.length) {
-    var ai = q.shift();
-    if (ai === a1.index) break;
-
-    var atom = this.atoms[ai];
-    for (var k = 0; k < atom.bonds.length; k++) {
-      var b = this.bonds[atom.bonds[k]];
+    var a = this.atoms[ai];
+    for (var bi = 0; bi < a.bonds.length; bi++) {
+      var b = this.bonds[a.bonds[bi]];
       var ni = (b.from === ai) ? b.to : b.from;
-      if (!visited[ni]) {
-        visited[ni] = true;
-        prevAtom[ni] = ai;
-        prevBond[ni] = b.index;
-        q.push(ni);
+      if (!seen[ni]) {
+        seen[ni] = true;
+        prev[ni] = { ai: ai, bond: b.index };
+        queue.push(ni);
       }
     }
   }
 
-  if (!visited[a1.index]) return { atoms: [], bonds: [] };
+  if (!seen[endAtom.index]) return null;
 
-  var pathAtoms = [];
-  var pathBonds = [];
-  var cur = a1.index;
-
-  while (cur !== a0.index) {
+  var pathAtoms = [], pathBonds = [];
+  for (var cur = endAtom.index; cur !== startAtom.index; ) {
+    var step = prev[cur];
     pathAtoms.push(this.atoms[cur]);
-    pathBonds.push(this.bonds[prevBond[cur]]);
-    cur = prevAtom[cur];
+    pathBonds.push(this.bonds[step.bond]);
+    cur = step.ai;
   }
-  pathAtoms.push(a0);
-
+  pathAtoms.push(startAtom);
   pathAtoms.reverse();
   pathBonds.reverse();
+
   return { atoms: pathAtoms, bonds: pathBonds };
 };
+
 
 
 /**

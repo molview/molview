@@ -421,13 +421,27 @@ var Actions = {
 
 	// Shortest Path tool
 	mp_shortest_path: function () {
-  		var mp = Sketcher.molpad;
+  		var mp  = Sketcher.molpad;
+  		var $btn = jQuery("#action-mp-shortest-path");
 
-  		jQuery(".tool-button.primary-tool").removeClass("selected");
-  		jQuery("#action-mp-shortest-path").addClass("selected");
+  		// Is SHP already active?
+  		var isActive = $btn.hasClass("tool-button-selected") && mp.tool && mp.tool.type === "shortest_path";
+
+  		if (isActive) {
+    		// TURN OFF → back to Drag
+    		$btn.removeClass("tool-button-selected");
+    		mp.tool = { type: "drag", data: {} };   // if mp.setTool exists, you can use it
+    		mp.resetEventDisplay();
+    		mp.sel.clear();
+    		mp.requestRedraw();
+    		return;
+  		}
+
+  		// TURN ON → activate SHP
+  		jQuery(".tool-button.primary-tool").removeClass("tool-button-selected");
+  		$btn.addClass("tool-button-selected");
 
   		mp.tool = { type: "shortest_path", data: {}, selection: [] };
-
   		mp.resetEventDisplay();
   		mp.sel.clear();
   		mp.requestRedraw();
