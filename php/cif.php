@@ -17,6 +17,16 @@ include_once('utility.php');
 parse_str($_SERVER['QUERY_STRING'], $params);
 $codid = intval($params['codid'] ?? '');
 
+function download_cod_cif(int $codid) {
+  $cif = file_get_contents("http://www.crystallography.net/$codid.cif");
+  if ($cif === false) {
+    http_response_code(404);
+    echo 'Failed to download CIF file.';
+  } else {
+    echo $cif;
+  }
+}
+
 header('Content-Type: text');
 
 // Allow embed.molview.org and molview.org.
@@ -25,8 +35,11 @@ if ($origin == 'http://molview.org' || $origin == 'https://embed.molview.org') {
   header("Access-Control-Allow-Origin: .$origin");
 }
 
+download_cod_cif($codid);
+
 // Connect to COD MySQL database using PDO.
-try {
+// For unknown reasons A2Hosting started blocking this.
+/*try {
   $dsn = 'mysql:host=www.crystallography.net;dbname=cod';
   $db = new PDO($dsn, 'cod_reader', '', [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -42,16 +55,7 @@ $s = $db->prepare('SELECT flags FROM data WHERE file = :codid');
 $s->execute(['codid' => $codid]);
 if ($row = $s->fetch(PDO::FETCH_ASSOC)) {
   if (strpos($row['flags'], 'has coordinates') !== false) {
-    // Download CIF file.
-    $cif = http_get("http://www.crystallography.net/$codid.cif");
-    if ($cif === false) {
-      http_response_code(404);
-      echo 'Failed to download CIF file.';
-      return;
-    } else {
-      echo $cif;
-      return;
-    }
+    download_cod_cif($codid);
   } else {
     http_response_code(404);
     echo 'Record has no coordinates.';
@@ -61,4 +65,4 @@ if ($row = $s->fetch(PDO::FETCH_ASSOC)) {
   http_response_code(404);
   echo 'Record not found.';
   return;
-}
+}*/
