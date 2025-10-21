@@ -1,0 +1,110 @@
+#welcome-dialog {
+	display: flex;
+	max-width: 1000px;
+	padding: 0;
+}
+
+@media all and (max-width: 700px) {
+	#welcome-dialog {
+		flex-direction: column;
+	}
+}
+
+#welcome-dialog > div {
+	display: flex;
+	flex-direction: column;
+}
+
+#welcome-dialog-left {
+	flex: 3;
+	z-index: 1;
+	box-shadow: 0 0 2em rgba(0,0,0,.3);
+	background: hsl(210, 100%, 90%);
+	background: radial-gradient(circle at top left, hsl(210, 100%, 98%), hsl(210, 100%, 80%));
+}
+
+#welcome-dialog-right {
+	flex: 2;
+	background: #efefef;
+}
+
+#welcome-dialog .main {
+	padding: 2em;
+}
+
+#welcome-dialog .main ul {
+	padding-left: 0;
+	list-style: none;
+}
+
+#welcome-dialog .main li {
+	font-size: 1.1rem;
+	display: flex;
+	align-items: center;
+}
+
+#welcome-dialog .main li::before {
+	content: '+';
+  display: inline-block;
+	margin-right: .5rem;
+  height: 1rem;
+  width: 1rem;
+	flex: 0 0 1rem;
+  border-radius: 1rem;
+  line-height: 1rem;
+  text-align: center;
+  vertical-align: middle;
+
+	font-size: 1rem;
+  color: white;
+  background: #0c0;
+}
+
+#welcome-dialog .actions {
+	display: flex;
+	align-items: center;
+	gap: 1em;
+	margin: 1em .5em;
+}
+
+.new-btn {
+	font-family: 'Open Sans', sans-serif;
+	color: #000 !important;
+	background: rgba(255,255,255,.5);
+	font-size: 1.2rem;
+	padding: .5em 1em;
+	border-radius: 2em;
+	border: 1px solid;
+	white-space: nowrap;
+	box-shadow: 0 0 1px 1px rgba(0,0,0,.3);
+}
+
+.new-btn:hover {
+	color: hsl(210, 100%, 50%) !important;
+	background: rgba(255,255,255,.8);
+}
+
+#welcome-dialog .detail {
+	flex: 1;
+	padding: 1.3em;
+	color: #666;
+	background: rgba(0,0,0,.1);
+	font-size: .85em;
+}
+
+#welcome-dialog .detail ul {
+	padding-left: 1.5em;
+}
+
+#welcome-dialog .detail li {
+	margin: 5px 0;
+}
+
+.new-link {
+	color: inherit !important;
+	text-decoration: underline;
+}
+
+.new-link:hover {
+	color: hsl(210, 100%, 50%) !important;
+}

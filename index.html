@@ -41,6 +41,7 @@ Query parameters:
 		<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
 		<link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700" />
 		<link type="text/css" rel="stylesheet" href="build/molview-app.min.css" />
+		<link type="text/css" rel="stylesheet" href="welcome.css" />
 		<link id="theme-stylesheet" type="text/css" rel="stylesheet" href="build/molview-desktop.min.css" media="screen" />
 
 		<!-- JS -->
@@ -116,7 +117,7 @@ Query parameters:
 								<li class="menu-item"><a id="action-show-search-layer">Show last search results</a></li>
 								<li class="menu-header">Advanced search</li>
 								<li class="menu-item"><a id="action-search-pubchem">PubChem Compounds</a></li>
-								<li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li>
+								<!-- <li class="menu-item"><a id="action-search-rcsb">RCSB Protein Data Bank</a></li> -->
 								<!-- <li class="menu-item"><a id="action-search-cod">Crystallography Open Database</a></li> -->
 							</ul>
 						</div>
@@ -413,28 +414,58 @@ Query parameters:
 		<div id="dialog-overlay" class="dialog-overlay">
 			<div id="dialog-click-area">
 				<div id="dialog-wrapper">
-					<div class="dialog" id="start-dialog">
-						<img id="welcome-logo" src="img/logo.svg" alt="" />
-						<img id="welcome-mark" src="img/mark.svg" alt="MolView" />
-						<div id="welcome-loading-msg">LOADING&hellip;</div>
-						<p style="max-width: 35em; text-align: left; margin: 1em auto">
-							<b>Update (August 2024):</b> We are creating a brand new app at
-							<a class="link" href="https://app.molview.com">molview.com</a>, featuring a new
-							sketcher and a new viewer. Let us know what you think! Follow us
-							on <a class="link" href="https://www.linkedin.com/company/molview/">LinkedIn</a> for updates.
-						</p>
-						<div id="welcome-button-bar" class="btn-group" style="display: none;">
-							<a href="https://app.molview.com" class="btn btn-large">Try New App</a>
-							<button class="btn close btn-large btn-primary">Close Popup</button>
+
+					<div class="dialog" id="welcome-dialog">
+						<div id="welcome-dialog-left">
+							<div class="main">
+								<h2><b>Start using the new MolView!</b></h2>
+								<ul>
+									<li>Sketch and view small molecules</li>
+									<li>Improved sketcher and viewer</li>
+									<li>Multiple structures next to each other</li>
+									<li>Live 3D synchronization as you sketch</li>
+								</ul>
+								<p style="margin-bottom: 2em;">
+									Complete list of features <a class="new-link" href="https://molview.com/features">here</a>
+								</p>
+								<div class="actions">
+									<a class="new-btn" href="https://app.molview.com/">Start</a>
+									<a class="new-btn" href="https://molview.com/tutorials">View tutorials</a>
+								</div>
+							</div>
+							<div class="detail">
+								Developed <b>2024 &ndash; now</b>
+								<ul>
+									<li><b>New foundation</b> for more awesome chemistry education software (<a class="new-link" href="https://molview.com/roadmap">learn more</a>)</li>
+									<li><b>Premium features</b> to make development sustainable (reaction mechanisms, custom styling, SVG export for publishing; <a class="new-link" href="https://molview.com/subscriptions">learn more</a>)</li>
+								</ul>
+							</div>
 						</div>
-						<p style="margin-top: 2em;">By closing this popup and using MolView, you agree to the <a class="link" href="legal" target="_blank">Terms of Use</a>.</p>
-						<!--
-						<p>We need your support to create more cool stuff! <a class="btn" target="_blank" title="Consider donating to this project" href="https://www.patreon.com/molview">Donate</a></p>
-						<div class="btn-group">
-							<a class="btn" target="_blank" href="https://www.youtube.com/@molview">YouTube channel</a>
-							<a class="btn" target="_blank" href="http://blog.molview.org">MolView blog</a>
-						</div> -->
+						<div id="welcome-dialog-right">
+							<div class="main">
+								<h2>Old app</h2>
+								<ul>
+									<li>Protein viewer</li>
+									<li>Jmol integration (MEP surfaces)</li>
+								</ul>
+								<p>
+									Full comparison table <a class="new-link" href="https://molview.com/comparison-old-and-new-app">here</a>
+								</p>
+								<div class="actions">
+									<button class="new-btn dialog-close-btn">Continue to old app</button>
+								</div>
+								<p style="font-size: .8em">By closing this popup and using MolView, you agree to the <a class="new-link" href="legal" target="_blank">Terms of Use</a>.</p>
+							</div>
+							<div class="detail">
+								Developed <b>2012 &ndash; 2015</b> as side project in high school
+								<ul>
+									<li><b>Deprecated</b> with only critial bugfixes</li>
+									<li><b>Remains available</b> to leverage Jmol integration</li>
+								</ul>
+							</div>
+						</div>
 					</div>
+
 					<div class="dialog" id="about-dialog" style="display: none;">
 						<h2>About</h2>
 						<p>MolView is an intuitive web-application to make science and education more awesome! MolView is mainly intended as web-based data visualization platform. You can use MolView to search through different scientific databases including compound databases, protein databases and spectral databases, and view records from these databases as interactive visualizations using WebGL and HTML5 technologies. This web application is built on top of the JavaScript libraries and online services listed below. The <a class="link" href="https://chemagic.org/molecules/amini.html" target="_blank" title="Virtual Model Kit">Virtual Model Kit</a> has been a source of inspiration for the birth of this project.</p>
