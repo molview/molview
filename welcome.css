@@ -39,25 +39,16 @@
 
 #welcome-dialog .main li {
 	font-size: 1.1rem;
-	display: flex;
-	align-items: center;
 }
 
 #welcome-dialog .main li::before {
-	content: '+';
-  display: inline-block;
+	content: '✓';
+	font-size: 1.4rem;
 	margin-right: .5rem;
-  height: 1rem;
-  width: 1rem;
-	flex: 0 0 1rem;
-  border-radius: 1rem;
-  line-height: 1rem;
-  text-align: center;
-  vertical-align: middle;
+}
 
-	font-size: 1rem;
-  color: white;
-  background: #0c0;
+#welcome-dialog-left li::before {
+	color: hsl(210, 100%, 50%);
 }
 
 #welcome-dialog .actions {
@@ -90,6 +81,10 @@
 	color: #666;
 	background: rgba(0,0,0,.1);
 	font-size: .85em;
+}
+
+#welcome-dialog-left .detail {
+	color: hsl(210, 20%, 20%)
 }
 
 #welcome-dialog .detail ul {
