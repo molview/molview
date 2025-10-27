@@ -113,8 +113,127 @@ MolPad.prototype.setupEventHandling = function () {
     jQuery(document).on('keyup', function (e) {
         scope.keys.ctrl = e.ctrlKey;
     });
+
+    // ----- SHP Multiple Paths -----
+    (function (scope) {
+        function getMeta() {
+            if (!window.Sketcher) return null;
+            if (!Sketcher.metadata) Sketcher.metadata = {};
+            return Sketcher.metadata.shortestPath2D || null;
+        }
+
+        function isSHPActiveOrShown() {
+            // Block hotkeys if tool is active OR a path is currently shown
+            var toolActive = scope.tool && scope.tool.type === 'shortest_path';
+            var meta = getMeta();
+            var showing = !!(
+                meta &&
+                ((meta.atoms && meta.atoms.length) ||
+                    (meta.bonds && meta.bonds.length))
+            );
+            return toolActive || showing;
+        }
+
+        function showIdx(next) {
+            var meta = getMeta();
+            if (meta && meta.paths && meta.paths.length) {
+                var idx = meta.idx || 0;
+                scope.showShortestPathIndex(idx + next);
+            }
+        }
+
+        function clearPathOnly() {
+            var meta = getMeta();
+            if (!meta) return;
+            if (meta.atoms) {
+                for (var i = 0; i < meta.atoms.length; i++) {
+                    var ai = meta.atoms[i];
+                    if (scope.mol.atoms[ai]) scope.mol.atoms[ai].select(false);
+                }
+            }
+            if (meta.bonds) {
+                for (var j = 0; j < meta.bonds.length; j++) {
+                    var bi = meta.bonds[j];
+                    if (scope.mol.bonds[bi]) scope.mol.bonds[bi].select(false);
+                }
+            }
+            Sketcher.metadata.shortestPath2D = null;
+            scope.sel.update();
+            scope.requestRedraw();
+            scope.clearRedrawRequest();
+        }
+
+        // Capture-phase keydown: runs before jQuery hotkeys
+        function onKeyDownCapture(e) {
+            if (!isSHPActiveOrShown()) return;
+
+            var code = e.keyCode || 0;
+            var key = (e.key || '').toUpperCase();
+            var plain = !e.ctrlKey && !e.metaKey && !e.altKey;
+
+            // We own W/E/Esc while SHP is active or a path is shown
+            if (plain && (key === 'W' || code === 87)) {
+                showIdx(+1);
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                return;
+            }
+            if (plain && (key === 'E' || code === 69)) {
+                showIdx(-1);
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                return;
+            }
+            if (code === 27) {
+                // Esc
+                clearPathOnly();
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                return;
+            }
+            // After handling W/E/Esc...
+            // Swallow other plain keys while a path is shown/active
+            if (isSHPActiveOrShown() && plain) {
+                // printable range (letters, numbers, punctuation, space)
+                var printable =
+                    (code >= 48 && code <= 90) || // 0-9 A-Z
+                    code === 32 || // Space
+                    (code >= 186 && code <= 222); // punctuation keys
+                if (printable) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    e.stopPropagation();
+                    return;
+                }
+            }
+        }
+
+        // Also swallow keyup so other handlers (bound on keyup) don't react
+        function onKeyUpCapture(e) {
+            if (!isSHPActiveOrShown()) return;
+            var code = e.keyCode || 0;
+            var key = (e.key || '').toUpperCase();
+            var plain = !e.ctrlKey && !e.metaKey && !e.altKey;
+            if (
+                code === 27 ||
+                (plain &&
+                    (key === 'W' || key === 'E' || code === 87 || code === 69))
+            ) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+            }
+        }
+
+        document.addEventListener('keydown', onKeyDownCapture, true);
+        document.addEventListener('keyup', onKeyUpCapture, true);
+    })(scope);
 };
 
+// ----- Original event handlers below -----
 MolPad.prototype.onScroll = function (delta, e) {
     var s = 1 + this.s.zoomSpeed * delta;
     if (this.matrix[0] * s < this.s.minZoom)
@@ -379,6 +498,51 @@ MolPad.prototype.resetEventDisplay = function () {
     );
 };
 
+// ----- SHP Multiple Paths -----
+// Show specific shortest path by index
+MolPad.prototype.showShortestPathIndex = function (idx) {
+    if (!Sketcher.metadata) Sketcher.metadata = {};
+    var meta = Sketcher.metadata.shortestPath2D;
+    if (!meta || !meta.paths || meta.paths.length === 0) return;
+
+    var L = meta.paths.length;
+    idx = ((idx % L) + L) % L; // safe wrap index
+
+    // Clear previous highlight
+    if (meta.atoms) {
+        for (var i = 0; i < meta.atoms.length; i++) {
+            var ai = meta.atoms[i];
+            if (this.mol.atoms[ai]) this.mol.atoms[ai].select(false);
+        }
+    }
+    if (meta.bonds) {
+        for (var j = 0; j < meta.bonds.length; j++) {
+            var bi = meta.bonds[j];
+            if (this.mol.bonds[bi]) this.mol.bonds[bi].select(false);
+        }
+    }
+
+    // Highlight new path
+    var path = meta.paths[idx];
+    for (var a = 0; a < path.atoms.length; a++) path.atoms[a].select(true);
+    for (var b = 0; b < path.bonds.length; b++) path.bonds[b].select(true);
+
+    // Update metadata
+    meta.atoms = path.atoms.map(function (x) {
+        return x.index;
+    });
+    meta.bonds = path.bonds.map(function (x) {
+        return x.index;
+    });
+
+    meta.idx = idx;
+
+    this.sel.update();
+    this.requestRedraw();
+    this.clearRedrawRequest();
+};
+
+// ----- Original event handlers below -----
 /**
  * Event handlers
  */
@@ -754,7 +918,6 @@ MolPad.prototype.getHandler = function () {
                     mp.requestRedraw();
                     return;
                 }
-                // ------------------------------------------------------------
 
                 // First pick
                 if (mp.tool.selection.length === 0) {
@@ -773,40 +936,48 @@ MolPad.prototype.getHandler = function () {
 
                     var a = mp.tool.selection[0];
                     var b = mp.tool.selection[1];
-                    var path = mp.mol.computeShortestPath(a, b);
 
-                    if (path) {
-                        // Highlight the path
-                        for (var k = 0; k < path.atoms.length; k++) {
-                            path.atoms[k].select(true);
-                        }
-                        for (var t = 0; t < path.bonds.length; t++) {
-                            path.bonds[t].select(true);
-                        }
+                    // ----- SHP Multiple Paths -----
+                    var paths = mp.mol.computeAllShortestPaths(a, b, {
+                        excludeHydrogen: true,
+                        directional: false,
+                        // visibleOnly: true
+                    });
 
-                        // Save indices for later (so we can clear them on the next single click)
+                    if (paths && paths.length) {
+                        if (!Sketcher.metadata) Sketcher.metadata = {};
                         Sketcher.metadata.shortestPath2D = {
-                            atoms: (path.atoms || []).map(function (x) {
+                            // full objects list for all paths (for quick render)
+                            paths: paths,
+                            // also store a compact cache of current shown indices
+                            atoms: (paths[0].atoms || []).map(function (x) {
                                 return x.index;
                             }),
-                            bonds: (path.bonds || []).map(function (x) {
+                            bonds: (paths[0].bonds || []).map(function (x) {
                                 return x.index;
                             }),
+                            idx: 0,
                         };
 
-                        // Ready for new action
+                        // highlight first path
+                        for (var k = 0; k < paths[0].atoms.length; k++)
+                            paths[0].atoms[k].select(true);
+                        for (var t = 0; t < paths[0].bonds.length; t++)
+                            paths[0].bonds[t].select(true);
+
                         mp.tool.selection = [];
                         mp.sel.update();
                         mp.requestRedraw();
                     } else {
-                        // No path found → reset and let user try again
                         mp.tool.selection = [];
                         mp.requestRedraw();
                     }
                 }
             },
         };
-    } else {
+    }
+    // ----- Original event handlers below -----
+    else {
         return this.mouseDragHandler;
     }
 };
