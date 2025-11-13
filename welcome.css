@@ -65,14 +65,26 @@
 	font-size: 1.2rem;
 	padding: .5em 1em;
 	border-radius: 2em;
-	border: 1px solid;
-	white-space: nowrap;
-	box-shadow: 0 0 1px 1px rgba(0,0,0,.3);
+  white-space: nowrap;
+}
+
+.new-btn.gray {
+	border: 1px solid hsl(210, 0%, 50%);
+  box-shadow: 0 0 0px 3px hsl(210, 0%, 80%);
+}
+
+.new-btn.blue {
+	border: 1px solid hsl(210, 60%, 50%);
+  box-shadow: 0 0 0px 3px hsl(210, 60%, 80%);
 }
 
 .new-btn:hover {
-	color: hsl(210, 100%, 50%) !important;
-	background: rgba(255,255,255,.8);
+	background: #fff;
+}
+
+.new-btn.blue:hover {
+	border-color: hsl(210, 100%, 50%);
+  box-shadow: 0 0 0px 3px hsl(210, 100%, 80%);
 }
 
 #welcome-dialog .detail {
