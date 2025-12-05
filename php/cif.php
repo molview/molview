@@ -27,7 +27,7 @@ function download_cod_cif(int $codid) {
   }
 }
 
-header('Content-Type: text');
+header('Content-Type: text/plain');
 header('Access-Control-Allow-Origin: https://embed.molview.org');
 
 download_cod_cif($codid);
