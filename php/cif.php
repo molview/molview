@@ -28,12 +28,7 @@ function download_cod_cif(int $codid) {
 }
 
 header('Content-Type: text');
-
-// Allow embed.molview.org and molview.org.
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin == 'http://molview.org' || $origin == 'https://embed.molview.org') {
-  header("Access-Control-Allow-Origin: .$origin");
-}
+header('Access-Control-Allow-Origin: https://embed.molview.org');
 
 download_cod_cif($codid);
 
