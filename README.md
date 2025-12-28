@@ -1,8 +1,12 @@
 MolView
 =======
-This repository holds the code of MolView.org. MolView and the source code of
-MolView are Copyright of Herman Bergwerf. You are not allowed to redistribute it
-without written permission.
+This repository contains the code of the old MolView app which was developed
+between 2012 and 2015, and which as of 2025 can still be used without charge
+at https://molview.org. Since 2023 patches to this code are no longer released
+under an open-source license. This repository also includes the code of several
+external open-source dependencies. In most code files, the author and copyright
+details are indicated in the header. For more information please send an email
+to info@bergwerf-labs.com.
 
 Build
 -----
