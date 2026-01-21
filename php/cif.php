@@ -14,11 +14,12 @@ PHP script for mirroring CIF files form the Crystallography Open Database
 
 include_once('utility.php');
 
-parse_str($_SERVER['QUERY_STRING'], $params);
-$codid = intval($params['codid'] ?? '');
-
-function download_cod_cif(int $codid) {
-  $cif = file_get_contents("http://www.crystallography.net/$codid.cif");
+function download_cod_cif(string $codid) {
+	$root = 'http://crystallography.net/cod/cif';
+	$a = substr($codid, 0, 1);
+	$b = substr($codid, 1, 2);
+	$c = substr($codid, 3, 2);
+  $cif = file_get_contents("$root/$a/$b/$c/$codid.cif");
   if ($cif === false) {
     http_response_code(404);
     echo 'Failed to download CIF file.';
@@ -30,7 +31,9 @@ function download_cod_cif(int $codid) {
 header('Content-Type: text/plain');
 header('Access-Control-Allow-Origin: https://embed.molview.org');
 
-download_cod_cif($codid);
+parse_str($_SERVER['QUERY_STRING'], $params);
+$codid = intval($params['codid'] ?? '');
+download_cod_cif("$codid");
 
 // Connect to COD MySQL database using PDO.
 // For unknown reasons A2Hosting started blocking this.
